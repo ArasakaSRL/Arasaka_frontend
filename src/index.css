@@ -2,6 +2,96 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 @theme {
+  /*Color desing*/
+  /* Color base Success*/
+  --color-success-500: #00DF82;
+
+  /* Mezclas con blanco (tonos más claros) */
+  --color-success-400: color-mix(in srgb, var(--color-success-500) 80%, white);
+  --color-success-300: color-mix(in srgb, var(--color-success-500) 60%, white);
+  --color-success-200: color-mix(in srgb, var(--color-success-500) 40%, white);
+  --color-success-100: color-mix(in srgb, var(--color-success-500) 20%, white);
+
+  /* Mezclas con negro (tonos más oscuros) */
+  --color-success-600: color-mix(in srgb, var(--color-success-500) 80%, black);
+  --color-success-700: color-mix(in srgb, var(--color-success-500) 60%, black);
+  --color-success-800: color-mix(in srgb, var(--color-success-500) 40%, black);
+  --color-success-900: color-mix(in srgb, var(--color-success-500) 20%, black);
+  /* Color base Warning */
+  --color-warning-500: #FCA311;
+
+  /* Primer tono claro */
+  --color-warning-400: color-mix(in srgb, var(--color-warning-500) 80%, white);
+  --color-warning-300: color-mix(in srgb, var(--color-warning-500) 60%, white);
+  --color-warning-200: color-mix(in srgb, var(--color-warning-500) 40%, white);
+  --color-warning-100: color-mix(in srgb, var(--color-warning-500) 20%, white);
+
+  /* Tonos oscuros (mezcla con negro) */
+  --color-warning-600: color-mix(in srgb, var(--color-warning-500) 80%, black);
+  --color-warning-700: color-mix(in srgb, var(--color-warning-500) 60%, black);
+  --color-warning-800: color-mix(in srgb, var(--color-warning-500) 40%, black);
+  --color-warning-900: color-mix(in srgb, var(--color-warning-500) 20%, black);
+
+  /* Color base Error*/
+  --color-error-500: #F91E3E;
+
+  /* Primer tono claro */
+  --color-error-400: color-mix(in srgb, var(--color-error-500) 80%, white);
+  --color-error-300: color-mix(in srgb, var(--color-error-500) 60%, white);
+  --color-error-200: color-mix(in srgb, var(--color-error-500) 40%, white);
+  --color-error-100: color-mix(in srgb, var(--color-error-500) 20%, white);
+
+  /* Tonos oscuros (mezcla con negro) */
+  --color-error-600: color-mix(in srgb, var(--color-error-500) 80%, black);
+  --color-error-700: color-mix(in srgb, var(--color-error-500) 60%, black);
+  --color-error-800: color-mix(in srgb, var(--color-error-500) 40%, black);
+  --color-error-900: color-mix(in srgb, var(--color-error-500) 20%, black);
+
+  /* --- Color base Primary --- */
+  --color-primary-500: #1B2A6D;
+  --color-primary-100: color-mix(in srgb, var(--color-primary-500) 20%, white);
+  --color-primary-200: color-mix(in srgb, var(--color-primary-500) 40%, white);
+  --color-primary-300: color-mix(in srgb, var(--color-primary-500) 60%, white);
+  --color-primary-400: color-mix(in srgb, var(--color-primary-500) 80%, white);
+  --color-primary-600: color-mix(in srgb, var(--color-primary-500) 80%, black);
+  --color-primary-700: color-mix(in srgb, var(--color-primary-500) 60%, black);
+  --color-primary-800: color-mix(in srgb, var(--color-primary-500) 40%, black);
+  --color-primary-900: color-mix(in srgb, var(--color-primary-500) 20%, black);
+
+  /* --- Color base Secondary --- */
+  --color-secondary-500: #27496E;
+  --color-secondary-100: color-mix(in srgb, var(--color-secondary-500) 20%, white);
+  --color-secondary-200: color-mix(in srgb, var(--color-secondary-500) 40%, white);
+  --color-secondary-300: color-mix(in srgb, var(--color-secondary-500) 60%, white);
+  --color-secondary-400: color-mix(in srgb, var(--color-secondary-500) 80%, white);
+  --color-secondary-600: color-mix(in srgb, var(--color-secondary-500) 80%, black);
+  --color-secondary-700: color-mix(in srgb, var(--color-secondary-500) 60%, black);
+  --color-secondary-800: color-mix(in srgb, var(--color-secondary-500) 40%, black);
+  --color-secondary-900: color-mix(in srgb, var(--color-secondary-500) 20%, black);
+
+  /* --- Color base Dark --- */
+  --color-dark-500: #1E1E1E;
+  --color-dark-100: color-mix(in srgb, var(--color-dark-500) 20%, white);
+  --color-dark-200: color-mix(in srgb, var(--color-dark-500) 40%, white);
+  --color-dark-300: color-mix(in srgb, var(--color-dark-500) 60%, white);
+  --color-dark-400: color-mix(in srgb, var(--color-dark-500) 80%, white);
+  --color-dark-600: color-mix(in srgb, var(--color-dark-500) 80%, black);
+  --color-dark-700: color-mix(in srgb, var(--color-dark-500) 60%, black);
+  --color-dark-800: color-mix(in srgb, var(--color-dark-500) 40%, black);
+  --color-dark-900: color-mix(in srgb, var(--color-dark-500) 20%, black);
+
+  /* --- Color base Light --- */
+  --color-light-500: #F5F5F5;
+  --color-light-100: color-mix(in srgb, var(--color-light-500) 20%, white);
+  --color-light-200: color-mix(in srgb, var(--color-light-500) 40%, white);
+  --color-light-300: color-mix(in srgb, var(--color-light-500) 60%, white);
+  --color-light-400: color-mix(in srgb, var(--color-light-500) 80%, white);
+  --color-light-600: color-mix(in srgb, var(--color-light-500) 80%, black);
+  --color-light-700: color-mix(in srgb, var(--color-light-500) 60%, black);
+  --color-light-800: color-mix(in srgb, var(--color-light-500) 40%, black);
+  --color-light-900: color-mix(in srgb, var(--color-light-500) 20%, black);
+
+  /*Tipografia*/
   --font-sans: "Poppins", sans-serif;
 
   /* Font sizes */
