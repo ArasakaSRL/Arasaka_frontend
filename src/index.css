@@ -190,11 +190,11 @@
 }
 
 #root {
-  width: 1126px;
+  /*width: 1126px;
+  border-inline: 1px solid var(--border);*/
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -230,8 +230,15 @@ h2 {
     font-size: 20px;
   }
 }
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-main);
+  margin-top: 0;
+}
+
 p {
   margin: 0;
+  color: var(--text-main);
 }
 
 code,
