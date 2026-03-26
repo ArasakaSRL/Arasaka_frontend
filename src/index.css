@@ -138,6 +138,8 @@
 }
 
 :root {
+  --bg-global: #ffffff;
+  --text-main: #08060d;
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -170,8 +172,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
+    --text-h: #000000;
+    --bg: #ffffff;
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
@@ -201,12 +203,13 @@
 
 body {
   margin: 0;
+  background-color: var(--bg-global);
+  font-family: "Poppins", sans-serif;
 }
 
 h1,
 h2 {
   font-weight: 500;
-  color: var(--text-h);
 }
 
 h1 {
