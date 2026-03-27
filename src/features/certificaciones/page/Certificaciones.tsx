@@ -1,4 +1,5 @@
 import { Banner } from "../components/BannerCertificaciones";
+import { FechaInput } from "../components/FechaInput";
 import { ImagenUploader } from "../components/ImagenUploader";
 import { InputCertificaciones } from "../components/InputCertificaciones";
 
@@ -28,6 +29,7 @@ export function Certificaciones(){
                     width={300} 
                     height={100}>
                 </InputCertificaciones>
+                <FechaInput></FechaInput>
                 <ImagenUploader></ImagenUploader>
         </section>
     );
