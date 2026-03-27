@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-export function ImageUploader() {
+export function ImagenUploader() {
   const [imagen, setImagen] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
