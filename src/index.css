@@ -108,6 +108,8 @@
   --text-h-xl: 32px;
   --text-h-2xl: 40px;
   --text-h-3xl: 48px;
+  --text-h-4xl: 96px;
+  --text-h-5xl: 128px;
 
    /* Line height por tamaño */
   --leading-xs: 1.33;
@@ -222,17 +224,16 @@ h1 {
   }
 }
 h2 {
-  font-size: 24px;
+  font-size: 48px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
-    font-size: 20px;
+    font-size: 48px;
   }
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--text-main);
   margin-top: 0;
 }
 
@@ -254,4 +255,22 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* Scroll moderno */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* gris claro */
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
