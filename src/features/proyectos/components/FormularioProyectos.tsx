@@ -15,6 +15,8 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
     const cerrarForm = () => {
         closeModal();
     }
+
+    
     return(
     <div className="bg-light-500 rounded-2xl shadow-xl w-full">
 

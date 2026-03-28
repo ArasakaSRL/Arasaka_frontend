@@ -35,7 +35,6 @@ export default function DropdownCheckbox({
 
   return (
     <div className="relative">
-      {/* Trigger */}
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -48,9 +47,8 @@ export default function DropdownCheckbox({
         <CircleChevronDown />
       </button>
 
-      {/* Dropdown */}
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-light-500 border-primary-500 border rounded-md shadow-lg max-h-40 overflow-y-auto">
           {options.map((opt) => (
             <label
               key={opt.value}
