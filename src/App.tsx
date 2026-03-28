@@ -3,6 +3,7 @@ import { MainLayout } from './layout/MainLayout'
 import Home from './pages/Home'
 import About from './pages/About'
 import { Link } from 'react-router-dom'
+import PageHabilidades from './features/habilidades/pages/PageHabilidades'
 
 export function App() {
   return (
@@ -17,13 +18,13 @@ export function App() {
         </li>
       </ul>
     </nav>
-
     <Routes>
 
       <Route element={<MainLayout />}>
 
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/habilidades" element={<PageHabilidades />}/>
 
       </Route>
 
