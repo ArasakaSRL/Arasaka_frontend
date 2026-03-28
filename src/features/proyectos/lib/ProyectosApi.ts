@@ -1,16 +1,27 @@
 import apiClient from "../../../api/api"
 
-export interface CrearProyecto {
+export interface Proyecto {
     id_portafolio:string;
     nombre: string;
     descripcion?: string;
     fecha_inicio: string;
     fecha_fin?: string;
-    url_proyecto?: string;
-    url_repositorio?: string;
+    tecnologias: string[]
+    url_proyecto?: string | null;
+    url_repositorio?: string | null;
 }
 
-export const crearProyecto = async (data:CrearProyecto) => {
+export interface Tecnologias {
+    id_tecnologia: string;
+    nombre: string;
+}
+
+export const crearProyecto = async (data:Proyecto) => {
     const response = await apiClient.post("proyectos",data);
     return response.data;
+}
+
+export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
+    const response = await apiClient.get("/tecnologias");
+    return response.data.data;
 }

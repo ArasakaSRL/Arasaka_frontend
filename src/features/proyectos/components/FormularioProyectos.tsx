@@ -1,21 +1,83 @@
 import { CircleX } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DropdownCheckbox from './MenuTecnologias';
+import { obtenerTecnologia } from '../lib/ProyectosApi';
+import { crearProyecto } from '../lib/ProyectosApi';
+
 interface FormularioProps {
     closeModal: () => void;
 }
 
 export default function FormularioProyectos({closeModal}:FormularioProps) {
     const [tecnologias, setTecnologias] = useState<string[]>([]);
-    const techOptions = [
-  { label: "React", value: "react" },
-  { label: "Node.js", value: "node" },
-  { label: "Python", value: "python" },
-];
+    const [opciones, setOpciones] = useState<{label:string; value:string }[]>([]);
     const cerrarForm = () => {
         closeModal();
     }
 
+    const [formularioData, setFormularioData] = useState({
+      title:"",
+      descripcion:"",
+      startDate: "",
+      endDate: "",
+      projectUrl:"",
+      githubUrl:"",
+    });
+
+    const handleSubmit = async (e:React.FormEvent) => {
+      e.preventDefault();
+        try {
+    const payload = {
+      id_portafolio: "b7a37adf-3fd9-498c-a855-4dd97cee53b2",
+      nombre: formularioData.title,
+      descripcion: formularioData.descripcion || null,
+      fecha_inicio: formularioData.startDate,
+      fecha_fin: formularioData.endDate || null,
+      tecnologias: tecnologias,
+      url_proyecto: formularioData.projectUrl || null,
+      url_repositorio: formularioData.githubUrl || null,
+    };
+
+    const res = await crearProyecto(payload);
+
+    console.log("CREADO:", res);
+
+    setFormularioData({
+      title: "",
+      descripcion: "",
+      startDate: "",
+      endDate: "",
+      projectUrl: "",
+      githubUrl: "",
+    });
+
+    setTecnologias([]);
+
+    closeModal();
+
+  } catch (error) {
+    console.error("Error al crear proyecto", error);
+  }
+    }
+
+    useEffect(() => {
+  const fetchTecnologias = async () => {
+    try {
+      const data = await obtenerTecnologia();
+
+      const formatted = data.map((tech) => ({
+        label: tech.nombre,
+        value: tech.id_tecnologia,
+      }));
+
+      setOpciones(formatted);
+    } catch (error) {
+      console.error("Error al cargar tecnologías", error);
+    }
+  };
+
+  fetchTecnologias();
+}, []);
     
     return(
     <div className="bg-light-500 rounded-2xl shadow-xl w-full">
@@ -31,12 +93,16 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
         </button>
       </div>
 
-      <form className="px-6 pb-5 space-y-4 text-left">
+      <form onSubmit={handleSubmit} className="px-6 pb-5 space-y-4 text-left">
         <div className="space-y-0.5">
             <label className="text-sm text-gray-700 font-medium">
             Título del Proyecto <span className="text-error-500">*</span>
             </label>
-            <input className="w-full border text-black bg-[#D4DBE2] border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2" />
+            <input
+              className="w-full border text-black bg-[#D4DBE2] border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2" 
+              value={formularioData.title}
+              onChange={(e) => setFormularioData({ ...formularioData, title: e.target.value })}
+              />
         </div>
 
   <div className="space-y-0.5">
@@ -45,6 +111,8 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
     </label>
     <textarea
       rows={3}
+      value={formularioData.descripcion}
+      onChange={(e) => setFormularioData({ ...formularioData, descripcion: e.target.value })}
       className="w-full border bg-[#D4DBE2] text-black border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2"
     />
   </div>
@@ -56,6 +124,8 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
             </label>
             <input
               type="date"
+              value={formularioData.startDate}
+              onChange={(e) => setFormularioData({ ...formularioData, startDate: e.target.value })}
               className="w-full border bg-[#D4DBE2] text-black border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2"
             />
           </div>
@@ -66,6 +136,8 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
             </label>
             <input
               type="date"
+              value={formularioData.endDate}
+              onChange={(e) => setFormularioData({ ...formularioData, endDate: e.target.value })}
               className="w-full border bg-[#D4DBE2] text-black border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2"
             />
           </div>
@@ -78,7 +150,7 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
           <DropdownCheckbox
             values={tecnologias}
             onChange={setTecnologias}
-            options={techOptions}
+            options={opciones}
           />
         </div>
 
@@ -89,6 +161,8 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
           <input
             type="url"
             placeholder="https://"
+            value={formularioData.projectUrl}
+            onChange={(e) => setFormularioData({ ...formularioData, projectUrl: e.target.value })}
             className="w-full border bg-[#D4DBE2] text-black border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2"
           />
         </div>
@@ -99,6 +173,8 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
           </label>
           <input
             type="url"
+            value={formularioData.githubUrl}
+            onChange={(e) => setFormularioData({ ...formularioData, githubUrl: e.target.value })}
             placeholder="https://github.com/usuario/proyecto"
             className="w-full border bg-[#D4DBE2] text-black border-primary-500 rounded-md px-3 py-2 text-sm ring-primary-400 focus-visible:outline-none focus-visible:ring-2"
           />
