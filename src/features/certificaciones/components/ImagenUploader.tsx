@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dropzone } from "./ImagenUploader/Dropzone";
 import { Toolbar } from "./ImagenUploader/Toolbar";
 import { ImagenPreview } from "./ImagenUploader/ImagenPreview";
-import { CropperModal } from "./ImagenUploader/CropperModal";
+import { EditorInline } from "./ImagenUploader/EditorInline";
 
 
 export function ImagenUploader() {
@@ -26,25 +26,15 @@ export function ImagenUploader() {
   return (
     <div className="flex justify-center p-8">
       {!preview ? (
-        <Dropzone onFileSelect={setFile} />
-      ) : (
-        <div className="flex gap-6">
-          <div style={{ transform: `rotate(${rotation}deg)` }}>
-            <ImagenPreview src={preview} />
-          </div>
-
-          <Toolbar
-            onDelete={() => setFile(null)}
-            onRotate={() => setRotation((r) => r + 90)}
-            onCrop={() => setShowCrop(true)}
-          />{showCrop && preview && (
-            <CropperModal
-              image={preview}
-              onClose={() => setShowCrop(false)}
-            />
-          )}
-        </div>
-      )}
+      <Dropzone onFileSelect={setFile} />
+    ) : (
+      <EditorInline
+        image={preview}
+        rotation={rotation}
+        onRotate={() => setRotation((r) => r + 90)}
+        onDelete={() => setFile(null)}
+      />
+    )}
     </div>
   );
 }
