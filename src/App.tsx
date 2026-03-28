@@ -4,13 +4,12 @@ import Home from './pages/Home'
 import About from './pages/About'
 import { Link } from 'react-router-dom'
 import { Certificaciones } from './features/certificaciones/page/Certificaciones'
-import SubirArchivo from './pages/subirArchivo'
+import { useState } from 'react'
 export function App() {
 
 
   return (
     <>
-  
     <nav style={{ padding: '20px', borderBottom: '1px solid var(--border)', marginBottom: '20px' }}>
       <ul style={{ display: 'flex', gap: '20px', listStyle: 'none', justifyContent: 'center', margin: 0, padding: 0 }}>
         <li>
@@ -28,7 +27,6 @@ export function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path='/certificaciones' element={<Certificaciones/>}/>
-        <Route path='/subirArchivo' element={<SubirArchivo/>}/>
       </Route>
 
     </Routes>
