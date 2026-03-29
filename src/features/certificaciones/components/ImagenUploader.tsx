@@ -12,7 +12,7 @@ export function ImagenUploader() {
   const [saveTrigger, setSaveTrigger] = useState(0);
 
   const handleSaveCrop = () => {
-    // 🚨 aquí evitamos guardar si no hay crop válido
+    //aquí evitamos guardar si no hay crop válido
     setSaveTrigger((prev) => prev + 1);
   };
 

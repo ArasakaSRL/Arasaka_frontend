@@ -12,13 +12,13 @@ export function Modal({ isOpen, onClose, children }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
 
-      {/* 🌑 Overlay suave */}
+      {/* Overlay suave */}
       <div
         className="fixed inset-0 bg-black/30 backdrop-blur-md"
         onClick={onClose}
       />
 
-      {/* 📦 Contenido */}
+      {/* Contenido */}
       <div
         className="
           relative z-10
@@ -28,7 +28,7 @@ export function Modal({ isOpen, onClose, children }: Props) {
           p-6
         "
       >
-        {/* ❌ Botón cerrar */}
+        {/* Botón cerrar */}
         <button
           onClick={onClose}
           className="
