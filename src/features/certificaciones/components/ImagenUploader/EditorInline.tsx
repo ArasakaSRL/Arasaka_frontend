@@ -7,9 +7,10 @@ type Props = {
   rotation: number;
   showCrop: boolean;
   onCloseCrop: () => void;
+  saveTrigger: number;
 };
 
-export function EditorInline({ image, rotation, showCrop, onCloseCrop }: Props){
+export function EditorInline({ image, rotation, showCrop, onCloseCrop, saveTrigger }: Props){
   const [isVertical, setIsVertical] = useState(false);
   const isRotatedVertical = rotation % 180 !== 0;
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
@@ -27,22 +28,22 @@ export function EditorInline({ image, rotation, showCrop, onCloseCrop }: Props){
   
 
   useEffect(() => {
-    const img = new Image();
-    img.src = image;
+    if (
+      !completedCrop ||
+      !imgRef.current ||
+      completedCrop.width === 0 ||
+      completedCrop.height === 0
+    ) return;
 
-    img.onload = () => {
-      setIsVertical(img.height > img.width);
+    const runCrop = async () => {
+      const cropped = await getCroppedImage(imgRef.current!, completedCrop);
+      setCroppedImage(cropped);
+      onCloseCrop();
     };
-  }, [image]);
 
-  const handleCropSave = async () => {
-    if (!completedCrop || !imgRef.current) return;
+    runCrop();
+  }, [saveTrigger]);
 
-    const cropped = await getCroppedImage(imgRef.current, completedCrop);
-    setCroppedImage(cropped);
-
-    onCloseCrop(); // 👈 🔥 SALE DEL MODO CROP
-  };
 
   return (
     <div className="w-full h-full max-h-[350px] bg-dark-500 flex items-center justify-center overflow-hidden">
@@ -66,7 +67,7 @@ export function EditorInline({ image, rotation, showCrop, onCloseCrop }: Props){
             <div className="w-full h-full flex items-center justify-center">
               <img
                 ref={imgRef}
-                src={croppedImage || image}
+                src={image}
                 style={{
                   transform: `rotate(${rotation}deg)`,
                   maxHeight: isRotatedVertical ? "100%" : "280px",
@@ -76,12 +77,6 @@ export function EditorInline({ image, rotation, showCrop, onCloseCrop }: Props){
               />
             </div>
           </ReactCrop>
-          <button
-            onClick={handleCropSave}
-            className="absolute bottom-2 right-2 bg-blue-500 text-white px-3 py-1 rounded"
-          >
-            Guardar
-          </button>
 
         </div>
       ) : (

@@ -9,6 +9,13 @@ export function ImagenUploader() {
   const [rotation, setRotation] = useState(0);
   const [showCrop, setShowCrop] = useState(false);
 
+  const [saveTrigger, setSaveTrigger] = useState(0);
+
+  const handleSaveCrop = () => {
+    // 🚨 aquí evitamos guardar si no hay crop válido
+    setSaveTrigger((prev) => prev + 1);
+  };
+
   useEffect(() => {
     if (!file) {
       setPreview(null);
@@ -32,12 +39,15 @@ export function ImagenUploader() {
         rotation={rotation}
         showCrop={showCrop}
         onCloseCrop={() => setShowCrop(false)}
+        saveTrigger={saveTrigger}
       />
 
       <Toolbar
         onRotate={() => setRotation((r) => r + 90)}
         onDelete={() => setFile(null)}
         onCrop={() => setShowCrop((c) => !c)}
+        onSaveCrop={handleSaveCrop}
+        showCrop={showCrop}
       />
     </div>
   );
