@@ -1,5 +1,4 @@
 import { CertificadosGrid } from "../features/certificaciones/components/CertificadosGrid";
-import { InputCertificaciones } from "../features/certificaciones/components/InputCertificaciones";
 import type { Certificado } from "../features/certificaciones/components/CertificadoCard";
 
 export default function About() {

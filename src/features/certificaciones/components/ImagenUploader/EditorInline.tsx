@@ -1,5 +1,5 @@
 import ReactCrop, { type Crop } from "react-image-crop";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
   image: string;
@@ -8,7 +8,8 @@ type Props = {
 };
 
 export function EditorInline({ image, rotation, showCrop }: Props) {
-  const isVertical = rotation % 180 !== 0;
+  const [isVertical, setIsVertical] = useState(false);
+  const isRotatedVertical = rotation % 180 !== 0;
 
   const [crop, setCrop] = useState<Crop>({
     unit: "%",
@@ -17,28 +18,64 @@ export function EditorInline({ image, rotation, showCrop }: Props) {
     x: 10,
     y: 20,
   });
+  
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = image;
+
+    img.onload = () => {
+      setIsVertical(img.height > img.width);
+    };
+  }, [image]);
 
   return (
-    <div className="w-[500px] h-[300px] bg-black flex items-center justify-center">
+    <div className="w-full h-full max-h-[350px] bg-black flex items-center justify-center overflow-hidden">
+      
+      <div
+        className={`
+          flex items-center justify-center
+          w-full h-full
+          ${isVertical ? "max-h-[280px]" : ""}
+        `}
+      >
       {showCrop ? (
-        <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
-          <img
-            src={image}
-            style={{
-              transform: `rotate(${rotation}deg) scale(${isVertical ? 0.6 : 1})`,
-            }}
-            className="max-w-full max-h-full object-contain"
-          />
-        </ReactCrop>
+        <div className="w-full h-[300px] flex items-center justify-center bg-black overflow-hidden">
+          
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            className="w-full h-full flex items-center justify-center"
+          >
+            <div className="w-full h-full flex items-center justify-center">
+              <img
+                src={image}
+                style={{
+                  transform: `rotate(${rotation}deg)`,
+                  maxHeight: isRotatedVertical ? "100%" : "280px",
+                  maxWidth: isRotatedVertical ? "280px" : "100%",
+                }}
+                className="object-contain"
+              />
+            </div>
+          </ReactCrop>
+
+        </div>
       ) : (
-        <img
-          src={image}
-          style={{
-            transform: `rotate(${rotation}deg) scale(${isVertical ? 0.6 : 1})`,
-          }}
-          className="max-w-full max-h-full object-contain"
-        />
-      )}
+          <div className="w-full h-[300px] flex items-center justify-center bg-black overflow-hidden">
+            <img
+              src={image}
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                maxHeight: isRotatedVertical ? "100%" : "280px",
+                maxWidth: isRotatedVertical ? "280px" : "100%",
+              }}
+              className="object-contain"
+            />
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }
