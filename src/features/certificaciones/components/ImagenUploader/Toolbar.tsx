@@ -1,3 +1,5 @@
+import { Scissors, RotateCw, Trash2 } from "lucide-react";
+
 type Props = {
   onDelete: () => void;
   onRotate: () => void;
@@ -6,10 +8,32 @@ type Props = {
 
 export function Toolbar({ onDelete, onRotate, onCrop }: Props) {
   return (
-    <div className="flex flex-col gap-3 bg-gray-100 p-4 rounded-lg">
-      <button onClick={onCrop}>✂️ Recortar</button>
-      <button onClick={onRotate}>🔄 Rotar</button>
-      <button onClick={onDelete}>🗑️ Eliminar</button>
+    <div className="flex flex-col items-center justify-center gap-6 bg-[#1E1E1E] px-2 py-4 rounded-xl w-[80px]">
+
+      <button
+        onClick={onCrop}
+        className="w-full flex flex-col items-center justify-center text-white hover:text-blue-400 transition"
+      >
+        <Scissors size={18} />
+        <span className="text-[10px] mt-1">Recortar</span>
+      </button>
+
+      <button
+        onClick={onRotate}
+        className="w-full flex flex-col items-center justify-center text-white hover:text-blue-400 transition"
+      >
+        <RotateCw size={18} />
+        <span className="text-[10px] mt-1">Rotar</span>
+      </button>
+
+      <button
+        onClick={onDelete}
+        className="w-full flex flex-col items-center justify-center text-white hover:text-red-400 transition"
+      >
+        <Trash2 size={18} />
+        <span className="text-[10px] mt-1">Eliminar</span>
+      </button>
+
     </div>
   );
 }
