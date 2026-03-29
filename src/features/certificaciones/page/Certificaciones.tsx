@@ -1,14 +1,41 @@
 import { useState } from "react";
+//import { useCategorias } from '../hooks/useCategorias';
+
 import { Banner } from "../components/BannerCertificaciones";
-import { CategoriaCard } from "../components/CategoriaCard";
 import { Modal } from "../components/Modal";
 import { ImagenUploader } from "../components/ImagenUploader";
 import { InputCertificaciones } from "../components/InputCertificaciones";
 import { FechaInput } from "../components/FechaInput";
+import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
+import { Carousel } from "../components/carruselCards/carrusel";
 
 export function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
+  const categorias = [
+    {
+      title: "Académico",
+      description: "Diplomas, logros educativos, etc",
+      image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644",
+    },
+    {
+      title: "Idiomas",
+      description: "Diplomas y certificados, etc",
+      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    },
+    {
+      title: "DevOps",
+      description: "Cloud, CI/CD",
+      image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644",
+    },
+    {
+      title: "Data",
+      description: "AI, ML",
+      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    },
+  ];
 
+
+  //const { categorias, isLoading, error } = useCategorias();
   return (
     <section>
       <div className="p-1 space-y-6">
@@ -78,18 +105,16 @@ export function Certificaciones() {
           <h3 className="text-sm text-dark-500 font-medium-ui mb-3 text-left">
             Categorías
           </h3>
-
-          <CategoriaCard
-            title="Académico"
-            description="Diplomas, logros educativos, etc"
-            image="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
-          />
-
-          <CategoriaCard
-            title="Idiomas"
-            description="Diplomas y certificados, etc"
-            image="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-          />
+          <Carousel>
+            {categorias.map((cat, i) => (
+              <CategoriaCard
+                key={i}
+                title={cat.title}
+                description={cat.description}
+                image={cat.image}
+              />
+            ))}
+          </Carousel>
         </div>
 
         <h2 className="text-center text-lg text-dark-500 tracking-widest font-semibold-ui">
