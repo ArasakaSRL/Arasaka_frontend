@@ -1,17 +1,32 @@
 import { Boton } from "../../../components/ui/Boton"
 
-
-
 export const Banner = () => {
   return (
-    <div className="w-full rounded-xl p-15 text-left text-white bg-gradient-to-br from-blue-400 to-blue-900">
-      
-      <h1 className="text-3xl text-light-500 font-semibold-ui mb-4">
+    <div className="
+      w-full rounded-xl
+      px-4 py-6
+      sm:px-6 sm:py-8
+      md:px-10 md:py-10
+      lg:px-14 lg:py-12
+      text-left text-white
+      bg-gradient-to-br from-blue-400 to-blue-900
+      flex flex-col gap-4
+    ">
+      <h1 className="
+        text-lg
+        sm:text-xl
+        md:text-2xl
+        lg:text-3xl
+        font-semibold leading-tight
+      ">
         Certificaciones y <br /> Logros
       </h1>
 
-      <Boton>Subir Certificación</Boton>
-
+      <div className="w-full sm:w-auto">
+        <Boton>
+          Subir Certificación
+        </Boton>
+      </div>
     </div>
   )
 }
