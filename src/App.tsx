@@ -5,7 +5,7 @@ import About from './pages/About'
 import { Link } from 'react-router-dom'
 import { Hitos } from './features/hitos/page/Hitos'
 
-export function App() {
+export default function App() {
   return (
     <>
     <nav style={{ padding: '20px', borderBottom: '1px solid var(--border)', marginBottom: '20px' }}>

@@ -16,7 +16,6 @@ export const Banner = ({ onOpenModal }: Props) => {
         flex flex-col items-start gap-6
       "
     >
-      {/* 🔥 Título */}
       <h1
         className="
           text-3xl
@@ -33,7 +32,6 @@ export const Banner = ({ onOpenModal }: Props) => {
         </span>
       </h1>
 
-      {/* 🔘 Botón */}
       <Boton
         onClick={onOpenModal}
         className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700"
