@@ -10,13 +10,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
-        <div className="flex min-h-screen bg-[#F8FAFC]">
-            <DashboardHeader onMenuClick={() => setSidebarOpen(prev => !prev)} sidebarOpen={sidebarOpen} />
+        <div className="min-h-screen bg-[#F8FAFC]">
+            <DashboardHeader
+                onMenuClick={() => setSidebarOpen(prev => !prev)}
+                sidebarOpen={sidebarOpen}
+            />
 
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            <Sidebar
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+            />
 
-            <main className="flex-1 p-6 md:p-8 mt-16 md:ml-64">
-                <div className="max-w-5xl mx-auto">
+            <main className="pt-14 md:ml-54 min-h-screen transition-all duration-300">
+                <div className="max-w-full sm:p-6 md:p-2">
                     {children}
                 </div>
             </main>

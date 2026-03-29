@@ -34,6 +34,19 @@ export default function Register() {
     const [apiError, setApiError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    /**
+     * handleRegister: manejador del evento de registro.
+     * Un "handler" es una función que se ejecuta en respuesta a una acción del usuario,
+     * en este caso al hacer clic en "Crear cuenta".
+     * Flujo:
+     * 1. Limpia errores previos
+     * 2. Valida los campos con zod antes de tocar la API
+     * 3. Si la validación falla, muestra errores por campo y detiene la ejecución
+     * 4. Si pasa, llama a registerRequest() que hace POST /registrar al backend
+     * 5. Si el backend responde bien, redirige al login
+     * 6. Si el backend responde con error, muestra el mensaje de error
+     * 7. finally siempre desactiva el loading, haya error o no
+     */
     async function handleRegister() {
         setApiError(null);
         const result = registerSchema.safeParse({ nombre, apellido, correo, password, password_confirmation });
@@ -63,55 +76,85 @@ export default function Register() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 py-12">
-            <Link to="/" className="absolute top-10 left-10 text-gray-500 text-sm flex items-center gap-2 hover:text-black no-underline">
+            <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
 
-            <div className="mb-8 bg-blue-500 p-4 rounded-2xl shadow-xl shadow-blue-200">
-                <Briefcase className="w-12 h-12 text-white" />
+            <div className="mb-5 bg-blue-500 p-2 rounded-2xl shadow-xl shadow-blue-200">
+                <Briefcase className="w-14 h-14 text-black" />
             </div>
 
-            <div className="w-full max-w-lg bg-white rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 relative">
-                {/* El gradiente azul de tu imagen */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/40 to-transparent pointer-events-none" />
+            <div className="w-full max-w-lg bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative">
 
-                <div className="relative p-10 flex flex-col items-center">
-                    <h1 className="text-2xl font-black text-gray-900 mb-1">Crear Cuenta</h1>
-                    <p className="text-gray-500 text-sm mb-8 text-center">Crea tu portafolio digital de proyectos de software</p>
+                <div className="absolute inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
+
+                <div className="relative p-4 flex flex-col items-center">
+                    <p className="text-[22px] text-black font-bold">Crear Cuenta</p>
+                    <p className="text-gray-500! text-sm mb-4! font-normal text-center">Crea tu portafolio digital de proyectos de software</p>
 
 
-                    <AuthInput label="Nombre" placeholder="Tu nombre" type="text" value={nombre} onChange={setNombre} />
-                    {errors.nombre && <p className="text-red-500 text-[10px] w-full -mt-3 mb-3">{errors.nombre}</p>}
+                    <AuthInput
+                        label="Nombre"
+                        placeholder="Tu nombre"
+                        type="text"
+                        value={nombre}
+                        onChange={setNombre}
+                        error={errors.nombre}
+                    />
 
-                    <AuthInput label="Apellido" placeholder="Tu apellido" type="text" value={apellido} onChange={setApellido} />
-                    {errors.apellido && <p className="text-red-500 text-[10px] w-full -mt-3 mb-3">{errors.apellido}</p>}
+                    <AuthInput
+                        label="Apellido"
+                        placeholder="Tu apellido"
+                        type="text"
+                        value={apellido}
+                        onChange={setApellido}
+                        error={errors.apellido}
+                    />
 
-                    <AuthInput label="Correo" placeholder="tu@correo.com" type="email" value={correo} onChange={setCorreo} />
-                    {errors.correo && <p className="text-red-500 text-[10px] w-full -mt-3 mb-3">{errors.correo}</p>}
+                    <AuthInput
+                        label="Correo"
+                        placeholder="tu@correo.com"
+                        type="email"
+                        value={correo}
+                        onChange={setCorreo}
+                        error={errors.correo}
+                    />
 
-                    <AuthInput label="Contraseña" placeholder="Tu password" type="password" value={password} onChange={setPassword} />
-                    {errors.password && <p className="text-red-500 text-[10px] w-full -mt-3 mb-3">{errors.password}</p>}
+                    <AuthInput
+                        label="Contraseña"
+                        placeholder="Tu password"
+                        type="password"
+                        value={password}
+                        onChange={setPassword}
+                        error={errors.password}
+                    />
 
-                    <AuthInput label="Confirmar Contraseña" placeholder="Repite tu password" type="password" value={password_confirmation} onChange={setPasswordConfirmation} />
-                    {errors.password_confirmation && <p className="text-red-500 text-[10px] w-full -mt-3 mb-3">{errors.password_confirmation}</p>}
+                    <AuthInput
+                        label="Confirmar Contraseña"
+                        placeholder="Repite tu password"
+                        type="password"
+                        value={password_confirmation}
+                        onChange={setPasswordConfirmation}
+                        error={errors.password_confirmation}
+                    />
 
                     {apiError && <p className="text-red-500 text-xs w-full text-center my-4">{apiError}</p>}
 
-                    <div className="w-full mt-6">
+                    <div className="w-full mt-2">
                         <AuthButton text={loading ? 'Creando cuenta...' : 'Ingresar'} onClick={handleRegister} />
                     </div>
 
-                    <p className="mt-8 text-sm text-gray-600 font-medium">
+                    <p className="mt-6! text-sm text-gray-600 font-medium">
                         ¿Ya tienes cuenta?{' '}
-                        <Link to="/login" className="font-bold text-blue-900 hover:text-blue-700">
+                        <Link to="/auth/Login" className="font-bold text-blue-800 hover:text-blue-900">
                             Inicia sesión
                         </Link>
                     </p>
                 </div>
             </div>
 
-            <footer className="mt-12">
-                <p className="text-gray-400 text-sm font-medium">Sistema Generador de Portafolios Digitales</p>
+            <footer className="mt-8">
+                <p className="text-gray-600! text-sm font-normal">Sistema Generador de Portafolios Digitales</p>
             </footer>
         </div>
     );
