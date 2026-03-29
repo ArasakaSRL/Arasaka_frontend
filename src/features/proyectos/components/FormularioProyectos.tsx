@@ -28,14 +28,14 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
       e.preventDefault();
         try {
     const payload = {
-      id_portafolio: "b7a37adf-3fd9-498c-a855-4dd97cee53b2",
+      id_portafolio: "7c8c45d6-1037-481e-8ea3-4fb5bea6e81a",
       nombre: formularioData.title,
-      descripcion: formularioData.descripcion || null,
+      descripcion: formularioData.descripcion || undefined,
       fecha_inicio: formularioData.startDate,
-      fecha_fin: formularioData.endDate || null,
+      fecha_fin: formularioData.endDate || undefined,
       tecnologias: tecnologias,
-      url_proyecto: formularioData.projectUrl || null,
-      url_repositorio: formularioData.githubUrl || null,
+      url_proyecto: formularioData.projectUrl || undefined,
+      url_repositorio: formularioData.githubUrl || undefined,
     };
 
     const res = await crearProyecto(payload);
