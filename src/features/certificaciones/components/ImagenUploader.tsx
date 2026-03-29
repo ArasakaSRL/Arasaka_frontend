@@ -31,6 +31,7 @@ export function ImagenUploader() {
         image={preview}
         rotation={rotation}
         showCrop={showCrop}
+        onCloseCrop={() => setShowCrop(false)}
       />
 
       <Toolbar
