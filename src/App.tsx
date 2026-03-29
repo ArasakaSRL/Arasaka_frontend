@@ -4,8 +4,10 @@ import Home from './pages/Home'
 import About from './pages/About'
 import { Link } from 'react-router-dom'
 import { Certificaciones } from './features/certificaciones/page/Certificaciones'
-
+import { useState } from 'react'
 export function App() {
+
+
   return (
     <>
     <nav style={{ padding: '20px', borderBottom: '1px solid var(--border)', marginBottom: '20px' }}>
@@ -18,7 +20,6 @@ export function App() {
         </li>
       </ul>
     </nav>
-
     <Routes>
 
       <Route element={<MainLayout />}>
