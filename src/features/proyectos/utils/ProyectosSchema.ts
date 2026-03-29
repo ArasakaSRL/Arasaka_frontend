@@ -1,0 +1,44 @@
+import { z } from "zod";
+
+export const ProyectoSchema = z
+  .object({
+    titulo:z
+      .string()
+      .min(5, "El título es muy corto")
+      .max(35, "Has alcanzado el límite de caracteres")
+      .regex(/^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s-]+$/, "El título solo permite letras, números y guiones"),  
+
+    descripcion: z
+      .string()
+      .max(160, "La descripción no puede exceder los 160 caracteres")
+      .transform((val) => val.replace(/<[^>]*>?/gm, "")),
+    
+    fechaInicio: z
+      .string()
+      .min(1, "Campo obligatorio"),
+
+    fechaFin: z
+      .string()
+      .min(1, "Campo obligatorio"),
+
+    projectUrl: z
+      .string()
+      .optional()
+      .refine((val) => !val || val.startsWith("https://"), {
+        message: "Formato de enlace inválido",
+      }),
+
+    githubUrl: z
+      .string()
+      .optional()
+      .refine((val) => !val || val.startsWith("https://"), {
+        message: "Formato de enlace inválido",
+      }),
+  })
+  .refine((data) => {
+    if (!data.fechaInicio || !data.fechaFin) return true;
+    return data.fechaFin >= data.fechaInicio;
+  }, {
+    message: "La fecha de finalización no puede ser previa al inicio",
+    path: ["fechaFin"],
+  });
