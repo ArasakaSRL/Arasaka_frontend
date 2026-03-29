@@ -17,14 +17,14 @@ export function Certificaciones() {
 
         <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
 
-          <h2 className="text-md font-semibold mb-4">
+          <h2 className="text-lg font-semibold mb-6 text-left">
             Subir certificación
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div className="flex gap-10 items-start">
 
             {/* 🧾 FORMULARIO */}
-            <div className="flex flex-col gap-5">
+            <div className="w-[280px] flex flex-col gap-4">
 
               <InputCertificaciones
                 titulo="Categoría"
@@ -49,12 +49,8 @@ export function Certificaciones() {
             </div>
 
             {/* 🖼 IMAGEN */}
-            <div className="flex flex-col gap-3">
-              <label className="text-sm text-gray-600">
-                Subir nueva imagen
-              </label>
-
-              <div className="flex justify-center">
+            <div className="flex-1">
+              <div className="w-full h-[260px]">
                 <ImagenUploader />
               </div>
             </div>

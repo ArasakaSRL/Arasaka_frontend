@@ -4,7 +4,6 @@ import Home from './pages/Home'
 import About from './pages/About'
 import { Link } from 'react-router-dom'
 import { Certificaciones } from './features/certificaciones/page/Certificaciones'
-import { useState } from 'react'
 export function App() {
 
 

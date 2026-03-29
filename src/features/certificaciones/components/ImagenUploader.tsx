@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dropzone } from "./ImagenUploader/Dropzone";
 import { Toolbar } from "./ImagenUploader/Toolbar";
-import { ImagenPreview } from "./ImagenUploader/ImagenPreview";
 import { EditorInline } from "./ImagenUploader/EditorInline";
-
 
 export function ImagenUploader() {
   const [file, setFile] = useState<File | null>(null);
@@ -23,18 +21,23 @@ export function ImagenUploader() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  if (!preview) {
+    return <Dropzone onFileSelect={setFile} />;
+  }
+
   return (
-    <div className="flex justify-center p-8">
-      {!preview ? (
-      <Dropzone onFileSelect={setFile} />
-    ) : (
+    <div className="flex gap-4">
       <EditorInline
         image={preview}
         rotation={rotation}
+        showCrop={showCrop}
+      />
+
+      <Toolbar
         onRotate={() => setRotation((r) => r + 90)}
         onDelete={() => setFile(null)}
+        onCrop={() => setShowCrop((c) => !c)}
       />
-    )}
     </div>
   );
 }

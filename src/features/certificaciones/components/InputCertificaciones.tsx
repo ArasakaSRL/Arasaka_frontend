@@ -22,9 +22,9 @@ export function InputCertificaciones({
   };
 
   return (
-    <section className="w-full flex flex-col gap-1">
-
-      {/* 🔥 Header: título + contador */}
+    <section className="w-60 flex flex-col gap-1">
+      
+      {/* Header */}
       <div className="flex justify-between items-center">
         <label className="text-sm font-semibold text-gray-700">
           {titulo}
@@ -41,7 +41,7 @@ export function InputCertificaciones({
         </span>
       </div>
 
-      {/* 🧾 Input */}
+      {/* Input */}
       <textarea
         value={value}
         onChange={handleChange}

@@ -55,12 +55,6 @@ export default function About() {
 
       <p>Esta es una página adicional para probar React Router.</p>
 
-      <InputCertificaciones
-        tamMax={20}
-        placeHolder=""
-        height={40}
-      />
-
       <CertificadosGrid certificados={certificadosMock} />
     </section>
   );
