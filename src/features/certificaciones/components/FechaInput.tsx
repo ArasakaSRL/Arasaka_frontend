@@ -1,6 +1,10 @@
 import { useRef, useState } from "react";
 
-export function FechaInput() {
+interface Props {
+  titulo: string;
+}
+
+export function FechaInput({ titulo }: Props) {
   const [dia, setDia] = useState("");
   const [mes, setMes] = useState("");
   const [anio, setAnio] = useState("");
@@ -8,7 +12,6 @@ export function FechaInput() {
   const mesRef = useRef<HTMLInputElement>(null);
   const anioRef = useRef<HTMLInputElement>(null);
 
-  // Validar números
   const onlyNumbers = (value: string) => value.replace(/\D/g, "");
 
   const handleDia = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +37,6 @@ export function FechaInput() {
     setAnio(value);
   };
 
-  // Validación de fecha
   const isFechaValida = () => {
     if (dia.length !== 2 || mes.length !== 2 || anio.length !== 4)
       return true;
@@ -46,32 +48,53 @@ export function FechaInput() {
   };
 
   return (
-    <div className="flex gap-2">
-      <input
-        value={dia}
-        onChange={handleDia}
-        placeholder="dd"
-        className="w-16 text-center border rounded-lg p-2"
-      />
+    <div className="w-full flex flex-col gap-1">
 
-      <input
-        ref={mesRef}
-        value={mes}
-        onChange={handleMes}
-        placeholder="mm"
-        className="w-16 text-center border rounded-lg p-2"
-      />
+      {/* 🔥 Título */}
+      <label className="text-sm font-semibold text-gray-700 block text-left w-full">
+        {titulo}
+      </label>
 
-      <input
-        ref={anioRef}
-        value={anio}
-        onChange={handleAnio}
-        placeholder="aaaa"
-        className="w-24 text-center border rounded-lg p-2"
-      />
+      {/* 📅 Inputs */}
+      <div className="flex gap-2 items-center">
 
+        <input
+          value={dia}
+          onChange={handleDia}
+          placeholder="dd"
+          className="
+            w-16 text-center border border-gray-300 rounded-md p-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+          "
+        />
+
+        <input
+          ref={mesRef}
+          value={mes}
+          onChange={handleMes}
+          placeholder="mm"
+          className="
+            w-16 text-center border border-gray-300 rounded-md p-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+          "
+        />
+
+        <input
+          ref={anioRef}
+          value={anio}
+          onChange={handleAnio}
+          placeholder="aaaa"
+          className="
+            w-24 text-center border border-gray-300 rounded-md p-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+          "
+        />
+
+      </div>
+
+      {/* ❗ Error */}
       {!isFechaValida() && (
-        <span className="text-red-500 text-sm">
+        <span className="text-red-500 text-xs mt-1">
           Fecha inválida
         </span>
       )}

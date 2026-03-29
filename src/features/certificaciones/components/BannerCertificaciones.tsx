@@ -1,6 +1,10 @@
 import { Boton } from "../../../components/ui/Boton"
 
-export const Banner = () => {
+type Props = {
+  onOpenModal: () => void;
+};
+
+export const Banner = ({ onOpenModal }: Props) => {
   return (
     <div className="
       w-full rounded-xl
@@ -23,7 +27,7 @@ export const Banner = () => {
       </h1>
 
       <div className="w-full sm:w-auto">
-        <Boton>
+        <Boton onClick={onOpenModal}>
           Subir Certificación
         </Boton>
       </div>

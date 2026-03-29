@@ -11,24 +11,35 @@ export function Modal({ isOpen, onClose, children }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      
+
+      {/* 🌑 Overlay suave */}
       <div
-        className="
-          absolute inset-0 
-          bg-black/50 backdrop-blur-sm
-        "
+        className="fixed inset-0 bg-black/30 backdrop-blur-md"
         onClick={onClose}
       />
 
+      {/* 📦 Contenido */}
       <div
         className="
           relative z-10
-          w-[90%] max-w-lg
+          w-[90%] max-w-4xl
+          h-auto
           bg-white rounded-xl shadow-xl
           p-6
-          animate-fadeIn
         "
       >
+        {/* ❌ Botón cerrar */}
+        <button
+          onClick={onClose}
+          className="
+            absolute top-3 right-3
+            text-gray-500 hover:text-gray-800
+            text-xl font-bold
+          "
+        >
+          ✕
+        </button>
+
         {children}
       </div>
     </div>
