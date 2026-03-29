@@ -3,6 +3,7 @@ import { MainLayout } from './layout/MainLayout'
 import Home from './pages/Home'
 import About from './pages/About'
 import { Link } from 'react-router-dom'
+import { Hitos } from './features/hitos/page/Hitos'
 
 export function App() {
   return (
@@ -24,7 +25,7 @@ export function App() {
 
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-
+        <Route path='/hitos' element={<Hitos/>}/>
       </Route>
 
     </Routes>
