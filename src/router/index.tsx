@@ -1,11 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
-import App from '../App';
+import { App } from '../App';
 
 const Home = lazy(() => import('../pages/Home'));
 const About = lazy(() => import('../pages/About'));
 const NotFound = lazy(() => import('../pages/NotFound'));
-const PageProyectos = lazy(() => import('../features/proyectos/pages/PageProyectos'));
 
 // eslint-disable-next-line react-refresh/only-export-components
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -24,8 +23,7 @@ export const router = createBrowserRouter([
         index: true, 
         element: (
           <SuspenseWrapper>
-            {/* <Home /> */}
-            <PageProyectos />
+            <Home />
           </SuspenseWrapper>
         ),
       },
