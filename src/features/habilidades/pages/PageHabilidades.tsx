@@ -16,7 +16,7 @@ return(
           </div>
               <button
               onClick={() => setModalAbierto(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 text-white hover:bg-[#27496E]">
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 text-white hover:bg-secondary-500">
                 <CirclePlus />
                 Añadir Habilidad
               </button>
