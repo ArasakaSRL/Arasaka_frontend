@@ -17,7 +17,7 @@ export function Certificaciones() {
 
         <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
 
-          <h2 className="text-lg font-semibold mb-6 text-left">
+          <h2 className="text-lg font-semibold mb-6 text-left text-gray-700">
             Subir certificación
           </h2>
 

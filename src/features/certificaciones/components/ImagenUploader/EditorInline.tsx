@@ -30,7 +30,7 @@ export function EditorInline({ image, rotation, showCrop }: Props) {
   }, [image]);
 
   return (
-    <div className="w-full h-full max-h-[350px] bg-black flex items-center justify-center overflow-hidden">
+    <div className="w-full h-full max-h-[350px] bg-dark-500 flex items-center justify-center overflow-hidden">
       
       <div
         className={`
@@ -40,7 +40,7 @@ export function EditorInline({ image, rotation, showCrop }: Props) {
         `}
       >
       {showCrop ? (
-        <div className="w-full h-[300px] flex items-center justify-center bg-black overflow-hidden">
+        <div className="w-full h-[300px] flex items-center justify-center bg-[#1E1E1E] overflow-hidden">
           
           <ReactCrop
             crop={crop}
