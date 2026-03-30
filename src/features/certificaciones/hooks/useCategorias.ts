@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { Categoria } from '../types';
 import { getCategorias } from '../apis/categoriasApi';
 
-// Tus datos de prueba estructurados según el tipo de tu API
+// Tus datos de prueba 
 const categoriasDePrueba: Categoria[] = [
   {
     id: "test-1",
@@ -41,7 +41,7 @@ export function useCategorias() {
         setIsLoading(true);
         const data = await getCategorias();
         
-        // Si la API responde pero está vacía, también podemos usar el fallback si lo deseas
+        // Si la API responde pero está vacía
         if (data && data.length > 0) {
           setCategorias(data);
           setIsUsingFallback(false);

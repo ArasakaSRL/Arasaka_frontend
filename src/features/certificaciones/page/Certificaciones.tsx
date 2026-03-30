@@ -135,7 +135,7 @@ export function Certificaciones() {
           )}
         </h2>
         
-        {/*Manejo correcto del estado de carga y de lista vacía */}
+        {/*Manejo del estado de carga y de lista vacía */}
         {isLoadingCerts ? (
           <div className="flex justify-center items-center h-40 text-gray-400">
             Cargando certificaciones...
