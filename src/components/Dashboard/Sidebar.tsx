@@ -2,20 +2,19 @@ import {
     User, Briefcase, Award, GraduationCap,
     Trophy, BarChart3, Settings, LogOut
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/api/auth';
 import { useState } from 'react';
 
 const menuItems = [
-    { icon: User, label: 'Perfil Personal', active: true },
-    { icon: Briefcase, label: 'Proyectos' },
-    { icon: Award, label: 'Habilidades' },
-    { icon: GraduationCap, label: 'Experiencia' },
-    { icon: Trophy, label: 'Logros' },
-    { icon: BarChart3, label: 'Estadísticas' },
-    { icon: Settings, label: 'Configuración' },
+    { icon: User, label: 'Perfil Personal', path: '/Dashboard/perfilPersonal/PerfilPersonal' },
+    { icon: Briefcase, label: 'Proyectos', path: '/Dashboard/proyectos/Proyectos' },
+    { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades' },
+    { icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' },
+    { icon: Trophy, label: 'Logros', path: '/Dashboard/logros' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
+    { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' },
 ];
-
 interface SidebarProps {
     isOpen: boolean
     onClose: () => void
@@ -23,7 +22,13 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
+
+    const handleNavigation = (path: string) => {
+        navigate(path);
+        onClose(); // Cierra el sidebar al hacer clic (útil en móviles)
+    };
 
     const handleLogout = async () => {
         if (isLoading) return;
@@ -54,7 +59,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     {menuItems.map((item) => (
                         <button
                             key={item.label}
-                            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${item.active
+                            onClick={() => handleNavigation(item.path)}
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
+                                 ${item.path === location.pathname
                                     ? 'bg-[#1e2a5e] text-white'
                                     : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
                                 }`}
@@ -66,12 +73,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </nav>
 
                 <div className="px-3 py-4 border-t border-gray-100">
-                    <button 
+                    <button
                         onClick={handleLogout}
                         disabled={isLoading}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
-                            ${isLoading 
-                                ? 'bg-gray-100 text-black cursor-not-allowed' 
+                            ${isLoading
+                                ? 'bg-gray-100 text-black cursor-not-allowed'
                                 : 'bg-red-600 text-black '
                             }`}
                     >

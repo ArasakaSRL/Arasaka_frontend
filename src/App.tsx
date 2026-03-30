@@ -5,6 +5,7 @@ import About from './pages/About'
 import PerfilPersonal from './pages/Dashboard/perfilPersonal/PerfilPersonal'
 import Login from './pages/auth/Login'
 import Register from '@/pages/auth/Register'
+import Proyectos from './pages/Dashboard/proyectos/Proyectos'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/Dashboard/perfilPersonal/PerfilPersonal" element={<PerfilPersonal />} />
         <Route path="/auth/Login" element={<Login />} />
         <Route path="/auth/Register" element={<Register />} />
+        <Route path="/Dashboard/proyectos/Proyectos" element={<Proyectos />} />
       </Route>
     </Routes>
   )
