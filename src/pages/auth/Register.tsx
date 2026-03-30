@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
@@ -8,19 +8,53 @@ import { AuthButton } from '@/components/auth/AuthButton';
 import { registerRequest } from '@/api/auth';
 
 const registerSchema = z.object({
-    nombre: z.string().min(2, 'El nombre es muy corto'),
-    apellido: z.string().min(2, 'El apellido es muy corto'),
-    correo: z.string().email('Correo inválido'),
-    password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+
+    nombre: z
+        .string()
+        .trim()
+        .min(5, 'El nombre es requerido')
+        .max(15, 'Máximo 15 caracteres')
+        .regex(/^[A-Za-z\s]+$/, 'El nombre solo puede contener letras y espacios'),
+
+    apellido: z
+        .string()
+        .trim()
+        .min(5, 'El apellido es requerido')
+        .max(15, 'Máximo 15 caracteres')
+        .regex(/^[A-Za-z\s]+$/, 'El apellido solo puede contener letras y espacios'),
+
+    correo: z
+        .string()
+        .trim()
+        .min(8, 'Minimo 8 caracteres')
+        .max(20, 'Máximo 20 caracteres')
+        .email('Ingresa un formato de correo válido'),
+
+    password: z
+        .string()
+        .min(8, 'la contraseña debe tener 8 caracteres')
+        .max(8, 'Máximo 8 caracteres permitidos')
+        .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
+        .regex(/[a-z]/, 'Debe contener al menos una minúscula')
+        .regex(/[0-9]/, 'Debe contener al menos un número')
+        .regex(/[^A-Za-z0-9]/, 'Debe contener un carácter especial'),
+
     password_confirmation: z.string()
-}).refine((data) => data.password === data.password_confirmation, {
-    message: "Las contraseñas no coinciden",
-    path: ["password_confirmation"],
+
+}).refine(data => data.password === data.password_confirmation, {
+    message: 'Las contraseñas no coinciden',
+    path: ['password_confirmation']
 });
 
 type FieldErrors = Partial<Record<'nombre' | 'apellido' | 'correo' | 'password' | 'password_confirmation', string>>;
 
 export default function Register() {
+
+    const nombreRef = useRef<HTMLInputElement>(null);
+    const apellidoRef = useRef<HTMLInputElement>(null);
+    const correoRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+
     const navigate = useNavigate();
 
     // Estados para los nuevos campos
@@ -53,11 +87,26 @@ export default function Register() {
 
         if (!result.success) {
             const fieldErrors: FieldErrors = {};
+
+            let firstErrorKey: string | null = null;
+
             for (const issue of result.error.issues) {
+
                 const key = issue.path[0] as keyof FieldErrors;
-                fieldErrors[key] = issue.message;
+
+                if (!fieldErrors[key])
+                    fieldErrors[key] = issue.message;
+
+                if (!firstErrorKey)
+                    firstErrorKey = key;
             }
+
             setErrors(fieldErrors);
+
+            if (firstErrorKey === 'nombre') nombreRef.current?.focus();
+            else if (firstErrorKey === 'apellido') apellidoRef.current?.focus();
+            else if (firstErrorKey === 'correo') correoRef.current?.focus();
+            else if (firstErrorKey === 'password') passwordRef.current?.focus();
             return;
         }
 
@@ -73,6 +122,46 @@ export default function Register() {
             setLoading(false);
         }
     }
+
+    //limpiar caracteres mientras escribe
+    const handleNombreChange = (val: string) => {
+        const limpio = val.replace(/[^A-Za-z\s]/g, '').slice(0, 15);
+        setNombre(limpio);
+        setErrors(prev => ({ ...prev, nombre: undefined }));
+    };
+
+    const handleApellidoChange = (val: string) => {
+        const limpio = val.replace(/[^A-Za-z\s]/g, '').slice(0, 15);
+        setApellido(limpio);
+        setErrors(prev => ({ ...prev, apellido: undefined }));
+    };
+
+    const handleCorreoChange = (val: string) => {
+        const limpio = val.trimStart().slice(0, 20);
+        setCorreo(limpio);
+        setErrors(prev => ({ ...prev, correo: undefined }));
+    };
+
+    // Limitar caracteres y validar tipos (Input Handling)
+    const handlePasswordChange = (val: string) => {
+
+        if (val.length <= 8) {
+
+            setPassword(val);
+
+            setErrors(prev => ({ ...prev, password: undefined }));
+
+        }
+    };
+
+    //boton deshabilitado si hay errores o campos vacíos
+    /**const isFormInvalid =
+           loading ||
+           !nombre ||
+           !apellido ||
+           !correo ||
+           !password ||
+           Object.keys(errors).length > 0;*/
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 py-12">
@@ -92,41 +181,56 @@ export default function Register() {
                     <p className="text-[22px] text-black font-bold">Crear Cuenta</p>
                     <p className="text-gray-500! text-sm mb-4! font-normal text-center">Crea tu portafolio digital de proyectos de software</p>
 
+                    <p className="text-xs text-gray-500! mb-2! text-left w-full">
+                        Los campos marcados con <span className="text-red-500">*</span> son obligatorios
+                    </p>
 
                     <AuthInput
+                        ref={nombreRef}
                         label="Nombre"
                         placeholder="Tu nombre"
                         type="text"
                         value={nombre}
-                        onChange={setNombre}
+                        onChange={handleNombreChange}
                         error={errors.nombre}
+                        maxLength={15}
+                        required
                     />
 
                     <AuthInput
+                        ref={apellidoRef}
                         label="Apellido"
                         placeholder="Tu apellido"
                         type="text"
                         value={apellido}
-                        onChange={setApellido}
+                        onChange={handleApellidoChange}
                         error={errors.apellido}
+                        maxLength={15}
+                        required
                     />
 
                     <AuthInput
+                        ref={correoRef}
                         label="Correo"
                         placeholder="tu@correo.com"
                         type="email"
                         value={correo}
-                        onChange={setCorreo}
+                        onChange={handleCorreoChange}
                         error={errors.correo}
+                        maxLength={20}
+                        required
                     />
 
                     <AuthInput
+                        ref={passwordRef}
                         label="Contraseña"
                         placeholder="Tu password"
                         type="password"
                         value={password}
-                        onChange={setPassword}
+                        onChange={handlePasswordChange}
                         error={errors.password}
+                        maxLength={8}
+                        required
                     />
 
                     <AuthInput
@@ -136,12 +240,16 @@ export default function Register() {
                         value={password_confirmation}
                         onChange={setPasswordConfirmation}
                         error={errors.password_confirmation}
+                        required
                     />
 
                     {apiError && <p className="text-red-500 text-xs w-full text-center my-4">{apiError}</p>}
 
                     <div className="w-full mt-2">
-                        <AuthButton text={loading ? 'Creando cuenta...' : 'Ingresar'} onClick={handleRegister} />
+                        <AuthButton
+                            text={loading ? 'Creando cuenta...' : 'Ingresar'}
+                            onClick={handleRegister}
+                        />
                     </div>
 
                     <p className="mt-6! text-sm text-gray-600 font-medium">

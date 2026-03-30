@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
@@ -8,19 +8,49 @@ import { AuthButton } from '@/components/auth/AuthButton';
 import { loginRequest } from '@/api/auth';
 
 const loginSchema = z.object({
-    correo: z.email('Correo inválido'),
-    password: z.string().min(1, 'La contraseña es requerida'),
+    correo: z
+        .string()
+        .trim()
+        .min(8, 'El correo no es valido')
+        .max(50, 'El correo es demasiado largo')
+        .email('Correo inválido'),
+
+    password: z
+        .string()
+        .min(8, 'la contraseña debe tener 8 caracteres')
+        .max(8, 'Máximo 8 caracteres permitidos')
+        .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
+        .regex(/[a-z]/, 'Debe contener al menos una minúscula')
+        .regex(/[0-9]/, 'Debe contener al menos un número')
+        .regex(/[^A-Za-z0-9]/, 'Debe contener un carácter especial'),
 });
 
 type FieldErrors = Partial<Record<'correo' | 'password', string>>;
 
 export default function Login() {
+
+    // Referencias para el foco (Criterio: Posicionar foco en primer error)
+    const correoRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+
     const navigate = useNavigate();
-    const [correo, setCorrecto] = useState('');
+    const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<FieldErrors>({});
     const [apiError, setApiError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    // Criterio: Limitar caracteres y validar tipos (Input Handling)
+    const handleCorreoChange = (val: string) => {
+        const limpio = val.trimStart().slice(0, 50);
+        setCorreo(limpio);
+    };
+
+    const handlePasswordChange = (val: string) => {
+        if (val.length <= 8) {
+            setPassword(val);
+        }
+    };
 
     /**
      * handleLogin: manejador del evento de inicio de sesión.
@@ -31,13 +61,22 @@ export default function Login() {
     async function handleLogin() {
         setApiError(null);
         const result = loginSchema.safeParse({ correo, password });
+
         if (!result.success) {
             const fieldErrors: FieldErrors = {};
+            let firstErrorKey: string | null = null;
+
             for (const issue of result.error.issues) {
                 const key = issue.path[0] as keyof FieldErrors;
-                fieldErrors[key] = issue.message;
+                if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+                if (!firstErrorKey) firstErrorKey = key;
             }
             setErrors(fieldErrors);
+
+            // Criterio: Posiciona el foco del teclado en el primer campo con error
+            if (firstErrorKey === 'correo') correoRef.current?.focus();
+            else if (firstErrorKey === 'password') passwordRef.current?.focus();
+
             return;
         }
         setErrors({});
@@ -74,22 +113,32 @@ export default function Login() {
                     <p className="text-black text-[22px] font-bold mb-1">Iniciar Sesión</p>
                     <p className="text-gray-500! font-normal text-[14px] mb-4!">Accede a tu portafolio digital profesional</p>
 
+                    <p className="text-xs text-gray-500! mb-2! text-left w-full">
+                        Los campos marcados con <span className="text-red-500">*</span> son obligatorios
+                    </p>
+
                     <AuthInput
+                        ref={correoRef}
                         label="Correo"
                         placeholder="tu@correo.com"
                         type="email"
                         value={correo}
-                        onChange={setCorrecto}
+                        onChange={handleCorreoChange}
                         error={errors.correo}
+                        maxLength={50}
+                        required
                     />
 
                     <AuthInput
+                        ref={passwordRef}
                         label="Contraseña"
                         placeholder="tu password"
                         type="password"
                         value={password}
-                        onChange={setPassword}
+                        onChange={handlePasswordChange}
                         error={errors.password}
+                        maxLength={8}
+                        required
                     />
 
                     {apiError && (
