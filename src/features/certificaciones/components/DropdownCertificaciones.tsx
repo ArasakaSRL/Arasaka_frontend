@@ -9,7 +9,9 @@ interface Props {
   titulo: string;
   opciones: Option[];
   placeholder?: string;
-  tamMax?: number; // opcional si quieres limitar selección tipo texto
+  tamMax?: number; 
+  value?: Option | null;             
+  onChange?: (option: Option) => void; 
 }
 
 export function DropdownCertificaciones({
@@ -17,12 +19,14 @@ export function DropdownCertificaciones({
   opciones,
   placeholder = "Selecciona una opción",
   tamMax,
+  value,      
+  onChange,  
 }: Props) {
+
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Option | null>(null);
 
   const handleSelect = (option: Option) => {
-    setSelected(option);
+    if (onChange) onChange(option); // Avisamos al padre
     setOpen(false);
   };
 
@@ -37,7 +41,7 @@ export function DropdownCertificaciones({
 
         {tamMax && (
           <span className="text-xs text-gray-400">
-            {selected ? selected.label.length : 0}/{tamMax}
+            {value ? value.label.length : 0}/{tamMax}
           </span>
         )}
       </div>
@@ -53,8 +57,8 @@ export function DropdownCertificaciones({
           focus-within:ring-2 focus-within:ring-blue-500
         "
       >
-        <span className={`${selected ? "text-gray-800" : "text-gray-400"}`}>
-          {selected ? selected.label : placeholder}
+        <span className={`${value ? "text-gray-800" : "text-gray-400"}`}>
+          {value ? value.label : placeholder}
         </span>
 
         <svg

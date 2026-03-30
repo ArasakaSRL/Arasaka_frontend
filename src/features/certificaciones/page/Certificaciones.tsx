@@ -13,8 +13,14 @@ import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 export function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   
-  // Extraemos las categorías, estado de carga y si estamos en modo prueba
+  // Extraemos las categorías  modo prueba
   const { categorias, isLoading, isUsingFallback } = useCategorias();
+
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
+  const opcionesCategorias = categorias.map((cat) => ({
+    label: cat.nombre,
+    value: cat.id,
+  }));
 
   return (
     <section>
@@ -31,13 +37,11 @@ export function Certificaciones() {
             {/* FORMULARIO */}
             <div className="w-[280px] flex flex-col gap-4">
               <DropdownCertificaciones
-                titulo="Certificación"
-                placeholder="Categoria"
-                opciones={[
-                  { label: "AWS", value: "aws" },
-                  { label: "Azure", value: "azure" },
-                  { label: "Google Cloud", value: "gcp" },
-                ]}
+                titulo="Categoría"
+                placeholder={isLoading ? "Cargando categorías..." : "Categorias"}
+                opciones={opcionesCategorias}
+                value={categoriaSeleccionada} // <-- Le pasas el valor actual
+                onChange={(opcion) => setCategoriaSeleccionada(opcion)} // <-- Actualizas el estado cuando el usuario elige algo
               />
               <InputCertificaciones titulo="Título" tamMax={100} height={40} />
               <FechaInput titulo="Fecha de emisión" />
