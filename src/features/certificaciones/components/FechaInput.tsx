@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { parse, isValid, isAfter } from "date-fns";
 
 interface Props {
   titulo: string;
@@ -38,24 +39,32 @@ export function FechaInput({ titulo }: Props) {
   };
 
   const isFechaValida = () => {
-    if (dia.length !== 2 || mes.length !== 2 || anio.length !== 4)
-      return true;
+    if (dia.length !== 2 || mes.length !== 2 || anio.length !== 4) {
+      return true; // no validar aún
+    }
 
-    const fecha = new Date(`${anio}-${mes}-${dia}`);
+    const fechaStr = `${dia}/${mes}/${anio}`;
+    const fecha = parse(fechaStr, "dd/MM/yyyy", new Date());
     const hoy = new Date();
 
-    return fecha <= hoy;
+    //Fecha no existe (ej: 31/02/2024)
+    if (!isValid(fecha)) return false;
+
+    // Fecha futura
+    if (isAfter(fecha, hoy)) return false;
+
+    return true;
   };
 
   return (
     <div className="w-full flex flex-col gap-1">
 
-      {/* 🔥 Título */}
+      {/*Título */}
       <label className="text-sm font-semibold text-gray-700 block text-left w-full">
         {titulo}
       </label>
 
-      {/* 📅 Inputs */}
+      {/* Inputs */}
       <div className="flex gap-2 items-center">
 
         <input
@@ -92,7 +101,7 @@ export function FechaInput({ titulo }: Props) {
 
       </div>
 
-      {/* ❗ Error */}
+      {/* Error */}
       {!isFechaValida() && (
         <span className="text-red-500 text-xs mt-1">
           Fecha inválida
