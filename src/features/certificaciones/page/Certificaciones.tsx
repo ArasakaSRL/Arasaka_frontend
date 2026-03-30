@@ -7,7 +7,8 @@ import { ImagenUploader } from "../components/ImagenUploader";
 import { InputCertificaciones } from "../components/InputCertificaciones";
 import { FechaInput } from "../components/FechaInput";
 import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
-import { Carousel } from "../components/carruselCards/carrusel";
+import { Carousel } from "../components/carruselCards/Carrusel";
+import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 
 export function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
@@ -27,15 +28,23 @@ export function Certificaciones() {
           </h2>
 
           <div className="flex gap-10 items-start">
-            {/* 🧾 FORMULARIO */}
+            {/* FORMULARIO */}
             <div className="w-[280px] flex flex-col gap-4">
-              <InputCertificaciones titulo="Categoría" tamMax={20} height={40} />
+              <DropdownCertificaciones
+                titulo="Certificación"
+                placeholder="Categoria"
+                opciones={[
+                  { label: "AWS", value: "aws" },
+                  { label: "Azure", value: "azure" },
+                  { label: "Google Cloud", value: "gcp" },
+                ]}
+              />
               <InputCertificaciones titulo="Título" tamMax={100} height={40} />
               <FechaInput titulo="Fecha de emisión" />
               <InputCertificaciones titulo="Descripción" tamMax={300} height={80} />
             </div>
 
-            {/* 🖼 IMAGEN */}
+            {/* IMAGEN */}
             <div className="flex-1">
               <div className="w-full h-[260px]">
                 <ImagenUploader />
@@ -43,7 +52,7 @@ export function Certificaciones() {
             </div>
           </div>
 
-          {/* 🔘 BOTONES */}
+          {/* BOTONES */}
           <div className="mt-6 flex justify-end gap-3">
             <button
               onClick={() => setOpenModal(false)}
@@ -57,7 +66,7 @@ export function Certificaciones() {
           </div>
         </Modal>
 
-        {/* 📂 CATEGORÍAS */}
+        {/*  CATEGORÍAS */}
         <div>
           <h3 className="text-sm text-dark-500 font-medium-ui mb-3 text-left flex items-center gap-2">
             Categorías
