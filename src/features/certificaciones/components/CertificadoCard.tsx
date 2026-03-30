@@ -7,15 +7,19 @@ export type Certificado = {
 
 type Props = {
   cert: Certificado;
+  onClick: () => void;
 };
 
-export function CertificadoCard({ cert }: Props) {
+export function CertificadoCard({ cert, onClick  }: Props) {
   const isVertical = cert.orientacion === "vertical";
 
   return (
     <div
+      onClick={onClick}
       className={`
+        cursor-pointer
         rounded-xl overflow-hidden bg-white p-2 shadow-sm
+        hover:scale-105 transition
         ${isVertical ? "row-span-2 col-start-4" : ""}
       `}
     >
