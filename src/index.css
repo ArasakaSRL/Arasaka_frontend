@@ -110,6 +110,8 @@
   --text-h-xl: 32px;
   --text-h-2xl: 40px;
   --text-h-3xl: 48px;
+  --text-h-4xl: 96px;
+  --text-h-5xl: 128px;
 
    /* Line height por tamaño */
   --leading-xs: 1.33;
@@ -224,12 +226,12 @@ h1 {
   }
 }
 h2 {
-  font-size: 24px;
+  font-size: 32px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
-    font-size: 20px;
+    font-size: 48px;
   }
 }
 
@@ -239,7 +241,6 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   margin: 0;
-  color: var(--text-main);
 }
 
 code,
@@ -257,6 +258,24 @@ code {
   background: var(--code-bg);
 }
 
+/* Scroll moderno */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* gris claro */
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 .ReactCrop__crop-selection {
   border: 2px solid #3b82f6; /* azul Tailwind */
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); /* oscurece afuera */
@@ -270,4 +289,12 @@ code {
                     linear-gradient(to bottom, white 1px, transparent 1px);
   background-size: 33% 33%;
   opacity: 0.3;
+}
+/* global.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
