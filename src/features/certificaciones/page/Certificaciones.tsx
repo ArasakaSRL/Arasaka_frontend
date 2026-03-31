@@ -14,7 +14,7 @@ import { CertificadosGrid } from "../components/CertificadosGrid";
 
 const ID_PORTAFOLIO_ACTUAL = "cc38c98a-8edd-4145-bd6e-e8b81280cbf9";
 
-export function Certificaciones() {
+export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   const [filtroCategoriaId, setFiltroCategoriaId] = useState<string | null>(null);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
