@@ -11,7 +11,7 @@ const menuItems = [
     { icon: Briefcase, label: 'Proyectos', path: '/Dashboard/proyectos/Proyectos' },
     { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades/Habilidades' },
     { icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' },
-    { icon: Trophy, label: 'Logros', path: '/Dashboard/logros/Hitos' },
+    { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
     { icon: ShieldCheck, label:'Certificaciones', path:'/Dashboard/certificaciones/Certificaciones' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
     { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' }
