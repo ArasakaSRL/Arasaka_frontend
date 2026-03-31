@@ -123,12 +123,12 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
     <div className="bg-light-500 rounded-2xl shadow-xl w-full">
 
       <div className="px-6 pt-4 flex justify-between items-center">
-        <h2 className="text-base text-left font-semibold text-gray-800">
+        <h2 className="text-base text-left font-semibold text-primary-500">
           Nuevo Proyecto
         </h2>
         <button 
         onClick={cerrarForm}
-        className="text-primary-500 hover:text-secondary-500 transition-colors">
+        className="text-primary-500 hover:text-shadow-secondary-500 cursor-pointer transition-colors">
              <CircleX />
         </button>
       </div>
@@ -285,14 +285,14 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
           <button
             type="button"
             onClick={cerrarForm}
-            className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white"
+            className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white cursor-pointer"
           >
             Cancelar
           </button>
 
           <button
             type="submit"
-            className="text-sm px-4 py-2 rounded-md bg-primary-500 text-white hover:bg-secondary-500"
+            className="text-sm px-4 py-2 rounded-md bg-primary-500 text-white hover:bg-secondary-500 cursor-pointer"
           >
             Crear Proyecto
           </button>

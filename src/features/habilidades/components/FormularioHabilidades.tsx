@@ -98,23 +98,23 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
   return (
     <div className="bg-light-500 rounded-2xl w-full shadow-xl">
       <div className="justify-between flex px-6 pt-4 items-center">
-        <h2> Nueva Habilidad</h2>
+        <h2 className="text-base text-left font-semibold text-primary-500"> Nueva Habilidad</h2>
         <button
         onClick={closeModal}
-        className="text-primary-500 hover:text-secondary-500 transition-colors">
+        className="text-primary-500 hover:text-secondary-500 cursor-pointer transition-colors">
           <CircleX />
         </button>
       </div>
       <form onSubmit={handleSubmit} className="px-6 pb-5 space-y-4 text-left">
         <div className="space-y-0.5">
-          <label className="text-sm text-gray-700 font-medium">
+          <label className="text-sm text-primary-500 font-medium">
           Seleccione la categoria <span className="text-error-500">(*)</span>
           </label>
           <MenuDesplegable value={categoria} onChange={setCategoria} options={opcionesCategorias} placeholder="Seleccione categoría"/>
         </div>
         {categoriaSeleccionada === "Tecnica" && (
           <div className="space-y-1">
-            <label className="text-sm text-gray-700 font-medium">
+            <label className="text-sm text-primary-500 font-medium">
               Seleccione la habilidad <span className="text-error-500">*</span>
             </label>
 
@@ -128,7 +128,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
 
         {categoriaSeleccionada === "Blanda" && (
           <div className="space-y-1">
-            <label className="text-sm text-gray-700 font-medium">
+            <label className="text-sm text-primary-500 font-medium">
               Ingrese la habilidad <span className="text-error-500">*</span>
             </label>
 
@@ -141,7 +141,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
           </div>
         )}
         <div className="space-y-0.5">
-          <label className="text-sm text-gray-700 font-medium">
+          <label className="text-sm text-primary-500 font-medium">
           Nivel de dominio  <span className="text-error-500">(*)</span>
           </label>
           <MenuDesplegable value={nivel} onChange={(val) => setNivel(val as string)} options={opcionesNiveles}/>
@@ -151,12 +151,12 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
           <button
             type="button"
             onClick={closeModal}
-            className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white">
+            className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white cursor-pointer">
               Cancelar
           </button>
           <button
             type="submit"
-            className="text-sm px-4 py-2 rounded-md bg-primary-500 text-white hover:bg-secondary-500">
+            className="text-sm px-4 py-2 rounded-md bg-primary-500 text-white hover:bg-secondary-500 cursor-pointer">
               Crear Habilidad
           </button>
         </div>
