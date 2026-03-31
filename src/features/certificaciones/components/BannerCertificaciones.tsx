@@ -1,4 +1,5 @@
-import { Boton } from "../../../components/ui/Boton"
+import { Boton } from "@/components/ui/boton";
+
 
 type Props = {
   onOpenModal: () => void;
@@ -17,8 +18,8 @@ export const Banner = ({ onOpenModal }: Props) => {
       flex flex-col gap-4
     ">
       <h1 className="
-        text-lg
-        sm:text-xl
+        text-sm
+        sm:text-lg
         md:text-2xl
         lg:text-3xl
         font-semibold leading-tight

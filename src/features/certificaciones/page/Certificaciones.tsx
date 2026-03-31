@@ -129,10 +129,22 @@ export default function Certificaciones() {
         </div>
 
         {/*CERTIFICACIONES */}
-        <h2 className="text-center text-lg text-dark-500 tracking-widest font-semibold-ui mt-6 flex justify-center items-center gap-2">
+        <h2 className="
+          text-sm
+          sm:text-base
+          md:text-4xl
+          lg:text-5xl
+          text-dark-500
+          tracking-widest
+          font-semibold-ui
+          mt-6
+          flex justify-center items-center gap-2
+        ">
           CERTIFICACIONES
           {isUsingFallbackCerts && (
-            <span className="text-xs text-orange-500 font-normal tracking-normal">(Modo de prueba)</span>
+            <span className="text-xs text-orange-500 font-normal tracking-normal">
+              {/*(Modo de prueba)*/}
+            </span>
           )}
         </h2>
         
