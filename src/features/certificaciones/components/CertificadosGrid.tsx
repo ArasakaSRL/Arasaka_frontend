@@ -41,13 +41,23 @@ export function CertificadosGrid({ certificados }: { certificados: Certificado[]
   };
   return (
     <>
-      <div className="grid grid-cols-4 gap-4 auto-rows-[220px]">
+      <div className="
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        md:grid-cols-2
+        lg:grid-cols-4
+        gap-4
+        sm:auto-rows-[220px]
+      ">
         {certificadosOrdenados.map((cert, index) => (
-          <CertificadoCard
-            key={cert.id}
-            cert={cert}
-            onClick={() => setViewerIndex(index)}
-          />
+          <div className="min-w-[85%] sm:min-w-0">
+            <CertificadoCard
+              key={cert.id}
+              cert={cert}
+              onClick={() => setViewerIndex(index)}
+            />
+          </div>
         ))}
       </div>
 
