@@ -12,7 +12,7 @@ const menuItems = [
     { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades/Habilidades' },
     { icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' },
     { icon: Trophy, label: 'Logros', path: '/Dashboard/logros' },
-    { icon: ShieldCheck, label:'Certificaciones', path:'/Dashboard/Certificaciones' },
+    { icon: ShieldCheck, label:'Certificaciones', path:'/Dashboard/certificaciones/Certificaciones' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
     { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' }
 ];

@@ -11,6 +11,7 @@ import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
 import { Carousel } from "../components/carruselCards/Carrusel";
 import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 import { CertificadosGrid } from "../components/CertificadosGrid";
+import DashboardLayout from "@/layout/DashboardLayout";
 
 const ID_PORTAFOLIO_ACTUAL = "cc38c98a-8edd-4145-bd6e-e8b81280cbf9";
 
@@ -32,7 +33,7 @@ export default function Certificaciones() {
   }));
 
   return (
-    <section>
+    <DashboardLayout>
       <div className="p-1 space-y-6">
 
         <Banner onOpenModal={() => setOpenModal(true)} />
@@ -149,6 +150,6 @@ export default function Certificaciones() {
         )}
 
       </div>
-    </section>
+    </DashboardLayout>
   );
 }
