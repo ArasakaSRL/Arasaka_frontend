@@ -4,6 +4,7 @@ import DropdownCheckbox from './MenuTecnologias';
 import { obtenerTecnologia } from '../lib/ProyectosApi';
 import { crearProyecto } from '../lib/ProyectosApi';
 import { ProyectoSchema } from '../utils/ProyectosSchema';
+import { toast } from '../../../components/Alerta';
 
 interface FormularioProps {
     closeModal: () => void;
@@ -88,15 +89,14 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
           url_repositorio: formularioData.githubUrl || undefined,
         };
 
-        const res = await crearProyecto(payload);
-
-        console.log("CREADO:", res);
+        await crearProyecto(payload);
+        toast.success("Proyecto creado exitosamente!", 3000);
 
         resetForm();
         closeModal();
 
-      } catch (error) {
-        console.error("Error al crear proyecto", error);
+      } catch{
+        toast.error("Error al crear proyecto", 3000);
       }
     };
 
