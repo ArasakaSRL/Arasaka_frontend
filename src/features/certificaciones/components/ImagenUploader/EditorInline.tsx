@@ -1,5 +1,7 @@
+
 import { useEffect, useRef, useState } from "react";
 import { ReactCrop, type Crop, type PixelCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import { getCroppedImage } from "../../utils/cropImage";
 
 type Props = {
@@ -10,101 +12,149 @@ type Props = {
   saveTrigger: number;
 };
 
+// Generamos la imagen rotada.
+const getRotatedImage = async (imageSrc: string, rotation: number): Promise<string> => {
+  const normalizedRotation = ((rotation % 360) + 360) % 360;
+  if (normalizedRotation === 0) return imageSrc;
+
+  const image = new Image();
+  image.src = imageSrc;
+  await new Promise((resolve) => { image.onload = resolve; });
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return imageSrc;
+
+  const isRotated90 = normalizedRotation === 90 || normalizedRotation === 270;
+  canvas.width = isRotated90 ? image.height : image.width;
+  canvas.height = isRotated90 ? image.width : image.height;
+
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate((normalizedRotation * Math.PI) / 180);
+  ctx.translate(-image.width / 2, -image.height / 2);
+  ctx.drawImage(image, 0, 0);
+
+  return canvas.toDataURL("image/jpeg", 1);
+};
+
 export function EditorInline({ image, rotation, showCrop, onCloseCrop, saveTrigger }: Props) {
-  const [isVertical, setIsVertical] = useState(false);
-  const isRotatedVertical = rotation % 180 !== 0;
+  // 1. EL LIENZO BASE: Siempre es la foto original completa (girada a los grados actuales)
+  const [baseRotatedImage, setBaseRotatedImage] = useState<string>(image);
+  
+  // 2. EL RESULTADO: Lo que se ve cuando NO estás usando las tijeras
+  const [finalDisplayImage, setFinalDisplayImage] = useState<string>(image);
+
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const [cropSavedAtRotation, setCropSavedAtRotation] = useState(0);
   const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null);
+
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   const [crop, setCrop] = useState<Crop>({
     unit: "%",
     width: 90,
-    height: 70,
+    height: 90,
     x: 5,
-    y: 15,
+    y: 5,
   });
 
-  // FIX: detectar si la imagen es vertical al cargar
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    setIsVertical(img.naturalHeight > img.naturalWidth);
-  };
-
+  // Efecto A: Mantener el "Lienzo Base" actualizado con la rotación original
   useEffect(() => {
-    if (
-      !completedCrop ||
-      !imgRef.current ||
-      completedCrop.width === 0 ||
-      completedCrop.height === 0
-    ) return;
+    let isMounted = true;
+    const processBaseRotation = async () => {
+      const src = await getRotatedImage(image, rotation);
+      if (isMounted) setBaseRotatedImage(src);
+    };
+    processBaseRotation();
+    return () => { isMounted = false; };
+  }, [image, rotation]);
+
+  // Efecto B: Mantener el "Resultado Final" actualizado (Aplica rotación al recorte si giras la pantalla)
+  useEffect(() => {
+    let isMounted = true;
+    const processFinalDisplay = async () => {
+      if (croppedImage) {
+        const diff = rotation - cropSavedAtRotation;
+        if (diff === 0) {
+          if (isMounted) setFinalDisplayImage(croppedImage);
+        } else {
+          const src = await getRotatedImage(croppedImage, diff);
+          if (isMounted) setFinalDisplayImage(src);
+        }
+      } else {
+        if (isMounted) setFinalDisplayImage(baseRotatedImage);
+      }
+    };
+    processFinalDisplay();
+    return () => { isMounted = false; };
+  }, [baseRotatedImage, croppedImage, rotation, cropSavedAtRotation]);
+
+  // Efecto C: Extraer el recorte SIEMPRE del lienzo base original
+  useEffect(() => {
+    if (!completedCrop || !imgRef.current || completedCrop.width === 0 || completedCrop.height === 0) return;
 
     const runCrop = async () => {
-      const cropped = await getCroppedImage(imgRef.current!, completedCrop, rotation);
+      // Como imgRef apunta a baseRotatedImage, siempre sacamos el HD de la original
+      const cropped = await getCroppedImage(imgRef.current!, completedCrop, 0);
       setCroppedImage(cropped);
+      setCropSavedAtRotation(rotation);
       onCloseCrop();
     };
 
-    runCrop();
+    if (saveTrigger > 0) runCrop();
   }, [saveTrigger]);
 
-  //estilos centralizados según orientación real + rotación
-  const imgStyle: React.CSSProperties = {
-    transform: `rotate(${rotation}deg)`,
-    maxHeight: isRotatedVertical
-      ? (isVertical ? "260px" : "100%")
-      : (isVertical ? "280px" : "280px"),
-    maxWidth: isRotatedVertical
-      ? (isVertical ? "100%" : "260px")
-      : (isVertical ? "120px" : "100%"),  // ← clave para verticales
-    width: isVertical && !isRotatedVertical ? "auto" : undefined,
-    height: isVertical && !isRotatedVertical ? "100%" : undefined,
-  };
+  // Efecto D: Reiniciar el cuadradito SOLO si giras la imagen. 
+  // (Si solo entras y sales de recortar, tu cuadrado se queda donde mismo para poder corregirlo)
+  useEffect(() => {
+    setCompletedCrop(null);
+    setCrop({
+      unit: "%",
+      width: 90,
+      height: 90,
+      x: 5,
+      y: 5,
+    });
+  }, [rotation]);
 
   return (
-    <div className="w-full h-full max-h-[350px] bg-dark-500 flex items-center justify-center overflow-hidden">
-      <div className="flex items-center justify-center w-full h-full">
-
-        {showCrop ? (
-        <div className="h-[300px] flex items-center justify-center bg-[#1E1E1E] overflow-hidden"
-          style={{ width: isVertical ? "auto" : "100%" }}
+    <div className="w-full h-full min-h-[300px] bg-[#1E1E1E] flex items-center justify-center overflow-hidden rounded-xl p-4">
+      {showCrop ? (
+        <ReactCrop
+          key={`crop-key-${rotation}`}
+          crop={crop}
+          onChange={(_, percentCrop) => setCrop(percentCrop)}
+          onComplete={(c) => setCompletedCrop(c)}
+          style={{ display: "inline-block", maxWidth: "100%" }}
         >
-          <ReactCrop
-            crop={crop}
-            onChange={(c) => setCrop(c)}
-            onComplete={(c) => setCompletedCrop(c)}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-          >
-            <img
-              ref={imgRef}
-              src={image}
-              onLoad={handleImageLoad}
-              style={{
-                maxHeight: isVertical ? "280px" : "280px",
-                maxWidth:  isVertical ? "120px" : "100%",
-                width:  isVertical ? "auto" : undefined,
-                height: isVertical ? "100%" : undefined,
-              }}
-              className="object-contain"
-            />
-          </ReactCrop>
-        </div>
-      ) : (
-        <div className="w-full h-[300px] flex items-center justify-center bg-black overflow-hidden">
+          {/* MODO EDICIÓN: Te mostramos la foto entera */}
           <img
-            src={croppedImage || image}
-            onLoad={handleImageLoad}
+            ref={imgRef}
+            src={baseRotatedImage}
             style={{
-              transform: `rotate(${rotation}deg)`,
-              maxHeight: isRotatedVertical ? "100%" : "280px",
-              maxWidth:  isRotatedVertical ? "280px" : "100%",
+              display: "block",
+              maxWidth: "100%",
+              maxHeight: "50vh",
+              width: "auto",
+              height: "auto",
             }}
-            className="object-contain"
+            alt="Crop preview"
           />
-        </div>
+        </ReactCrop>
+      ) : (
+        /* MODO VISTA: Te mostramos el resultado de tu tijera */
+        <img
+          src={finalDisplayImage}
+          style={{
+            display: "block",
+            maxWidth: "100%",
+            maxHeight: "50vh",
+            width: "auto",
+            height: "auto",
+          }}
+          alt="Preview"
+        />
       )}
-
-      </div>
     </div>
   );
 }

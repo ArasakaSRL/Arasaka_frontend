@@ -1,6 +1,7 @@
+// src/features/certificaciones/components/ImageUploader.tsx
 import { useState, useEffect } from "react";
-import { Dropzone } from "./ImagenUploader/Dropzone";
 import { Toolbar } from "./ImagenUploader/Toolbar";
+import { Dropzone } from "./ImagenUploader/Dropzone";
 import { EditorInline } from "./ImagenUploader/EditorInline";
 
 export function ImagenUploader() {
@@ -8,11 +9,9 @@ export function ImagenUploader() {
   const [preview, setPreview] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
   const [showCrop, setShowCrop] = useState(false);
-
   const [saveTrigger, setSaveTrigger] = useState(0);
 
   const handleSaveCrop = () => {
-    //aquí evitamos guardar si no hay crop válido
     setSaveTrigger((prev) => prev + 1);
   };
 
@@ -21,10 +20,8 @@ export function ImagenUploader() {
       setPreview(null);
       return;
     }
-
     const url = URL.createObjectURL(file);
     setPreview(url);
-
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
@@ -33,14 +30,17 @@ export function ImagenUploader() {
   }
 
   return (
-    <div className="flex gap-4">
-      <EditorInline
-        image={preview}
-        rotation={rotation}
-        showCrop={showCrop}
-        onCloseCrop={() => setShowCrop(false)}
-        saveTrigger={saveTrigger}
-      />
+    // CAMBIO: flex-col en móvil, flex-row en desktop (md)
+    <div className="flex flex-col md:flex-row gap-4 w-full">
+      <div className="flex-1 w-full overflow-hidden">
+        <EditorInline
+          image={preview}
+          rotation={rotation}
+          showCrop={showCrop}
+          onCloseCrop={() => setShowCrop(false)}
+          saveTrigger={saveTrigger}
+        />
+      </div>
 
       <Toolbar
         onRotate={() => setRotation((r) => r + 90)}

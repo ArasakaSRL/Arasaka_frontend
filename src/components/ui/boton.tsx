@@ -1,7 +1,6 @@
 type Props = {
   children: React.ReactNode;
   onClick?: () => void;
-  className?: string;
 };
 
 export function Boton({ children, onClick }: Props) {
