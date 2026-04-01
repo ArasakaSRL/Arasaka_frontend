@@ -90,7 +90,7 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
         };
 
         await crearProyecto(payload);
-        toast.success("Proyecto creado exitosamente!", 3000);
+        toast.success("Proyecto creado exitosamente", 3000);
 
         resetForm();
         closeModal();

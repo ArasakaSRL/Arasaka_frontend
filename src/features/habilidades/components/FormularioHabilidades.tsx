@@ -73,7 +73,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
 
       const data: DatosHabilidad = {
         id_categoria_habilidad: categoria,
-        id_portafolio: "7c8c45d6-1037-481e-8ea3-4fb5bea6e81a",
+        id_portafolio: "0b069f23-7b3f-45e5-bf20-96608d4b3f4c",
         nivel: nivel,
       };
 
