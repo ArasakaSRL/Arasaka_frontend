@@ -10,7 +10,7 @@ export function Modal({ isOpen, onClose, children }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 
       {/* Overlay suave */}
       <div
@@ -22,10 +22,12 @@ export function Modal({ isOpen, onClose, children }: Props) {
       <div
         className="
           relative z-10
-          w-[90%] max-w-4xl
+          w-full sm:w-[90%] max-w-4xl
           h-auto
+          max-h-[90vh] 
+          overflow-y-auto
           bg-white rounded-xl shadow-xl
-          p-6
+          p-4 sm:p-6
         "
       >
         {/* Botón cerrar */}
@@ -34,7 +36,9 @@ export function Modal({ isOpen, onClose, children }: Props) {
           className="
             absolute top-3 right-3
             text-gray-500 hover:text-gray-800
-            text-xl font-bold
+            text-2xl font-bold
+            w-8 h-8 flex items-center justify-center
+            bg-white rounded-full
           "
         >
           ✕
