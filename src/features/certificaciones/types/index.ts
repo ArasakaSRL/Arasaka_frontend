@@ -24,3 +24,13 @@ export interface CertificacionAPI {
 export interface CertificacionesResponse {
   data: CertificacionAPI[];
 }
+
+export interface CrearCertificacionDTO {
+  titulo: string;
+  descripcion: string;
+  institucion_emisora: string;
+  fecha_obtencion: string; // Formato YYYY-MM-DD
+  url_archivo: string;
+  orientacion_imagen: "horizontal" | "vertical";
+  id_categoria_certificacion: string;
+}

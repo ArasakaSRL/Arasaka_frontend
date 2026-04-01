@@ -10,6 +10,7 @@ type Props = {
   showCrop: boolean;
   onCloseCrop: () => void;
   saveTrigger: number;
+  onImageUpdated: (base64: string) => void;
 };
 
 // Generamos la imagen rotada.
@@ -37,7 +38,7 @@ const getRotatedImage = async (imageSrc: string, rotation: number): Promise<stri
   return canvas.toDataURL("image/jpeg", 1);
 };
 
-export function EditorInline({ image, rotation, showCrop, onCloseCrop, saveTrigger }: Props) {
+export function EditorInline({ image, rotation, showCrop, onCloseCrop, saveTrigger, onImageUpdated }: Props) {
   // 1. EL LIENZO BASE: Siempre es la foto original completa (girada a los grados actuales)
   const [baseRotatedImage, setBaseRotatedImage] = useState<string>(image);
   
@@ -73,16 +74,20 @@ export function EditorInline({ image, rotation, showCrop, onCloseCrop, saveTrigg
   useEffect(() => {
     let isMounted = true;
     const processFinalDisplay = async () => {
+      let srcToDisplay = baseRotatedImage;
+
       if (croppedImage) {
         const diff = rotation - cropSavedAtRotation;
         if (diff === 0) {
-          if (isMounted) setFinalDisplayImage(croppedImage);
+          srcToDisplay = croppedImage;
         } else {
-          const src = await getRotatedImage(croppedImage, diff);
-          if (isMounted) setFinalDisplayImage(src);
+          srcToDisplay = await getRotatedImage(croppedImage, diff);
         }
-      } else {
-        if (isMounted) setFinalDisplayImage(baseRotatedImage);
+      }
+
+      if (isMounted) {
+        setFinalDisplayImage(srcToDisplay);
+        onImageUpdated(srcToDisplay); // <-- AVISAMOS AL COMPONENTE PADRE
       }
     };
     processFinalDisplay();

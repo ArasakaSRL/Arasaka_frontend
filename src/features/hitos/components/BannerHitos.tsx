@@ -1,4 +1,4 @@
-import { Boton } from "../../../components/ui/boton";
+
 
 type Props = {
   onOpenModal: () => void;
