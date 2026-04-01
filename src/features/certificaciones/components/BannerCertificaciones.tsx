@@ -1,4 +1,4 @@
-import { Boton } from "@/components/ui/boton";
+import { Boton2 } from "@/components/ui/Boton2";
 
 
 type Props = {
@@ -28,9 +28,9 @@ export const Banner = ({ onOpenModal }: Props) => {
       </h1>
 
       <div className="w-full sm:w-auto">
-        <Boton onClick={onOpenModal}>
+        <Boton2 onClick={onOpenModal}>
           Subir Certificación
-        </Boton>
+        </Boton2>
       </div>
     </div>
   )

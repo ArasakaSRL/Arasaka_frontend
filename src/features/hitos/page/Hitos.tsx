@@ -3,16 +3,17 @@ import { Banner } from "../components/BannerHitos";
 import { Modal } from "../components/Modal";
 import { InputHitos } from "../components/InputHitos";
 import { FechaInputHitos } from "../components/FechaInputHitos";
-import DashboardHeader from "@/components/Dashboard/DashboardHeader";
 import DashboardLayout from "@/layout/DashboardLayout";
+import { CardHitos } from "../components/cardHitos";
 
-export function Hitos() {
+export default function Hitos() {
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <DashboardLayout>
-        
-      <Banner onOpenModal={() => setOpenModal(true)} />
+      <div className="mb-6 sm:mb-8 md:mb-10">
+        <Banner onOpenModal={() => setOpenModal(true)} />
+      </div>
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)} title="Registrar Hito">
   
         <InputHitos titulo="Nombre del Cargo/Titulo" tamMax={50} height={40} />
@@ -41,6 +42,21 @@ export function Hitos() {
         </div>
 
       </Modal>
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+        <CardHitos
+          color="green"
+          cargo="Desarrollador Frontend"
+          organizacion="Google"
+          descripcion="Desarrollo de interfaces modernas con React"
+        />
+
+        <CardHitos
+          color="red"
+          cargo="Desarrollador Frontend"
+          organizacion="Google"
+          descripcion="Desarrollo de interfaces modernas con React"
+        />
+      </div>
     </DashboardLayout>
   );
 }

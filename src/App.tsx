@@ -8,7 +8,8 @@ import Register from '@/pages/auth/Register'
 import Proyectos from '@/features/proyectos/pages/PageProyectos'
 import Habilidades from '@/features/habilidades/pages/PageHabilidades'
 import Certificaciones from '@/features/certificaciones/page/Certificaciones'
-import { Hitos } from './features/hitos/page/Hitos'
+import Hitos from './features/hitos/page/Hitos'
+
 
 export default function App() {
   return (

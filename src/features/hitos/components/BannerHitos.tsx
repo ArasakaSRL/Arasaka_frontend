@@ -1,3 +1,4 @@
+import { Boton2 } from "@/components/ui/Boton2";
 
 
 type Props = {
@@ -32,12 +33,12 @@ export const Banner = ({ onOpenModal }: Props) => {
         </span>
       </h1>
 
-      <Boton
+      <Boton2
         onClick={onOpenModal}
         className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700"
       >
         Agregar hito
-      </Boton>
+      </Boton2>
     </div>
   );
 };
