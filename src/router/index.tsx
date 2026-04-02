@@ -1,7 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
 import SuspenseWrapper from '../components/SuspenseWrapper'
-import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades } from './lazyRoutes'
+import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades, Certificaiones } from './lazyRoutes'
+import Hitos from '@/features/hitos/page/Hitos'
+
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +70,22 @@ export const router = createBrowserRouter([
           </SuspenseWrapper>
         ),
       },
+      {
+        path: 'Dashboard/certificaciones/Certificaciones',
+        element: (
+          <SuspenseWrapper>
+            <Certificaiones />
+          </SuspenseWrapper>
+        )
+      },
+      {
+        path: 'Dashboard/hitos/Hitos',
+        element: (
+          <SuspenseWrapper>
+            <Hitos/>
+          </SuspenseWrapper>
+        )
+      }
 
     ],
   },

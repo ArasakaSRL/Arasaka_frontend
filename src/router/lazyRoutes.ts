@@ -8,3 +8,5 @@ export const Proyectos = lazy(() => import('../features/proyectos/pages/PageProy
 export const Habilidades = lazy(() => import('../features/habilidades/pages/PageHabilidades'))
 export const Login = lazy(() => import('../pages/auth/Login'))
 export const Register = lazy(() => import('../pages/auth/Register'))
+export const Certificaiones = lazy(() => import('../features/certificaciones/page/Certificaciones')) 
+export const Hitos = lazy(() => import('../features/hitos/page/Hitos')) 

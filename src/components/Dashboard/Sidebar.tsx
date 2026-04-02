@@ -1,6 +1,6 @@
 import {
     User, Briefcase, Award, GraduationCap,
-    Trophy, BarChart3, Settings, LogOut
+    Trophy, BarChart3, Settings, LogOut, ShieldCheck,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/api/auth';
@@ -11,9 +11,10 @@ const menuItems = [
     { icon: Briefcase, label: 'Proyectos', path: '/Dashboard/proyectos/Proyectos' },
     { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades/Habilidades' },
     { icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' },
-    { icon: Trophy, label: 'Logros', path: '/Dashboard/logros' },
+    { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
+    { icon: ShieldCheck, label:'Certificaciones', path:'/Dashboard/certificaciones/Certificaciones' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
-    { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' },
+    { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' }
 ];
 interface SidebarProps {
     isOpen: boolean
