@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import MenuDesplegable from "./MenuDesplegable";
 import { crearHabilidad, obtenerCategorias, obtenerNiveles,obtenerTecnologias, type Nivel, type Categoria, type Tecnologia } from "../lib/HabilidadesApi";
 
-
 interface HabilidadesProps {
   closeModal: () => void;
 }
