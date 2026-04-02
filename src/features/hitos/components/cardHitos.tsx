@@ -1,10 +1,14 @@
 import { FechaHito } from "./fechaHito";
 
+// 👇 1. AQUÍ ESTÁ LA SOLUCIÓN: Agregamos las nuevas propiedades al Type
 type CardHitosProps = {
   color?: "blue" | "green" | "red" | "orange";
   cargo: string;
   organizacion: string;
   descripcion: string;
+  diaAbreviado: string; // <-- NUEVO
+  diaNumero: number;    // <-- NUEVO
+  fechaTexto: string;   // <-- NUEVO
 };
 
 const borderColors = {
@@ -19,42 +23,32 @@ export function CardHitos({
   cargo,
   organizacion,
   descripcion,
+  // 👇 2. Las extraemos aquí
+  diaAbreviado, 
+  diaNumero,
+  fechaTexto,
 }: CardHitosProps) {
   return (
     <div className="w-full">
       
-      {/* GRID PRINCIPAL */}
       <div className="grid gap-3 items-start grid-cols-[auto_1fr]">
-  
+        
         {/* Fecha */}
         <div>
+          {/* 👇 3. Y se las pasamos a FechaHito */}
           <FechaHito
-            diaAbreviado="MAR"
-            diaNumero={99}
-            fechaTexto="Octubre, 2019"
+            diaAbreviado={diaAbreviado}
+            diaNumero={diaNumero}
+            fechaTexto={fechaTexto}
             color={color}
           />
         </div>
 
-        {/* CONTENEDOR CON UNA SOLA LÍNEA */}
         <div className="flex">
           
-          {/* Línea única */}
-          <div
-            className={`
-              border-r-4 pr-3 mr-3
-              ${borderColors[color]}
-            `}
-          />
+          <div className={`border-r-4 pr-3 mr-3 ${borderColors[color]}`} />
 
-          {/* Contenido */}
-          <div
-            className="
-              grid gap-x-2 gap-y-1
-              text-[10px] sm:text-sm md:text-base
-              grid-cols-[max-content_1fr]
-            "
-          >
+          <div className="grid gap-x-2 gap-y-1 text-[10px] sm:text-sm md:text-base grid-cols-[max-content_1fr]">
             <div className="font-semibold">Cargo:</div>
             <div>{cargo}</div>
 
@@ -69,7 +63,6 @@ export function CardHitos({
 
       </div>
 
-      {/* Línea inferior */}
       <div className="mt-4 border-b border-gray-300"></div>
 
     </div>
