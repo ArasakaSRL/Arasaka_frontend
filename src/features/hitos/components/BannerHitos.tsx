@@ -6,12 +6,14 @@ type Props = {
   onOpenModal?: () => void;
   titulo: string;
   descripcion: string;
+  textoBoton?: string;
 };
 
 export const Banner = ({
   onOpenModal,
   titulo = "",
   descripcion = "",
+  textoBoton = "",
 }: Props) => {
   
   const formatTitulo = (titulo: string) => {
@@ -45,7 +47,7 @@ export const Banner = ({
       px-6 py-6
       md:px-8 md:py-8
       text-white
-      bg-gradient-to-br from-[#0a1a3a] to-[#112e57]
+      bg-linear-to-br from-[#0a1a3a] to-[#112e57]
       flex flex-col items-start gap-1
     "
   >
@@ -80,9 +82,10 @@ export const Banner = ({
           px-4 py-1.5
           bg-blue-600 hover:bg-blue-700
           text-sm
+          flex items-center gap-2
         "
       >
-        Agregar hito
+        {textoBoton}
       </Boton2>
     )}
   </div>

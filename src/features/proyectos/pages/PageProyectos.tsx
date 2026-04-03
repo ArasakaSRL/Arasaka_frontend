@@ -1,38 +1,49 @@
 import { useState } from "react";
-import ModalForm from "../components/ModalProyectos"
+import Modal from "@/components/Modal"
 import FormularioProyecto from "../components/FormularioProyectos";
-// import CardProyectos from "../components/CardProyectos";
+import CardProyectos from "../components/CardProyectos";
 import DashboardLayout from "@/layout/DashboardLayout";
-import { CirclePlus } from "lucide-react";
+import { useProyectos } from "../hooks/getProyectos";
+import { Banner } from "@/features/hitos/components/BannerHitos";
 
 export default function PageProyectos() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ModalAbierto, setModalAbierto] = useState(false);
+  const idPortafolio = "27b591bf-4bbe-4818-b364-8201cd086fcb";
+  const { proyectos, loading } = useProyectos(idPortafolio);
 
-  const closeModal = () => setIsModalOpen(false);
+  console.log("PROYECTOS:", proyectos); 
+  
+  const closeModal = () => setModalAbierto(false);
     return (
       <DashboardLayout>
-        <div className="px-8 space-y-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-2xl! text-left font-bold text-black">Proyectos</h3>
-              <p className="text-sm text-gray-700! text-left">Gestiona tus proyectos de software</p>
-            </div>
-                <button
-                onClick={() => setIsModalOpen(true)} 
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer hover:bg-secondary-500">
-                  <CirclePlus />
-                    Añadir Proyecto
-                </button>
-            </div>
-            {/* <div className="grid grid-cols-3 md:grid-cols-3 gap-8">
-                {proyectosMock.map((proyecto) => (
-                  <CardProyectos key={proyecto.id} proyecto={proyecto} />
-                ))}
-            </div> */}
+        <Banner titulo="Proyectos" descripcion="Gestiona tus proyectos de software" onOpenModal={() => setModalAbierto(true)} textoBoton="Añadir Proyecto" >
+        </Banner>
+        <div className="py-4">
+          <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
+            {loading ? (
+              <p>Cargando...</p>
+            ) : (
+              proyectos.map((proyecto) => (
+                    <CardProyectos
+                  key={proyecto.id_proyecto}
+                  
+                  proyecto={{
+                    id: proyecto.id_proyecto,
+                    nombre_tecnologia: proyecto.nombre,
+                    descripcion: proyecto.descripcion ?? "",
+                    fecha_inicio: proyecto.fecha_inicio,
+                    fecha_fin: proyecto.fecha_fin ?? undefined,
+                    tecnologias: proyecto.tecnologias
+                  }}
+                  
+                />
+              ))
+            )}
+        </div>
 
-            <ModalForm isOpen={isModalOpen} closeModal={closeModal} maxWidth="max-w-2xl">
+            <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-2xl">
               <FormularioProyecto closeModal={closeModal}/>
-            </ModalForm>
+            </Modal>
         </div>
       </DashboardLayout>
     )

@@ -1,5 +1,5 @@
-import api from './axios'
 import axios from 'axios'
+import apiClient from './api' // Asegúrate de importar tu instancia de axios configurada
 import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload } from '../types/auth.types'
 
 // getCsrfCookie: obtiene el token CSRF de Laravel antes de hacer peticiones POST.
@@ -15,38 +15,38 @@ const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_URL}/sanctum/c
 // POST /registrar
 export async function registerRequest(payload: RegisterPayload) {
   await getCsrfCookie()
-  const { data } = await api.post('/api/registrar', payload)
+  const { data } = await apiClient.post('/registrar', payload)
   return data
 }
 
 // iniciar-sesion
 export async function loginRequest(payload: LoginPayload): Promise<LoginResponse> {
   await getCsrfCookie()
-  const { data } = await api.post<LoginResponse>('/api/iniciar-sesion', payload)
+  const { data } = await apiClient.post<LoginResponse>('/iniciar-sesion', payload)
   return data
 }
 
 // cerrar-sesion (requiere sesión activa)
 export async function logoutRequest() {
   await getCsrfCookie()
-  const { data } = await api.post('/api/cerrar-sesion')
+  const { data } = await apiClient.post('/cerrar-sesion')
   return data
 }
 
 // recuperar-contrasena
 export async function forgotPasswordRequest(correo: string) {
-  const { data } = await api.post('/api/recuperar-contrasena', { correo })
+  const { data } = await apiClient.post('/recuperar-contrasena', { correo })
   return data
 }
 
 // restablecer-contrasena
 export async function resetPasswordRequest(payload: ResetPasswordPayload) {
-  const { data } = await api.post('/api/restablecer-contrasena', payload)
+  const { data } = await apiClient.post('/restablecer-contrasena', payload)
   return data
 }
 
 // correo/notificacion-verificacion (requiere sesión activa)
 export async function resendVerificationEmail() {
-  const { data } = await api.post('/api/correo/notificacion-verificacion')
+  const { data } = await apiClient.post('/api/correo/notificacion-verificacion')
   return data
 }
