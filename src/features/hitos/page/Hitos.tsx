@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Banner } from "../components/BannerHitos";
+import { Banner } from "@/components/Banner";
 import { Modal } from "../components/Modal";
 import { InputHitos } from "../components/InputHitos";
 import { FechaInputHitos } from "../components/FechaInputHitos";
@@ -140,7 +140,7 @@ export default function Hitos() {
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
         {/**onOpenModal={() => setOpenModal(true)} */}
-        <Banner titulo="Experiencias e hitos importantes" descripcion="En trayectoria profesional" />
+        <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Hito" titulo="Experiencias e hitos importantes" descripcion="" />
       </div>
 
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)} title="Registrar Hito">

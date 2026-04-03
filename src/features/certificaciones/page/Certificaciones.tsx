@@ -98,7 +98,7 @@ export default function Certificaciones() {
   return (
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
-        <Banner onOpenModal={() => setOpenModal(true)} titulo="Certificaciones y logros" descripcion=""  ></Banner>
+        <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Certificacion" titulo="Certificaciones y logros" descripcion=""  ></Banner>
 
         <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
           <h2 className="text-lg font-semibold mb-6 text-left text-gray-700">
