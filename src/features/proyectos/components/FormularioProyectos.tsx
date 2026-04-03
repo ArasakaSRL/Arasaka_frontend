@@ -79,7 +79,7 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
 
       try {
         const payload = {
-          id_portafolio: "7c8c45d6-1037-481e-8ea3-4fb5bea6e81a",
+          id_portafolio: "27b591bf-4bbe-4818-b364-8201cd086fcb",
           nombre: formularioData.title,
           descripcion: formularioData.descripcion || undefined,
           fecha_inicio: formularioData.startDate,
@@ -90,13 +90,13 @@ export default function FormularioProyectos({closeModal}:FormularioProps) {
         };
 
         await crearProyecto(payload);
-        toast.success("Proyecto creado exitosamente!", 3000);
+        toast.success("Proyecto creado exitosamente", 3000);
 
         resetForm();
         closeModal();
 
       } catch{
-        toast.error("Error al crear proyecto", 3000);
+        toast.warning("Error al crear proyecto", 3000);
       }
     };
 
