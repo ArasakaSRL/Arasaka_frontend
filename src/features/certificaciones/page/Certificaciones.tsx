@@ -3,7 +3,7 @@ import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
 
-import { Banner } from "../components/BannerCertificaciones";
+import { Banner } from "@/components/Banner";
 import { Modal } from "../components/Modal"; 
 import { InputCertificaciones } from "../components/InputCertificaciones";
 import { FechaInput } from "../components/FechaInput";
@@ -97,9 +97,8 @@ export default function Certificaciones() {
 
   return (
     <DashboardLayout>
-      <div className="p-2 sm:p-4 space-y-6">
-
-        <Banner onOpenModal={() => setOpenModal(true)} />
+      <div className="mb-6 sm:mb-8 md:mb-10">
+        <Banner onOpenModal={() => setOpenModal(true)} titulo="Certificaciones y logros" descripcion=""  ></Banner>
 
         <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
           <h2 className="text-lg font-semibold mb-6 text-left text-gray-700">

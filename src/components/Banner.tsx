@@ -15,25 +15,19 @@ export const Banner = ({
 }: Props) => {
   
   const formatTitulo = (titulo: string) => {
-    if (titulo.length <= 14) return titulo;
-
     const palabras = titulo.split(" ");
-    let linea1 = "";
-    let linea2 = "";
 
-    for (let i = 0; i < palabras.length; i++) {
-      if ((linea1 + palabras[i]).length <= 14) {
-        linea1 += (linea1 ? " " : "") + palabras[i];
-      } else {
-        linea2 += (linea2 ? " " : "") + palabras[i];
-      }
-    }
+    if (palabras.length <= 1) return titulo;
+
+    const mitad = Math.ceil(palabras.length / 2);
+
+    const linea1 = palabras.slice(0, mitad).join(" ");
+    const linea2 = palabras.slice(mitad).join(" ");
 
     return (
       <>
-        {linea1}
-        <br />
-        {linea2}
+        <span className="block">{linea1}</span>
+        <span className="block">{linea2}</span>
       </>
     );
   };
