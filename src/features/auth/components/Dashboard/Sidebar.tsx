@@ -3,7 +3,7 @@ import {
     Trophy, BarChart3, Settings, LogOut, ShieldCheck,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { logoutRequest } from '@/api/auth';
+import { logoutRequest } from '@/features/auth/api/auth';
 import { useState } from 'react';
 
 const menuItems = [

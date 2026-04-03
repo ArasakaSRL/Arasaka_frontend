@@ -3,9 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
 import { Briefcase, ArrowLeft } from 'lucide-react';
-import { AuthInput } from '@/components/auth/AuthInput';
-import { AuthButton } from '@/components/auth/AuthButton';
-import { loginRequest } from '@/api/auth';
+import { AuthInput } from '@/features/auth/components/auth/AuthInput';
+import { AuthButton } from '@/features/auth/components/auth/AuthButton';
+import { loginRequest } from '@/features/auth/api/auth';
 
 const loginSchema = z.object({
     correo: z

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DashboardLayout from '@/layout/DashboardLayout';
 import { User, Briefcase, Mail, BriefcaseBusiness } from 'lucide-react';
-import { ProfileInput } from '@/components/Dashboard/profile/ProfileInput';
+import { ProfileInput } from '@/features/auth/components/Dashboard/profile/ProfileInput';
 
 export default function PerfilPersonal() {
     const [formData, setFormData] = useState({

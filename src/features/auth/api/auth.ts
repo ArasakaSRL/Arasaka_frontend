@@ -1,4 +1,4 @@
-import api from './axios'
+import api from '@/api/axios'
 import axios from 'axios'
 import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload } from '../types/auth.types'
 

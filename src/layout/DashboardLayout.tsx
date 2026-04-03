@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Sidebar from '@/components/Dashboard/Sidebar';
-import DashboardHeader from '@/components/Dashboard/DashboardHeader';
+import Sidebar from '@/features/auth/components/Dashboard/Sidebar';
+import DashboardHeader from '@/features/auth/components/Dashboard/DashboardHeader';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
