@@ -139,7 +139,8 @@ export default function Hitos() {
   return (
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
-        <Banner onOpenModal={() => setOpenModal(true)} />
+        {/**onOpenModal={() => setOpenModal(true)} */}
+        <Banner titulo="Experiencias e hitos importantes" descripcion="En trayectoria profesional" />
       </div>
 
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)} title="Registrar Hito">
