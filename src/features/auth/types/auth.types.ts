@@ -1,15 +1,22 @@
-export interface RegisterPayload {
-  nombre: string,
-  apellido: string,
-  correo: string,
-  password: string,
-  password_confirmation: string,
-  biografia?: string,
-  url_foto?: string,
-  estado?: boolean,
-  verificacion_email?: boolean
+export interface PortafolioPayload {
+  nombre: string
+  descripcion?: string
+  visibilidad: boolean
 }
 
+export interface RegisterPayload {
+  nombre: string
+  apellido: string
+  correo: string
+  password: string
+  password_confirmation: string
+  biografia?: string
+  url_foto?: string
+  estado?: boolean
+  verificacion_email?: boolean
+  crear_portafolio?: boolean
+  portafolio?: PortafolioPayload
+}
 export interface LoginPayload {
   correo: string
   password: string

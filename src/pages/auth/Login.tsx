@@ -5,7 +5,8 @@ import { AxiosError } from 'axios';
 import { Briefcase, ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
-import { loginRequest } from '@/features/auth/api/auth';
+import { loginRequest, getUsuario } from '@/features/auth/api/auth';
+import { useAuthStore } from '@/stores/authStore';
 
 const loginSchema = z.object({
     correo: z
@@ -17,8 +18,8 @@ const loginSchema = z.object({
 
     password: z
         .string()
-        .min(8, 'la contraseña debe tener 8 caracteres')
-        .max(8, 'Máximo 8 caracteres permitidos')
+        .min(12, 'la contraseña debe tener 12 caracteres')
+        .max(12, 'Máximo 12 caracteres permitidos')
         .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
         .regex(/[a-z]/, 'Debe contener al menos una minúscula')
         .regex(/[0-9]/, 'Debe contener al menos un número')
@@ -34,6 +35,7 @@ export default function Login() {
     const passwordRef = useRef<HTMLInputElement>(null);
 
     const navigate = useNavigate();
+    const setUser = useAuthStore(s => s.setUser);
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<FieldErrors>({});
@@ -47,7 +49,7 @@ export default function Login() {
     };
 
     const handlePasswordChange = (val: string) => {
-        if (val.length <= 8) {
+        if (val.length <= 12) {
             setPassword(val);
         }
     };
@@ -83,6 +85,8 @@ export default function Login() {
         setLoading(true);
         try {
             await loginRequest({ correo, password });
+            const user = await getUsuario();
+            setUser(user);
             navigate('/Dashboard/perfilPersonal/PerfilPersonal');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; errors?: { correo?: string[] } }>;
@@ -137,7 +141,7 @@ export default function Login() {
                         value={password}
                         onChange={handlePasswordChange}
                         error={errors.password}
-                        maxLength={8}
+                        maxLength={12}
                         required
                     />
 
