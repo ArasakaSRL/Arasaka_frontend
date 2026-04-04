@@ -3,18 +3,19 @@ import type { LucideIcon } from 'lucide-react';
 
 interface Props {
     label: string;
-    type: 'text';
+    type: 'text' | 'textarea';
     placeholder: string; // texto de ayuda dentro del input
     value: string; // valor actual del input
     onChange: (val: string) => void;
     error?: string;
     maxLength?: number;
+    showCounter?: boolean;
     required?: boolean;
     icon?: LucideIcon; // icono opcional de lucide-react
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-    ({ label, type, placeholder, value, onChange, error, maxLength, required, icon: Icon }, ref) => {
+    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon }, ref) => {
         const isAtLimit = maxLength !== undefined && value.length === maxLength;
 
         return (
@@ -25,28 +26,45 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                     {required && <span className="text-red-500 ml-1">*</span>}
                 </label>
                 <div className="relative">
-                    <input
-                        ref={ref}
-                        maxLength={maxLength}
-                        type={type}
-                        placeholder={placeholder}
-                        value={value}
-                        onChange={(e) => onChange(e.target.value)}
-                        className={`w-full px-4 text-[14px] py-3 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600
-                        ${isAtLimit
-                                ? 'border-red-400 focus:ring-1 focus:ring-red-400'
-                                : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
-                            }`}
-                    />
+
+                    {type === 'textarea' ? (
+                        <textarea
+                            ref={ref as React.Ref<HTMLTextAreaElement>}
+                            maxLength={maxLength}
+                            placeholder={placeholder}
+                            value={value}
+                            onChange={(e) => onChange(e.target.value)}
+                            rows={4}
+                            className={`w-full px-4 py-3 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
+                            ${isAtLimit
+                                    ? 'border-red-400 focus:ring-1 focus:ring-red-400'
+                                    : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
+                                }`}
+                        />
+                    ) : (
+                        <input
+                            ref={ref}
+                            maxLength={maxLength}
+                            type={type}
+                            placeholder={placeholder}
+                            value={value}
+                            onChange={(e) => onChange(e.target.value)}
+                            className={`w-full px-4 text-[14px] py-3 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600
+                            ${isAtLimit
+                                    ? 'border-gray-300 caret-red-500 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
+                                    : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
+                                }`}
+                        />
+                    )}
                 </div>
 
-                {maxLength !== undefined && (
+                {maxLength !== undefined && showCounter && (
                     <div className="flex justify-between items-center ml-1">
                         {isAtLimit
                             ? <p className="text-red-500 text-[11px] animate-in fade-in slide-in-from-top-1">Se alcanzó el límite de caracteres permitidos</p>
-                            : <span />  
+                            : <span />
                         }
-                        <span className={`text-[11px] ml-auto ${ isAtLimit ? 'text-red-500' : 'text-gray-400'}`}>
+                        <span className={`text-[11px] ml-auto ${isAtLimit ? 'text-red-500' : 'text-gray-400!'}`}>
                             {value.length}/{maxLength}
                         </span>
                     </div>

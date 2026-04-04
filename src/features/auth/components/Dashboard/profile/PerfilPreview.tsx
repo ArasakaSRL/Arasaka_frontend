@@ -1,4 +1,5 @@
 import { BriefcaseBusiness } from 'lucide-react';
+import type { Profesion } from '@/features/auth/types/update-perfilPersonal';
 
 interface PerfilPreviewProps {
     user: {
@@ -12,11 +13,13 @@ interface PerfilPreviewProps {
         descripcion_laboral: string;
         correo: string;
     };
+    profesiones: Profesion[];
 }
 
 export default function PerfilPreview({
     user,
-    formData
+    formData,
+    profesiones
 }: PerfilPreviewProps) {
 
     const iniciales =
@@ -36,7 +39,15 @@ export default function PerfilPreview({
                                 }
                             </div>
                             <h3 className="text-xl font-bold text-black">{formData.nombre} {formData.apellido}</h3>
-                            <p className="text-gray-900! font-medium mb-2">{formData.descripcion_laboral || 'Tu Título Profesional'}</p>
+                            {profesiones.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 justify-center mb-2">
+                                    {profesiones.map(p => (
+                                        <span key={p.id_profesion} className="px-3 py-1 bg-[#1e2a5e] text-white text-xs rounded-full">
+                                            {p.nombre}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                             <p className="text-slate-800! text-sm">{formData.correo}</p>
                         </div>
 

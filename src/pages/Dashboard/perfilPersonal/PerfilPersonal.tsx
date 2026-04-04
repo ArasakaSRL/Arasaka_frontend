@@ -2,6 +2,7 @@ import { useState } from 'react';
 import DashboardLayout from '@/layout/DashboardLayout';
 import { useAuthStore } from '@/stores/authStore';
 import { actualizarInformacion } from '@/features/auth/api/update-perfilPersonal';
+import type { Profesion } from '@/features/auth/types/update-perfilPersonal';
 import { AxiosError } from 'axios';
 import PerfilForm from '@/features/auth/components/Dashboard/profile/PerfilFrom';
 import PerfilPreview from '@/features/auth/components/Dashboard/profile/PerfilPreview';
@@ -25,6 +26,7 @@ export default function PerfilPersonal() {
         correo: user?.correo || '',
     });
 
+    const [asignadas, setAsignadas] = useState<Profesion[]>([]);
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
@@ -61,6 +63,8 @@ export default function PerfilPersonal() {
                 <PerfilForm
                     formData={formData}
                     setFormData={setFormData}
+                    asignadas={asignadas}
+                    setAsignadas={setAsignadas}
                     loading={loading}
                     apiError={apiError}
                     success={success}
@@ -71,6 +75,7 @@ export default function PerfilPersonal() {
                 <PerfilPreview
                     user={user}
                     formData={formData}
+                    profesiones={asignadas}
                 />
 
             </div>

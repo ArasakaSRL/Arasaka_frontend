@@ -8,6 +8,13 @@ import type {
     UsuarioActualizadoResponse,
 } from '../types/update-perfilPersonal'
 
+// GET /api/profesiones
+// Devuelve el catálogo completo de profesiones disponibles
+export async function getCatalogoProfesiones(): Promise<Profesion[]> {
+    const { data } = await apiClient.get<{ data: Profesion[] }>('/api/profesiones')
+    return data.data
+}
+
 // GET /api/usuario/profesiones
 // Devuelve las profesiones asignadas al usuario autenticado
 export async function getProfesiones(): Promise<Profesion[]> {
