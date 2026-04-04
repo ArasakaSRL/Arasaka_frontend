@@ -41,33 +41,33 @@ export async function getUsuario(): Promise<AuthUser> {
 // POST /registrar
 export async function registerRequest(payload: RegisterPayload) {
   await getCsrfCookie()
-  const { data } = await apiClient.post('/registrar', payload)
+  const { data } = await apiClient.post('/api/registrar', payload)
   return data
 }
 
 // iniciar-sesion
 export async function loginRequest(payload: LoginPayload): Promise<LoginResponse> {
   await getCsrfCookie()
-  const { data } = await apiClient.post<LoginResponse>('/iniciar-sesion', payload)
+  const { data } = await apiClient.post<LoginResponse>('/api/iniciar-sesion', payload)
   return data
 }
 
 // cerrar-sesion (requiere sesión activa)
 export async function logoutRequest() {
   await getCsrfCookie()
-  const { data } = await apiClient.post('/cerrar-sesion')
+  const { data } = await apiClient.post('/api/cerrar-sesion')
   return data
 }
 
 // recuperar-contrasena
 export async function forgotPasswordRequest(correo: string) {
-  const { data } = await apiClient.post('/recuperar-contrasena', { correo })
+  const { data } = await apiClient.post('/api/recuperar-contrasena', { correo })
   return data
 }
 
 // restablecer-contrasena
 export async function resetPasswordRequest(payload: ResetPasswordPayload) {
-  const { data } = await apiClient.post('/restablecer-contrasena', payload)
+  const { data } = await apiClient.post('/api/restablecer-contrasena', payload)
   return data
 }
 
