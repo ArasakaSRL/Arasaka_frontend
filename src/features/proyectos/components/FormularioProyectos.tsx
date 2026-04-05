@@ -206,9 +206,17 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
           </label>
           <DropdownCheckbox
             values={tecnologias}
-            onChange={setTecnologias}
+            onChange={(vals) => {
+              setTecnologias(vals);
+              setErrors((prev) => ({ ...prev, tecnologias: "" }));
+            }}
             options={opciones}
           />
+          {errors.tecnologias && (
+            <p className="text-red-500 text-xs ml-1">
+              {errors.tecnologias}
+            </p>
+          )}
         </div>
 
           <Input
