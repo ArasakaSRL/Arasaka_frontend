@@ -76,3 +76,27 @@ export async function resendVerificationEmail() {
   const { data } = await apiClient.post('/api/correo/notificacion-verificacion')
   return data
 }
+
+/**
+ * GET /verificar-correo/{id}/{hash}?expires=...&signature=...
+ * Se dispara cuando el usuario hace clic en el enlace de su email.
+ * Los query params expires y signature son requeridos por Laravel para validar la firma.
+ */
+export async function verifyEmailRequest(id: string, hash: string) {
+  // Extraer expires y signature de la URL actual del navegador
+  const params = new URLSearchParams(window.location.search)
+  const { data } = await apiClient.get(`/api/verificar-correo/${id}/${hash}`, {
+    params: {
+      expires: params.get('expires'),
+      signature: params.get('signature'),
+    }
+  })
+  return data
+}
+
+//  RECUPERAR CONTRASEÑA  
+export async function sendPasswordResetEmail(correo: string) {
+  const {data} = await apiClient.post('/api/recuperar-contrasena', { correo });
+  return data;
+}
+
