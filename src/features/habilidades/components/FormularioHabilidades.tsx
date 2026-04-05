@@ -2,6 +2,7 @@ import { CircleX } from "lucide-react";
 import { useState, useEffect } from "react";
 import MenuDesplegable from "./MenuDesplegable";
 import { crearHabilidad, obtenerCategorias, obtenerNiveles,obtenerTecnologias, type Nivel, type Categoria, type Tecnologia } from "../lib/HabilidadesApi";
+import { toast } from "../../../components/Alerta";
 
 interface HabilidadesProps {
   closeModal: () => void;
@@ -25,6 +26,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
   const [opcionesNiveles, setOpcionesNiveles] = useState<{ label: string; value: string }[]>([]);
   const [opcionesTecnologias, setOpcionesTecnologias] = useState<{ label: string; value: string }[]>([]);
   
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -66,13 +68,13 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     try{
       const esTecnica = opcionesCategorias.find(c => c.value === categoria)?.label.toLowerCase() === "Tecnica";
 
       const data: DatosHabilidad = {
         id_categoria_habilidad: categoria,
-        id_portafolio: "0b069f23-7b3f-45e5-bf20-96608d4b3f4c",
+        id_portafolio: "27b591bf-4bbe-4818-b364-8201cd086fcb",
         nivel: nivel,
       };
 
@@ -82,15 +84,17 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
         data.nombre = habilidadBlanda;
       }
 
-      const res = await crearHabilidad(data);
-      console.log("Habilidad creada:", res);
+      await crearHabilidad(data);
+      toast.success("Habilidad creada exitosamente", 3000);
       setCategoria("");
       setNivel("");
       setTecnologia("");
       setHabilidadBlanda("");
       closeModal();
-    }catch(error){
-      console.error("Error creando habilidad", error);
+    }catch{
+      toast.error("Error al crear habilidad", 3000);
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -155,8 +159,14 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
           </button>
           <button
             type="submit"
-            className="text-sm px-4 py-2 rounded-md bg-primary-500 text-white hover:bg-secondary-500 cursor-pointer">
-              Crear Habilidad
+            disabled={loading}
+            className={`text-sm px-4 py-2 rounded-md text-white 
+            ${loading 
+              ? "bg-gray-400 cursor-not-allowed" 
+              : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
+            }`}
+            >
+            {loading ? "Creando..." : "Crear Habilidad"}
           </button>
         </div>
       </form>

@@ -31,7 +31,9 @@ export default function MenuDesplegable({
         type="button"
         disabled={disabled}
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-3 py-2 text-sm border border-primary-500 rounded-md bg-[#D4DBE2] cursor-pointer
+        className={`w-full flex items-center justify-between px-3 py-2 text-[14px] 
+        rounded-xl border border-gray-300 bg-white 
+        focus-within:ring-1 focus-within:ring-blue-600 transition-all
         ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         <span className={selected ? "text-black" : "text-primary-500"}>

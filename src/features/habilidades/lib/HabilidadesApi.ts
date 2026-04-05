@@ -20,26 +20,26 @@ export interface Nivel {
 
 export interface Tecnologia {
   id_tecnologia: string;
-  nombre_tecnologia: string;
+  nombre: string;
 }
 
 export const crearHabilidad = async (data: Habilidad) => {
-  const res = await apiClient.post("/habilidades", data);
+  const res = await apiClient.post("/api/habilidades", data);
   return res.data;
 };
 
 export const obtenerCategorias = async (): Promise<Categoria[]> => {
-  const response = await apiClient.get("/categorias-habilidad");
+  const response = await apiClient.get("/api/categorias-habilidad");
   return response.data.data;
 }
 
 export const obtenerNiveles = async (): Promise<Nivel[]> => {
-  const response = await apiClient.get("/niveles-habilidad");
+  const response = await apiClient.get("/api/niveles-habilidad");
   return response.data.data;
 }
 
 export const obtenerTecnologias = async (): Promise<Tecnologia[]> => {
-  const response = await apiClient.get("/tecnologias");
+  const response = await apiClient.get("/api/tecnologias");
   return response.data.data;
 }
 
