@@ -2,10 +2,10 @@ import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
-import { Briefcase, ArrowLeft } from 'lucide-react';
+import { Briefcase, ArrowLeft, Mail } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
-import { registerRequest, getUsuario } from '@/features/auth/api/auth';
+import { registerRequest, getUsuario, resendVerificationEmail } from '@/features/auth/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 
 const registerSchema = z.object({
@@ -39,6 +39,10 @@ export default function Register() {
 
     const navigate = useNavigate();
     const setUser = useAuthStore(s => s.setUser);
+
+    const [isRegistered, setIsRegistered] = useState(false); // Nuevo estado
+    const [resendLoading, setResendLoading] = useState(false);
+    const [resendStatus, setResendStatus] = useState<string | null>(null);
 
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
@@ -110,7 +114,7 @@ export default function Register() {
 
             const user = await getUsuario();
             setUser(user);
-            navigate('/Dashboard/perfilPersonal/PerfilPersonal');
+            setIsRegistered(true); // Marca como registrado para mostrar mensaje de verificación
 
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
@@ -120,10 +124,58 @@ export default function Register() {
         }
     }
 
+    // Función para el botón de "Reenviar correo"
+    async function handleResendEmail() {
+        setResendLoading(true);
+        setResendStatus(null);
+        try {
+            await resendVerificationEmail();
+            setResendStatus('¡Enlace enviado! Revisa tu bandeja de entrada.');
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            setResendStatus(error?.response?.data?.message ?? 'Error al reenviar. Intenta más tarde.');
+        } finally {
+            setResendLoading(false);
+        }
+    }
+
     const handleNombreChange = (val: string) => { setNombre(val.replace(/[^A-Za-z\s]/g, '').slice(0, 15)); setErrors(prev => ({ ...prev, nombre: undefined })); };
     const handleApellidoChange = (val: string) => { setApellido(val.replace(/[^A-Za-z\s]/g, '').slice(0, 15)); setErrors(prev => ({ ...prev, apellido: undefined })); };
     const handleCorreoChange = (val: string) => { setCorreo(val.trimStart().slice(0, 30)); setErrors(prev => ({ ...prev, correo: undefined })); };
     const handlePasswordChange = (val: string) => { if (val.length <= 12) { setPassword(val); setErrors(prev => ({ ...prev, password: undefined })); } };
+
+    // VISTA DE VERIFICACIÓN (Se muestra solo tras el registro exitoso)
+    if (isRegistered) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-full max-w-md bg-white p-8 rounded-4xl shadow-2xl border border-blue-100">
+                    <div className="mb-6 bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+                        <Mail className="w-10 h-10 text-blue-600 animate-bounce" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-black mb-2">¡Casi listo, {nombre}!</h2>
+                    <p className="text-gray-600 mb-6">
+                        Hemos enviado un enlace de verificación a <span className="font-bold text-black">{correo}</span>. 
+                        Es necesario verificar tu cuenta para acceder a todas las funciones.
+                    </p>
+                    
+                    <div className="space-y-4">
+                        <AuthButton 
+                            text={resendLoading ? 'Enviando...' : 'Reenviar correo de verificación'} 
+                            onClick={handleResendEmail} 
+                        />
+                        {resendStatus && <p className="text-sm text-blue-600 font-medium">{resendStatus}</p>}
+                        
+                        <button 
+                            onClick={() => navigate('/auth/Login')}
+                            className="text-sm text-gray-500 hover:text-black transition-colors underline"
+                        >
+                            Redirigir al inicio de sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 py-12">

@@ -158,7 +158,7 @@ export default function Login() {
 
                     <p className="mt-6! text-sm text-gray-600 font-medium">
                         ¿No tienes cuenta?{' '}
-                        <Link to="/auth/register" className="font-bold text-blue-800 hover:text-blue-900">
+                        <Link to="/auth/Register" className="font-bold text-blue-800 hover:text-blue-900">
                             Regístrate
                         </Link>
                     </p>
