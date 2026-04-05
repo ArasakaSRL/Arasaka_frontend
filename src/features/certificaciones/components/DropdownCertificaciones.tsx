@@ -52,8 +52,9 @@ export function DropdownCertificaciones({
 
       {/* LABEL */}
       <div className="flex justify-between items-center">
-        <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left">
+        <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] w-full text-left">
           {titulo}
+          <span className="text-red-500">*</span>
         </label>
 
         {tamMax && (
@@ -90,8 +91,10 @@ export function DropdownCertificaciones({
           }`}
         />
       </div>
+
+      {/* ERROR MESSAGE (Actualizado) */}
       {error && (
-        <p className="text-red-600 text-[12px] ml-1 animate-in fade-in slide-in-from-top-1">
+        <p className="text-red-600 text-[12px] text-left w-full animate-in fade-in slide-in-from-top-1">
           Este campo es obligatorio
         </p>
       )}
