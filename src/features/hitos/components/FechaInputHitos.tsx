@@ -59,7 +59,7 @@ export function FechaInputHitos({ titulo, value, onChange }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-1">
-      <label className="text-sm font-semibold text-gray-700 block text-left w-full">{titulo}</label>
+      <label className="text-sm font-semibold text-black block text-left w-full">{titulo}</label>
       <div className="flex gap-2 items-center">
         <input value={dia} onChange={handleDia} placeholder="dd" className="w-16 text-center border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <input ref={mesRef} value={mes} onChange={handleMes} placeholder="mm" className="w-16 text-center border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
