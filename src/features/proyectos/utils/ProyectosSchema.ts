@@ -34,11 +34,4 @@ export const ProyectoSchema = z
       .refine((val) => !val || val.startsWith("https://"), {
         message: "Formato de enlace inválido",
       }),
-  })
-  .refine((data) => {
-    if (!data.fechaInicio || !data.fechaFin) return true;
-    return data.fechaFin >= data.fechaInicio;
-  }, {
-    message: "La fecha de finalización no puede ser previa al inicio",
-    path: ["fechaFin"],
   });

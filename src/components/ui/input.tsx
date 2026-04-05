@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 interface Props {
     label: string;
@@ -11,11 +12,13 @@ interface Props {
     maxLength?: number;
     showCounter?: boolean;
     required?: boolean;
+    min?: string;
+    max?: string;
     icon?: LucideIcon; // icono opcional de lucide-react
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon }, ref) => {
+    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon, min, max }, ref) => {
         const isAtLimit = maxLength !== undefined && value.length === maxLength;
 
         return (
@@ -47,6 +50,8 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             maxLength={maxLength}
                             type={type}
                             placeholder={placeholder}
+                            min={min}
+                            max={max}
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
                             className={`w-full px-3 text-[14px] py-2 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 
@@ -54,6 +59,12 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                                     ? 'border-gray-300 caret-red-500 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
                                     : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
                                 }`}
+                        />
+                    )}
+                    {type === "date" && (
+                        <Calendar
+                        size={18}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                         />
                     )}
                 </div>

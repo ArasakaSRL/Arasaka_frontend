@@ -1,7 +1,7 @@
 import { CircleX } from 'lucide-react';
 import { useState } from 'react';
 import DropdownCheckbox from './MenuTecnologias';
-import { crearProyecto } from '../lib/ProyectosApi';
+import { crearProyecto, type Proyecto } from '../lib/ProyectosApi';
 import { ProyectoSchema } from '../utils/ProyectosSchema';
 import { toast } from '../../../components/Alerta';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { useTecnologias } from '../hooks/useTecnologias';
 
 interface FormularioProps {
     closeModal: () => void;
-    onCreated: (nuevoProyecto: any) => void;
+    onCreated: (nuevoProyecto: Proyecto) => void;
 }
 
 export default function FormularioProyectos({closeModal, onCreated}:FormularioProps) {
@@ -17,6 +17,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const { opciones} = useTecnologias();
+
     const [formularioData, setFormularioData] = useState({
       title: "",
       descripcion: "",
@@ -44,6 +45,18 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
         closeModal();
     }
 
+    const validateField = (name: string, value: string) => {
+      const fieldSchema = ProyectoSchema.shape[name as keyof typeof ProyectoSchema.shape];
+
+      if (!fieldSchema) return;
+
+      const result = fieldSchema.safeParse(value);
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: result.success ? "" : result.error.issues[0].message,
+      }));
+    };
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -94,8 +107,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
         };
 
        const nuevoProyecto = await crearProyecto(payload);
-        toast.success("Proyecto creado exitosamente", 3000);
-
+      toast.success("Proyecto creado exitosamente", 3000);
         resetForm();
         closeModal();
         onCreated(nuevoProyecto);
@@ -110,7 +122,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
     return(
     <div className="bg-white rounded-2xl shadow-xl w-full">
 
-      <div className="px-6 pt-4 flex justify-between items-center">
+      <div className="px-7 pt-4 flex justify-between items-center">
         <h2 className="text-base text-left font-semibold text-primary-500">
           Nuevo Proyecto
         </h2>
@@ -129,7 +141,8 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
             value={formularioData.title}
             onChange={(val) => {
               setFormularioData({ ...formularioData, title: val });
-              setErrors((prev) => ({ ...prev, titulo: "" }));
+              validateField("titulo", val);
+
             }}
             error={errors.titulo}
             required
@@ -138,15 +151,15 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
           <Input
             label="Descripción del Proyecto"
             type="textarea"
-            placeholder="" 
+            placeholder="Describe el proyecto, sus funcionalidades y tecnologías utilizadas" 
             value={formularioData.descripcion}
             onChange={(val) => {
               setFormularioData({ ...formularioData, descripcion: val });
-              setErrors((prev) => ({ ...prev, descripcion: "" }));
             }}
             error={errors.descripcion}
             maxLength={160}
             showCounter
+            required
           />
 
         <div className="grid grid-cols-2 gap-3">
@@ -155,10 +168,20 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
             type="date"
             placeholder=''
             value={formularioData.startDate}
+            max={new Date().toISOString().split("T")[0]}
             onChange={(val) => {
+            if (formularioData.endDate && formularioData.endDate < val) {
+              setFormularioData((prev) => ({
+                ...prev,
+                startDate: val,
+                endDate: "",
+              }));
+            } else {
               setFormularioData({ ...formularioData, startDate: val });
-              setErrors((prev) => ({ ...prev, fechaInicio: "" }));
-            }}
+            }
+
+            setErrors((prev) => ({ ...prev, fechaInicio: "" }));
+          }}
             error={errors.fechaInicio}
             required
           />
@@ -167,6 +190,8 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
               type="date"
               value={formularioData.endDate}
               placeholder=''
+              min={formularioData.startDate}
+              max={new Date().toISOString().split("T")[0]}
               onChange={(val) => {
                 setFormularioData({ ...formularioData, endDate: val });
                 setErrors((prev) => ({ ...prev, fechaFin: "" }));
@@ -193,7 +218,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
             value={formularioData.projectUrl}
             onChange={(val) => {
               setFormularioData({ ...formularioData, projectUrl: val });
-              setErrors((prev) => ({ ...prev, projectUrl: "" }));
+              validateField("projectUrl", val);
             }}
             error={errors.projectUrl}
           />
@@ -205,7 +230,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
             value={formularioData.githubUrl}
             onChange={(val) => {
               setFormularioData({ ...formularioData, githubUrl: val });
-              setErrors((prev) => ({ ...prev, githubUrl: "" }));
+              validateField("githubUrl", val);
             }}
             error={errors.githubUrl}
           />
