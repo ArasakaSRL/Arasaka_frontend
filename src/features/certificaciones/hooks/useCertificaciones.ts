@@ -5,19 +5,17 @@ import type { Certificado } from '../components/CertificadoCard';
 import type { CertificacionAPI } from '../types';
 import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
 
-const certificadosMock: Certificado[] = [
-  { id: "1", titulo: "Certificado 1", imagen: "https://res.cloudinary.com/dkopjpuqx/image/upload/v1774753657/de-reconocimiento_b95guz.png", orientacion: "horizontal" },
-  { id: "3", titulo: "Certificado vertical", imagen: "https://res.cloudinary.com/dkopjpuqx/image/upload/v1774753667/imagen-ce-aenor_fqwiir.jpg", orientacion: "vertical" },
-  { id: "2", titulo: "Certificado 2", imagen: "https://res.cloudinary.com/dkopjpuqx/image/upload/v1774753657/de-reconocimiento_b95guz.png", orientacion: "horizontal" },
-  { id: "4", titulo: "Certificado 4", imagen: "https://res.cloudinary.com/dkopjpuqx/image/upload/v1774753657/de-reconocimiento_b95guz.png", orientacion: "horizontal" },
-];
-
 export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: string | null) {
   const [certificados, setCertificados] = useState<Certificado[]>([]);
   const [isLoadingCerts, setIsLoadingCerts] = useState<boolean>(true);
   const [isUsingFallbackCerts, setIsUsingFallbackCerts] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!idPortafolio) {
+      setIsLoadingCerts(false);
+      return; 
+    }
+
     const fetchCerts = async () => {
       try {
         setIsLoadingCerts(true);
@@ -29,8 +27,6 @@ export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: stri
           data = await getTodasCertificaciones(idPortafolio);
         }
 
-        // CORRECCIÓN AQUÍ: Si data existe (incluso si es un array vacío []), mapeamos.
-        // Solo usamos el mock si la API falla completamente y lanza un error.
         if (data) {
           const certificadosMapeados: Certificado[] = data.map(apiCert => ({
             id: apiCert.id_certificacion,
@@ -43,8 +39,8 @@ export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: stri
           setIsUsingFallbackCerts(false);
         }
       } catch (err) {
-        console.error('Base de datos caída o error de red, usando mock de certificados', err);
-        setCertificados(certificadosMock);
+        console.error('Error al obtener los certificados', err);
+        setCertificados([]); 
         setIsUsingFallbackCerts(true);
       } finally {
         setIsLoadingCerts(false);
