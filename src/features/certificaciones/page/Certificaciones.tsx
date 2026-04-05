@@ -15,7 +15,6 @@ import { toast } from "@/components/Alerta";
 import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import MenuDesplegable from "@/features/habilidades/components/MenuDesplegable";
 
 const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
 
@@ -51,20 +50,35 @@ export default function Certificaciones() {
     value: String(cat.id), 
   }));
 
+  const [errores, setErrores] = useState({
+    categoria: false,
+    titulo: false,
+    institucion: false,
+    imagen: false,
+  });
+
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
     // 👇 1. Agregamos institucionForm a la validación
-    if (!categoriaSeleccionada || !tituloForm || !institucionForm || !archivoImagenForm) {
+    const nuevosErrores = {
+      categoria: !categoriaSeleccionada,
+      titulo: !tituloForm.trim(),
+      institucion: !institucionForm.trim(),
+      imagen: !archivoImagenForm,
+    };
+
+    setErrores(nuevosErrores);
+
+    if (Object.values(nuevosErrores).some(Boolean)) {
       toast.error("Por favor completa los campos obligatorios");
       return;
     }
-
     try {
       setIsUploadingToFirebase(true);
 
-      const nombreArchivo = `${Date.now()}_${archivoImagenForm.name}`;
+      const nombreArchivo = `${Date.now()}_${archivoImagenForm!.name}`;
       const rutaFirebase = `certificaciones/${nombreArchivo}`; 
-      const url_archivo_firebase = await uploadImage(archivoImagenForm, rutaFirebase);
+      const url_archivo_firebase = await uploadImage(archivoImagenForm!, rutaFirebase);
 
       const datosDelFormulario = {
         titulo: tituloForm,
@@ -73,7 +87,7 @@ export default function Certificaciones() {
         fecha_obtencion: fechaObtencionForm || new Date().toISOString().split('T')[0],
         url_archivo: url_archivo_firebase,
         orientacion_imagen: orientacionForm,
-        id_categoria_certificacion: categoriaSeleccionada.value
+        id_categoria_certificacion: categoriaSeleccionada!.value
       };
 
       await registrarCertificacion(ID_PORTAFOLIO_ACTUAL, datosDelFormulario);
@@ -103,11 +117,18 @@ export default function Certificaciones() {
     setFechaObtencionForm("");
     setArchivoImagenForm(null);
     setCategoriaSeleccionada(null);
+    setErrores({
+    categoria: false,
+    titulo: false,
+    institucion: false,
+    imagen: false,
+  });
   };
   const cerrarModal = () => {
     resetForm();
     setOpenModal(false);
   };
+
   
   return (
     <DashboardLayout>
@@ -136,8 +157,12 @@ export default function Certificaciones() {
                 titulo="Categoría"
                 opciones={opcionesCategorias}
                 value={categoriaSeleccionada}
-                onChange={(option) => setCategoriaSeleccionada(option)}
+                onChange={(option) => {
+                  setCategoriaSeleccionada(option);
+                  setErrores(prev => ({ ...prev, categoria: false }));
+                }}
                 placeholder="Selecciona una categoría"
+                error={errores.categoria}
               />
 
               <Input
@@ -145,8 +170,12 @@ export default function Certificaciones() {
                 type="text"
                 placeholder="Ingrese el título"
                 value={tituloForm}
-                onChange={setTituloForm}
+                onChange={(val) => {
+                  setTituloForm(val);
+                  setErrores(prev => ({ ...prev, titulo: false }));
+                }}
                 required
+                error={errores.titulo ? "Este campo es obligatorio" : undefined}
               />
 
               <Input
@@ -154,8 +183,12 @@ export default function Certificaciones() {
                 type="text"
                 placeholder="Ingrese la institución"
                 value={institucionForm}
-                onChange={setInstitucionForm}
+                onChange={(val) => {
+                  setInstitucionForm(val);
+                  setErrores(prev => ({ ...prev, institucion: false }));
+                }}
                 required
+                error={errores.institucion ? "Este campo es obligatorio" : undefined}
               />
 
               <Input
