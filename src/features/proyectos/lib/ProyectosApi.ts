@@ -9,7 +9,7 @@ export interface Proyecto {
     fecha_fin?: string;
     tecnologias: Tecnologias[]
     url_demo?: string | null;
-    url_github?: string | null;
+    url_repositorio?: string | null;
 }
 
 export interface Tecnologias {
@@ -20,16 +20,16 @@ export interface Tecnologias {
 }
 
 export const crearProyecto = async (data: Proyecto) => {
-  const response = await apiClient.post( `/portafolios/${data.id_portafolio}/proyectos`, data);
-  return response.data;
+  const response = await apiClient.post( `/api/portafolios/${data.id_portafolio}/proyectos`, data);
+  return response.data.data;
 };
 
 export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
-    const response = await apiClient.get("/tecnologias");
+    const response = await apiClient.get("/api/tecnologias");
     return response.data.data;
 }
 
 export const obtenerProyectos = async (idPortafolio: string): Promise<Proyecto[]> => {
-    const response = await apiClient.get(`/portafolios/${idPortafolio}/proyectos`);
+    const response = await apiClient.get(`/api/portafolios/${idPortafolio}/proyectos`);
     return response.data.data;
 }

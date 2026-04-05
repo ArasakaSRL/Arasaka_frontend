@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 
 interface Props {
     label: string;
-    type: 'text' | 'textarea';
+    type: 'text' | 'textarea' | 'date' | 'url';
     placeholder: string; // texto de ayuda dentro del input
     value: string; // valor actual del input
     onChange: (val: string) => void;
@@ -19,7 +19,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
         const isAtLimit = maxLength !== undefined && value.length === maxLength;
 
         return (
-            <div className="flex flex-col gap-1.5 w-full mb-4">
+            <div className="flex flex-col gap-1.5 w-full">
                 <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left">
                     {Icon && <Icon size={15} className="text-gray-500" />}
                     {label}
@@ -34,8 +34,8 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             placeholder={placeholder}
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
-                            rows={4}
-                            className={`w-full px-4 py-3 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
+                            rows={3}
+                            className={`w-full px-3 py-2 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
                             ${isAtLimit
                                     ? 'border-red-400 focus:ring-1 focus:ring-red-400'
                                     : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
@@ -49,7 +49,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             placeholder={placeholder}
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
-                            className={`w-full px-4 text-[14px] py-3 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600
+                            className={`w-full px-3 text-[14px] py-2 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 
                             ${isAtLimit
                                     ? 'border-gray-300 caret-red-500 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
                                     : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
