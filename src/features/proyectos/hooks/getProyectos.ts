@@ -20,5 +20,5 @@ export const useProyectos = (idPortafolio: string) => {
     fetchProyectos();
   }, [idPortafolio]);
 
-  return { proyectos, loading };
+  return { proyectos, setProyectos,loading };
 }

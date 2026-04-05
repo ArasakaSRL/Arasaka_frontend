@@ -9,6 +9,8 @@ import Proyectos from '@/features/proyectos/pages/PageProyectos'
 import Habilidades from '@/features/habilidades/pages/PageHabilidades'
 import Certificaciones from '@/features/certificaciones/page/Certificaciones'
 import Hitos from './features/hitos/page/Hitos'
+import VerifyEmail from './pages/auth/VerifyEmail'
+import Dashboard from './pages/Dashboard/index'
 
 
 export default function App() {
@@ -24,6 +26,8 @@ export default function App() {
         <Route path="/Dashboard/habilidades/Habilidades" element={<Habilidades />} />
         <Route path="/Dashboard/certificaciones/Certificaciones" element={< Certificaciones/>} />
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
       </Route>
     </Routes>
   )

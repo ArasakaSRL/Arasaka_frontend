@@ -20,7 +20,7 @@ export interface Nivel {
 
 export interface Tecnologia {
   id_tecnologia: string;
-  nombre_tecnologia: string;
+  nombre: string;
 }
 
 export const crearHabilidad = async (data: Habilidad) => {

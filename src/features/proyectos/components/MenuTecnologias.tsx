@@ -11,6 +11,7 @@ interface Props {
   onChange: (values: string[]) => void;
   options: Option[];
   placeholder?: string;
+  loading?: boolean;
 }
 
 export default function DropdownCheckbox({
@@ -31,7 +32,7 @@ export default function DropdownCheckbox({
   };
 
   const filteredOptions = options.filter((opt) =>
-    opt.label.toLowerCase().includes(search.toLowerCase())
+    opt.label?.toLowerCase().includes(search.toLowerCase())
   );
 
   const selectedLabels = options
@@ -49,9 +50,11 @@ export default function DropdownCheckbox({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-3 py-2 text-sm border border-primary-500 rounded-md bg-[#D4DBE2]"
+        className="w-full flex items-center justify-between px-3 py-2 text-[14px] 
+        rounded-xl border border-gray-300 bg-white 
+        focus-within:ring-1 focus-within:ring-blue-600 transition-all"
       >
-        <span className={values.length ? "text-black" : "text-gray-500"}>
+        <span className={values.length ? "text-gray-600" : "text-gray-400"}>
           {getDisplayText()}
         </span>
 
@@ -59,7 +62,7 @@ export default function DropdownCheckbox({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-light-500 border-primary-500 border rounded-md shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-light-500 border border-gray-300 rounded-xl shadow-lg max-h-48 overflow-y-auto">
           
           <div className="p-2 border-b">
             <input
@@ -67,7 +70,7 @@ export default function DropdownCheckbox({
               placeholder="Buscar..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-2 py-1 text-sm border rounded-md outline-none"
+              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-blue-600"
             />
           </div>
 

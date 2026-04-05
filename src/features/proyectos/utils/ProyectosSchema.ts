@@ -12,6 +12,14 @@ export const ProyectoSchema = z
       .string()
       .max(160, "La descripción no puede exceder los 160 caracteres")
       .transform((val) => val.replace(/<[^>]*>?/gm, "")),
+      
+    tecnologias: z
+      .array(
+        z.object({
+          id_tecnologia: z.string()
+        })
+      )
+      .min(1, "Seleccione al menos una tecnología"),
     
     fechaInicio: z
       .string()
@@ -34,11 +42,4 @@ export const ProyectoSchema = z
       .refine((val) => !val || val.startsWith("https://"), {
         message: "Formato de enlace inválido",
       }),
-  })
-  .refine((data) => {
-    if (!data.fechaInicio || !data.fechaFin) return true;
-    return data.fechaFin >= data.fechaInicio;
-  }, {
-    message: "La fecha de finalización no puede ser previa al inicio",
-    path: ["fechaFin"],
   });
