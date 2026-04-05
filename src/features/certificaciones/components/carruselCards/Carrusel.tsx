@@ -34,7 +34,7 @@ export function Carousel({ children }: CarouselProps) {
       {/* Contenedor */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide px-10"
+        className="flex gap-4 overflow-x-auto overflow-y-visible scroll-smooth scrollbar-hide px-10 py-6 min-h-[220px]"
       >
         {children}
       </div>
