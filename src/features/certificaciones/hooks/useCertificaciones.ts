@@ -5,7 +5,6 @@ import type { Certificado } from '../components/CertificadoCard';
 import type { CertificacionAPI } from '../types';
 import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
 
-// Tu mock original como respaldo por si la base de datos se cae
 const certificadosMock: Certificado[] = [
   { id: "1", titulo: "Certificado 1", imagen: "https://res.cloudinary.com/dkopjpuqx/image/upload/v1774753657/de-reconocimiento_b95guz.png", orientacion: "horizontal" },
   { id: "3", titulo: "Certificado vertical", imagen: "https://res.cloudinary.com/dkopjpuqx/image/upload/v1774753667/imagen-ce-aenor_fqwiir.jpg", orientacion: "vertical" },
@@ -24,29 +23,27 @@ export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: stri
         setIsLoadingCerts(true);
         let data: CertificacionAPI[];
 
-        // Decidimos a qué API llamar basado en si hay un filtro seleccionado
         if (idCategoriaFiltro) {
           data = await getCertificacionesPorCategoria(idPortafolio, idCategoriaFiltro);
         } else {
           data = await getTodasCertificaciones(idPortafolio);
         }
 
-        if (data && data.length > 0) {
-          // Mapeamos los datos de la API al formato que espera tu UI
+        // CORRECCIÓN AQUÍ: Si data existe (incluso si es un array vacío []), mapeamos.
+        // Solo usamos el mock si la API falla completamente y lanza un error.
+        if (data) {
           const certificadosMapeados: Certificado[] = data.map(apiCert => ({
             id: apiCert.id_certificacion,
             titulo: apiCert.titulo,
             imagen: apiCert.url_archivo,
             orientacion: apiCert.orientacion_imagen
           }));
+          
           setCertificados(certificadosMapeados);
           setIsUsingFallbackCerts(false);
-        } else {
-          setCertificados(certificadosMock);
-          setIsUsingFallbackCerts(true);
         }
       } catch (err) {
-        console.error('Base de datos caída, usando mock de certificados', err);
+        console.error('Base de datos caída o error de red, usando mock de certificados', err);
         setCertificados(certificadosMock);
         setIsUsingFallbackCerts(true);
       } finally {
@@ -55,7 +52,7 @@ export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: stri
     };
 
     fetchCerts();
-  }, [idPortafolio, idCategoriaFiltro]); // Se vuelve a ejecutar si cambia el filtro o el portafolio
+  }, [idPortafolio, idCategoriaFiltro]);
 
   return { certificados, isLoadingCerts, isUsingFallbackCerts };
 }

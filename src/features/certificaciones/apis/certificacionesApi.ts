@@ -9,7 +9,11 @@ export const getTodasCertificaciones = async (idPortafolio: string): Promise<Cer
 };
 
 export const getCertificacionesPorCategoria = async (idPortafolio: string, idCategoria: string): Promise<CertificacionAPI[]> => {
-  const response = await axios.get<CertificacionesResponse>(`${API_URL}/portafolios/${idPortafolio}/categorias/${idCategoria}/certificaciones`);
+  // URL CORREGIDA para que coincida exactamente con tu backend
+  const response = await axios.get<CertificacionesResponse>(
+    `${API_URL}/portafolios/${idPortafolio}/certificaciones/categoria/${idCategoria}`
+  );
+  
   return response.data.data;
 };
 
