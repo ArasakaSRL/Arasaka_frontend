@@ -4,7 +4,6 @@ import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
 
 import { Banner } from "@/components/Banner";
-import { Modal } from "../components/Modal"; 
 import { InputCertificaciones } from "../components/InputCertificaciones";
 import { FechaInput } from "../components/FechaInput";
 import { ImagenUploader } from "../components/ImagenUploader";
@@ -14,6 +13,8 @@ import { uploadImage } from "@/firebase/firebaseStorage";
 import { CertificadosGrid } from "../components/CertificadosGrid";
 import { Carousel } from "../components/carruselCards/Carrusel";
 import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
+import { toast } from "@/components/Alerta";
+import ModalForm from "@/components/Modal";
 
 const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
 
@@ -53,7 +54,7 @@ export default function Certificaciones() {
   const handleSubmit = async () => {
     // 👇 1. Agregamos institucionForm a la validación
     if (!categoriaSeleccionada || !tituloForm || !institucionForm || !archivoImagenForm) {
-      alert("Por favor completa los campos obligatorios (Categoría, Título, Institución e Imagen)");
+      toast.error("Por favor completa los campos obligatorios");
       return;
     }
 
@@ -75,7 +76,7 @@ export default function Certificaciones() {
       };
 
       await registrarCertificacion(ID_PORTAFOLIO_ACTUAL, datosDelFormulario);
-      alert("Certificación creada exitosamente!");
+      toast.success("Certificación creada exitosamente!");
       
       setOpenModal(false);
       setTituloForm("");
@@ -87,20 +88,31 @@ export default function Certificaciones() {
       
     } catch (err) {
       console.error(err);
-      alert("Hubo un error al procesar tu certificación");
+      toast.warning("Hubo un error al procesar tu certificación");
     } finally {
       setIsUploadingToFirebase(false); // Detenemos el loading de Firebase
     }
   };
 
   const isBusy = isCreating || isUploadingToFirebase; // Variable para desactivar botones mientras carga
-
+  const resetForm = () => {
+    setTituloForm("");
+    setInstitucionForm("");
+    setDescripcionForm("");
+    setFechaObtencionForm("");
+    setArchivoImagenForm(null);
+    setCategoriaSeleccionada(null);
+  };
+  const cerrarModal = () => {
+    resetForm();
+    setOpenModal(false);
+  };
   return (
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
         <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Certificacion" titulo="Certificaciones y logros" descripcion=""  ></Banner>
 
-        <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+        <ModalForm isOpen={openModal} closeModal={cerrarModal} maxWidth="max-w-2xl">
           <h2 className="text-lg font-semibold mb-6 text-left text-gray-700">
             Subir certificación
           </h2>
@@ -181,7 +193,7 @@ export default function Certificaciones() {
               {isBusy ? "Procesando..." : "Subir"}
             </button>
           </div>
-        </Modal>
+        </ModalForm>
 
          {/* CATEGORÍAS (responsivo corregido anteriormente) */}
         <div>
