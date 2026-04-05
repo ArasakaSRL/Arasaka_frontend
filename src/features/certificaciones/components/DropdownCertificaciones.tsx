@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CircleChevronDown } from "lucide-react";
 
 interface Option {
   label: string;
@@ -26,67 +27,70 @@ export function DropdownCertificaciones({
   const [open, setOpen] = useState(false);
 
   const handleSelect = (option: Option) => {
-    if (onChange) onChange(option); // Avisamos al padre
+    if (onChange) onChange(option);
     setOpen(false);
   };
 
   return (
-    <section className="w-60 flex flex-col gap-1 relative">
-      
-      {/* Header */}
+    <section className="flex flex-col gap-1.5 w-full relative">
+
+      {/* LABEL */}
       <div className="flex justify-between items-center">
-        <label className="text-sm font-semibold text-gray-700">
+        <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left">
           {titulo}
         </label>
 
         {tamMax && (
-          <span className="text-xs text-gray-400">
+          <span className="text-[11px] text-gray-400 mr-1">
             {value ? value.label.length : 0}/{tamMax}
           </span>
         )}
       </div>
 
-      {/* Input tipo dropdown */}
+      {/* INPUT STYLE */}
       <div
-        onClick={() => setOpen(!open)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen(!open);
+        }}
         className="
-          w-full border border-gray-300 rounded-md text-sm
-          px-4 py-2 cursor-pointer
-          flex justify-between items-center
-          bg-white
-          focus-within:ring-2 focus-within:ring-blue-500
+          w-full flex items-center justify-between px-3 py-2 text-[14px]
+          rounded-xl border border-gray-300 bg-white
+          focus-within:ring-1 focus-within:ring-blue-600 transition-all
+          cursor-pointer
         "
       >
-        <span className={`${value ? "text-gray-800" : "text-gray-400"}`}>
+        <span className={value ? "text-gray-600" : "text-gray-400"}>
           {value ? value.label : placeholder}
         </span>
 
-        <svg
-          className={`w-4 h-4 transition-transform ${
+        <CircleChevronDown
+          size={18}
+          className={`text-gray-400 transition-transform ${
             open ? "rotate-180" : ""
           }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </div>
 
-      {/* Opciones */}
+      {/* OPTIONS */}
       {open && (
-        <div className="absolute top-full mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-40 overflow-y-auto">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute z-50 top-[calc(100%+4px)] w-full bg-white border border-gray-300 rounded-xl shadow-lg max-h-36 overflow-y-auto scrollbar-hide"
+        >
           {opciones.map((option) => (
-            <div
+            <button
               key={option.value}
+              type="button"
               onClick={() => handleSelect(option)}
-              className="
-                px-4 py-2 text-sm cursor-pointer
-                hover:bg-blue-50
-              "
+              className={`
+                w-full text-left px-3 py-2 text-sm text-black
+                hover:bg-[#D4DBE2] cursor-pointer
+                ${value?.value === option.value ? "bg-blue-100 text-black" : ""}
+              `}
             >
               {option.label}
-            </div>
+            </button>
           ))}
         </div>
       )}

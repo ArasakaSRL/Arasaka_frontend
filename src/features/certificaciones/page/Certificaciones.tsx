@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
@@ -15,6 +15,7 @@ import { toast } from "@/components/Alerta";
 import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import MenuDesplegable from "@/features/habilidades/components/MenuDesplegable";
 
 const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
 
@@ -47,7 +48,7 @@ export default function Certificaciones() {
 
   const opcionesCategorias = categorias.map((cat) => ({
     label: cat.nombre,
-    value: cat.id,
+    value: String(cat.id), 
   }));
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
@@ -107,6 +108,7 @@ export default function Certificaciones() {
     resetForm();
     setOpenModal(false);
   };
+  
   return (
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
@@ -129,14 +131,13 @@ export default function Certificaciones() {
           <div className="flex flex-col md:flex-row gap-6">
 
             {/* FORM */}
-            <div className="flex-1 space-y-4">
-
+            <div className="flex-1 flex flex-col gap-1.5">
               <DropdownCertificaciones
                 titulo="Categoría"
-                placeholder={isLoading ? "Cargando categorías..." : "Categorías"}
                 opciones={opcionesCategorias}
                 value={categoriaSeleccionada}
-                onChange={(opcion) => setCategoriaSeleccionada(opcion)}
+                onChange={(option) => setCategoriaSeleccionada(option)}
+                placeholder="Selecciona una categoría"
               />
 
               <Input
