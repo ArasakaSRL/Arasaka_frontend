@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 import { Banner } from "@/components/Banner";
-import { Modal } from "../components/Modal";
-import { InputHitos } from "../components/InputHitos";
-import { FechaInputHitos } from "../components/FechaInputHitos";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { CardHitos } from "../components/cardHitos";
 import { getExperiencias, crearExperiencia } from "../apis/experienciasApi";
@@ -73,6 +70,12 @@ export default function Hitos() {
     cargarExperiencias();
   }, []);
 
+  useEffect(() => {
+  if (openModal) {
+    setSubmitted(false);
+  }
+}, [openModal]);
+
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
     setSubmitted(true);
@@ -120,7 +123,7 @@ export default function Hitos() {
       };
 
       await crearExperiencia(payload);
-      alert("Experiencia guardada exitosamente");
+      toast.success("Experiencia guardada exitosamente");
       
       // Limpiar formulario y recargar
       setCargoForm("");
@@ -134,13 +137,21 @@ export default function Hitos() {
       
     } catch (error) {
       console.error(error);
-      alert("Ocurrió un error al guardar");
+      toast.warning("Ocurrió un error al guardar");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const coloresCard = ["green", "blue", "red", "orange"] as const;
+  const resetForm = () => {
+    setCargoForm("");
+    setOrganizacionForm("");
+    setDescripcionForm("");
+    setFechaInicioForm("");
+    setFechaFinForm("");
+    setSubmitted(false);
+  };
 
   return (
     <DashboardLayout>
@@ -151,7 +162,10 @@ export default function Hitos() {
 
       <ModalForm 
         isOpen={openModal} 
-        closeModal={() => setOpenModal(false)}
+        closeModal={() => {
+          resetForm();
+          setOpenModal(false);
+        }}
         maxWidth="max-w-sm"
       >
         <div className="p-6 space-y-4">
@@ -160,7 +174,10 @@ export default function Hitos() {
             <h2 className="text-base font-semibold text-primary-500">
               Registrar Hito
             </h2>
-            <button onClick={() => setOpenModal(false)}>
+            <button onClick={() => {
+                resetForm();
+                setOpenModal(false);
+              }}>
               <CircleX size={20} />
             </button>
           </div>
@@ -238,7 +255,10 @@ export default function Hitos() {
 
             <button
               type="button"
-              onClick={() => setOpenModal(false)}
+              onClick={() => {
+                resetForm();
+                setOpenModal(false);
+              }}
               className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white cursor-pointer"
             >
               Cancelar
