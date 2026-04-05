@@ -186,6 +186,43 @@ export default function Hitos() {
           />
 
           <Input
+            label="Fecha de inicio"
+            placeholder=""
+            type="date"
+            value={fechaInicioForm}
+            max={new Date().toISOString().split("T")[0]}
+            onChange={(val) => {
+              setFechaInicioForm(val);
+
+              // 🔥 lógica que reemplaza tu componente anterior
+              if (fechaFinForm && fechaFinForm < val) {
+                setFechaFinForm("");
+                toast.warning("La fecha fin se reinició porque era menor a la fecha inicio");
+              }
+            }}
+            required
+            error={submitted && !fechaInicioForm ? "Este campo es obligatorio" : undefined}
+          />
+
+          <Input
+            label="Fecha de fin"
+            placeholder=""
+            type="date"
+            value={fechaFinForm}
+            min={fechaInicioForm}
+            max={new Date().toISOString().split("T")[0]}
+            onChange={(val) => {
+              setFechaFinForm(val);
+
+              if (fechaInicioForm && val < fechaInicioForm) {
+                toast.error("La fecha fin no puede ser menor a la fecha inicio");
+              }
+            }}
+            required
+            error={submitted && !fechaFinForm ? "Este campo es obligatorio" : undefined}
+          />
+
+          <Input
             label="Descripción"
             type="textarea"
             placeholder="Escribe una descripción"
@@ -196,9 +233,6 @@ export default function Hitos() {
             error={submitted && !descripcionForm? "Este campo es obligatorio" : undefined}
             showCounter
           />
-
-          <FechaInputHitos titulo="Fecha de inicio" value={fechaInicioForm} onChange={setFechaInicioForm} />
-          <FechaInputHitos titulo="Fecha de fin" value={fechaFinForm} onChange={setFechaFinForm} />
           
           <div className="flex justify-end gap-3 pt-2">
 
