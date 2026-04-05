@@ -12,8 +12,6 @@ export interface ProyectoFormData {
     url_repositorio?: string;
 }
 
-
-
 export interface Proyecto {
     id_portafolio:string;
     id_proyecto: string;
@@ -34,16 +32,16 @@ export interface Tecnologias {
 }
 
 export const crearProyecto = async (data: ProyectoFormData): Promise<Proyecto> => {
-  const response = await apiClient.post(`/api/portafolios/${data.id_portafolio}/proyectos`, data);
+  const response = await apiClient.post(`/portafolios/${data.id_portafolio}/proyectos`, data);
   return response.data.data;
 };
 
 export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
-    const response = await apiClient.get("/api/tecnologias");
+    const response = await apiClient.get("/tecnologias");
     return response.data.data;
 }
 
 export const obtenerProyectos = async (idPortafolio: string): Promise<Proyecto[]> => {
-    const response = await apiClient.get(`/api/portafolios/${idPortafolio}/proyectos`);
+    const response = await apiClient.get(`/portafolios/${idPortafolio}/proyectos`);
     return response.data.data;
 }

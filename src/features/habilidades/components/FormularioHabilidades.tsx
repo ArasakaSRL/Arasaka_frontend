@@ -1,8 +1,11 @@
 import { CircleX } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MenuDesplegable from "./MenuDesplegable";
-import { crearHabilidad, obtenerCategorias, obtenerNiveles,obtenerTecnologias, type Nivel, type Categoria, type Tecnologia } from "../lib/HabilidadesApi";
+import { crearHabilidad } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
+import { Input } from "@/components/ui/input";
+import { useHabilidadesData } from "../hooks/useHabilidades";
+import { HabilidadSchema } from "../utils/HabilidadSchema";
 
 interface HabilidadesProps {
   closeModal: () => void;
@@ -22,55 +25,43 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
   const [tecnologia, setTecnologia] = useState<string>("");
   const [habilidadBlanda, setHabilidadBlanda] = useState("");
 
-  const [opcionesCategorias, setOpcionesCategorias] = useState<{ label: string; value: string }[]>([]);
-  const [opcionesNiveles, setOpcionesNiveles] = useState<{ label: string; value: string }[]>([]);
-  const [opcionesTecnologias, setOpcionesTecnologias] = useState<{ label: string; value: string }[]>([]);
+  const { categorias, niveles, tecnologias } = useHabilidadesData();
   
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const categorias: Categoria[] = await obtenerCategorias();
-        const niveles: Nivel[] = await obtenerNiveles();
-        const tecnologias: Tecnologia[] = await obtenerTecnologias();
+  const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const categoriaLabel = categorias.find(c => c.value === categoria)?.label;
 
-        setOpcionesCategorias(
-          categorias.map((cat) => ({
-            label: cat.nombre,
-            value: cat.id_categoria_habilidad,
-          }))
-        );
-
-        setOpcionesNiveles(
-          niveles.map((nivel) => ({
-            label: nivel.nivel,
-            value: nivel.id_nivel_habilidad,
-          }))
-        );
-
-        setOpcionesTecnologias(
-          tecnologias.map((tec) => ({
-            label: tec.nombre,
-            value: tec.id_tecnologia,
-          }))
-        );
-      } catch (error) {
-        console.error("Error cargando datos", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const categoriaSeleccionada = opcionesCategorias.find(
+  const categoriaSeleccionada = categorias.find(
     (c) => c.value === categoria
   )?.label;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const result = HabilidadSchema.safeParse({
+      categoria,
+      nivel,
+      tecnologia,
+      habilidad: habilidadBlanda,
+      tipo: categoriaSeleccionada || "",
+    });
+
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+
+      result.error.issues.forEach((err) => {
+        const field = err.path[0] as string;
+        fieldErrors[field] = err.message;
+      });
+
+      setErrors(fieldErrors);
+      return;
+    }
+    
     setLoading(true);
     try{
-      const esTecnica = opcionesCategorias.find(c => c.value === categoria)?.label.toLowerCase() === "Tecnica";
+      const esTecnica = categoriaLabel?.toLowerCase() === "tecnica";
 
       const data: DatosHabilidad = {
         id_categoria_habilidad: categoria,
@@ -99,55 +90,85 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
   }
 
   return (
-    <div className="bg-light-500 rounded-2xl w-full shadow-xl">
+    <div className="rounded-2xl w-full shadow-xl">
       <div className="justify-between flex px-6 pt-4 items-center">
         <h2 className="text-base text-left font-semibold text-primary-500"> Nueva Habilidad</h2>
         <button
-        onClick={closeModal}
-        className="text-primary-500 hover:text-secondary-500 cursor-pointer transition-colors">
-          <CircleX />
+          onClick={closeModal}
+          className="text-primary-500 hover:text-secondary-500 cursor-pointer transition-colors">
+            <CircleX />
         </button>
       </div>
       <form onSubmit={handleSubmit} className="px-6 pb-5 space-y-4 text-left">
         <div className="space-y-0.5">
-          <label className="text-sm text-primary-500 font-medium">
-          Seleccione la categoria <span className="text-error-500">(*)</span>
+          <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
+            Seleccione la categoria <span className="text-error-500">*</span>
           </label>
-          <MenuDesplegable value={categoria} onChange={setCategoria} options={opcionesCategorias} placeholder="Seleccione categoría"/>
+          <MenuDesplegable 
+          value={categoria} 
+          onChange={(val) => {
+            setCategoria(val);
+            setErrors((prev) => ({ ...prev, categoria: "" }));
+          }}
+          options={categorias} 
+          placeholder="Seleccione categoría"
+          isOpen={menuAbierto === "categoria"} 
+          onToggle={() => setMenuAbierto(menuAbierto === "categoria" ? null : "categoria")}/>
+            {errors.categoria && <p className="text-red-500 text-xs ml-1">{errors.categoria}</p>}
         </div>
         {categoriaSeleccionada === "Tecnica" && (
           <div className="space-y-1">
-            <label className="text-sm text-primary-500 font-medium">
+            <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
               Seleccione la habilidad <span className="text-error-500">*</span>
             </label>
 
             <MenuDesplegable
               value={tecnologia}
-              onChange={setTecnologia}
-              options={opcionesTecnologias}
+              onChange={(val) => {
+                setTecnologia(val);
+                setErrors((prev) => ({ ...prev, tecnologia: "" }));
+              }}
+              options={tecnologias}
+              placeholder="Seleccione tecnología"
+              isOpen={menuAbierto === "tecnologia"}
+              onToggle={() => setMenuAbierto(menuAbierto === "tecnologia" ? null : "tecnologia")}
             />
+            {errors.tecnologia && <p className="text-red-500 text-xs ml-1">{errors.tecnologia}</p>}
           </div>
         )}
 
         {categoriaSeleccionada === "Blanda" && (
           <div className="space-y-1">
-            <label className="text-sm text-primary-500 font-medium">
-              Ingrese la habilidad <span className="text-error-500">*</span>
-            </label>
-
-            <input
+            <Input
               value={habilidadBlanda}
-              onChange={(e) => setHabilidadBlanda(e.target.value)}
-              className="w-full bg-[#D4DBE2] text-black border border-primary-500 rounded-md px-3 py-2 text-sm"
-              placeholder="Ej: Comunicación, Liderazgo..."
+              onChange={(val) => {
+                setHabilidadBlanda(val);
+                setErrors((prev) => ({ ...prev, habilidad: "" }));
+              }}
+              placeholder="Ej: Comunicación, Liderazgo..." 
+              label={"Ingrese la habilidad"} 
+              type={"text"}  
+              error={errors.habilidad}
+              required     
             />
           </div>
         )}
         <div className="space-y-0.5">
-          <label className="text-sm text-primary-500 font-medium">
-          Nivel de dominio  <span className="text-error-500">(*)</span>
+          <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
+            Nivel de dominio  <span className="text-error-500">*</span>
           </label>
-          <MenuDesplegable value={nivel} onChange={(val) => setNivel(val as string)} options={opcionesNiveles}/>
+          <MenuDesplegable 
+            value={nivel} 
+            onChange={(val) => {
+              setNivel(val);
+              setErrors((prev) => ({ ...prev, nivel: "" }));
+            }} 
+            options={niveles}
+            placeholder="Seleccione nivel de dominio"
+            isOpen={menuAbierto === "nivel"}
+            onToggle={() => setMenuAbierto(menuAbierto === "nivel" ? null : "nivel")}
+          />
+          {errors.nivel && <p className="text-red-500 text-xs ml-1">{errors.nivel}</p>}
         </div>
 
         <div className="flex justify-end gap-2 pt-3">

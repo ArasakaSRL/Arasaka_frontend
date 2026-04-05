@@ -24,22 +24,22 @@ export interface Tecnologia {
 }
 
 export const crearHabilidad = async (data: Habilidad) => {
-  const res = await apiClient.post("/api/habilidades", data);
+  const res = await apiClient.post("/habilidades", data);
   return res.data;
 };
 
 export const obtenerCategorias = async (): Promise<Categoria[]> => {
-  const response = await apiClient.get("/api/categorias-habilidad");
+  const response = await apiClient.get("/categorias-habilidad");
   return response.data.data;
 }
 
 export const obtenerNiveles = async (): Promise<Nivel[]> => {
-  const response = await apiClient.get("/api/niveles-habilidad");
+  const response = await apiClient.get("/niveles-habilidad");
   return response.data.data;
 }
 
 export const obtenerTecnologias = async (): Promise<Tecnologia[]> => {
-  const response = await apiClient.get("/api/tecnologias");
+  const response = await apiClient.get("/tecnologias");
   return response.data.data;
 }
 
