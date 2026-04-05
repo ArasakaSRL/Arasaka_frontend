@@ -13,6 +13,7 @@ import { es } from 'date-fns/locale';
 import ModalForm from "@/components/Modal";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
+import { CircleX } from "lucide-react";
 
 // ID estático (Cámbialo por el tuyo real de PostgreSQL)
 const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
@@ -153,15 +154,21 @@ export default function Hitos() {
         closeModal={() => setOpenModal(false)}
         maxWidth="max-w-sm"
       >
-        <div className="p-6">
-          <h2 className="text-lg font-semibold mb-4">
-            Registrar Hito
-          </h2>
+        <div className="p-6 space-y-4">
+          
+          <div className="flex justify-between items-center">
+            <h2 className="text-base font-semibold text-primary-500">
+              Registrar Hito
+            </h2>
+            <button onClick={() => setOpenModal(false)}>
+              <CircleX size={20} />
+            </button>
+          </div>
 
           <Input
             label="Nombre del cargo"
             type="text"
-            placeholder="Escribe algo..."
+            placeholder="Ingresar cargo..."
             value={cargoForm}
             onChange={setCargoForm}
             required
@@ -193,22 +200,31 @@ export default function Hitos() {
           <FechaInputHitos titulo="Fecha de inicio" value={fechaInicioForm} onChange={setFechaInicioForm} />
           <FechaInputHitos titulo="Fecha de fin" value={fechaFinForm} onChange={setFechaFinForm} />
           
+          <div className="flex justify-end gap-3 pt-2">
 
-          <div className="flex justify-end gap-3 mt-4">
             <button
+              type="button"
               onClick={() => setOpenModal(false)}
-              className="bg-red-500 text-white px-4 py-2 rounded"
+              className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white cursor-pointer"
             >
               Cancelar
             </button>
 
             <button
+              type="button"
               onClick={handleSubmit}
-              className="bg-primary-600 text-white px-4 py-2 rounded"
+              disabled={isSubmitting}
+              className={`text-sm px-4 py-2 rounded-md text-white 
+              ${isSubmitting 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
+              }`}
             >
-              Guardar
+              {isSubmitting ? "Guardando..." : "Guardar"}
             </button>
+
           </div>
+
         </div>
       </ModalForm>
 
