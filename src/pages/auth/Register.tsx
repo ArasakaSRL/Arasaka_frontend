@@ -166,10 +166,10 @@ export default function Register() {
                         {resendStatus && <p className="text-sm text-blue-600 font-medium">{resendStatus}</p>}
                         
                         <button 
-                            onClick={() => navigate('/Dashboard/perfilPersonal/PerfilPersonal')}
+                            onClick={() => navigate('/auth/Login')}
                             className="text-sm text-gray-500 hover:text-black transition-colors underline"
                         >
-                            Ir al perfil de todos modos
+                            Redirigir al inicio de sesión
                         </button>
                     </div>
                 </div>
