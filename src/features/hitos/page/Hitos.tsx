@@ -10,6 +10,9 @@ import { getExperiencias, crearExperiencia } from "../apis/experienciasApi";
 // Importamos date-fns para las fechas y el idioma español
 import { parseISO, isAfter, format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import ModalForm from "@/components/Modal";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/Alerta";
 
 // ID estático (Cámbialo por el tuyo real de PostgreSQL)
 const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
@@ -50,6 +53,7 @@ export default function Hitos() {
   const [experiencias, setExperiencias] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   // 2. FUNCIONES DE CARGA Y EFECTOS
   const cargarExperiencias = async () => {
@@ -70,9 +74,10 @@ export default function Hitos() {
 
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
+    setSubmitted(true);
     // Validar campos vacíos
     if (!cargoForm || !organizacionForm || !descripcionForm || !fechaInicioForm) {
-      alert("Por favor completa los campos obligatorios");
+      toast.error("Por favor completa los campos obligatorios");
       return;
     }
 
@@ -81,7 +86,7 @@ export default function Hitos() {
     const fechaInicioDate = parseISO(fechaInicioForm);
 
     if (isAfter(fechaInicioDate, hoy)) {
-      alert("La fecha de inicio no puede ser posterior a la fecha actual.");
+      toast.error("La fecha de inicio no puede ser posterior a la fecha actual.");
       return;
     }
 
@@ -89,12 +94,12 @@ export default function Hitos() {
       const fechaFinDate = parseISO(fechaFinForm);
 
       if (isAfter(fechaFinDate, hoy)) {
-        alert("La fecha de fin no puede ser posterior a la fecha actual.");
+        toast.error("La fecha de fin no puede ser posterior a la fecha actual.");
         return;
       }
 
       if (isAfter(fechaInicioDate, fechaFinDate)) {
-        alert("La fecha de inicio no puede ser mayor a la fecha de finalización.");
+        toast.error("La fecha de inicio no puede ser mayor a la fecha de finalización.");
         return;
       }
     }
@@ -143,43 +148,69 @@ export default function Hitos() {
         <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Hito" titulo="Experiencias e hitos importantes" descripcion="" />
       </div>
 
-      <Modal isOpen={openModal} onClose={() => setOpenModal(false)} title="Registrar Hito">
-        <InputHitos 
-          titulo="Nombre del Cargo/Titulo" 
-          tamMax={50} height={40} 
-          value={cargoForm} onChange={(e) => setCargoForm(e.target.value)}
-        />
-        <InputHitos 
-          titulo="Nombre de la Organizacion" 
-          tamMax={50} height={40} 
-          value={organizacionForm} onChange={(e) => setOrganizacionForm(e.target.value)}
-        />
-        <InputHitos 
-          titulo="Descripcion" 
-          tamMax={300} height={80} 
-          value={descripcionForm} onChange={(e) => setDescripcionForm(e.target.value)}
-        />
-        
-        <FechaInputHitos titulo="Fecha de inicio" value={fechaInicioForm} onChange={setFechaInicioForm} />
-        <FechaInputHitos titulo="Fecha de fin (Opcional)" value={fechaFinForm} onChange={setFechaFinForm} />
+      <ModalForm 
+        isOpen={openModal} 
+        closeModal={() => setOpenModal(false)}
+        maxWidth="max-w-sm"
+      >
+        <div className="p-6">
+          <h2 className="text-lg font-semibold mb-4">
+            Registrar Hito
+          </h2>
 
-        <div className="flex justify-end gap-3 pt-4">
-          <button
-            onClick={() => setOpenModal(false)}
-            disabled={isSubmitting}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
-          >
-            {isSubmitting ? "Guardando..." : "Guardar"}
-          </button>
+          <Input
+            label="Nombre del cargo"
+            type="text"
+            placeholder="Escribe algo..."
+            value={cargoForm}
+            onChange={setCargoForm}
+            required
+            error={submitted && !cargoForm ? "Este campo es obligatorio" : undefined}
+          />
+
+          <Input
+            label="Nombre de la Organización"
+            type="text"
+            placeholder="Escribe el nombre de la organización"
+            value={organizacionForm}
+            onChange={(val) => setOrganizacionForm(val)}
+            required
+            error={submitted && !organizacionForm ? "Este campo es obligatorio" : undefined}
+          />
+
+          <Input
+            label="Descripción"
+            type="textarea"
+            placeholder="Escribe una descripción"
+            value={descripcionForm}
+            onChange={(val) => setDescripcionForm(val)}
+            maxLength={300}
+            required
+            error={submitted && !descripcionForm? "Este campo es obligatorio" : undefined}
+            showCounter
+          />
+
+          <FechaInputHitos titulo="Fecha de inicio" value={fechaInicioForm} onChange={setFechaInicioForm} />
+          <FechaInputHitos titulo="Fecha de fin" value={fechaFinForm} onChange={setFechaFinForm} />
+          
+
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              onClick={() => setOpenModal(false)}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Cancelar
+            </button>
+
+            <button
+              onClick={handleSubmit}
+              className="bg-primary-600 text-white px-4 py-2 rounded"
+            >
+              Guardar
+            </button>
+          </div>
         </div>
-      </Modal>
+      </ModalForm>
 
       {/* RENDERIZADO DE LAS TARJETAS DINÁMICAS */}
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
