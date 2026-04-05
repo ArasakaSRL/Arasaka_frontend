@@ -1,13 +1,13 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api';
+import apiClient from '@/api/api'; 
 
 export const getExperiencias = async (idPortafolio: string) => {
-  const response = await axios.get(`${API_URL}/experiencias/portafolio/${idPortafolio}`);
+  // 2. Usas apiClient y le pasas la ruta relativa empezando con /api
+  const response = await apiClient.get(`/api/experiencias/portafolio/${idPortafolio}`);
   return response.data.data;
 };
 
 export const crearExperiencia = async (datos: any) => {
-  const response = await axios.post(`${API_URL}/experiencias`, datos);
+  // 3. Igual para el POST
+  const response = await apiClient.post('/api/experiencias', datos);
   return response.data;
 };
