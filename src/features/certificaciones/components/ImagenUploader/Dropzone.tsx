@@ -1,3 +1,4 @@
+import { toast } from "@/components/Alerta";
 import { useRef } from "react";
 
 type Props = {
@@ -11,7 +12,7 @@ export function Dropzone({ onFileSelect }: Props) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Solo imágenes");
+      toast.error("Solo se permite imagenes");
       return;
     }
 

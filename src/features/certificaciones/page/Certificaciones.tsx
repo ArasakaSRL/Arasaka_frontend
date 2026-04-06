@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
 
 import { Banner } from "@/components/Banner";
-import { Modal } from "../components/Modal"; 
-import { InputCertificaciones } from "../components/InputCertificaciones";
-import { FechaInput } from "../components/FechaInput";
 import { ImagenUploader } from "../components/ImagenUploader";
 import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 import DashboardLayout from "@/layout/DashboardLayout";
@@ -14,6 +11,10 @@ import { uploadImage } from "@/firebase/firebaseStorage";
 import { CertificadosGrid } from "../components/CertificadosGrid";
 import { Carousel } from "../components/carruselCards/Carrusel";
 import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
+import { toast } from "@/components/Alerta";
+import ModalForm from "@/components/Modal";
+import { CircleX } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
 
@@ -46,23 +47,38 @@ export default function Certificaciones() {
 
   const opcionesCategorias = categorias.map((cat) => ({
     label: cat.nombre,
-    value: cat.id,
+    value: String(cat.id), 
   }));
+
+  const [errores, setErrores] = useState({
+    categoria: false,
+    titulo: false,
+    institucion: false,
+    imagen: false,
+  });
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
     // 👇 1. Agregamos institucionForm a la validación
-    if (!categoriaSeleccionada || !tituloForm || !institucionForm || !archivoImagenForm) {
-      alert("Por favor completa los campos obligatorios (Categoría, Título, Institución e Imagen)");
+    const nuevosErrores = {
+      categoria: !categoriaSeleccionada,
+      titulo: !tituloForm.trim(),
+      institucion: !institucionForm.trim(),
+      imagen: !archivoImagenForm,
+    };
+
+    setErrores(nuevosErrores);
+
+    if (Object.values(nuevosErrores).some(Boolean)) {
+      toast.error("Por favor completa los campos obligatorios");
       return;
     }
-
     try {
       setIsUploadingToFirebase(true);
 
-      const nombreArchivo = `${Date.now()}_${archivoImagenForm.name}`;
+      const nombreArchivo = `${Date.now()}_${archivoImagenForm!.name}`;
       const rutaFirebase = `certificaciones/${nombreArchivo}`; 
-      const url_archivo_firebase = await uploadImage(archivoImagenForm, rutaFirebase);
+      const url_archivo_firebase = await uploadImage(archivoImagenForm!, rutaFirebase);
 
       const datosDelFormulario = {
         titulo: tituloForm,
@@ -71,11 +87,11 @@ export default function Certificaciones() {
         fecha_obtencion: fechaObtencionForm || new Date().toISOString().split('T')[0],
         url_archivo: url_archivo_firebase,
         orientacion_imagen: orientacionForm,
-        id_categoria_certificacion: categoriaSeleccionada.value
+        id_categoria_certificacion: categoriaSeleccionada!.value
       };
 
       await registrarCertificacion(ID_PORTAFOLIO_ACTUAL, datosDelFormulario);
-      alert("Certificación creada exitosamente!");
+      toast.success("Certificación creada exitosamente!");
       
       setOpenModal(false);
       setTituloForm("");
@@ -87,101 +103,154 @@ export default function Certificaciones() {
       
     } catch (err) {
       console.error(err);
-      alert("Hubo un error al procesar tu certificación");
+      toast.warning("Hubo un error al procesar tu certificación");
     } finally {
       setIsUploadingToFirebase(false); // Detenemos el loading de Firebase
     }
   };
 
   const isBusy = isCreating || isUploadingToFirebase; // Variable para desactivar botones mientras carga
+  const resetForm = () => {
+    setTituloForm("");
+    setInstitucionForm("");
+    setDescripcionForm("");
+    setFechaObtencionForm("");
+    setArchivoImagenForm(null);
+    setCategoriaSeleccionada(null);
+    setErrores({
+    categoria: false,
+    titulo: false,
+    institucion: false,
+    imagen: false,
+  });
+  };
+  const cerrarModal = () => {
+    resetForm();
+    setOpenModal(false);
+  };
 
+  
   return (
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
         <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Certificacion" titulo="Certificaciones y logros" descripcion=""  ></Banner>
 
-        <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
-          <h2 className="text-lg font-semibold mb-6 text-left text-gray-700">
-            Subir certificación
-          </h2>
+        <ModalForm isOpen={openModal} closeModal={cerrarModal} maxWidth="max-w-5xl">
+          <div className="p-6 space-y-4">
 
-          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
-            
-            {/* FORMULARIO */}
-            <div className="w-full md:w-[280px] flex flex-col gap-4">
+          {/* HEADER */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-base font-semibold text-primary-500">
+              Subir certificación
+            </h2>
+            <button onClick={cerrarModal}>
+              <CircleX size={20} />
+            </button>
+          </div>
+
+          {/* CONTENIDO */}
+          <div className="flex flex-col md:flex-row gap-6">
+
+            {/* FORM */}
+            <div className="flex-1 flex flex-col gap-1.5">
               <DropdownCertificaciones
                 titulo="Categoría"
-                placeholder={isLoading ? "Cargando categorías..." : "Categorías"}
                 opciones={opcionesCategorias}
                 value={categoriaSeleccionada}
-                onChange={(opcion) => setCategoriaSeleccionada(opcion)}
-              />
-              
-              <InputCertificaciones 
-                titulo="Título" 
-                tamMax={100} 
-                height={40}
-                value={tituloForm}
-                onChange={(e) => setTituloForm(e.target.value)} 
+                onChange={(option) => {
+                  setCategoriaSeleccionada(option);
+                  setErrores(prev => ({ ...prev, categoria: false }));
+                }}
+                placeholder="Selecciona una categoría"
+                error={errores.categoria}
               />
 
-              <InputCertificaciones 
-                titulo="Institucion Emisora" 
-                tamMax={100} 
-                height={40}
+              <Input
+                label="Título"
+                type="text"
+                placeholder="Ingrese el título"
+                value={tituloForm}
+                onChange={(val) => {
+                  setTituloForm(val);
+                  setErrores(prev => ({ ...prev, titulo: false }));
+                }}
+                required
+                error={errores.titulo ? "Este campo es obligatorio" : undefined}
+              />
+
+              <Input
+                label="Institución emisora"
+                type="text"
+                placeholder="Ingrese la institución"
                 value={institucionForm}
-                onChange={(e) => setInstitucionForm(e.target.value)}
+                onChange={(val) => {
+                  setInstitucionForm(val);
+                  setErrores(prev => ({ ...prev, institucion: false }));
+                }}
+                required
+                error={errores.institucion ? "Este campo es obligatorio" : undefined}
               />
-              
-              <FechaInput 
-                titulo="Fecha de emisión"
+
+              <Input
+                label="Fecha de emisión"
+                placeholder=""
+                type="date"
                 value={fechaObtencionForm}
-                onChange={(valorString) => setFechaObtencionForm(valorString)}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={setFechaObtencionForm}
               />
-              
-              <InputCertificaciones 
-                titulo="Descripción" 
-                tamMax={300} 
-                height={80}
+
+              <Input
+                label="Descripción"
+                type="textarea"
+                placeholder="Describe la certificación"
                 value={descripcionForm}
-                onChange={(e) => setDescripcionForm(e.target.value)}
+                onChange={setDescripcionForm}
+                maxLength={300}
+                showCounter
               />
+
             </div>
 
             {/* IMAGEN */}
-            <div className="flex-1 w-full">
-              <div className="w-full h-auto md:h-[260px]">
-                {/* CAMBIO CLAVE: Usamos onImageReady que devuelve un File */}
-                <ImagenUploader 
-                  onImageReady={(file) => setArchivoImagenForm(file)} 
-                  onOrientationDetected={(orientacion) => setOrientacionForm(orientacion)}
-                />
-              </div>
+            <div className="flex-1">
+              <ImagenUploader 
+                onImageReady={(file) => setArchivoImagenForm(file)} 
+                onOrientationDetected={(orientacion) => setOrientacionForm(orientacion)}
+              />
             </div>
+
           </div>
 
-          {/* Muestra mensaje de error si falla la creación */}
-          {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+          {/* BOTONES */}
+          <div className="flex justify-end gap-3 pt-2">
 
-          <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
             <button
-              onClick={() => setOpenModal(false)}
-              className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto text-center"
+              type="button"
+              onClick={cerrarModal}
               disabled={isBusy}
+              className="text-sm px-4 py-2 rounded-md border-2 border-primary-500 text-primary-500 hover:bg-secondary-500 hover:text-white"
             >
               Cancelar
             </button>
-            
-            {/* BOTÓN CON ESTADO DE CARGA UNIFICADO */}
-            <button 
+
+            <button
+              type="button"
               onClick={handleSubmit}
               disabled={isBusy}
-              className={`${isBusy ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'} text-white px-4 py-2 rounded w-full sm:w-auto text-center flex justify-center items-center gap-2 transition-colors`}
+              className={`text-sm px-4 py-2 rounded-md text-white 
+              ${isBusy 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-primary-500 hover:bg-secondary-500"
+              }`}
             >
-              {isBusy ? "Procesando..." : "Subir"}
+              {isBusy ? "Procesando..." : "Guardar"}
             </button>
+
           </div>
-        </Modal>
+
+        </div>
+        </ModalForm>
 
          {/* CATEGORÍAS (responsivo corregido anteriormente) */}
         <div>
