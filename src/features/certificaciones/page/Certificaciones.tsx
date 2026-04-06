@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
@@ -37,8 +37,8 @@ export default function Certificaciones() {
   const [isUploadingToFirebase, setIsUploadingToFirebase] = useState(false);
 
   const { categorias, isLoading, isUsingFallback } = useCategorias();
-  const { registrarCertificacion, isCreating, error } = useCrearCertificacion();
-  
+  const { registrarCertificacion, isCreating} = useCrearCertificacion();
+  //error
   const { 
     certificados, 
     isLoadingCerts, 
