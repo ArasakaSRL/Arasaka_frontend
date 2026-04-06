@@ -83,7 +83,7 @@ export default function Certificaciones() {
       const datosDelFormulario = {
         titulo: tituloForm,
         descripcion: descripcionForm,
-        institucion_emisora: institucionForm, // 👇 2. USAMOS EL ESTADO AQUÍ
+        institucion_emisora: institucionForm, 
         fecha_obtencion: fechaObtencionForm || new Date().toISOString().split('T')[0],
         url_archivo: url_archivo_firebase,
         orientacion_imagen: orientacionForm,

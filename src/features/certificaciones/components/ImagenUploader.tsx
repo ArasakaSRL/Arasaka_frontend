@@ -33,16 +33,28 @@ export function ImagenUploader({ onImageReady, onOrientationDetected }: Props) {
     setSaveTrigger((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    if (!file) {
-      setPreview(null);
-      onImageReady(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
+ useEffect(() => {
+  if (!file) {
+    setPreview(null);
+    onImageReady(null);
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  setPreview(url);
+
+  onImageReady(file);
+
+  // detectar orientación también aquí
+  const img = new Image();
+  img.src = url;
+  img.onload = () => {
+    const orientacion = img.width > img.height ? "horizontal" : "vertical";
+    onOrientationDetected(orientacion);
+  };
+
+  return () => URL.revokeObjectURL(url);
+}, [file]);
 
   const handleFinalImageChange = (base64Str: string) => {
     // 1. Detectar orientación de la imagen resultante
