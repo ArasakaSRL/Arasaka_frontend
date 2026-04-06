@@ -60,9 +60,9 @@ export async function logoutRequest() {
 }
 
 // recuperar-contrasena
-export async function forgotPasswordRequest(correo: string) {
-  const { data } = await apiClient.post('/api/recuperar-contrasena', { correo })
-  return data
+export async function sendPasswordResetEmail(correo: string) {
+  const { data } = await apiClient.post('/api/recuperar-contrasena', { correo });
+  return data;
 }
 
 // restablecer-contrasena
@@ -92,11 +92,5 @@ export async function verifyEmailRequest(id: string, hash: string) {
     }
   })
   return data
-}
-
-//  RECUPERAR CONTRASEÑA  
-export async function sendPasswordResetEmail(correo: string) {
-  const {data} = await apiClient.post('/api/recuperar-contrasena', { correo });
-  return data;
 }
 

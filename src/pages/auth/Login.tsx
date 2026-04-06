@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { Briefcase, ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
-import { loginRequest, getUsuario } from '@/features/auth/api/auth';
+import { loginRequest, getUsuario, sendPasswordResetEmail } from '@/features/auth/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 
 const loginSchema = z.object({
@@ -34,6 +34,10 @@ export default function Login() {
     const correoRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
+    //estados para recuperar contraseña
+    const [resetLoading, setResetLoading] = useState(false);
+    const [resetMessage, setResetMessage] = useState<string | null>(null);
+
     const navigate = useNavigate();
     const setUser = useAuthStore(s => s.setUser);
     const [correo, setCorreo] = useState('');
@@ -41,6 +45,29 @@ export default function Login() {
     const [errors, setErrors] = useState<FieldErrors>({});
     const [apiError, setApiError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    const isFilled = correo.length > 0 && password.length > 0;
+
+    //funcion para recueperar contraseña
+    async function handleForgotPassword() {
+        setApiError(null);
+        if (!correo) {
+            setErrors({ correo: 'Ingresa tu correo para recuperar la contraseña' });
+            correoRef.current?.focus();
+            return;
+        }
+
+        setResetLoading(true);
+        try {
+            const response = await sendPasswordResetEmail(correo);
+            setResetMessage(response.message || '¡Enlace enviado! Revisa tu bandeja de entrada.');
+        } catch (err: unknown) {
+            const error = err as AxiosError<{ message?: string }>;
+            setApiError(error?.response?.data?.message ?? 'No se pudo enviar el correo');
+        } finally {
+            setResetLoading(false);
+        }
+    }
 
     // Criterio: Limitar caracteres y validar tipos (Input Handling)
     const handleCorreoChange = (val: string) => {
@@ -89,18 +116,18 @@ export default function Login() {
             setUser(user);
             navigate('/Dashboard/perfilPersonal/PerfilPersonal');
         } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string; errors?: { correo?: string[] } }>;
-            const msg = error?.response?.data?.message
-                ?? error?.response?.data?.errors?.correo?.[0]
+            const error = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
+            const raw = error?.response?.data?.message
+                ?? Object.values(error?.response?.data?.errors ?? {})?.[0]?.[0]
                 ?? 'Credenciales incorrectas';
-            setApiError(msg);
+            setApiError(raw === 'auth.failed' ? 'Credenciales incorrectas' : raw);
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1">
             <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
@@ -145,6 +172,24 @@ export default function Login() {
                         required
                     />
 
+                    <div className="flex justify-end w-full -mt-2 mb-2">
+                        <button
+                            type="button"
+                            onClick={handleForgotPassword}
+                            disabled={resetLoading}
+                            className="text-xs font-bold text-blue-800 hover:text-blue-900 disabled:opacity-50"
+                        >
+                            {resetLoading ? 'Enviando...' : '¿Olvidaste tu contraseña?'}
+                        </button>
+                    </div>
+
+                    
+                    {resetMessage && (
+                        <p className="text-green-600! text-xs text-left w-full mb-4 font-medium">
+                            {resetMessage}
+                        </p>
+                    )}
+
                     {apiError && (
                         <p className="text-red-500! text-xs text-left w-full mb-4">{apiError}</p>
                     )}
@@ -153,6 +198,7 @@ export default function Login() {
                         <AuthButton
                             text={loading ? 'Ingresando...' : 'Ingresar'}
                             onClick={handleLogin}
+                            disabled={!isFilled || loading || resetLoading}
                         />
                     </div>
 

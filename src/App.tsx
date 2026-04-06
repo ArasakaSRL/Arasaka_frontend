@@ -11,6 +11,7 @@ import Certificaciones from '@/features/certificaciones/page/Certificaciones'
 import Hitos from './features/hitos/page/Hitos'
 import VerifyEmail from './pages/auth/VerifyEmail'
 import Dashboard from './pages/Dashboard/index'
+import ResetPassword from './pages/auth/ResetPassword'
 
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
+        <Route path="/password-reset/:token" element={<ResetPassword />} />
       </Route>
     </Routes>
   )

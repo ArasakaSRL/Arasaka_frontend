@@ -58,6 +58,8 @@ export default function Register() {
     const [apiError, setApiError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const isFilled = nombre.length > 0 && apellido.length > 0 && correo.length > 0 && password.length > 0 && password_confirmation.length > 0 && (!crearPortafolio || (portafolioNombre.length > 0 && portafolioVisibilidad !== undefined));
+
     /**
      * handleRegister: manejador del evento de registro.
      * Un "handler" es una función que se ejecuta en respuesta a una acción del usuario,
@@ -147,27 +149,34 @@ export default function Register() {
     // VISTA DE VERIFICACIÓN (Se muestra solo tras el registro exitoso)
     if (isRegistered) {
         return (
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-full max-w-md bg-white p-8 rounded-4xl shadow-2xl border border-blue-100">
-                    <div className="mb-6 bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
-                        <Mail className="w-10 h-10 text-blue-600 animate-bounce" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-black mb-2">¡Casi listo, {nombre}!</h2>
-                    <p className="text-gray-600 mb-6">
-                        Hemos enviado un enlace de verificación a <span className="font-bold text-black">{correo}</span>. 
-                        Es necesario verificar tu cuenta para acceder a todas las funciones.
-                    </p>
-                    
-                    <div className="space-y-4">
-                        <AuthButton 
-                            text={resendLoading ? 'Enviando...' : 'Reenviar correo de verificación'} 
-                            onClick={handleResendEmail} 
+            <div className="flex flex-col items-center bg-gray-50 min-h-screen pt-10 sm:pt-0 sm:justify-center px-1 sm:px-6 lg:px-8">
+
+                <div className="mb-6! bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+                    <Mail className="w-10 h-10 text-blue-600 animate-bounce" />
+                </div>
+
+                <div className="w-full max-w-full md:max-w-md items-start bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-300 relative">
+
+                    <div className="absolute z-0 inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
+
+                    <div className="relative z-20 p-6 flex flex-col">
+
+                        <h2 className="text-2xl font-bold text-black mb-2!">¡Casi listo, {nombre}!</h2>
+                        <p className="text-gray-600 mb-4!">
+                            Hemos enviado un enlace de verificación a <span className="font-bold text-black">{correo}</span>.
+                            Es necesario verificar tu cuenta para acceder a todas las funciones.
+                        </p>
+
+                        <AuthButton
+                            text={resendLoading ? 'Enviando...' : 'Reenviar correo de verificación'}
+                            onClick={handleResendEmail}
+                            disabled={resendLoading}
                         />
-                        {resendStatus && <p className="text-sm text-blue-600 font-medium">{resendStatus}</p>}
-                        
-                        <button 
+                        {resendStatus && <p className="text-sm! text-blue-600 pt-2 font-medium">{resendStatus}</p>}
+
+                        <button
                             onClick={() => navigate('/auth/Login')}
-                            className="text-sm text-gray-500 hover:text-black transition-colors underline"
+                            className="text-sm text-gray-500 pt-4 hover:text-black transition-colors underline"
                         >
                             Redirigir al inicio de sesión
                         </button>
@@ -178,7 +187,7 @@ export default function Register() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 py-12">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1 py-12 md:py-8">
             <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
@@ -243,7 +252,12 @@ export default function Register() {
                     {apiError && <p className="text-red-500 text-xs w-full text-center my-4">{apiError}</p>}
 
                     <div className="w-full mt-2">
-                        <AuthButton text={loading ? 'Creando cuenta...' : 'Crear cuenta'} onClick={handleRegister} />
+                        <AuthButton
+                            text={loading ? 'Creando cuenta...' : 'Crear cuenta'}
+                            onClick={handleRegister}
+                            disabled={loading || !isFilled}
+                        />
+
                     </div>
 
                     <p className="mt-6! text-sm text-gray-600 font-medium">
