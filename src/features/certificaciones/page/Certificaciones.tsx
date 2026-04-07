@@ -230,9 +230,18 @@ export default function Certificaciones() {
             {/* IMAGEN */}
             <div className="flex-1">
               <ImagenUploader 
-                onImageReady={(file) => setArchivoImagenForm(file)} 
+                onImageReady={(file) => {
+                  setArchivoImagenForm(file);
+                  setErrores(prev => ({ ...prev, imagen: false }));
+                }} 
                 onOrientationDetected={(orientacion) => setOrientacionForm(orientacion)}
               />
+
+              {errores.imagen && (
+                <p className="text-red-600 text-[12px] mt-1 ml-1 animate-in fade-in slide-in-from-top-1">
+                  Este campo es obligatorio
+                </p>
+              )}
             </div>
 
           </div>
