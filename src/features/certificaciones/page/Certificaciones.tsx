@@ -54,6 +54,7 @@ export default function Certificaciones() {
     titulo: false,
     institucion: false,
     imagen: false,
+    fecha: false,
   });
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
@@ -65,6 +66,7 @@ export default function Certificaciones() {
       titulo: !tituloForm.trim(),
       institucion: !institucionForm.trim(),
       imagen: !archivoImagenForm,
+      fecha: !fechaObtencionForm,
     };
 
     setErrores(nuevosErrores);
@@ -132,6 +134,7 @@ export default function Certificaciones() {
     titulo: false,
     institucion: false,
     imagen: false,
+    fecha: false,
   });
   };
   const cerrarModal = () => {
@@ -208,6 +211,8 @@ export default function Certificaciones() {
                 value={fechaObtencionForm}
                 max={new Date().toISOString().split("T")[0]}
                 onChange={setFechaObtencionForm}
+                required
+                error={errores.fecha ? "Este campo es obligatorio" : undefined}
               />
 
               <Input
