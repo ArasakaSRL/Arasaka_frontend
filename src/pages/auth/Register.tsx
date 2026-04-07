@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
-import { Briefcase, ArrowLeft, Mail } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import { registerRequest, getUsuario, resendVerificationEmail } from '@/features/auth/api/auth';
@@ -192,8 +192,12 @@ export default function Register() {
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
 
-            <div className="mb-5 bg-blue-500 p-2 rounded-2xl shadow-xl shadow-blue-200">
-                <Briefcase className="w-14 h-14 text-black" />
+             <div className="flex items-center gap-2">
+                <img
+                    src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                    alt="Arasaka logo"
+                    className="h-22 w-auto object-contain"
+                />
             </div>
 
             <div className="w-full max-w-lg bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative">
@@ -210,8 +214,8 @@ export default function Register() {
                     <AuthInput ref={nombreRef} label="Nombre" placeholder="Tu nombre" type="text" value={nombre} onChange={handleNombreChange} error={errors.nombre} maxLength={40} required />
                     <AuthInput ref={apellidoRef} label="Apellido" placeholder="Tu apellido" type="text" value={apellido} onChange={handleApellidoChange} error={errors.apellido} maxLength={40} required />
                     <AuthInput ref={correoRef} label="Correo" placeholder="tu@correo.com" type="email" value={correo} onChange={handleCorreoChange} error={errors.correo} maxLength={50} required />
-                    <AuthInput ref={passwordRef} label="Contraseña" placeholder="Tu password" type="password" value={password} onChange={handlePasswordChange} error={errors.password} maxLength={12} required />
-                    <AuthInput label="Confirmar Contraseña" placeholder="Repite tu password" type="password" value={password_confirmation} onChange={setPasswordConfirmation} error={errors.password_confirmation} required />
+                    <AuthInput ref={passwordRef} label="Contraseña" placeholder="Tu contraseña" type="password" value={password} onChange={handlePasswordChange} error={errors.password} maxLength={12} required />
+                    <AuthInput label="Confirmar Contraseña" placeholder="Repite tu contraseña" type="password" value={password_confirmation} onChange={setPasswordConfirmation} error={errors.password_confirmation} required />
 
                     {/* Checkbox crear portafolio */}
                     <div className="w-full flex items-center gap-2 mb-4">

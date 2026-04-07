@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
-import { Briefcase, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import { loginRequest, getUsuario, sendPasswordResetEmail } from '@/features/auth/api/auth';
@@ -132,8 +132,12 @@ export default function Login() {
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
 
-            <div className="mb-5 bg-blue-500 p-2 rounded-2xl shadow-xl shadow-blue-200">
-                <Briefcase className="w-14 h-14 text-black" />
+            <div className="flex items-center gap-2">
+                <img
+                    src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                    alt="Arasaka logo"
+                    className="h-22 w-auto object-contain"
+                />
             </div>
 
             <div className="w-full max-w-md items-start bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative">
@@ -169,7 +173,7 @@ export default function Login() {
                     <AuthInput
                         ref={passwordRef}
                         label="Contraseña"
-                        placeholder="tu password"
+                        placeholder="tu contraseña"
                         type="password"
                         value={password}
                         onChange={handlePasswordChange}
@@ -202,7 +206,7 @@ export default function Login() {
 
                     <div className="w-full mt-2">
                         <AuthButton
-                        type="submit"
+                            type="submit"
                             text={loading ? 'Ingresando...' : 'Ingresar'}
                             disabled={!isFilled || loading || resetLoading}
                         />
