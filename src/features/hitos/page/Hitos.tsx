@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
 
-// ID estático (Cámbialo por el tuyo real de PostgreSQL)
-const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
+
+
 
 // Función auxiliar para extraer el día, mes (en español) y año
 const obtenerDatosDeFecha = (fechaString: string) => {
@@ -57,7 +57,7 @@ export default function Hitos() {
   const cargarExperiencias = async () => {
     try {
       setIsLoading(true);
-      const data = await getExperiencias(ID_PORTAFOLIO_ACTUAL);
+      const data = await getExperiencias();
       setExperiencias(data);
     } catch (error) {
       console.error("Error al cargar experiencias", error);
@@ -111,9 +111,7 @@ export default function Hitos() {
     // Si pasa todas las validaciones, enviamos a la API
     try {
       setIsSubmitting(true);
-      
       const payload = {
-        id_portafolio: ID_PORTAFOLIO_ACTUAL,
         cargo: cargoForm,
         nombre_organizacion: organizacionForm,
         descripcion: descripcionForm,
@@ -125,7 +123,7 @@ export default function Hitos() {
       await crearExperiencia(payload);
       toast.success("Experiencia guardada exitosamente");
       
-      // Limpiar formulario y recargar
+   
       setCargoForm("");
       setOrganizacionForm("");
       setDescripcionForm("");

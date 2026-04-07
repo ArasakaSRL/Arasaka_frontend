@@ -16,7 +16,6 @@ import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
@@ -43,7 +42,7 @@ export default function Certificaciones() {
     certificados, 
     isLoadingCerts, 
     isUsingFallbackCerts 
-  } = useCertificaciones(ID_PORTAFOLIO_ACTUAL, filtroCategoriaId);
+  } = useCertificaciones( filtroCategoriaId); // <-- Aquí pasamos el filtro de categoría
 
   const opcionesCategorias = categorias.map((cat) => ({
     label: cat.nombre,
@@ -90,7 +89,7 @@ export default function Certificaciones() {
         id_categoria_certificacion: categoriaSeleccionada!.value
       };
 
-      await registrarCertificacion(ID_PORTAFOLIO_ACTUAL, datosDelFormulario);
+      await registrarCertificacion(datosDelFormulario);
       toast.success("Certificación creada exitosamente!");
       
       setOpenModal(false);
