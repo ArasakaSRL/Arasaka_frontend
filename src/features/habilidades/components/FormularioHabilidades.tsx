@@ -24,9 +24,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
   const [habilidadBlanda, setHabilidadBlanda] = useState("");
-
-  const { categorias, niveles, tecnologias } = useHabilidadesData();
-  
+  const { categorias, niveles, tecnologias } = useHabilidadesData();  
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
