@@ -12,9 +12,9 @@ const loginSchema = z.object({
     correo: z
         .string()
         .trim()
-        .min(8, 'El correo no es valido')
+        .min(15, 'El correo no es valido')
         .max(50, 'El correo es demasiado largo')
-        .email('Correo inválido'),
+        .email('Ingresa un formato de correo válido'),
 
     password: z
         .string()
@@ -140,7 +140,13 @@ export default function Login() {
 
                 <div className="absolute z-0 inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
 
-                <div className="relative z-20 p-4 flex flex-col">
+                <form
+                    className="relative z-20 p-4 flex flex-col"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleLogin();
+                    }}
+                >
                     <p className="text-black text-[22px] font-bold mb-1">Iniciar Sesión</p>
                     <p className="text-gray-500! font-normal text-[14px] mb-4!">Accede a tu portafolio digital profesional</p>
 
@@ -183,7 +189,7 @@ export default function Login() {
                         </button>
                     </div>
 
-                    
+
                     {resetMessage && (
                         <p className="text-green-600! text-xs text-left w-full mb-4 font-medium">
                             {resetMessage}
@@ -196,8 +202,8 @@ export default function Login() {
 
                     <div className="w-full mt-2">
                         <AuthButton
+                        type="submit"
                             text={loading ? 'Ingresando...' : 'Ingresar'}
-                            onClick={handleLogin}
                             disabled={!isFilled || loading || resetLoading}
                         />
                     </div>
@@ -208,7 +214,7 @@ export default function Login() {
                             Regístrate
                         </Link>
                     </p>
-                </div>
+                </form>
             </div>
 
             <footer className="mt-8">

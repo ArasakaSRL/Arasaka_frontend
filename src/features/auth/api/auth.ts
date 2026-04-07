@@ -61,7 +61,7 @@ export async function logoutRequest() {
 
 // recuperar-contrasena
 export async function sendPasswordResetEmail(correo: string) {
-  const { data } = await apiClient.post('/api/recuperar-contrasena', { correo });
+  const { data } = await apiClient.post('/recuperar-contrasena', { correo });
   return data;
 }
 
@@ -85,7 +85,7 @@ export async function resendVerificationEmail() {
 export async function verifyEmailRequest(id: string, hash: string) {
   // Extraer expires y signature de la URL actual del navegador
   const params = new URLSearchParams(window.location.search)
-  const { data } = await apiClient.get(`/api/verificar-correo/${id}/${hash}`, {
+  const { data } = await apiClient.get(`/verificar-correo/${id}/${hash}`, {
     params: {
       expires: params.get('expires'),
       signature: params.get('signature'),

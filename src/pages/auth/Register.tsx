@@ -9,9 +9,9 @@ import { registerRequest, getUsuario, resendVerificationEmail } from '@/features
 import { useAuthStore } from '@/stores/authStore';
 
 const registerSchema = z.object({
-    nombre: z.string().trim().min(5, 'El nombre es requerido').max(15, 'Máximo 15 caracteres').regex(/^[A-Za-z\s]+$/, 'Solo letras y espacios'),
-    apellido: z.string().trim().min(5, 'El apellido es requerido').max(15, 'Máximo 15 caracteres').regex(/^[A-Za-z\s]+$/, 'Solo letras y espacios'),
-    correo: z.string().trim().min(8, 'Mínimo 8 caracteres').max(30, 'Máximo 30 caracteres').email('Ingresa un formato de correo válido'),
+    nombre: z.string().trim().min(3, 'El nombre es requerido').max(40, 'Máximo 40 caracteres').regex(/^[A-Za-z\s]+$/, 'Solo letras y espacios'),
+    apellido: z.string().trim().min(6, 'El apellido es requerido').max(40, 'Máximo 40 caracteres').regex(/^[A-Za-z\s]+$/, 'Solo letras y espacios'),
+    correo: z.string().trim().min(15, 'Mínimo 15 caracteres').max(50, 'Máximo 50 caracteres').email('Ingresa un formato de correo válido'),
     password: z.string().min(12, 'La contraseña debe tener 12 caracteres').max(12, 'Máximo 12 caracteres').regex(/[A-Z]/, 'Debe contener al menos una mayúscula').regex(/[a-z]/, 'Debe contener al menos una minúscula').regex(/[0-9]/, 'Debe contener al menos un número').regex(/[^A-Za-z0-9]/, 'Debe contener un carácter especial'),
     password_confirmation: z.string(),
     crear_portafolio: z.boolean(),
@@ -141,9 +141,9 @@ export default function Register() {
         }
     }
 
-    const handleNombreChange = (val: string) => { setNombre(val.replace(/[^A-Za-z\s]/g, '').slice(0, 15)); setErrors(prev => ({ ...prev, nombre: undefined })); };
-    const handleApellidoChange = (val: string) => { setApellido(val.replace(/[^A-Za-z\s]/g, '').slice(0, 15)); setErrors(prev => ({ ...prev, apellido: undefined })); };
-    const handleCorreoChange = (val: string) => { setCorreo(val.trimStart().slice(0, 30)); setErrors(prev => ({ ...prev, correo: undefined })); };
+    const handleNombreChange = (val: string) => { setNombre(val.replace(/[^A-Za-z\s]/g, '').slice(0, 40)); setErrors(prev => ({ ...prev, nombre: undefined })); };
+    const handleApellidoChange = (val: string) => { setApellido(val.replace(/[^A-Za-z\s]/g, '').slice(0, 40)); setErrors(prev => ({ ...prev, apellido: undefined })); };
+    const handleCorreoChange = (val: string) => { setCorreo(val.trimStart().slice(0, 50)); setErrors(prev => ({ ...prev, correo: undefined })); };
     const handlePasswordChange = (val: string) => { if (val.length <= 12) { setPassword(val); setErrors(prev => ({ ...prev, password: undefined })); } };
 
     // VISTA DE VERIFICACIÓN (Se muestra solo tras el registro exitoso)
@@ -199,14 +199,17 @@ export default function Register() {
             <div className="w-full max-w-lg bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative">
                 <div className="absolute inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
 
-                <div className="relative p-4 flex flex-col items-center">
+                <form
+                    onSubmit={(e) => { e.preventDefault(); handleRegister(); }}
+                    className="relative p-4 flex flex-col items-center"
+                >
                     <p className="text-[22px] text-black font-bold">Crear Cuenta</p>
                     <p className="text-gray-500! text-sm mb-4! font-normal text-center">Crea tu portafolio digital de proyectos de software</p>
                     <p className="text-xs text-gray-500! mb-2! text-left w-full">Los campos marcados con <span className="text-red-500">*</span> son obligatorios</p>
 
-                    <AuthInput ref={nombreRef} label="Nombre" placeholder="Tu nombre" type="text" value={nombre} onChange={handleNombreChange} error={errors.nombre} maxLength={15} required />
-                    <AuthInput ref={apellidoRef} label="Apellido" placeholder="Tu apellido" type="text" value={apellido} onChange={handleApellidoChange} error={errors.apellido} maxLength={15} required />
-                    <AuthInput ref={correoRef} label="Correo" placeholder="tu@correo.com" type="email" value={correo} onChange={handleCorreoChange} error={errors.correo} maxLength={30} required />
+                    <AuthInput ref={nombreRef} label="Nombre" placeholder="Tu nombre" type="text" value={nombre} onChange={handleNombreChange} error={errors.nombre} maxLength={40} required />
+                    <AuthInput ref={apellidoRef} label="Apellido" placeholder="Tu apellido" type="text" value={apellido} onChange={handleApellidoChange} error={errors.apellido} maxLength={40} required />
+                    <AuthInput ref={correoRef} label="Correo" placeholder="tu@correo.com" type="email" value={correo} onChange={handleCorreoChange} error={errors.correo} maxLength={50} required />
                     <AuthInput ref={passwordRef} label="Contraseña" placeholder="Tu password" type="password" value={password} onChange={handlePasswordChange} error={errors.password} maxLength={12} required />
                     <AuthInput label="Confirmar Contraseña" placeholder="Repite tu password" type="password" value={password_confirmation} onChange={setPasswordConfirmation} error={errors.password_confirmation} required />
 
@@ -253,8 +256,8 @@ export default function Register() {
 
                     <div className="w-full mt-2">
                         <AuthButton
+                            type="submit"
                             text={loading ? 'Creando cuenta...' : 'Crear cuenta'}
-                            onClick={handleRegister}
                             disabled={loading || !isFilled}
                         />
 
@@ -264,7 +267,7 @@ export default function Register() {
                         ¿Ya tienes cuenta?{' '}
                         <Link to="/auth/Login" className="font-bold text-blue-800 hover:text-blue-900">Inicia sesión</Link>
                     </p>
-                </div>
+                </form>
             </div>
 
             <footer className="mt-8">
