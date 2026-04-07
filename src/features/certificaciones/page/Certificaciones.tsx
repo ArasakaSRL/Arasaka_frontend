@@ -279,7 +279,7 @@ export default function Certificaciones() {
          {/* CATEGORÍAS (responsivo corregido anteriormente) */}
         <div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-            <h3 className="text-sm text-dark-500 font-medium-ui text-left flex flex-wrap items-center gap-2">
+            <h3 className="text-2xl text-dark-500 font-medium-ui text-left flex flex-wrap items-center gap-2 py-1">
               Categorías
               {isUsingFallback && (
                 <span className="text-xs text-orange-500 font-normal">
@@ -291,7 +291,7 @@ export default function Certificaciones() {
             {filtroCategoriaId && (
               <button 
                 onClick={() => setFiltroCategoriaId(null)}
-                className="text-xs text-blue-500 hover:underline cursor-pointer"
+                className="text-xs text-blue-500 hover:underline cursor-pointer gap-10"
               >
                 Ver todas las certificaciones
               </button>
@@ -299,7 +299,7 @@ export default function Certificaciones() {
           </div>
 
           {isLoading ? (
-            <div className="h-32 flex items-center justify-center text-gray-400">
+            <div className="h-25 flex items-center justify-center text-gray-400">
               Cargando categorías...
             </div>
           ) : (
