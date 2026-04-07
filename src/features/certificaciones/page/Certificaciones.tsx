@@ -58,11 +58,8 @@ export default function Certificaciones() {
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
-    if (!categoriaSeleccionada || !tituloForm || !institucionForm || !archivoImagenForm) {
-      toast.error("Por favor completa los campos obligatorios");
-      return;
-    }
-    // 👇 1. Agregamos institucionForm a la validación
+    
+    //  Agregamos institucionForm a la validación
     const nuevosErrores = {
       categoria: !categoriaSeleccionada,
       titulo: !tituloForm.trim(),
