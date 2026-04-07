@@ -1,5 +1,5 @@
 import {
-    User, Briefcase, Award, GraduationCap,
+    User, Briefcase, Award,
     Trophy, BarChart3, Settings, LogOut, ShieldCheck,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,13 +8,14 @@ import { useState } from 'react';
 import { useDirtyStore } from '@/stores/dirtyStore';
 import ConfirmNavModal from '@/components/ui/ConfirmNavModal';
 
+
+//{ icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' }, en import: , GraduationCap
 const menuItems = [
     { icon: User, label: 'Perfil Personal', path: '/Dashboard/perfilPersonal/PerfilPersonal' },
     { icon: Briefcase, label: 'Proyectos', path: '/Dashboard/proyectos/Proyectos' },
     { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades/Habilidades' },
-    { icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' },
     { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
-    { icon: ShieldCheck, label:'Certificaciones', path:'/Dashboard/certificaciones/Certificaciones' },
+    { icon: ShieldCheck, label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
     { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' }
 ];
