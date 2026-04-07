@@ -6,12 +6,12 @@ export function useCrearCertificacion() {
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const registrarCertificacion = async (idPortafolio: string, datosCertificacion: CrearCertificacionDTO) => {
+  const registrarCertificacion = async (datosCertificacion: CrearCertificacionDTO) => {
     try {
       setIsCreating(true);
       setError(null);
       
-      const nuevaCertificacion = await crearCertificacion(idPortafolio, datosCertificacion);
+      const nuevaCertificacion = await crearCertificacion(datosCertificacion);
       
       // Opcional: Aquí podrías retornar la data si necesitas hacer algo tras el éxito
       return nuevaCertificacion; 

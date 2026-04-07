@@ -1,25 +1,34 @@
 import apiClient from '@/api/api';
-import type { CertificacionAPI, CertificacionesResponse, CrearCertificacionDTO } from '../types'; // Importa el nuevo DTO
+import type { CertificacionAPI, CertificacionesResponse, CrearCertificacionDTO } from '../types'; 
 
-export const getTodasCertificaciones = async (idPortafolio: string): Promise<CertificacionAPI[]> => {
-  const response = await apiClient.get<CertificacionesResponse>(`/portafolios/${idPortafolio}/certificaciones`);
-  return response.data.data;
+export const getTodasCertificaciones = async (): Promise<CertificacionAPI[]> => {
+  try {
+   const response = await apiClient.get<CertificacionesResponse>('/certificaciones/');
+    return response.data.data;
+   }catch (error) {
+    console.error('Error al obtener todas las certificaciones:', error);
+    throw error;
+  }
 };
 
-export const getCertificacionesPorCategoria = async (idPortafolio: string, idCategoria: string): Promise<CertificacionAPI[]> => {
-  // URL CORREGIDA para que coincida exactamente con tu backend
-  const response = await apiClient.get<CertificacionesResponse>(
-    `/portafolios/${idPortafolio}/certificaciones/categoria/${idCategoria}`
-  );
+export const getCertificacionesPorCategoria = async ( idCategoria: string): Promise<CertificacionAPI[]> => {
   
-  return response.data.data;
+  try {
+    const response = await apiClient.get<CertificacionesResponse>(`/certificaciones/categoria/${ idCategoria}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error al obtener certificaciones por categoría:', error);
+    throw error;
+  }
+  
 };
 
-// NUEVA FUNCIÓN: Registrar certificación
-export const crearCertificacion = async (idPortafolio: string, data: CrearCertificacionDTO): Promise<CertificacionAPI> => {
-  const response = await apiClient.post<{ data: CertificacionAPI }>(
-    `/portafolios/${idPortafolio}/certificaciones`,
-    data
-  );
-  return response.data.data;
-};
+export const crearCertificacion =  async (crearCertificacionDTO: CrearCertificacionDTO): Promise<[]> => { 
+  try {
+    const response = await apiClient.post(`/certificaciones/`, crearCertificacionDTO);
+    return response.data; 
+  } catch (error) {
+    console.error('Error al crear certificación:', error);
+    throw error; 
+  }
+}

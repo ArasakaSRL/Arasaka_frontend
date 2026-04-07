@@ -5,16 +5,13 @@ import type { Certificado } from '../components/CertificadoCard';
 import type { CertificacionAPI } from '../types';
 import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
 
-export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: string | null) {
+export function useCertificaciones( idCategoriaFiltro: string | null) {
   const [certificados, setCertificados] = useState<Certificado[]>([]);
   const [isLoadingCerts, setIsLoadingCerts] = useState<boolean>(true);
   const [isUsingFallbackCerts, setIsUsingFallbackCerts] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!idPortafolio) {
-      setIsLoadingCerts(false);
-      return; 
-    }
+  
 
     const fetchCerts = async () => {
       try {
@@ -22,9 +19,9 @@ export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: stri
         let data: CertificacionAPI[];
 
         if (idCategoriaFiltro) {
-          data = await getCertificacionesPorCategoria(idPortafolio, idCategoriaFiltro);
+          data = await getCertificacionesPorCategoria( idCategoriaFiltro);
         } else {
-          data = await getTodasCertificaciones(idPortafolio);
+          data = await getTodasCertificaciones();
         }
 
         if (data) {
@@ -48,7 +45,7 @@ export function useCertificaciones(idPortafolio: string, idCategoriaFiltro: stri
     };
 
     fetchCerts();
-  }, [idPortafolio, idCategoriaFiltro]);
+  }, [idCategoriaFiltro]);
 
   return { certificados, isLoadingCerts, isUsingFallbackCerts };
 }
