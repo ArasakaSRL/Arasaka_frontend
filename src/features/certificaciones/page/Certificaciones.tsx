@@ -16,7 +16,7 @@ import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
+const ID_PORTAFOLIO_ACTUAL = "2a5708d7-5f1c-4578-bc9d-62f49892aaba";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
@@ -59,6 +59,10 @@ export default function Certificaciones() {
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
+    if (!categoriaSeleccionada || !tituloForm || !institucionForm || !archivoImagenForm) {
+      toast.error("Por favor completa los campos obligatorios");
+      return;
+    }
     // 👇 1. Agregamos institucionForm a la validación
     const nuevosErrores = {
       categoria: !categoriaSeleccionada,
@@ -76,6 +80,16 @@ export default function Certificaciones() {
     try {
       setIsUploadingToFirebase(true);
 
+      const orientacionFinal = await new Promise<"horizontal" | "vertical">((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(archivoImagenForm!);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(img.width > img.height ? "horizontal" : "vertical");
+        };
+        img.src = url;
+      });
+
       const nombreArchivo = `${Date.now()}_${archivoImagenForm!.name}`;
       const rutaFirebase = `certificaciones/${nombreArchivo}`; 
       const url_archivo_firebase = await uploadImage(archivoImagenForm!, rutaFirebase);
@@ -86,7 +100,7 @@ export default function Certificaciones() {
         institucion_emisora: institucionForm, 
         fecha_obtencion: fechaObtencionForm || new Date().toISOString().split('T')[0],
         url_archivo: url_archivo_firebase,
-        orientacion_imagen: orientacionForm,
+        orientacion_imagen: orientacionFinal,
         id_categoria_certificacion: categoriaSeleccionada!.value
       };
 

@@ -13,7 +13,7 @@ import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
 
 // ID estático (Cámbialo por el tuyo real de PostgreSQL)
-const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
+const ID_PORTAFOLIO_ACTUAL = "2a5708d7-5f1c-4578-bc9d-62f49892aaba";
 
 // Función auxiliar para extraer el día, mes (en español) y año
 const obtenerDatosDeFecha = (fechaString: string) => {
