@@ -74,12 +74,12 @@ export function DropdownCertificaciones({
           w-full flex items-center justify-between px-3 py-2 text-[14px]
           rounded-xl border transition-all
           ${error 
-            ? "border-red-500 focus-within:ring-1 focus-within:ring-red-500" 
+            ? ""  
             : "border-gray-300 focus-within:ring-1 focus-within:ring-blue-600"
           }
           bg-white cursor-pointer
         `}
-      >
+      >{/**border-red-500 focus-within:ring-1 focus-within:ring-red-500 linea77 */}
         <span className={value ? "text-gray-600" : "text-gray-400"}>
           {value ? value.label : placeholder}
         </span>

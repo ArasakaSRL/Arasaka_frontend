@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
@@ -16,7 +16,6 @@ import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const ID_PORTAFOLIO_ACTUAL = "0b069f23-7b3f-45e5-bf20-96608d4b3f4c";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
@@ -37,13 +36,13 @@ export default function Certificaciones() {
   const [isUploadingToFirebase, setIsUploadingToFirebase] = useState(false);
 
   const { categorias, isLoading, isUsingFallback } = useCategorias();
-  const { registrarCertificacion, isCreating, error } = useCrearCertificacion();
-  
+  const { registrarCertificacion, isCreating} = useCrearCertificacion();
+  //error
   const { 
     certificados, 
     isLoadingCerts, 
     isUsingFallbackCerts 
-  } = useCertificaciones(ID_PORTAFOLIO_ACTUAL, filtroCategoriaId);
+  } = useCertificaciones( filtroCategoriaId); // <-- Aquí pasamos el filtro de categoría
 
   const opcionesCategorias = categorias.map((cat) => ({
     label: cat.nombre,
@@ -55,16 +54,19 @@ export default function Certificaciones() {
     titulo: false,
     institucion: false,
     imagen: false,
+    fecha: false,
   });
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
-    // 👇 1. Agregamos institucionForm a la validación
+    
+    //  Agregamos institucionForm a la validación
     const nuevosErrores = {
       categoria: !categoriaSeleccionada,
       titulo: !tituloForm.trim(),
       institucion: !institucionForm.trim(),
       imagen: !archivoImagenForm,
+      fecha: !fechaObtencionForm,
     };
 
     setErrores(nuevosErrores);
@@ -76,6 +78,16 @@ export default function Certificaciones() {
     try {
       setIsUploadingToFirebase(true);
 
+      const orientacionFinal = await new Promise<"horizontal" | "vertical">((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(archivoImagenForm!);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(img.width > img.height ? "horizontal" : "vertical");
+        };
+        img.src = url;
+      });
+
       const nombreArchivo = `${Date.now()}_${archivoImagenForm!.name}`;
       const rutaFirebase = `certificaciones/${nombreArchivo}`; 
       const url_archivo_firebase = await uploadImage(archivoImagenForm!, rutaFirebase);
@@ -83,14 +95,14 @@ export default function Certificaciones() {
       const datosDelFormulario = {
         titulo: tituloForm,
         descripcion: descripcionForm,
-        institucion_emisora: institucionForm, // 👇 2. USAMOS EL ESTADO AQUÍ
+        institucion_emisora: institucionForm, 
         fecha_obtencion: fechaObtencionForm || new Date().toISOString().split('T')[0],
         url_archivo: url_archivo_firebase,
-        orientacion_imagen: orientacionForm,
+        orientacion_imagen: orientacionFinal,
         id_categoria_certificacion: categoriaSeleccionada!.value
       };
 
-      await registrarCertificacion(ID_PORTAFOLIO_ACTUAL, datosDelFormulario);
+      await registrarCertificacion(datosDelFormulario);
       toast.success("Certificación creada exitosamente!");
       
       setOpenModal(false);
@@ -122,6 +134,7 @@ export default function Certificaciones() {
     titulo: false,
     institucion: false,
     imagen: false,
+    fecha: false,
   });
   };
   const cerrarModal = () => {
@@ -198,6 +211,8 @@ export default function Certificaciones() {
                 value={fechaObtencionForm}
                 max={new Date().toISOString().split("T")[0]}
                 onChange={setFechaObtencionForm}
+                required
+                error={errores.fecha ? "Este campo es obligatorio" : undefined}
               />
 
               <Input
@@ -215,9 +230,18 @@ export default function Certificaciones() {
             {/* IMAGEN */}
             <div className="flex-1">
               <ImagenUploader 
-                onImageReady={(file) => setArchivoImagenForm(file)} 
+                onImageReady={(file) => {
+                  setArchivoImagenForm(file);
+                  setErrores(prev => ({ ...prev, imagen: false }));
+                }} 
                 onOrientationDetected={(orientacion) => setOrientacionForm(orientacion)}
               />
+
+              {errores.imagen && (
+                <p className="text-red-600 text-[12px] mt-1 ml-1 animate-in fade-in slide-in-from-top-1">
+                  Este campo es obligatorio
+                </p>
+              )}
             </div>
 
           </div>
@@ -255,7 +279,7 @@ export default function Certificaciones() {
          {/* CATEGORÍAS (responsivo corregido anteriormente) */}
         <div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-            <h3 className="text-sm text-dark-500 font-medium-ui text-left flex flex-wrap items-center gap-2">
+            <h3 className="text-2xl text-dark-500 font-medium-ui text-left flex flex-wrap items-center gap-2 py-1">
               Categorías
               {isUsingFallback && (
                 <span className="text-xs text-orange-500 font-normal">
@@ -267,7 +291,7 @@ export default function Certificaciones() {
             {filtroCategoriaId && (
               <button 
                 onClick={() => setFiltroCategoriaId(null)}
-                className="text-xs text-blue-500 hover:underline cursor-pointer"
+                className="text-xs text-blue-500 hover:underline cursor-pointer gap-10"
               >
                 Ver todas las certificaciones
               </button>
@@ -275,7 +299,7 @@ export default function Certificaciones() {
           </div>
 
           {isLoading ? (
-            <div className="h-32 flex items-center justify-center text-gray-400">
+            <div className="h-25 flex items-center justify-center text-gray-400">
               Cargando categorías...
             </div>
           ) : (

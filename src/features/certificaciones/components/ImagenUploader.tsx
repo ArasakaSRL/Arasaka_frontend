@@ -1,19 +1,15 @@
-// src/features/certificaciones/components/ImageUploader.tsx
 import { useState, useEffect } from "react";
 import { Toolbar } from "./ImagenUploader/Toolbar";
 import { Dropzone } from "./ImagenUploader/Dropzone";
 import { EditorInline } from "./ImagenUploader/EditorInline";
 
-// Función auxiliar para convertir el Base64 del lienzo a un archivo físico (File)
 const dataURLtoFile = (dataurl: string, filename: string): File => {
   const arr = dataurl.split(',');
   const mime = arr[0].match(/:(.*?);/)?.[1] || "image/jpeg";
   const bstr = atob(arr[1]);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
+  while (n--) { u8arr[n] = bstr.charCodeAt(n); }
   return new File([u8arr], filename, { type: mime });
 };
 
@@ -29,10 +25,6 @@ export function ImagenUploader({ onImageReady, onOrientationDetected }: Props) {
   const [showCrop, setShowCrop] = useState(false);
   const [saveTrigger, setSaveTrigger] = useState(0);
 
-  const handleSaveCrop = () => {
-    setSaveTrigger((prev) => prev + 1);
-  };
-
   useEffect(() => {
     if (!file) {
       setPreview(null);
@@ -41,19 +33,29 @@ export function ImagenUploader({ onImageReady, onOrientationDetected }: Props) {
     }
     const url = URL.createObjectURL(file);
     setPreview(url);
+    onImageReady(file);
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  const handleFinalImageChange = (base64Str: string) => {
-    // 1. Detectar orientación de la imagen resultante
+  // Se recalcula cuando cambia el preview o la rotación
+  useEffect(() => {
+    if (!preview) return;
     const img = new Image();
-    img.src = base64Str;
+    img.src = preview;
     img.onload = () => {
-      const orientacion = img.width > img.height ? "horizontal" : "vertical";
-      onOrientationDetected(orientacion);
+      const isRotated90 = rotation % 180 !== 0;
+      const width  = isRotated90 ? img.height : img.width;
+      const height = isRotated90 ? img.width  : img.height;
+      onOrientationDetected(width > height ? "horizontal" : "vertical");
     };
+  }, [rotation, preview]);
 
-    // 2. Convertir a File y enviarlo al formulario
+  const handleRotate = () => {
+    setRotation((r) => (r + 90) % 360);
+  };
+
+  // La orientación ya está siendo manejada por el Efecto 2, no necesitamos detectarla aquí
+  const handleFinalImageChange = (base64Str: string) => {
     const newFile = dataURLtoFile(base64Str, "certificado_procesado.jpg");
     onImageReady(newFile);
   };
@@ -61,10 +63,9 @@ export function ImagenUploader({ onImageReady, onOrientationDetected }: Props) {
   if (!preview) {
     return <Dropzone onFileSelect={setFile} />;
   }
-//h-full
+
   return (
-    // CAMBIO: flex-col en móvil, flex-row en desktop (md)
-    <div className="flex flex-col md:flex-row gap-4 w-full"> 
+    <div className="flex flex-col md:flex-row gap-4 w-full">
       <div className="flex-1 w-full overflow-hidden">
         <EditorInline
           image={preview}
@@ -75,12 +76,11 @@ export function ImagenUploader({ onImageReady, onOrientationDetected }: Props) {
           onImageUpdated={handleFinalImageChange}
         />
       </div>
-
       <Toolbar
-        onRotate={() => setRotation((r) => r + 90)}
+        onRotate={handleRotate}
         onDelete={() => setFile(null)}
         onCrop={() => setShowCrop((c) => !c)}
-        onSaveCrop={handleSaveCrop}
+        onSaveCrop={() => setSaveTrigger((p) => p + 1)}
         showCrop={showCrop}
       />
     </div>
