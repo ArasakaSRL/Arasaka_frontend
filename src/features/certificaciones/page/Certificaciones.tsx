@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
@@ -36,8 +36,8 @@ export default function Certificaciones() {
   const [isUploadingToFirebase, setIsUploadingToFirebase] = useState(false);
 
   const { categorias, isLoading, isUsingFallback } = useCategorias();
-  const { registrarCertificacion, isCreating, error } = useCrearCertificacion();
-  
+  const { registrarCertificacion, isCreating} = useCrearCertificacion();
+  //error
   const { 
     certificados, 
     isLoadingCerts, 
@@ -82,7 +82,7 @@ export default function Certificaciones() {
       const datosDelFormulario = {
         titulo: tituloForm,
         descripcion: descripcionForm,
-        institucion_emisora: institucionForm, // 👇 2. USAMOS EL ESTADO AQUÍ
+        institucion_emisora: institucionForm, 
         fecha_obtencion: fechaObtencionForm || new Date().toISOString().split('T')[0],
         url_archivo: url_archivo_firebase,
         orientacion_imagen: orientacionForm,

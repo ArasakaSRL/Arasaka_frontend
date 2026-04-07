@@ -10,18 +10,12 @@ type Props = {
   onClick: () => void;
 };
 
-export function CertificadoCard({ cert, onClick  }: Props) {
-  const isVertical = cert.orientacion === "vertical";
-
+// CertificadoCard.tsx - sacar el posicionamiento, la card no debe saber dónde está
+export function CertificadoCard({ cert, onClick }: Props) {
   return (
     <div
       onClick={onClick}
-      className={`
-        cursor-pointer
-        rounded-xl overflow-hidden bg-white p-2 shadow-sm
-        hover:scale-105 transition
-        ${isVertical ? "row-span-2 col-start-4" : ""}
-      `}
+      className="cursor-pointer rounded-xl overflow-hidden bg-white p-2 shadow-sm hover:scale-105 transition w-full h-full"
     >
       <img
         src={cert.imagen}
