@@ -5,7 +5,7 @@ export interface AuthUser {
   nombre: string
   apellido: string
   correo: string
-  descripcion_laboral?: string
+  biografia?: string
   estado?: boolean
   url_foto?: string
 }

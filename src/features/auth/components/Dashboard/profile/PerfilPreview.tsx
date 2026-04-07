@@ -10,7 +10,7 @@ interface PerfilPreviewProps {
     formData: {
         nombre: string;
         apellido: string;
-        descripcion_laboral: string;
+        biografia: string;
         correo: string;
     };
     profesiones: Profesion[];

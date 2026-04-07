@@ -5,6 +5,8 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
 import { useState } from 'react';
+import { useDirtyStore } from '@/stores/dirtyStore';
+import ConfirmNavModal from '@/components/ui/ConfirmNavModal';
 
 const menuItems = [
     { icon: User, label: 'Perfil Personal', path: '/Dashboard/perfilPersonal/PerfilPersonal' },
@@ -25,11 +27,28 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
+    const { isDirty, setDirty } = useDirtyStore();
+    const [pendingPath, setPendingPath] = useState<string | null>(null);
 
     const handleNavigation = (path: string) => {
+        if (isDirty && path !== location.pathname) {
+            setPendingPath(path);
+            return;
+        }
         navigate(path);
-        onClose(); // Cierra el sidebar al hacer clic (útil en móviles)
+        onClose();
     };
+
+    const handleConfirmNav = () => {
+        if (pendingPath) {
+            setDirty(false);
+            navigate(pendingPath);
+            setPendingPath(null);
+            onClose();
+        }
+    };
+
+    const handleCancelNav = () => setPendingPath(null);
 
     const handleLogout = async () => {
         if (isLoading) return;
@@ -47,6 +66,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     return (
         <>
+            {pendingPath && (
+                <ConfirmNavModal
+                    onConfirm={handleConfirmNav}
+                    onCancel={handleCancelNav}
+                />
+            )}
+
             {isOpen && (
                 <div
                     className="md:hidden fixed inset-0 bg-black/40 z-30"
