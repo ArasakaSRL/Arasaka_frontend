@@ -104,11 +104,11 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
           url_repositorio: formularioData.githubUrl || undefined,
         };
 
-       const nuevoProyecto = await crearProyecto(payload);
-      toast.success("Proyecto creado exitosamente", 3000);
+      const nuevoProyecto = await crearProyecto(payload);
         resetForm();
-        closeModal();
+        toast.success("Proyecto creado exitosamente", 3000);
         onCreated(nuevoProyecto);
+        closeModal();
 
       } catch {
         toast.warning("Error al crear proyecto", 3000);

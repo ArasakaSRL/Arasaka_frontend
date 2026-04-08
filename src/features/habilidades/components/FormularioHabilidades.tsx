@@ -1,15 +1,15 @@
 import { CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
 import MenuDesplegable from "./MenuDesplegable";
-import { crearHabilidad } from "../lib/HabilidadesApi";
+import { crearHabilidad,obtenerHabilidades, type HabilidadUI } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
 import { useHabilidadesData } from "../hooks/useHabilidades";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
-import { obtenerHabilidades } from "../lib/HabilidadesApi";
 
 interface HabilidadesProps {
   closeModal: () => void;
+  onCreated: (nuevaHabilidad: HabilidadUI) => void; 
 }
 
 interface DatosHabilidad {
@@ -20,7 +20,7 @@ interface DatosHabilidad {
   nombre?: string;
 }
 
-export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
+export default function FormularioHabilidades ({closeModal, onCreated}:HabilidadesProps) {
   const [categoria, setCategoria] = useState<string>("");
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
@@ -75,7 +75,6 @@ if (!result.success) {
   return;
 }
 
-// 2. VALIDAR DUPLICADOS (AQUÍ 🔥)
 const nombreAValidar =
   categoriaSeleccionada === "Tecnica"
     ? tecnologias.find(t => t.value === tecnologia)?.label.toLowerCase()
@@ -102,13 +101,22 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
         data.nombre = habilidadBlanda;
       }
 
-      await crearHabilidad(data);
-      toast.success("Habilidad creada exitosamente", 3000);
+      const nuevaHabilidad = await crearHabilidad(data);
+      const nuevaUI: HabilidadUI = {
+        id_habilidad: crypto.randomUUID(),
+        nombre: nuevaHabilidad.nombre || "",
+        nivel: nuevaHabilidad.nivel,
+        categoria: categoriaSeleccionada || "",
+      };
       setCategoria("");
       setNivel("");
       setTecnologia("");
       setHabilidadBlanda("");
+      toast.success("Habilidad creada exitosamente", 3000);
+      onCreated(nuevaUI);
       closeModal();
+
+
     }catch{
       toast.error("Error al crear habilidad", 3000);
     }finally{

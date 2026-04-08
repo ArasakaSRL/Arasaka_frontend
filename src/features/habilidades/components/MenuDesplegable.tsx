@@ -1,4 +1,6 @@
 import { CircleChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export interface MenuDesplegable {
   label: string;
@@ -24,12 +26,33 @@ export default function MenuDesplegable({
   isOpen,
   onToggle,
 }: Props) {
-
   const selected = options.find((o) => o.value === value);
+
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [position, setPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
+
+  // calcular posición del botón
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+
+      setPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    }
+  }, [isOpen]);
 
   return (
     <div className="relative">
+      {/* BOTÓN */}
       <button
+        ref={buttonRef}
         type="button"
         disabled={disabled}
         onClick={onToggle}
@@ -42,26 +65,38 @@ export default function MenuDesplegable({
           {selected ? selected.label : placeholder}
         </span>
 
-        <CircleChevronDown className="text-gray-400"/>
+        <CircleChevronDown className="text-gray-400" />
       </button>
 
-      {isOpen && !disabled && (
-        <div className="absolute z-50 mt-1 w-full bg-light-500 border border-gray-300 rounded-xl shadow-lg max-h-36 overflow-y-auto">
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => {
-                onChange(opt.value);
-                onToggle();
-              }}
-              className="w-full text-left px-3 py-2 text-sm text-black hover:bg-[#D4DBE2] cursor-pointer"
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* DROPDOWN EN PORTAL */}
+      {isOpen &&
+        !disabled &&
+        createPortal(
+          <div
+            style={{
+              position: "absolute",
+              top: position.top,
+              left: position.left,
+              width: position.width,
+            }}
+            className="z-[9999] bg-white border border-gray-300 rounded-xl shadow-lg max-h-40 overflow-y-auto"
+          >
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  onToggle();
+                }}
+                className="w-full text-left px-3 py-2 text-sm text-black hover:bg-[#D4DBE2] cursor-pointer"
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

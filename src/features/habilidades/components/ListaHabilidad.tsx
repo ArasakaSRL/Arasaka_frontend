@@ -1,38 +1,23 @@
-import { useEffect, useState } from "react";
 import {
-  obtenerHabilidades,
   type HabilidadUI
 } from "../lib/HabilidadesApi";
 import HabilidadItem from "./CardHabilidad";
 
-export default function HabilidadesList() {
-  const [habilidades, setHabilidades] = useState<HabilidadUI[]>([]);
-  const [loading, setLoading] = useState(true);
+interface Props {
+  habilidad: HabilidadUI[];
+  load: boolean;
+}
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const data = await obtenerHabilidades();
-        setHabilidades(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+export default function HabilidadesList({ habilidad, load }: Props) {
+  if (load) return <p>Cargando...</p>;
 
-    fetch();
-  }, []);
+const tecnicas = habilidad.filter(
+  (h) => h.categoria.toLowerCase() === "tecnica"
+);
 
-  if (loading) return <p>Cargando...</p>;
-
-  const tecnicas = habilidades.filter(
-    (h) => h.categoria.toLowerCase() === "tecnica"
-  );
-
-  const blandas = habilidades.filter(
-    (h) => h.categoria.toLowerCase() === "blanda"
-  );
+const blandas = habilidad.filter(
+  (h) => h.categoria.toLowerCase() === "blanda"
+);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { obtenerProyectos, type Proyecto } from "../lib/ProyectosApi";
 
-export const useProyectos = (idPortafolio: string) => {
+export const useProyectos = () => {
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProyectos = async () => {
       try {
-        const data = await obtenerProyectos(idPortafolio);
+        const data = await obtenerProyectos();
         setProyectos(data);
       } catch (error) {
         console.error("Error al obtener proyectos", error);
@@ -18,7 +18,7 @@ export const useProyectos = (idPortafolio: string) => {
     };
 
     fetchProyectos();
-  }, [idPortafolio]);
+  }, []);
 
   return { proyectos, setProyectos,loading };
 }

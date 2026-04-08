@@ -8,8 +8,7 @@ import { Banner } from "@/features/hitos/components/BannerHitos";
 
 export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
-  const idPortafolio = "27b591bf-4bbe-4818-b364-8201cd086fcb";
-  const { proyectos, loading, setProyectos } = useProyectos(idPortafolio);
+  const { proyectos, loading, setProyectos } = useProyectos();
 
   console.log("PROYECTOS:", proyectos); 
   
