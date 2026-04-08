@@ -39,7 +39,7 @@ export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
     return response.data.data;
 }
 
-export const obtenerProyectos = async (): Promise<Proyecto[]> => {
-    const response = await apiClient.get("/portafolios/proyectos");
+export const obtenerProyectos = async (idPortafolio: string): Promise<Proyecto[]> => {
+    const response = await apiClient.get(`/portafolios/${idPortafolio}/proyectos`);
     return response.data.data;
 }
