@@ -15,8 +15,12 @@ export default function AuthLoader({ children }: Props) {
 
     useEffect(() => {
         getUsuario()
-            .then(user => setUser(user))
-            .catch(() => {}) // sin sesión activa, no hace nada
+            .then(user => {
+                if (user && !(user as any).message) {
+                    setUser(user)
+                }
+            })
+            .catch(() => { })
             .finally(() => setReady(true))
     }, [])
 
