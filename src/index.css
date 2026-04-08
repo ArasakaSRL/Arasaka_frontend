@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+
 @theme {
   /*Color desing*/
   /* Color base Success*/
@@ -108,6 +109,8 @@
   --text-h-xl: 32px;
   --text-h-2xl: 40px;
   --text-h-3xl: 48px;
+  --text-h-4xl: 96px;
+  --text-h-5xl: 128px;
 
    /* Line height por tamaño */
   --leading-xs: 1.33;
@@ -222,23 +225,17 @@ h1 {
   }
 }
 h2 {
-  font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--text-main);
   margin-top: 0;
 }
 
 p {
   margin: 0;
-  color: var(--text-main);
 }
 
 code,
@@ -254,4 +251,50 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* Scroll moderno */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* gris claro */
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.ReactCrop__crop-selection {
+  border: 2px solid #3b82f6; /* azul Tailwind */
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); /* oscurece afuera */
+}
+
+.ReactCrop__crop-selection::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, white 1px, transparent 1px),
+                    linear-gradient(to bottom, white 1px, transparent 1px);
+  background-size: 33% 33%;
+  opacity: 0.3;
+}
+/* global.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+/* 🔥 Ocultar scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

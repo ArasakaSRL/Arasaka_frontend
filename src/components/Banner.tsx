@@ -1,0 +1,85 @@
+import { Boton2 } from "@/components/ui/Boton2";
+
+type Props = {
+  onOpenModal?: () => void;
+  titulo: string;
+  descripcion: string;
+  textoBoton?: string;
+};
+
+export const Banner = ({
+  onOpenModal,
+  titulo = "",
+  descripcion = "",
+  textoBoton = "",
+}: Props) => {
+  
+  const formatTitulo = (titulo: string) => {
+    const palabras = titulo.split(" ");
+
+    if (palabras.length <= 1) return titulo;
+
+    const mitad = Math.ceil(palabras.length / 2);
+
+    const linea1 = palabras.slice(0, mitad).join(" ");
+    const linea2 = palabras.slice(mitad).join(" ");
+
+    return (
+      <>
+        <span className="block">{linea1}</span>
+        <span className="block">{linea2}</span>
+      </>
+    );
+  };
+
+  return (
+    <div
+      className="
+        w-full rounded-xl
+        px-6 py-6
+        md:px-8 md:py-8
+        text-white
+        bg-linear-to-br from-[#0a1a3a] to-[#112e57]
+        flex flex-col items-start gap-1
+      "
+    >
+      <h1
+        className="
+          text-2xl
+          md:text-4xl
+          font-bold
+          leading-[1.1]
+          text-left
+        "
+      >
+        {formatTitulo(titulo)}
+      </h1>
+
+      <p
+        className="
+          text-sm
+          md:text-base
+          text-gray-200
+          leading-tight
+        "
+      >
+        {descripcion}
+      </p>
+
+      {onOpenModal && (
+        <Boton2
+          onClick={onOpenModal}
+          className="
+            mt-1
+            px-4 py-1.5
+            bg-blue-600 hover:bg-blue-700
+            text-sm
+            flex items-center gap-2
+          "
+        >
+          {textoBoton}
+        </Boton2>
+      )}
+    </div>
+  );
+};
