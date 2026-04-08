@@ -9,6 +9,7 @@ import type { AuthUser } from '@/stores/authStore'
 // Al llamar este endpoint, Laravel setea una cookie llamada "XSRF-TOKEN" en el navegador,
 // y axios la lee automáticamente y la envía en el header "X-XSRF-TOKEN" en cada POST.
 // Sin esto, Laravel rechaza la petición con error 419 (CSRF token mismatch).
+console.log(import.meta.env.VITE_API_BASE_URL, 'VITE_API_BASE_URL');
 const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 
 // GET /usuario — obtiene los datos del usuario autenticado
