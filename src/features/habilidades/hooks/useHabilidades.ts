@@ -17,9 +17,12 @@ export const useHabilidadesData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cat: Categoria[] = await obtenerCategorias();
-        const niv: Nivel[] = await obtenerNiveles();
-        const tec: Tecnologia[] = await obtenerTecnologias();
+        // Peticiones en paralelo: todas se lanzan al mismo tiempo
+        const [cat, niv, tec] = await Promise.all([
+          obtenerCategorias(),
+          obtenerNiveles(),
+          obtenerTecnologias(),
+        ]);
 
         setCategorias(cat.map(c => ({
           label: c.nombre,
