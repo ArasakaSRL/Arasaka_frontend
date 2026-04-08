@@ -1,15 +1,15 @@
 import { CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
 import MenuDesplegable from "./MenuDesplegable";
-import { crearHabilidad } from "../lib/HabilidadesApi";
+import { crearHabilidad, obtenerHabilidades } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
-import { useHabilidadesData } from "../hooks/useHabilidades";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
-import { obtenerHabilidades } from "../lib/HabilidadesApi";
+import type { useHabilidadesData } from "../hooks/useHabilidades";
 
 interface HabilidadesProps {
   closeModal: () => void;
+  habilidadesData: ReturnType<typeof useHabilidadesData>;
 }
 
 interface DatosHabilidad {
@@ -20,12 +20,12 @@ interface DatosHabilidad {
   nombre?: string;
 }
 
-export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
+export default function FormularioHabilidades ({closeModal, habilidadesData}:HabilidadesProps) {
   const [categoria, setCategoria] = useState<string>("");
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
   const [habilidadBlanda, setHabilidadBlanda] = useState("");
-  const { categorias, niveles, tecnologias } = useHabilidadesData();  
+  const { categorias, niveles, tecnologias } = habilidadesData;  
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
