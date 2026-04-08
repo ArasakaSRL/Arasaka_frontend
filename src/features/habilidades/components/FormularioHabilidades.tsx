@@ -129,7 +129,7 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
       <form onSubmit={handleSubmit} className="px-6 pb-5 space-y-4 text-left">
         <div className="space-y-0.5">
           <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
-            Seleccione la categoria <span className="text-error-500">*</span>
+            Categoria <span className="text-error-500">*</span>
           </label>
           <MenuDesplegable 
           value={categoria} 
@@ -146,7 +146,7 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
         {categoriaSeleccionada === "Tecnica" && (
           <div className="space-y-1">
             <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
-              Seleccione la habilidad <span className="text-error-500">*</span>
+              Habilidad <span className="text-error-500">*</span>
             </label>
 
             <MenuDesplegable

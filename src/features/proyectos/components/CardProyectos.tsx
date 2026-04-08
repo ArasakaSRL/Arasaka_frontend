@@ -13,6 +13,7 @@ interface Props {
     proyecto:Card;
 }
 export default function CardProyectos ({proyecto}:Props) {
+  const cleanText = proyecto.descripcion.replace(/<[^>]+>/g, "");
     return(
       <div className="flex text-left border-2 border-primary-500 rounded-xl p-5 flex-col justify-between overflow-hidden">
         <div className="flex flex-col justify-between w-full min-w-0">
@@ -24,8 +25,10 @@ export default function CardProyectos ({proyecto}:Props) {
             {proyecto.fecha_inicio} - {proyecto.fecha_fin || "Actualidad"}
           </p>
 
-          <p className="text-sm text-gray-600 mt-3 line-clamp-3 wrap-break-word">
-            {proyecto.descripcion}
+          <p
+           
+          className="text-sm text-gray-600 mt-3 line-clamp-3 wrap-break-word" >
+            {cleanText}
           </p>
 
           <div className="flex flex-wrap gap-2 mt-3">
