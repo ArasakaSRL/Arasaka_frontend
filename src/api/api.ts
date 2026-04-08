@@ -34,7 +34,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      console.warn('Error 401: No autorizado');
+      //console.warn('Error 401: No autorizado');
     }
     return Promise.reject(error);
   },
