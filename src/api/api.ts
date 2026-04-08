@@ -16,13 +16,19 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = document.cookie
+    const allCookies = document.cookie;
+    console.log('🍪 Todas las cookies:', allCookies);
+
+    const token = allCookies
       .split('; ')
       .find(row => row.startsWith('XSRF-TOKEN='))
       ?.split('=')[1];
 
+    console.log('🔑 Token encontrado:', token ? 'SÍ' : 'NO');
+
     if (token) {
       config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+      console.log('✅ Header X-XSRF-TOKEN seteado');
     }
 
     return config;
