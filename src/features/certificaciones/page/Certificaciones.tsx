@@ -105,6 +105,10 @@ export default function Certificaciones() {
       await registrarCertificacion(datosDelFormulario);
       toast.success("Certificación creada exitosamente!");
       
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
       setOpenModal(false);
       setTituloForm("");
       setInstitucionForm(""); // 👇 3. LIMPIAMOS EL ESTADO
