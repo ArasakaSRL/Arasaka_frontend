@@ -11,8 +11,35 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
+const getXsrfToken = () =>
+  document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')
+    .slice(1)
+    .join('=');
+
+const initCsrf = async () => {
+  if (!getXsrfToken()) {
+    await axios.get(`${BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true });
+  }
+};
+
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
+    const mutatingMethods = ['post', 'put', 'patch', 'delete'];
+    if (config.method && mutatingMethods.includes(config.method.toLowerCase())) {
+      await initCsrf();
+
+      // Axios envía el cookie XSRF-TOKEN tal cual (URL-encoded), pero Laravel
+      // necesita el valor decodificado para poder descifrarlo. Lo leemos y
+      // decodificamos manualmente para evitar el error 419.
+      const raw = getXsrfToken();
+
+      if (raw) {
+        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(raw);
+      }
+    }
     return config;
   },
   (error) => Promise.reject(error),
