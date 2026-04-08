@@ -17,7 +17,7 @@ export default function AuthLoader({ children }: Props) {
         getUsuario()
             .then(user => {
                 if (user && !(user as any).message) {
-                    setUser(user)
+                    if (user) setUser(user)
                 }
             })
             .catch(() => { })

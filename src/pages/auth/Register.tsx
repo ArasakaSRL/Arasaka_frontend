@@ -115,7 +115,7 @@ export default function Register() {
             });
 
             const user = await getUsuario();
-            setUser(user);
+            if (user) setUser(user)
             setIsRegistered(true); // Marca como registrado para mostrar mensaje de verificación
 
         } catch (err: unknown) {

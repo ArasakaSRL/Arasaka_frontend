@@ -113,7 +113,7 @@ export default function Login() {
         try {
             await loginRequest({ correo, password });
             const user = await getUsuario();
-            setUser(user);
+            if (user) setUser(user)
             navigate('/Dashboard/perfilPersonal/PerfilPersonal');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
