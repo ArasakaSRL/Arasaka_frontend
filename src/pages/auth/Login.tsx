@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
-import { Briefcase, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import { loginRequest, getUsuario, sendPasswordResetEmail } from '@/features/auth/api/auth';
@@ -12,9 +12,9 @@ const loginSchema = z.object({
     correo: z
         .string()
         .trim()
-        .min(8, 'El correo no es valido')
+        .min(15, 'El correo no es valido')
         .max(50, 'El correo es demasiado largo')
-        .email('Correo inválido'),
+        .email('Ingresa un formato de correo válido'),
 
     password: z
         .string()
@@ -132,15 +132,25 @@ export default function Login() {
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
 
-            <div className="mb-5 bg-blue-500 p-2 rounded-2xl shadow-xl shadow-blue-200">
-                <Briefcase className="w-14 h-14 text-black" />
+            <div className="flex items-center gap-2">
+                <img
+                    src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                    alt="Arasaka logo"
+                    className="h-22 w-auto object-contain"
+                />
             </div>
 
             <div className="w-full max-w-md items-start bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative">
 
                 <div className="absolute z-0 inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
 
-                <div className="relative z-20 p-4 flex flex-col">
+                <form
+                    className="relative z-20 p-4 flex flex-col"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleLogin();
+                    }}
+                >
                     <p className="text-black text-[22px] font-bold mb-1">Iniciar Sesión</p>
                     <p className="text-gray-500! font-normal text-[14px] mb-4!">Accede a tu portafolio digital profesional</p>
 
@@ -163,7 +173,7 @@ export default function Login() {
                     <AuthInput
                         ref={passwordRef}
                         label="Contraseña"
-                        placeholder="tu password"
+                        placeholder="tu contraseña"
                         type="password"
                         value={password}
                         onChange={handlePasswordChange}
@@ -183,7 +193,7 @@ export default function Login() {
                         </button>
                     </div>
 
-                    
+
                     {resetMessage && (
                         <p className="text-green-600! text-xs text-left w-full mb-4 font-medium">
                             {resetMessage}
@@ -196,8 +206,8 @@ export default function Login() {
 
                     <div className="w-full mt-2">
                         <AuthButton
+                            type="submit"
                             text={loading ? 'Ingresando...' : 'Ingresar'}
-                            onClick={handleLogin}
                             disabled={!isFilled || loading || resetLoading}
                         />
                     </div>
@@ -208,7 +218,7 @@ export default function Login() {
                             Regístrate
                         </Link>
                     </p>
-                </div>
+                </form>
             </div>
 
             <footer className="mt-8">

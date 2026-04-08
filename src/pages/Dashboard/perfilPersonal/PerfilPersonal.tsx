@@ -10,7 +10,7 @@ import PerfilPreview from '@/features/auth/components/Dashboard/profile/PerfilPr
 interface PerfilFormData {
     nombre: string;
     apellido: string;
-    descripcion_laboral: string;
+    biografia: string;
     correo: string;
 }
 
@@ -22,7 +22,7 @@ export default function PerfilPersonal() {
     const [formData, setFormData] = useState<PerfilFormData>({
         nombre: user?.nombre || '',
         apellido: user?.apellido || '',
-        descripcion_laboral: user?.descripcion_laboral || '',
+        biografia: user?.biografia || '',
         correo: user?.correo || '',
     });
 
@@ -40,7 +40,7 @@ export default function PerfilPersonal() {
                 nombre: formData.nombre,
                 apellido: formData.apellido,
                 correo: formData.correo,
-                ...(formData.descripcion_laboral && { descripcion_laboral: formData.descripcion_laboral }),
+                ...(formData.biografia && { biografia: formData.biografia }),
             });
             // Actualiza el store con los nuevos datos
             if (user) setUser({ ...user, ...res.data });
@@ -68,6 +68,7 @@ export default function PerfilPersonal() {
                     loading={loading}
                     apiError={apiError}
                     success={success}
+                    setSuccess={setSuccess}
                     handleSave={handleSave}
                 />
 

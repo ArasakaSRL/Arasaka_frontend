@@ -4,25 +4,26 @@ export const perfilSchema = z.object({
     nombre: z
         .string()
         .trim()
-        .min(2, 'El nombre debe tener al menos 2 caracteres')
-        .max(12, 'Máximo 12 caracteres permitidos'),
+        .min(3, 'El nombre debe tener al menos 2 caracteres')
+        .max(40, 'Máximo 40 caracteres permitidos'),
 
     apellido: z
         .string()
         .trim()
-        .min(2, 'El apellido debe tener al menos 2 caracteres')
-        .max(20, 'Máximo 20 caracteres permitidos'),
+        .min(6, 'El apellido debe tener al menos 6 caracteres')
+        .max(40, 'Máximo 20 caracteres permitidos'),
 
     correo: z
         .string()
         .trim()
-        .email('Correo inválido')
-        .max(30, 'Máximo 30 caracteres permitidos'),
+        .email('Ingresa un formato de correo válido')
+        .min(15, 'Minimo 15 caracteres permitidos')
+        .max(50, 'Máximo 50 caracteres permitidos'),
 
-    descripcion_laboral: z
+    biografia: z
         .string()
         .trim()
-        .min(50, 'La descripción debe tener al menos 50 caracteres')
+        .min(10, 'La descripción debe tener al menos 10 caracteres')
         .max(200, 'Máximo 200 caracteres permitidos'),
 });
 

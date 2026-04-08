@@ -5,13 +5,17 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
 import { useState } from 'react';
+import { useDirtyStore } from '@/stores/dirtyStore';
+import ConfirmNavModal from '@/components/ui/ConfirmNavModal';
+
+
 //{ icon: GraduationCap, label: 'Experiencia', path: '/Dashboard/experiencia' }, en import: , GraduationCap
 const menuItems = [
     { icon: User, label: 'Perfil Personal', path: '/Dashboard/perfilPersonal/PerfilPersonal' },
     { icon: Briefcase, label: 'Proyectos', path: '/Dashboard/proyectos/Proyectos' },
     { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades/Habilidades' },
     { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
-    { icon: ShieldCheck, label:'Certificaciones', path:'/Dashboard/certificaciones/Certificaciones' },
+    { icon: ShieldCheck, label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
     { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' }
 ];
@@ -24,11 +28,28 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
+    const { isDirty, setDirty } = useDirtyStore();
+    const [pendingPath, setPendingPath] = useState<string | null>(null);
 
     const handleNavigation = (path: string) => {
+        if (isDirty && path !== location.pathname) {
+            setPendingPath(path);
+            return;
+        }
         navigate(path);
-        onClose(); // Cierra el sidebar al hacer clic (útil en móviles)
+        onClose();
     };
+
+    const handleConfirmNav = () => {
+        if (pendingPath) {
+            setDirty(false);
+            navigate(pendingPath);
+            setPendingPath(null);
+            onClose();
+        }
+    };
+
+    const handleCancelNav = () => setPendingPath(null);
 
     const handleLogout = async () => {
         if (isLoading) return;
@@ -46,6 +67,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     return (
         <>
+            {pendingPath && (
+                <ConfirmNavModal
+                    onConfirm={handleConfirmNav}
+                    onCancel={handleCancelNav}
+                />
+            )}
+
             {isOpen && (
                 <div
                     className="md:hidden fixed inset-0 bg-black/40 z-30"
@@ -79,7 +107,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
                             ${isLoading
                                 ? 'bg-gray-100 text-black cursor-not-allowed'
-                                : 'bg-red-600 text-black '
+                                : 'bg-red-600 text-white '
                             }`}
                     >
                         <LogOut size={18} strokeWidth={1.8} />

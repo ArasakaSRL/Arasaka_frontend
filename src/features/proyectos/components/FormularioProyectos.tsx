@@ -95,8 +95,6 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
       setLoading(true);
       try {
         const payload = {
-          id_proyecto: "",
-          id_portafolio: "27b591bf-4bbe-4818-b364-8201cd086fcb",
           nombre: formularioData.title,
           descripcion: formularioData.descripcion || undefined,
           fecha_inicio: formularioData.startDate,

@@ -4,11 +4,17 @@ type Props = {
   nivel: string;
 };
 
-const nivelWidth: Record<string, string> = {
-  Experto: "100%",
-  Avanzado: "75%",
-  Intermedio: "50%",
-  Principiante: "25%",
+const nivelesOrden = [
+  "Principiante",
+  "Intermedio",
+  "Competente",
+  "Avanzado",
+  "Experto",
+];
+
+const getWidth = (nivel: string) => {
+  const index = nivelesOrden.indexOf(nivel);
+  return index >= 0 ? `${(index + 1) * 20}%` : "10%";
 };
 
 export default function HabilidadItem({ nombre, nivel }: Props) {
@@ -26,8 +32,8 @@ export default function HabilidadItem({ nombre, nivel }: Props) {
 
       <div className="w-full bg-gray-200 h-2 rounded">
         <div
-          className="bg-green-400 h-2 rounded"
-          style={{ width: nivelWidth[nivel] }}
+          className="bg-green-600 h-2 rounded"
+          style={{ width: getWidth(nivel) }}
         />
       </div>
     </div>

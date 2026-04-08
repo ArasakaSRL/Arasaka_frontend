@@ -1,13 +1,15 @@
 interface ButtonProps {
     text: string;
-    onClick: () => void;
+    onClick?: () => void;
     variant?: 'primary' | 'secondary';
     disabled?: boolean;
+    type?: 'submit' | 'button';
 }
 
-export const AuthButton = ({ text, onClick, variant = 'primary', disabled }: ButtonProps) => {
+export const AuthButton = ({ text, onClick, variant = 'primary', disabled, type = 'button' }: ButtonProps) => {
     return (
         <button
+            type={type}
             onClick={onClick}
             disabled={disabled}
             className={`w-full py-3.5 rounded-xl font-bold transition-all active:scale-95 shadow-lg

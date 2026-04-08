@@ -1,4 +1,4 @@
-import { Share2, Eye, Briefcase, Menu, X } from 'lucide-react';
+import { Share2, Eye, Menu, X } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 
 interface DashboardHeaderProps {
@@ -17,7 +17,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
     return (
         <header className="h-16 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 md:px-6 transition-all duration-300">
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center ">
                 <button
                     className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
                     onClick={onMenuClick}
@@ -27,10 +27,11 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                 </button>
 
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-[#1e2a5e] rounded-lg flex items-center justify-center text-white">
-                        <Briefcase size={16} />
-                    </div>
-                    <span className="font-bold text-base text-slate-800">Arasaka</span>
+                    <img
+                        src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                        alt="Arasaka logo"
+                        className="h-18 w-auto object-contain"
+                    />
                 </div>
             </div>
 

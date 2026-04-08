@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -11,12 +11,13 @@ export default function Header() {
                 <div className="flex items-center justify-between">
 
                     <Link to="/" className="flex items-center gap-2.5 group no-underline">
-                        <div className="p-2 rounded-xl bg-[#1e2a5e] group-hover:bg-[#151d45] transition-colors">
-                            <Briefcase className="w-5 h-5 text-white" />
+                        <div className="flex items-center gap-2">
+                            <img
+                                src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                                alt="Arasaka logo"
+                                className="h-20 w-auto object-contain absolute top-1/2 -translate-y-1/2"
+                            />
                         </div>
-                        <span className="text-lg font-bold text-slate-900 tracking-tight">
-                            Arasaka
-                        </span>
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-3">
@@ -45,6 +46,16 @@ export default function Header() {
 
                 {menuOpen && (
                     <div className="md:hidden mt-3 pb-4 flex flex-col gap-2 border-t border-slate-100 pt-4">
+                        <Link to="/" className="flex items-center gap-2.5 group no-underline">
+                            <div className="flex items-center gap-2">
+                                <img
+                                    src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                                    alt="Arasaka logo"
+                                    className="h-20 w-auto object-contain absolute top-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </Link>
+
                         <Link
                             to="/auth/Login"
                             onClick={() => setMenuOpen(false)}

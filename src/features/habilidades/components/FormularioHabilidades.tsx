@@ -1,11 +1,12 @@
 import { CircleX } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuDesplegable from "./MenuDesplegable";
 import { crearHabilidad } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
 import { useHabilidadesData } from "../hooks/useHabilidades";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
+import { obtenerHabilidades } from "../lib/HabilidadesApi";
 
 interface HabilidadesProps {
   closeModal: () => void;
@@ -24,17 +25,32 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
   const [habilidadBlanda, setHabilidadBlanda] = useState("");
-
-  const { categorias, niveles, tecnologias } = useHabilidadesData();
-  
+  const { categorias, niveles, tecnologias } = useHabilidadesData();  
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const categoriaLabel = categorias.find(c => c.value === categoria)?.label;
+  const [habilidadesExistentes, setHabilidadesExistentes] = useState<string[]>([]);
 
   const categoriaSeleccionada = categorias.find(
     (c) => c.value === categoria
   )?.label;
+
+  useEffect(() => {
+  const fetch = async () => {
+    try {
+      const data = await obtenerHabilidades();
+
+      const nombres = data.map(h => h.nombre.toLowerCase());
+      setHabilidadesExistentes(nombres);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetch();
+}, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,17 +63,28 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
       tipo: categoriaSeleccionada || "",
     });
 
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
+if (!result.success) {
+  const fieldErrors: Record<string, string> = {};
 
-      result.error.issues.forEach((err) => {
-        const field = err.path[0] as string;
-        fieldErrors[field] = err.message;
-      });
+  result.error.issues.forEach((err) => {
+    const field = err.path[0] as string;
+    fieldErrors[field] = err.message;
+  });
 
-      setErrors(fieldErrors);
-      return;
-    }
+  setErrors(fieldErrors);
+  return;
+}
+
+// 2. VALIDAR DUPLICADOS (AQUÍ 🔥)
+const nombreAValidar =
+  categoriaSeleccionada === "Tecnica"
+    ? tecnologias.find(t => t.value === tecnologia)?.label.toLowerCase()
+    : habilidadBlanda.toLowerCase();
+
+if (habilidadesExistentes.includes(nombreAValidar || "")) {
+  toast.error("Esta habilidad ya fue registrada");
+  return;
+}
     
     setLoading(true);
     try{
@@ -65,7 +92,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
 
       const data: DatosHabilidad = {
         id_categoria_habilidad: categoria,
-        id_portafolio: "27b591bf-4bbe-4818-b364-8201cd086fcb",
+        id_portafolio: "",
         nivel: nivel,
       };
 
@@ -102,7 +129,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
       <form onSubmit={handleSubmit} className="px-6 pb-5 space-y-4 text-left">
         <div className="space-y-0.5">
           <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
-            Seleccione la categoria <span className="text-error-500">*</span>
+            Categoria <span className="text-error-500">*</span>
           </label>
           <MenuDesplegable 
           value={categoria} 
@@ -119,7 +146,7 @@ export default function FormularioHabilidades ({closeModal}:HabilidadesProps) {
         {categoriaSeleccionada === "Tecnica" && (
           <div className="space-y-1">
             <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
-              Seleccione la habilidad <span className="text-error-500">*</span>
+              Habilidad <span className="text-error-500">*</span>
             </label>
 
             <MenuDesplegable

@@ -15,7 +15,7 @@ export interface ActualizarInformacionPayload {
     nombre?: string
     apellido?: string
     correo?: string
-    descripcion_laboral?: string
+    biografia?: string
 }
 
 // Payload para actualizar foto de perfil
@@ -35,7 +35,7 @@ export interface UsuarioActualizadoResponse {
         nombre: string
         apellido: string
         correo: string
-        descripcion_laboral?: string
+        biografia?: string
         url_foto?: string
     }
 }

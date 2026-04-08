@@ -1,8 +1,6 @@
 import apiClient from "../../../api/api"
 
 export interface ProyectoFormData {
-    id_proyecto?: string;
-    id_portafolio: string;
     nombre: string;
     descripcion?: string;
     fecha_inicio: string;
@@ -32,7 +30,7 @@ export interface Tecnologias {
 }
 
 export const crearProyecto = async (data: ProyectoFormData): Promise<Proyecto> => {
-  const response = await apiClient.post(`/portafolios/${data.id_portafolio}/proyectos`, data);
+  const response = await apiClient.post("/portafolios/proyectos", data);
   return response.data.data;
 };
 
@@ -41,7 +39,7 @@ export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
     return response.data.data;
 }
 
-export const obtenerProyectos = async (idPortafolio: string): Promise<Proyecto[]> => {
-    const response = await apiClient.get(`/portafolios/${idPortafolio}/proyectos`);
+export const obtenerProyectos = async (): Promise<Proyecto[]> => {
+    const response = await apiClient.get("/portafolios/proyectos");
     return response.data.data;
 }
