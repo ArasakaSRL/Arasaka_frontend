@@ -4,8 +4,8 @@ import MenuDesplegable from "./MenuDesplegable";
 import { crearHabilidad,obtenerHabilidades, type HabilidadUI } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
-import { useHabilidadesData } from "../hooks/useHabilidades";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
+import { useHabilidadesData } from "../hooks/useHabilidades";
 
 interface HabilidadesProps {
   closeModal: () => void;

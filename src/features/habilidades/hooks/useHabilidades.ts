@@ -17,6 +17,7 @@ export const useHabilidadesData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Peticiones en paralelo: todas se lanzan al mismo tiempo
         const cat: Categoria[] = await obtenerCategorias();
         const niv: Nivel[] = await obtenerNiveles();
         const tec: Tecnologia[] = await obtenerTecnologias();

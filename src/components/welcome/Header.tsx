@@ -6,20 +6,19 @@ export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false)
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm py-4">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between h-16 sm:h-20">
 
-                    <Link to="/" className="flex items-center gap-2.5 group no-underline">
-                        <div className="flex items-center gap-2">
-                            <img
-                                src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
-                                alt="Arasaka logo"
-                                className="h-20 w-auto object-contain absolute top-1/2 -translate-y-1/2"
-                            />
-                        </div>
+                    <Link to="/" className="flex items-center no-underline shrink-0">
+                        <img
+                            src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
+                            alt="Arasaka logo"
+                            className="h-12 sm:h-16 w-auto object-contain"
+                        />
                     </Link>
 
+                    {/* Nav escritorio */}
                     <nav className="hidden md:flex items-center gap-3">
                         <Link
                             to="/auth/Login"
@@ -35,6 +34,7 @@ export default function Header() {
                         </Link>
                     </nav>
 
+                    {/* Botón hamburguesa mobile */}
                     <button
                         className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
                         onClick={() => setMenuOpen(prev => !prev)}
@@ -44,18 +44,9 @@ export default function Header() {
                     </button>
                 </div>
 
+                {/* Menú desplegable mobile */}
                 {menuOpen && (
-                    <div className="md:hidden mt-3 pb-4 flex flex-col gap-2 border-t border-slate-100 pt-4">
-                        <Link to="/" className="flex items-center gap-2.5 group no-underline">
-                            <div className="flex items-center gap-2">
-                                <img
-                                    src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
-                                    alt="Arasaka logo"
-                                    className="h-20 w-auto object-contain absolute top-1/2 -translate-y-1/2"
-                                />
-                            </div>
-                        </Link>
-
+                    <div className="md:hidden border-t border-slate-100 py-4 flex flex-col gap-2">
                         <Link
                             to="/auth/Login"
                             onClick={() => setMenuOpen(false)}

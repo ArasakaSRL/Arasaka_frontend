@@ -28,21 +28,18 @@ export async function getUsuario(): Promise<AuthUser | null> {
 
 // POST /registrar
 export async function registerRequest(payload: RegisterPayload) {
-  await getCsrfCookie()
   const { data } = await apiClient.post('/registrar', payload)
   return data
 }
 
 // iniciar-sesion
 export async function loginRequest(payload: LoginPayload): Promise<LoginResponse> {
-  await getCsrfCookie()
   const { data } = await apiClient.post<LoginResponse>('/iniciar-sesion', payload)
   return data
 }
 
 // cerrar-sesion (requiere sesión activa)
 export async function logoutRequest() {
-  await getCsrfCookie()
   const { data } = await apiClient.post('/cerrar-sesion')
   return data
 }

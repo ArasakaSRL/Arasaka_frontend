@@ -14,6 +14,20 @@ const apiClient = axios.create({
   xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
+const getXsrfToken = () =>
+  document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')
+    .slice(1)
+    .join('=');
+
+const initCsrf = async () => {
+  if (!getXsrfToken()) {
+    await axios.get(`${BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true });
+  }
+};
+
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const allCookies = document.cookie;
