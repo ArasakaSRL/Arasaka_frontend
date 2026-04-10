@@ -1,6 +1,6 @@
 import { CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
-import MenuDesplegable from "./MenuDesplegable";
+import Dropdown from "@/components/MenuDesplegable";
 import { crearHabilidad,obtenerHabilidades, type HabilidadUI } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
@@ -139,16 +139,17 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
           <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
             Categoria <span className="text-error-500">*</span>
           </label>
-          <MenuDesplegable 
+          <Dropdown
+          mode="single"
           value={categoria} 
           onChange={(val) => {
             setCategoria(val);
             setErrors((prev) => ({ ...prev, categoria: "" }));
           }}
-          options={categorias} 
-          placeholder="Seleccione categoría"
-          isOpen={menuAbierto === "categoria"} 
-          onToggle={() => setMenuAbierto(menuAbierto === "categoria" ? null : "categoria")}/>
+          options={categorias}
+          isOpen={menuAbierto === "categoria"}
+          onToggle={() => setMenuAbierto(menuAbierto === "categoria" ? null : "categoria")}
+          />
             {errors.categoria && <p className="text-red-500 text-xs ml-1">{errors.categoria}</p>}
         </div>
         {categoriaSeleccionada === "Tecnica" && (
@@ -157,16 +158,17 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
               Habilidad <span className="text-error-500">*</span>
             </label>
 
-            <MenuDesplegable
+            <Dropdown
+              mode="single"
               value={tecnologia}
               onChange={(val) => {
                 setTecnologia(val);
                 setErrors((prev) => ({ ...prev, tecnologia: "" }));
               }}
               options={tecnologias}
-              placeholder="Seleccione tecnología"
-              isOpen={menuAbierto === "tecnologia"}
-              onToggle={() => setMenuAbierto(menuAbierto === "tecnologia" ? null : "tecnologia")}
+              searchable
+              isOpen={menuAbierto === "tecnologias"}
+              onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
             />
             {errors.tecnologia && <p className="text-red-500 text-xs ml-1">{errors.tecnologia}</p>}
           </div>
@@ -192,14 +194,14 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
           <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
             Nivel de dominio  <span className="text-error-500">*</span>
           </label>
-          <MenuDesplegable 
+          <Dropdown 
+          mode="single"
             value={nivel} 
             onChange={(val) => {
               setNivel(val);
               setErrors((prev) => ({ ...prev, nivel: "" }));
             }} 
             options={niveles}
-            placeholder="Seleccione nivel de dominio"
             isOpen={menuAbierto === "nivel"}
             onToggle={() => setMenuAbierto(menuAbierto === "nivel" ? null : "nivel")}
           />

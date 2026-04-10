@@ -1,6 +1,6 @@
 import { CircleX } from 'lucide-react';
 import { useState } from 'react';
-import DropdownCheckbox from './MenuTecnologias';
+import Dropdown from '../../../components/MenuDesplegable';
 import { crearProyecto, type Proyecto } from '../lib/ProyectosApi';
 import { ProyectoSchema } from '../utils/ProyectosSchema';
 import { toast } from '../../../components/Alerta';
@@ -17,6 +17,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const { opciones} = useTecnologias();
+    const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
 
     const [formularioData, setFormularioData] = useState({
       title: "",
@@ -202,13 +203,17 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
           <label className="block text-sm text-black font-medium-ui mb-2">
             Seleccione la(s) Tecnología(s) <span className="text-error-500">*</span>
           </label>
-          <DropdownCheckbox
+          <Dropdown
+            mode="multiple"
             values={tecnologias}
             onChange={(vals) => {
               setTecnologias(vals);
               setErrors((prev) => ({ ...prev, tecnologias: "" }));
             }}
             options={opciones}
+            searchable
+            isOpen={menuAbierto === "tecnologias"}
+            onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
           />
           {errors.tecnologias && (
             <p className="text-red-500 text-xs ml-1">
