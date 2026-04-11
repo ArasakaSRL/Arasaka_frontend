@@ -14,9 +14,9 @@ export interface Proyecto {
     id_portafolio:string;
     id_proyecto: string;
     nombre: string;
-    descripcion?: string;
+    descripcion?: string | null;
     fecha_inicio: string;
-    fecha_fin?: string;
+    fecha_fin: string;
     tecnologias: Tecnologias[]
     url_demo?: string | null;
     url_repositorio?: string | null;

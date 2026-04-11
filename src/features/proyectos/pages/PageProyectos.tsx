@@ -5,14 +5,18 @@ import CardProyectos from "../components/CardProyectos";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { useProyectos } from "../hooks/getProyectos";
 import { Banner } from "@/features/hitos/components/BannerHitos";
-
+import type { Proyecto } from "../lib/ProyectosApi";
 export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
   const { proyectos, loading, setProyectos } = useProyectos();
-
-  console.log("PROYECTOS:", proyectos); 
+  const [proyectoEditar, setProyectoEditar] = useState<Proyecto | null>(null);
   
   const closeModal = () => setModalAbierto(false);
+
+  const handleEditar = (proyecto: Proyecto) => {
+    setProyectoEditar(proyecto);
+    setModalAbierto(true);
+  }
 
     return (
       <DashboardLayout>
@@ -24,18 +28,10 @@ export default function PageProyectos() {
               <p>Cargando...</p>
             ) : (
               proyectos.map((proyecto) => (
-                    <CardProyectos
+                <CardProyectos
+                  onEditar={handleEditar}
                   key={proyecto.id_proyecto}
-                  
-                  proyecto={{
-                    id: proyecto.id_proyecto,
-                    nombre: proyecto.nombre,
-                    descripcion: proyecto.descripcion ?? "",
-                    fecha_inicio: proyecto.fecha_inicio,
-                    fecha_fin: proyecto.fecha_fin ?? undefined,
-                    tecnologias: proyecto.tecnologias
-                  }}
-                  
+                  proyecto={proyecto}
                 />
               ))
             )}
@@ -43,6 +39,7 @@ export default function PageProyectos() {
 
             <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-2xl">
               <FormularioProyecto 
+              proyectoEditar={proyectoEditar}
               closeModal={closeModal}   
               onCreated={(nuevoProyecto) => { setProyectos((prev) => [nuevoProyecto, ...prev]);}}/>
             </Modal>

@@ -1,19 +1,11 @@
-import type { Tecnologias } from "../lib/ProyectosApi";
-
-interface Card {
-    id: string;
-    nombre: string;
-    descripcion: string;
-    fecha_inicio: string;
-    fecha_fin?: string;
-    tecnologias: Tecnologias[];
-}
+import type { Proyecto, Tecnologias } from "../lib/ProyectosApi";
 
 interface Props {
-    proyecto:Card;
+    proyecto:Proyecto;
+    onEditar: (proyecto: Proyecto) => void;
 }
-export default function CardProyectos ({proyecto}:Props) {
-  const cleanText = proyecto.descripcion.replace(/<[^>]+>/g, "");
+export default function CardProyectos ({proyecto, onEditar}:Props) {
+  // const cleanText = (proyecto.descripcion || "").replace(/<[^>]+>/g, "");
     return(
       <div className="flex text-left border-2 border-primary-500 rounded-xl p-5 flex-col justify-between overflow-hidden">
         <div className="flex flex-col justify-between w-full min-w-0">
@@ -28,7 +20,7 @@ export default function CardProyectos ({proyecto}:Props) {
           <p
            
           className="text-sm text-gray-600 mt-3 line-clamp-3 wrap-break-word" >
-            {cleanText}
+            {proyecto.descripcion}
           </p>
 
           <div className="flex flex-wrap gap-2 mt-3">
@@ -42,11 +34,14 @@ export default function CardProyectos ({proyecto}:Props) {
             ))}
           </div>
           <div className="flex flex-wrap justify-end gap-2 mt-4">
-          <button className="flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 text-primary-500 rounded-md hover:bg-gray-400 hover:text-white transition">
+          <button
+          onClick={() => onEditar(proyecto)}
+          className="flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 text-primary-500 rounded-md hover:bg-gray-400 hover:text-white transition">
               Editar
           </button>
 
-          <button className="flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-500 text-white rounded-md hover:bg-gray-700 transition">
+          <button 
+          className="flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-500 text-white rounded-md hover:bg-gray-700 transition">
               Eliminar
           </button>
         </div>

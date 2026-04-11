@@ -6,40 +6,26 @@ import { ProyectoSchema } from '../utils/ProyectosSchema';
 import { toast } from '../../../components/Alerta';
 import { Input } from '@/components/ui/input';
 import { useTecnologias } from '../hooks/useTecnologias';
+import { useEditarProyecto } from '../hooks/editarProyectos';
 
 interface FormularioProps {
     closeModal: () => void;
     onCreated: (nuevoProyecto: Proyecto) => void;
+    proyectoEditar: Proyecto | null;
 }
 
-export default function FormularioProyectos({closeModal, onCreated}:FormularioProps) {
-    const [tecnologias, setTecnologias] = useState<string[]>([]);
+export default function FormularioProyectos({closeModal, onCreated, proyectoEditar}:FormularioProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const { opciones} = useTecnologias();
     const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
-
-    const [formularioData, setFormularioData] = useState({
-      title: "",
-      descripcion: "",
-      startDate: "",
-      endDate: "",
-      projectUrl: "",
-      githubUrl: "",
-    });  
-
-    const resetForm = () => {
-      setFormularioData({
-        title: "",
-        descripcion: "",
-        startDate: "",
-        endDate: "",
-        projectUrl: "",
-        githubUrl: "",
-      });
-      setTecnologias([]);
-      setErrors({});
-    };
+    const {
+      formularioData,
+      setFormularioData,
+      tecnologias,
+      setTecnologias,
+      resetForm
+    } = useEditarProyecto(proyectoEditar);
 
     const cerrarForm = () => {
       resetForm();
