@@ -1,6 +1,6 @@
 import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
-import {VisibilidadPortafolio } from "../components/VisibilidadPortafolio";
+import {ConfiguracionGeneral } from "../components/ConfiguracionGeneral";
 
 export default function Configuracion(){
     return(
@@ -8,7 +8,7 @@ export default function Configuracion(){
         <DashboardLayout>
             <Banner titulo="Configuracion del portafolio" descripcion="">
             </Banner>
-            <VisibilidadPortafolio titulo="Configuracion General"></VisibilidadPortafolio>
+            <ConfiguracionGeneral titulo="Configuracion General"></ConfiguracionGeneral>
         </DashboardLayout>
     );
 }
