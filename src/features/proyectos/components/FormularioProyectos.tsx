@@ -109,7 +109,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
       <div className="px-7 pt-4 flex justify-between items-center">
         <h2 className="text-base text-left font-semibold text-primary-500">
-          Nuevo Proyecto
+          {proyectoEditar ? "Editar Proyecto" : "Nuevo Proyecto"}
         </h2>
         <button 
         onClick={cerrarForm}
@@ -251,7 +251,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
               : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
             }`}
           >
-            {loading ? "Creando..." : "Crear Proyecto"}
+            {loading ? "Creando..." : (proyectoEditar ? "Editar Proyecto" : "Crear Proyecto")}
           </button>
         </div>
 

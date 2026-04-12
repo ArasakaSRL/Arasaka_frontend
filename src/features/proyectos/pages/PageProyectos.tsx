@@ -11,17 +11,26 @@ export default function PageProyectos() {
   const { proyectos, loading, setProyectos } = useProyectos();
   const [proyectoEditar, setProyectoEditar] = useState<Proyecto | null>(null);
   
-  const closeModal = () => setModalAbierto(false);
+  const closeModal = () => {
+    setModalAbierto(false);
+    setProyectoEditar(null);
+  };
 
   const handleEditar = (proyecto: Proyecto) => {
     setProyectoEditar(proyecto);
     setModalAbierto(true);
   }
-  console.log("PROYECTOS:", proyectos); 
 
     return (
       <DashboardLayout>
-        <Banner titulo="Proyectos" descripcion="Gestiona tus proyectos de software" onOpenModal={() => setModalAbierto(true)} textoBoton="Añadir Proyecto" >
+        <Banner 
+          titulo="Proyectos" 
+          descripcion="Gestiona tus proyectos de software" 
+          onOpenModal={() => {
+            setProyectoEditar(null);
+            setModalAbierto(true);
+          }} 
+          textoBoton="Añadir Proyecto" >
         </Banner>
         <div className="py-4 w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
