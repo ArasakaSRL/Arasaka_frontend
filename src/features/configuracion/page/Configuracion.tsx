@@ -1,6 +1,7 @@
 import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
 import {ConfiguracionGeneral } from "../components/ConfiguracionGeneral";
+import { SeccionVisibilidad } from "../components/visibilidadComponentes/SeccionVisibilidad";
 import { CardHitos } from "@/features/hitos/components/cardHitos";
 
 export default function Configuracion(){
@@ -9,12 +10,8 @@ export default function Configuracion(){
         <DashboardLayout>
             <Banner titulo="Configuracion del portafolio" descripcion="">
             </Banner>
-            
-            {/* 👇 PRUEBAS */}
-            <div className="mt-6 space-y-4">
-
-                {/* Activo */}
-                <CardHitos
+            <SeccionVisibilidad titulo="Visibilidad Hitos" maxHeight="20vh" forceScroll >
+                 <CardHitos
                     color="green"
                     cargo="Desarrollador Frontend"
                     organizacion="Empresa X"
@@ -36,8 +33,16 @@ export default function Configuracion(){
                     disabled 
                 />
 
-            </div>
-
+                <CardHitos
+                    color="blue"
+                    cargo="Desarrollador Backend"
+                    organizacion="Empresa Y"
+                    descripcion="API REST con Node.js"
+                    diaAbreviado="Mar"
+                    diaNumero={15}
+                    fechaTexto="Abril 2026"
+                />
+            </SeccionVisibilidad>
             <ConfiguracionGeneral titulo="Configuracion General"></ConfiguracionGeneral>
             
         </DashboardLayout>
