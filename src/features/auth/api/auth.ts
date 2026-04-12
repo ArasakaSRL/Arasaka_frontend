@@ -44,6 +44,13 @@ export async function logoutRequest() {
   return data
 }
 
+// firebaseAuth
+export async function firebaseAuthRequest(id_token: string) {
+  await getCsrfCookie()
+  const { data } = await apiClient.post('/auth/firebase', { id_token })
+  return data
+}
+
 // recuperar-contrasena
 export async function sendPasswordResetEmail(correo: string) {
   const { data } = await apiClient.post('/recuperar-contrasena', { correo });
