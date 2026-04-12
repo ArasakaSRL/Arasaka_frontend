@@ -10,17 +10,18 @@ import { useHabilidadesData } from "../hooks/useHabilidades";
 interface HabilidadesProps {
   closeModal: () => void;
   onCreated: (nuevaHabilidad: HabilidadUI) => void; 
+  habilidadEditar?: HabilidadUI | null;
 }
 
 interface DatosHabilidad {
   id_categoria_habilidad: string;
   id_portafolio: string;
-  nivel: string;
+  id_nivel_habilidad: string;
   id_tecnologia?: string;
   nombre?: string;
 }
 
-export default function FormularioHabilidades ({closeModal, onCreated}:HabilidadesProps) {
+export default function FormularioHabilidades ({closeModal, onCreated, habilidadEditar}:HabilidadesProps) {
   const [categoria, setCategoria] = useState<string>("");
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
@@ -92,7 +93,7 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
       const data: DatosHabilidad = {
         id_categoria_habilidad: categoria,
         id_portafolio: "",
-        nivel: nivel,
+        id_nivel_habilidad: nivel,
       };
 
       if(esTecnica){
@@ -105,7 +106,7 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
       const nuevaUI: HabilidadUI = {
         id_habilidad: crypto.randomUUID(),
         nombre: nuevaHabilidad.nombre || "",
-        nivel: nuevaHabilidad.nivel,
+        id_nivel_habilidad: nuevaHabilidad.id_nivel_habilidad,
         categoria: categoriaSeleccionada || "",
       };
       setCategoria("");
@@ -127,7 +128,9 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
   return (
     <div className="rounded-2xl w-full shadow-xl">
       <div className="justify-between flex px-6 pt-4 items-center">
-        <h2 className="text-base text-left font-semibold text-primary-500"> Nueva Habilidad</h2>
+        <h2 className="text-base font-semibold text-primary-500">
+          {habilidadEditar ? "Editar Habilidad" : "Nueva Habilidad"}
+        </h2>
         <button
           onClick={closeModal}
           className="text-primary-500 hover:text-secondary-500 cursor-pointer transition-colors">

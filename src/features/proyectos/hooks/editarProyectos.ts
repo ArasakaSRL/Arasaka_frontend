@@ -12,12 +12,6 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
     githubUrl: "", 
   });
 
-  const formatoFecha = (fecha: string) => {
-    if (!fecha) return "";
-
-    const [day, month, year] = fecha.split("-");
-    return `${year}-${month}-${day}`;
-  }
 
   const [tecnologias, setTecnologias] = useState<string[]>([]);
   useEffect(() => {
@@ -26,8 +20,8 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
       setFormularioData({
         title: proyectoEditar.nombre,
         descripcion: proyectoEditar.descripcion || "",
-        startDate: formatoFecha(proyectoEditar.fecha_inicio),
-        endDate: proyectoEditar.fecha_fin ? formatoFecha(proyectoEditar.fecha_fin) : "",
+        startDate: proyectoEditar.fecha_inicio,
+        endDate: proyectoEditar.fecha_fin || "",
         projectUrl: proyectoEditar.url_demo || "",
         githubUrl: proyectoEditar.url_repositorio || "",
       });

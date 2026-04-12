@@ -6,9 +6,10 @@ import HabilidadItem from "./CardHabilidad";
 interface Props {
   habilidad: HabilidadUI[];
   load: boolean;
+  onEditar: (habilidad: HabilidadUI) => void;
 }
 
-export default function HabilidadesList({ habilidad, load }: Props) {
+export default function HabilidadesList({ habilidad, load, onEditar }: Props) {
   if (load) return <p>Cargando...</p>;
 
 const tecnicas = habilidad.filter(
@@ -38,7 +39,8 @@ const blandas = habilidad.filter(
               <HabilidadItem
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
-                nivel={hab.nivel}
+                nivel={hab.id_nivel_habilidad}
+                onEditar={() => onEditar(hab)}
               />
             ))
           )}
@@ -62,7 +64,8 @@ const blandas = habilidad.filter(
               <HabilidadItem
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
-                nivel={hab.nivel}
+                nivel={hab.id_nivel_habilidad}
+                onEditar={() => onEditar(hab)}
               />
             ))
           )}

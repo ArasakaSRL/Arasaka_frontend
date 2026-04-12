@@ -3,7 +3,7 @@ import apiClient from "../../../api/api";
 export interface Habilidad {
   id_categoria_habilidad: string;
   id_portafolio: string;
-  nivel: string;
+  id_nivel_habilidad: string;
   id_tecnologia?: string;
   nombre?: string;
 }
@@ -11,7 +11,7 @@ export interface Habilidad {
 export interface HabilidadUI {
   id_habilidad: string;
   nombre: string;
-  nivel: string;
+  id_nivel_habilidad: string;
   categoria: string;
 }
 
@@ -35,7 +35,7 @@ function mapHabilidad(apiData: any): Habilidad {
   return {
     id_categoria_habilidad: apiData["categoria habilidad"],
     id_portafolio: apiData.id_portafolio,
-    nivel: apiData["nivel habilidad"],
+    id_nivel_habilidad: apiData["nivel habilidad"],
     id_tecnologia: apiData.id_tecnologia,
     nombre: apiData.nombre,
   };

@@ -17,6 +17,7 @@ export default function PageProyectos() {
     setProyectoEditar(proyecto);
     setModalAbierto(true);
   }
+  console.log("PROYECTOS:", proyectos); 
 
     return (
       <DashboardLayout>
