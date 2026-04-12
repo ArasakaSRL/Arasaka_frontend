@@ -99,6 +99,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           );
 
           toast.success("Proyecto editado exitosamente", 3000);
+          onCreated(proyectoGuardado); 
         } else {
           proyectoGuardado = await crearProyecto(payload);
           toast.success("Proyecto creado exitosamente", 3000);

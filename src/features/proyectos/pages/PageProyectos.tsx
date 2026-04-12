@@ -50,8 +50,22 @@ export default function PageProyectos() {
             <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-2xl">
               <FormularioProyecto 
               proyectoEditar={proyectoEditar}
-              closeModal={closeModal}   
-              onCreated={(nuevoProyecto) => { setProyectos((prev) => [nuevoProyecto, ...prev]);}}/>
+              closeModal={closeModal}
+              onCreated={(proyectoGuardado) => {
+                setProyectos((prev) => {
+                const existe = prev.some(
+                  p => p.id_proyecto === proyectoGuardado.id_proyecto
+                );
+                if (existe) {
+                  return prev.map(p =>
+                    p.id_proyecto === proyectoGuardado.id_proyecto
+                      ? proyectoGuardado
+                      : p
+                  );
+                }
+                return [proyectoGuardado, ...prev];
+              });
+            }} />
             </Modal>
         </div>
       </DashboardLayout>
