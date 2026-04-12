@@ -1,7 +1,7 @@
 import { CircleX } from 'lucide-react';
 import { useState } from 'react';
 import Dropdown from '../../../components/MenuDesplegable';
-import { crearProyecto, type Proyecto } from '../lib/ProyectosApi';
+import { crearProyecto, editarProyecto,type Proyecto } from '../lib/ProyectosApi';
 import { ProyectoSchema } from '../utils/ProyectosSchema';
 import { toast } from '../../../components/Alerta';
 import { Input } from '@/components/ui/input';
@@ -44,6 +44,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         [name]: result.success ? "" : result.error.issues[0].message,
       }));
     };
+
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -90,11 +91,21 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           url_proyecto: formularioData.projectUrl || undefined,
           url_repositorio: formularioData.githubUrl || undefined,
         };
+        let proyectoGuardado;
+        if (proyectoEditar) {
+          proyectoGuardado = await editarProyecto(
+            proyectoEditar.id_proyecto,
+            payload
+          );
 
-      const nuevoProyecto = await crearProyecto(payload);
+          toast.success("Proyecto editado exitosamente", 3000);
+        } else {
+          proyectoGuardado = await crearProyecto(payload);
+          toast.success("Proyecto creado exitosamente", 3000);
+          onCreated(proyectoGuardado);
+        }
+
         resetForm();
-        toast.success("Proyecto creado exitosamente", 3000);
-        onCreated(nuevoProyecto);
         closeModal();
 
       } catch {

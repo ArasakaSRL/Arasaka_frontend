@@ -43,3 +43,8 @@ export const obtenerProyectos = async (): Promise<Proyecto[]> => {
     const response = await apiClient.get("/portafolios/proyectos");
     return response.data.data;
 }
+
+export const editarProyecto = async (id_proyecto: string, data: Partial<ProyectoFormData>): Promise<Proyecto> => {
+    const response = await apiClient.put(`/portafolios/proyectos/${id_proyecto}`, data);
+    return response.data.data;
+}
