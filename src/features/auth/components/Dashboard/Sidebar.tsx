@@ -17,7 +17,7 @@ const menuItems = [
     { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
     { icon: ShieldCheck, label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
-    { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion' }
+    { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' }
 ];
 interface SidebarProps {
     isOpen: boolean
