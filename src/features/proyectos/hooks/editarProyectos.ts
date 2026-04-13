@@ -29,7 +29,7 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
         startDate: formatoFecha(proyectoEditar.fecha_inicio),
         endDate: proyectoEditar.fecha_fin ? formatoFecha(proyectoEditar.fecha_fin) : "",
         projectUrl: proyectoEditar.url_demo || "",
-        githubUrl: proyectoEditar.url_repositorio || "",
+        githubUrl: proyectoEditar.url_github || "",
       });
 
       setTecnologias(

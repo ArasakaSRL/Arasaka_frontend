@@ -53,7 +53,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         descripcion: formularioData.descripcion,
         fechaInicio: formularioData.startDate,
         fechaFin: formularioData.endDate,
-        tecnologias: tecnologias.map(id => ({ id_tecnologia: id })),
+        tecnologias: tecnologias,
         projectUrl: formularioData.projectUrl,
         githubUrl: formularioData.githubUrl,
       });
@@ -88,8 +88,8 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           fecha_inicio: formularioData.startDate,
           fecha_fin: formularioData.endDate || undefined,
           tecnologias: tecnologias.map(id => ({ id_tecnologia: id })),
-          url_proyecto: formularioData.projectUrl || undefined,
-          url_repositorio: formularioData.githubUrl || undefined,
+          url_demo: formularioData.projectUrl,
+          url_github: formularioData.githubUrl,
         };
         let proyectoGuardado;
         if (proyectoEditar) {

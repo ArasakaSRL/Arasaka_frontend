@@ -6,8 +6,8 @@ export interface ProyectoFormData {
     fecha_inicio: string;
     fecha_fin?: string;
     tecnologias: { id_tecnologia: string }[];
-    url_proyecto?: string;
-    url_repositorio?: string;
+    url_demo?: string;
+    url_github?: string;
 }
 
 export interface Proyecto {
@@ -19,7 +19,7 @@ export interface Proyecto {
     fecha_fin: string;
     tecnologias: Tecnologias[]
     url_demo?: string | null;
-    url_repositorio?: string | null;
+    url_github?: string | null;
 }
 
 export interface Tecnologias {
