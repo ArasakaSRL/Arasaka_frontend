@@ -30,17 +30,6 @@ export interface Tecnologia {
   nombre: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapHabilidad(apiData: any): Habilidad {
-  return {
-    id_categoria_habilidad: apiData["categoria habilidad"],
-    id_portafolio: apiData.id_portafolio,
-    id_nivel_habilidad: apiData["nivel habilidad"],
-    id_tecnologia: apiData.id_tecnologia,
-    nombre: apiData.nombre,
-  };
-}
-
 export const crearHabilidad = async (data: Habilidad) => {
   const res = await apiClient.post("/portafolios/habilidades", data);
 
@@ -48,7 +37,12 @@ export const crearHabilidad = async (data: Habilidad) => {
     ? res.data.data[0]
     : res.data.data;
 
-  return mapHabilidad(raw);
+  return {
+    id_habilidad: raw.id_habilidad,
+    nombre: raw.nombre,
+    nivel: raw["nivel habilidad"],
+    categoria: raw["categoria habilidad"],
+  };
 };
 
 export const obtenerHabilidades = async (): Promise<HabilidadUI[]> => {
@@ -80,4 +74,19 @@ export const obtenerNiveles = async (): Promise<Nivel[]> => {
 export const obtenerTecnologias = async (): Promise<Tecnologia[]> => {
   const response = await apiClient.get("/tecnologias");
   return response.data.data;
+};
+
+export const editarHabilidad = async (id_habilidad: string, data: Partial<Habilidad>) => {
+  const res = await apiClient.put(`/portafolios/habilidades/${id_habilidad}`, data);
+
+  const raw = Array.isArray(res.data.data)
+    ? res.data.data[0]
+    : res.data.data;
+
+  return {
+    id_habilidad: raw.id_habilidad,
+    nombre: raw.nombre,
+    nivel: raw["nivel habilidad"],
+    categoria: raw["categoria habilidad"],
+  };
 };

@@ -1,7 +1,7 @@
 import { CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
 import Dropdown from "@/components/MenuDesplegable";
-import { crearHabilidad,obtenerHabilidades, type HabilidadUI } from "../lib/HabilidadesApi";
+import { crearHabilidad, editarHabilidad, type HabilidadUI } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
@@ -9,7 +9,7 @@ import { useHabilidadesData } from "../hooks/useHabilidades";
 
 interface HabilidadesProps {
   closeModal: () => void;
-  onCreated: () => void; 
+  onCreated: (data:HabilidadUI) => void;
   habilidadEditar?: HabilidadUI | null;
 }
 
@@ -30,20 +30,47 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [habilidadesExistentes, setHabilidadesExistentes] = useState<string[]>([]);
+  const [habilidadesExistentes] = useState<string[]>([]);
   
   const categoriaSeleccionada = categorias.find(
     (c) => c.value === categoria
   )?.label;
 
   useEffect(() => {
-    const fetch = async () => {
-      const data = await obtenerHabilidades();
-      const nombres = data.map(h => h.nombre.toLowerCase());
-      setHabilidadesExistentes(nombres);
+    if (!habilidadEditar) return;
+
+    const findValue = (
+      list: { label: string; value: string }[],
+      label?: string
+    ) => {
+      return list.find(
+        (item) => item.label.toLowerCase() === label?.toLowerCase()
+      )?.value || "";
     };
-    fetch();
-  }, []);
+
+    if (categorias.length > 0) {
+      const catValue = findValue(categorias, habilidadEditar.categoria);
+      setCategoria(catValue);
+    }
+
+    if (niveles.length > 0) {
+      const nivelValue = findValue(niveles, habilidadEditar.nivel);
+      setNivel(nivelValue);
+    }
+
+    if (
+      tecnologias.length > 0 &&
+      habilidadEditar.categoria.toLowerCase() === "tecnica"
+    ) {
+      const techValue = findValue(tecnologias, habilidadEditar.nombre);
+      setTecnologia(techValue);
+    }
+
+    if (habilidadEditar.categoria.toLowerCase() === "blanda") {
+      setHabilidadBlanda(habilidadEditar.nombre);
+    }
+
+  }, [habilidadEditar, categorias, niveles, tecnologias]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,12 +93,21 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
       return;
     }
 
-    const nombreAValidar =
-      categoriaSeleccionada === "Tecnica"
-        ? tecnologias.find(t => t.value === tecnologia)?.label.toLowerCase()
-        : habilidadBlanda.toLowerCase();
+    const normalizar = (str: string) => str.trim().toLowerCase();
 
-    if (habilidadesExistentes.includes(nombreAValidar || "")) {
+    const nombreAValidar = normalizar(
+      categoriaSeleccionada === "Tecnica"
+        ? tecnologias.find(t => t.value === tecnologia)?.label || ""
+        : habilidadBlanda
+    );
+
+    const existe = habilidadesExistentes.includes(nombreAValidar);
+
+    if (
+      existe &&
+      (!habilidadEditar ||
+        normalizar(habilidadEditar.nombre) !== nombreAValidar)
+    ) {
       toast.error("Esta habilidad ya fue registrada");
       return;
     }
@@ -81,28 +117,55 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
     try {
       const esTecnica = categoriaSeleccionada?.toLowerCase() === "tecnica";
 
-      const data: DatosHabilidad = {
-        id_categoria_habilidad: categoria,
-        id_portafolio: "",
-        id_nivel_habilidad: nivel,
-      };
+      const data: Partial<DatosHabilidad> = {};
+
+      if (nivel) data.id_nivel_habilidad = nivel;
 
       if (esTecnica) {
-        data.id_tecnologia = tecnologia;
+        if (tecnologia) data.id_tecnologia = tecnologia;
       } else {
-        data.nombre = habilidadBlanda;
+        if (habilidadBlanda) data.nombre = habilidadBlanda;
       }
 
-      await crearHabilidad(data);
+      if (habilidadEditar) {
+        const updated = await editarHabilidad(
+          habilidadEditar.id_habilidad,
+          data
+        );
 
-      toast.success("Habilidad creada exitosamente", 3000);
+        toast.success("Habilidad actualizada correctamente", 3000);
 
-      await onCreated();
+        onCreated(updated);
+
+      } else {
+        const newData: DatosHabilidad = {
+          id_categoria_habilidad: categoria,
+          id_portafolio: "",
+          id_nivel_habilidad: nivel,
+        };
+
+        if (esTecnica) {
+          newData.id_tecnologia = tecnologia;
+        } else {
+          newData.nombre = habilidadBlanda;
+        }
+
+        const created = await crearHabilidad(newData);
+
+        toast.success("Habilidad creada exitosamente", 3000);
+
+        onCreated({
+          id_habilidad: created.id_habilidad,
+          nombre: created.nombre ?? "",
+          nivel: created.nivel ?? "",
+          categoria: created.categoria ?? "",
+        });
+      }
 
       closeModal();
 
     } catch {
-      toast.error("Error al crear habilidad", 3000);
+      toast.error("Error al guardar habilidad", 3000);
     } finally {
       setLoading(false);
     }
@@ -135,6 +198,7 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
           options={categorias}
           isOpen={menuAbierto === "categoria"}
           onToggle={() => setMenuAbierto(menuAbierto === "categoria" ? null : "categoria")}
+          disabled={!!habilidadEditar}
           />
             {errors.categoria && <p className="text-red-500 text-xs ml-1">{errors.categoria}</p>}
         </div>
@@ -210,7 +274,7 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
               : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
             }`}
             >
-            {loading ? "Creando..." : "Crear Habilidad"}
+            {loading ? "Guardando..." : habilidadEditar ? "Guardar Cambios" : "Crear Habilidad"}
           </button>
         </div>
       </form>

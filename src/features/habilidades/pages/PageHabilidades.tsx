@@ -9,12 +9,16 @@ import { obtenerHabilidades, type HabilidadUI } from "../lib/HabilidadesApi";
 
 export default function PageHabilidades() {
   const [ModalAbierto, setModalAbierto] = useState(false);
-  const closeModal = () => setModalAbierto(false);
+  const closeModal = () => {
+    setModalAbierto(false);
+    setHabilidadesEditar(null);
+  };
 
   const [habilidades, setHabilidades] = useState<HabilidadUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [habilidadesEditar, setHabilidadesEditar] = useState<HabilidadUI | null>(null);
 
+  
   const fetchHabilidades = async () => {
     const data = await obtenerHabilidades();
     setHabilidades(data);
@@ -43,8 +47,19 @@ return(
               <ModalForm isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-xl">
                 <FormularioHabilidades 
                 closeModal={closeModal}     
-                onCreated={async () => {
-                  await fetchHabilidades();
+                onCreated={(habilidadActualizada) => {
+                  console.log("Habilidad recibida:", habilidadActualizada);
+                  if (habilidadesEditar) {
+                    setHabilidades((prev) =>
+                      prev.map((h) =>
+                        h.id_habilidad === habilidadesEditar.id_habilidad
+                          ? { ...h, ...habilidadActualizada }
+                          : h
+                      )
+                    );
+                  } else {
+                    setHabilidades((prev) => [...prev, habilidadActualizada]);
+                  }
                 }}
                 habilidadEditar={habilidadesEditar}
                 />
