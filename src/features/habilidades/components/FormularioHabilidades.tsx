@@ -9,7 +9,7 @@ import { useHabilidadesData } from "../hooks/useHabilidades";
 
 interface HabilidadesProps {
   closeModal: () => void;
-  onCreated: (nuevaHabilidad: HabilidadUI) => void; 
+  onCreated: () => void; 
   habilidadEditar?: HabilidadUI | null;
 }
 
@@ -30,28 +30,20 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const categoriaLabel = categorias.find(c => c.value === categoria)?.label;
   const [habilidadesExistentes, setHabilidadesExistentes] = useState<string[]>([]);
-
+  
   const categoriaSeleccionada = categorias.find(
     (c) => c.value === categoria
   )?.label;
 
   useEffect(() => {
-  const fetch = async () => {
-    try {
+    const fetch = async () => {
       const data = await obtenerHabilidades();
-
       const nombres = data.map(h => h.nombre.toLowerCase());
       setHabilidadesExistentes(nombres);
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  fetch();
-}, []);
+    };
+    fetch();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,31 +56,30 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
       tipo: categoriaSeleccionada || "",
     });
 
-if (!result.success) {
-  const fieldErrors: Record<string, string> = {};
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((err) => {
+        const field = err.path[0] as string;
+        fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
 
-  result.error.issues.forEach((err) => {
-    const field = err.path[0] as string;
-    fieldErrors[field] = err.message;
-  });
+    const nombreAValidar =
+      categoriaSeleccionada === "Tecnica"
+        ? tecnologias.find(t => t.value === tecnologia)?.label.toLowerCase()
+        : habilidadBlanda.toLowerCase();
 
-  setErrors(fieldErrors);
-  return;
-}
+    if (habilidadesExistentes.includes(nombreAValidar || "")) {
+      toast.error("Esta habilidad ya fue registrada");
+      return;
+    }
 
-const nombreAValidar =
-  categoriaSeleccionada === "Tecnica"
-    ? tecnologias.find(t => t.value === tecnologia)?.label.toLowerCase()
-    : habilidadBlanda.toLowerCase();
-
-if (habilidadesExistentes.includes(nombreAValidar || "")) {
-  toast.error("Esta habilidad ya fue registrada");
-  return;
-}
-    
     setLoading(true);
-    try{
-      const esTecnica = categoriaLabel?.toLowerCase() === "tecnica";
+
+    try {
+      const esTecnica = categoriaSeleccionada?.toLowerCase() === "tecnica";
 
       const data: DatosHabilidad = {
         id_categoria_habilidad: categoria,
@@ -96,34 +87,26 @@ if (habilidadesExistentes.includes(nombreAValidar || "")) {
         id_nivel_habilidad: nivel,
       };
 
-      if(esTecnica){
+      if (esTecnica) {
         data.id_tecnologia = tecnologia;
       } else {
         data.nombre = habilidadBlanda;
       }
 
-      const nuevaHabilidad = await crearHabilidad(data);
-      const nuevaUI: HabilidadUI = {
-        id_habilidad: crypto.randomUUID(),
-        nombre: nuevaHabilidad.nombre || "",
-        id_nivel_habilidad: nuevaHabilidad.id_nivel_habilidad,
-        categoria: categoriaSeleccionada || "",
-      };
-      setCategoria("");
-      setNivel("");
-      setTecnologia("");
-      setHabilidadBlanda("");
+      await crearHabilidad(data);
+
       toast.success("Habilidad creada exitosamente", 3000);
-      onCreated(nuevaUI);
+
+      await onCreated();
+
       closeModal();
 
-
-    }catch{
+    } catch {
       toast.error("Error al crear habilidad", 3000);
-    }finally{
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="rounded-2xl w-full shadow-xl">

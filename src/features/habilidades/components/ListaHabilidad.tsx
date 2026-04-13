@@ -39,7 +39,7 @@ const blandas = habilidad.filter(
               <HabilidadItem
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
-                nivel={hab.id_nivel_habilidad}
+                nivel={hab.nivel}
                 onEditar={() => onEditar(hab)}
               />
             ))
@@ -64,7 +64,7 @@ const blandas = habilidad.filter(
               <HabilidadItem
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
-                nivel={hab.id_nivel_habilidad}
+                nivel={hab.nivel}
                 onEditar={() => onEditar(hab)}
               />
             ))

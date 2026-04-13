@@ -1,4 +1,4 @@
-import { SquarePen, Trash2 } from 'lucide-react';
+import { SquarePen } from 'lucide-react';
 
 type Props = {
   nombre: string;
@@ -26,7 +26,7 @@ export default function HabilidadItem({ nombre, nivel, onEditar }: Props) {
       {/* CONTENIDO IZQUIERDO */}
       <div className="flex-1 space-y-2">
         <div className="flex justify-between items-center">
-          <span className="font-medium text-sm text-black">{nombre}</span>
+          <span className="font-medium text-left text-sm text-black">{nombre}</span>
           <span className="text-xs text-gray-500">{nivel}</span>
         </div>
 
@@ -42,9 +42,6 @@ export default function HabilidadItem({ nombre, nivel, onEditar }: Props) {
       <div className="flex items-center gap-2 ml-3">
         <button onClick={onEditar}>
           <SquarePen size={16} className="text-gray-500 hover:text-black" />
-        </button>
-        <button>
-          <Trash2 size={16} className="text-gray-500 hover:text-red-500" />
         </button>
       </div>
     </div>

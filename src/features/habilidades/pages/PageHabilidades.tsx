@@ -43,7 +43,9 @@ return(
               <ModalForm isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-xl">
                 <FormularioHabilidades 
                 closeModal={closeModal}     
-                onCreated={(nuevaHabilidad) => { setHabilidades((prev) => [nuevaHabilidad, ...prev]);}}
+                onCreated={async () => {
+                  await fetchHabilidades();
+                }}
                 habilidadEditar={habilidadesEditar}
                 />
               </ModalForm>

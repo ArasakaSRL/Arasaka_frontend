@@ -11,7 +11,7 @@ export interface Habilidad {
 export interface HabilidadUI {
   id_habilidad: string;
   nombre: string;
-  id_nivel_habilidad: string;
+  nivel: string;
   categoria: string;
 }
 
