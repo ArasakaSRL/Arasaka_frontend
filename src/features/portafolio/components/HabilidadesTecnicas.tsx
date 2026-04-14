@@ -66,7 +66,7 @@ const TarjetaInteractiva = ({ tech }: { tech: any }) => {
       }`}
     >
   
-      <div className={`absolute inset-0 flex items-center justify-center rounded-[2.5rem] border border-slate-100 bg-white shadow-sm transition-all duration-500 z-10 ${
+      <div className={`absolute inset-0 flex items-center justify-center rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-500 z-10 ${
         isExpanded ? 'opacity-0 pointer-events-none rotate-y-180' : 'opacity-100'
       } hover:border-blue-400 hover:shadow-xl hover:-translate-y-2`}>
         <img
@@ -76,7 +76,7 @@ const TarjetaInteractiva = ({ tech }: { tech: any }) => {
         />
       </div>
 
-      <div className={`absolute inset-0 p-6 flex flex-col justify-center rounded-[2.5rem] border-2 border-blue-500 bg-white shadow-2xl transition-all duration-500 z-20 ${
+      <div className={`absolute inset-0 p-6 flex flex-col justify-center rounded-2xl border-2 border-blue-500 bg-white shadow-2xl transition-all duration-500 z-20 ${
         isExpanded ? 'opacity-100 scale-105' : 'opacity-0 pointer-events-none scale-95'
       }`}>
         <button className="absolute top-4 right-4 text-slate-400 hover:text-blue-600">

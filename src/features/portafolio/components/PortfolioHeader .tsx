@@ -135,7 +135,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
               hover:border-white/20
             "
           >
-            <span>Dowloand CV</span>
+            <span>Descargar CV</span>
             <ExternalLink size={14} />
           </button>
         </div>
