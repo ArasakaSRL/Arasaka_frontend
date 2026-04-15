@@ -1,16 +1,32 @@
 import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
 import {ConfiguracionGeneral } from "../components/ConfiguracionGeneral";
-import { SeccionVisibilidad } from "../components/visibilidadComponentes/SeccionVisibilidad";
-import { CardHitos } from "@/features/hitos/components/cardHitos";
+import { DropdownCertificaciones } from "@/features/certificaciones/components/DropdownCertificaciones";
+import { SwitchVisibilidad } from "../components/SwitchVisibilidad";
+import { useState } from "react";
+
+type Option = {
+  label: string;
+  value: string;
+};
 
 export default function Configuracion(){
+    const [selected, setSelected] = useState<Option | null>(null);
+    const opciones = [
+    { label: "Público", value: "publico" },
+    { label: "Privado", value: "privado" },
+    ];
+
+    const handleChange = (option: Option) => {
+    setSelected(option);
+    };
+    
     return(
 
         <DashboardLayout>
             <Banner titulo="Configuracion del portafolio" descripcion="">
             </Banner>
-            <SeccionVisibilidad titulo="Visibilidad Hitos" maxHeight="20vh" forceScroll >
+            {/*<SeccionVisibilidad titulo="Visibilidad Hitos" maxHeight="20vh" forceScroll >
                  <CardHitos
                     color="green"
                     cargo="Desarrollador Frontend"
@@ -21,7 +37,7 @@ export default function Configuracion(){
                     fechaTexto="Abril 2026"
                 />
 
-                {/* Desactivado */}
+                 //Desactivado 
                 <CardHitos
                     color="green"
                     cargo="Desarrollador Backend"
@@ -42,8 +58,20 @@ export default function Configuracion(){
                     diaNumero={15}
                     fechaTexto="Abril 2026"
                 />
-            </SeccionVisibilidad>
-            <ConfiguracionGeneral titulo="Configuracion General"></ConfiguracionGeneral>
+            </SeccionVisibilidad>*/}
+            <ConfiguracionGeneral titulo="Visibilidad Componentes">
+                <SwitchVisibilidad nombre="Habilidades" />
+                <SwitchVisibilidad nombre="Proyectos" />
+                <SwitchVisibilidad nombre="Certificaciones" />
+            </ConfiguracionGeneral>
+            <ConfiguracionGeneral titulo="Configuracion General">
+                <DropdownCertificaciones
+                    titulo="Visibilidad portafolio"
+                    opciones={opciones}
+                    value={selected}
+                    onChange={handleChange}
+                />
+            </ConfiguracionGeneral>
             
         </DashboardLayout>
     );

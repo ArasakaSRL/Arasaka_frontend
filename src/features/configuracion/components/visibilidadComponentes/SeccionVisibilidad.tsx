@@ -23,7 +23,7 @@ export function SeccionVisibilidad({
   const shouldScroll = forceScroll || !isFew;
 
 
-  const childrenWithProps = items.map((child) => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement<{ disabled?: boolean }>(child)) {
       return React.cloneElement(child, {
         disabled: !visible,
