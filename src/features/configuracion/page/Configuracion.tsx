@@ -61,6 +61,7 @@ export default function Configuracion(){
             </SeccionVisibilidad>*/}
             <ConfiguracionGeneral titulo="Visibilidad Componentes">
                 <SwitchVisibilidad nombre="Habilidades" />
+                <SwitchVisibilidad nombre="Hitos" />
                 <SwitchVisibilidad nombre="Proyectos" />
                 <SwitchVisibilidad nombre="Certificaciones" />
             </ConfiguracionGeneral>
