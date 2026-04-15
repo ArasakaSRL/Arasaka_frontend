@@ -2,7 +2,7 @@ type FechaHitoProps = {
   diaAbreviado: string;
   diaNumero: number;
   fechaTexto: string;
-  color?: "blue" | "green" | "red" | "orange";
+  color?: "blue" | "green" | "red" | "orange"| "disabled"; 
 };
 
 const colorVariants = {
@@ -22,6 +22,11 @@ const colorVariants = {
     badge: "bg-orange-500 text-white",
     border: "border-orange-500",
   },
+
+  disabled: {
+    badge: "bg-[var(--color-dark-200)] text-[var(--color-dark-600)]",
+    border: "border-[var(--color-dark-300)]",
+  },
 };
 
 export function FechaHito({
@@ -30,7 +35,9 @@ export function FechaHito({
   fechaTexto,
   color = "blue",
 }: FechaHitoProps) {
-  const styles = colorVariants[color];
+  const isDisabled = color === "disabled";
+
+  const styles = colorVariants[color] || colorVariants.blue;
 
   return (
     <div className="flex items-start gap-4">
@@ -56,33 +63,32 @@ export function FechaHito({
             {diaAbreviado}
           </div>
 
-          {/* [2] Número */}
-          <div
-            className="
-              font-extrabold text-gray-900 leading-none
+         {/* Número */}
+          <div className={`
+            font-extrabold leading-none
+            ${isDisabled ? "text-[var(--color-dark-600)]" : "text-gray-900"}
 
-              text-2xl
-              sm:text-3xl
-              md:text-4xl
-              lg:text-5xl
-            "
-          >
+            text-2xl
+            sm:text-3xl
+            md:text-4xl
+            lg:text-5xl
+          `}>
             {diaNumero}
           </div>
 
-          {/* [3] Fecha */}
-          <div
-            className="
-              col-span-2 text-gray-500 mt-1
+           {/* Fecha */}
+          <div className={`
+            col-span-2 mt-1
+            ${isDisabled ? "text-[var(--color-dark-400)]" : "text-gray-500"}
 
-              text-xs
-              sm:text-sm
-              md:text-base
-              lg:text-lg
-            "
-          >
+            text-xs
+            sm:text-sm
+            md:text-base
+            lg:text-lg
+          `}>
             {fechaTexto}
           </div>
+          
         </div>
       </div>
     </div>

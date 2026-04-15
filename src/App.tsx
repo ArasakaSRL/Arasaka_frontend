@@ -12,7 +12,7 @@ import Hitos from './features/hitos/page/Hitos'
 import VerifyEmail from './pages/auth/VerifyEmail'
 import Dashboard from './pages/Dashboard/index'
 import ResetPassword from './pages/auth/ResetPassword'
-import PortafolioPage from './features/portafolio/pages/PortfolioPage'
+import Configuracion from './features/configuracion/page/Configuracion'
 
 export default function App() { // Este slug se puede generar dinámicamente según el portafolio que quieras mostrar
   return (
@@ -27,6 +27,7 @@ export default function App() { // Este slug se puede generar dinámicamente seg
         <Route path="/Dashboard/habilidades/Habilidades" element={<Habilidades />} />
         <Route path="/Dashboard/certificaciones/Certificaciones" element={< Certificaciones/>} />
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
+        <Route path="/Dashboard/configuracion/Configuracion" element={<Configuracion/>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
