@@ -13,6 +13,7 @@ import VerifyEmail from './pages/auth/VerifyEmail'
 import Dashboard from './pages/Dashboard/index'
 import ResetPassword from './pages/auth/ResetPassword'
 import Configuracion from './features/configuracion/page/Configuracion'
+import PortafolioPage from './features/portafolio/pages/PortfolioPage'
 
 export default function App() { // Este slug se puede generar dinámicamente según el portafolio que quieras mostrar
   return (
