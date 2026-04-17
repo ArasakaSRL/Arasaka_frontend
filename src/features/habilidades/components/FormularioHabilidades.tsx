@@ -37,11 +37,13 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
     { label: "Técnica", value: "tecnica" },
   ];
 
-  const niveles = [
-    { label: "Básico", value: "basico" },
-    { label: "Intermedio", value: "intermedio" },
-    { label: "Avanzado", value: "avanzado" },
-  ]
+const niveles = [
+  { label: "Principiante", value: "Principiante" },
+  { label: "Intermedio", value: "Intermedio" },
+  { label: "Competente", value: "Competente" },
+  { label: "Avanzado", value: "Avanzado" },
+  { label: "Experto", value: "Experto" },
+];
 
 useEffect(() => {
   if (!habilidadEditar) return;
