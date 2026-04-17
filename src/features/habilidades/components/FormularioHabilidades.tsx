@@ -11,6 +11,7 @@ interface HabilidadesProps {
   closeModal: () => void;
   onCreated: (data:HabilidadUI) => void;
   habilidadEditar?: HabilidadUI | null;
+  habilidadesExistentes: HabilidadUI[];
 }
 
 interface DatosHabilidad {
@@ -20,7 +21,7 @@ interface DatosHabilidad {
   nombre?: string;
 }
 
-export default function FormularioHabilidades ({closeModal, onCreated, habilidadEditar}:HabilidadesProps) {
+export default function FormularioHabilidades ({closeModal, onCreated, habilidadEditar, habilidadesExistentes}:HabilidadesProps) {
   const [categoria, setCategoria] = useState<string>("");
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
@@ -29,8 +30,6 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [habilidadesExistentes] = useState<string[]>([]);
-
   
   const categorias = [
     { label: "Blanda", value: "blanda" },
@@ -67,9 +66,8 @@ useEffect(() => {
     const result = HabilidadSchema.safeParse({
       categoria,
       nivel,
-      tecnologia,
-      habilidad: habilidadBlanda,
-      tipo: categoria || "",
+      tecnologia: habilidadEditar ? undefined : tecnologia,
+      habilidad: habilidadEditar ? undefined : habilidadBlanda,
     });
 
     if (!result.success) {
@@ -90,14 +88,17 @@ useEffect(() => {
         : habilidadBlanda
     );
 
-    const existe = habilidadesExistentes.includes(nombreAValidar);
+    const existe = habilidadesExistentes.some(h => {
+      const nombre = h.nombre.trim().toLowerCase();
+      return nombre === nombreAValidar;
+    });
 
     if (
       existe &&
       (!habilidadEditar ||
         normalizar(habilidadEditar.nombre) !== nombreAValidar)
     ) {
-      toast.error("Esta habilidad ya fue registrada");
+      toast.warning("Esta habilidad ya fue registrada");
       return;
     }
 
@@ -120,7 +121,9 @@ useEffect(() => {
       if (habilidadEditar) {
         const updated = await editarHabilidad(
           habilidadEditar.id_habilidad,
-          data
+          {
+            nivel: nivel,
+          }
         );
 
         toast.success("Habilidad actualizada correctamente", 3000);
@@ -128,6 +131,19 @@ useEffect(() => {
         onCreated(updated);
 
       } else {
+        const esTecnica = categoria === "tecnica";
+
+        const data: DatosHabilidad = {
+          categoria_habilidad: categoria,
+          nivel: nivel,
+        };
+
+        if (esTecnica) {
+          data.id_tecnologia = tecnologia;
+        } else {
+          data.nombre = habilidadBlanda;
+        }
+
         const created = await crearHabilidad(data);
 
         toast.success("Habilidad creada exitosamente", 3000);
@@ -197,6 +213,7 @@ useEffect(() => {
               searchable
               isOpen={menuAbierto === "tecnologias"}
               onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
+              disabled={!!habilidadEditar}
             />
             {errors.tecnologia && <p className="text-red-500 text-xs ml-1">{errors.tecnologia}</p>}
           </div>
@@ -213,8 +230,9 @@ useEffect(() => {
               placeholder="Ej: Comunicación, Liderazgo..." 
               label={"Ingrese la habilidad"} 
               type={"text"}  
+              disabled={!!habilidadEditar}
               error={errors.habilidad}
-              required     
+              required
             />
           </div>
         )}

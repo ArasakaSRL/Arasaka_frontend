@@ -62,6 +62,7 @@ return(
                   }
                 }}
                 habilidadEditar={habilidadesEditar}
+                habilidadesExistentes={habilidades}
                 />
               </ModalForm>
         </div> 
