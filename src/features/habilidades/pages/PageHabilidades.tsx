@@ -53,12 +53,12 @@ return(
                     setHabilidades((prev) =>
                       prev.map((h) =>
                         h.id_habilidad === habilidadesEditar.id_habilidad
-                          ? { ...h, ...habilidadActualizada }
+                          ? habilidadActualizada
                           : h
                       )
                     );
                   } else {
-                    setHabilidades((prev) => [...prev, habilidadActualizada]);
+                    setHabilidades((prev) => [habilidadActualizada, ...prev]);
                   }
                 }}
                 habilidadEditar={habilidadesEditar}

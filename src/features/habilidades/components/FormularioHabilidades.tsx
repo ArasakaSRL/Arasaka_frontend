@@ -49,7 +49,7 @@ useEffect(() => {
   if (!habilidadEditar) return;
 
   setCategoria(habilidadEditar.categoria.toLowerCase());
-  setNivel(habilidadEditar.nivel.toLowerCase());
+  setNivel(habilidadEditar.nivel);
 
   if (habilidadEditar.categoria.toLowerCase() === "tecnica") {
     const tech = tecnologias.find(

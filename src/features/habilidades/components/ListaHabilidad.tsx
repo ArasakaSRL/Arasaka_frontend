@@ -13,11 +13,11 @@ export default function HabilidadesList({ habilidad, load, onEditar }: Props) {
   if (load) return <p>Cargando...</p>;
 
 const tecnicas = habilidad.filter(
-  (h) => h.categoria.toLowerCase() === "tecnica"
+  (h) => h.categoria === "tecnica"
 );
 
 const blandas = habilidad.filter(
-  (h) => h.categoria.toLowerCase() === "blanda"
+  (h) => h.categoria === "blanda"
 );
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
