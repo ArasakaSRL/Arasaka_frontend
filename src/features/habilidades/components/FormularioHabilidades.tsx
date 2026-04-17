@@ -14,9 +14,8 @@ interface HabilidadesProps {
 }
 
 interface DatosHabilidad {
-  id_categoria_habilidad: string;
-  id_portafolio: string;
-  id_nivel_habilidad: string;
+  categoria_habilidad: string;
+  nivel: string;
   id_tecnologia?: string;
   nombre?: string;
 }
@@ -26,51 +25,39 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
   const [nivel, setNivel] = useState<string>(""); 
   const [tecnologia, setTecnologia] = useState<string>("");
   const [habilidadBlanda, setHabilidadBlanda] = useState("");
-  const { categorias, niveles, tecnologias } = useHabilidadesData();  
+  const { tecnologias } = useHabilidadesData();  
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [habilidadesExistentes] = useState<string[]>([]);
+
   
-  const categoriaSeleccionada = categorias.find(
-    (c) => c.value === categoria
-  )?.label;
+  const categorias = [
+    { label: "Blanda", value: "blanda" },
+    { label: "Técnica", value: "tecnica" },
+  ];
 
-  useEffect(() => {
-    if (!habilidadEditar) return;
+  const niveles = [
+    { label: "Básico", value: "basico" },
+    { label: "Intermedio", value: "intermedio" },
+    { label: "Avanzado", value: "avanzado" },
+  ]
 
-    const findValue = (
-      list: { label: string; value: string }[],
-      label?: string
-    ) => {
-      return list.find(
-        (item) => item.label.toLowerCase() === label?.toLowerCase()
-      )?.value || "";
-    };
+useEffect(() => {
+  if (!habilidadEditar) return;
 
-    if (categorias.length > 0) {
-      const catValue = findValue(categorias, habilidadEditar.categoria);
-      setCategoria(catValue);
-    }
+  setCategoria(habilidadEditar.categoria.toLowerCase());
+  setNivel(habilidadEditar.nivel.toLowerCase());
 
-    if (niveles.length > 0) {
-      const nivelValue = findValue(niveles, habilidadEditar.nivel);
-      setNivel(nivelValue);
-    }
-
-    if (
-      tecnologias.length > 0 &&
-      habilidadEditar.categoria.toLowerCase() === "tecnica"
-    ) {
-      const techValue = findValue(tecnologias, habilidadEditar.nombre);
-      setTecnologia(techValue);
-    }
-
-    if (habilidadEditar.categoria.toLowerCase() === "blanda") {
-      setHabilidadBlanda(habilidadEditar.nombre);
-    }
-
-  }, [habilidadEditar, categorias, niveles, tecnologias]);
+  if (habilidadEditar.categoria.toLowerCase() === "tecnica") {
+    const tech = tecnologias.find(
+      (t) => t.label.toLowerCase() === habilidadEditar.nombre.toLowerCase()
+    );
+    setTecnologia(tech?.value || "");
+  } else {
+    setHabilidadBlanda(habilidadEditar.nombre);
+  }
+}, [habilidadEditar, tecnologias]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +67,7 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
       nivel,
       tecnologia,
       habilidad: habilidadBlanda,
-      tipo: categoriaSeleccionada || "",
+      tipo: categoria || "",
     });
 
     if (!result.success) {
@@ -96,7 +83,7 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
     const normalizar = (str: string) => str.trim().toLowerCase();
 
     const nombreAValidar = normalizar(
-      categoriaSeleccionada === "Tecnica"
+      categoria === "tecnica"
         ? tecnologias.find(t => t.value === tecnologia)?.label || ""
         : habilidadBlanda
     );
@@ -115,16 +102,17 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
     setLoading(true);
 
     try {
-      const esTecnica = categoriaSeleccionada?.toLowerCase() === "tecnica";
+      const esTecnica = categoria.toLowerCase() === "tecnica";
 
-      const data: Partial<DatosHabilidad> = {};
-
-      if (nivel) data.id_nivel_habilidad = nivel;
+      const data: DatosHabilidad = {
+        categoria_habilidad: categoria,
+        nivel: nivel,
+      };
 
       if (esTecnica) {
-        if (tecnologia) data.id_tecnologia = tecnologia;
+        data.id_tecnologia = tecnologia;
       } else {
-        if (habilidadBlanda) data.nombre = habilidadBlanda;
+        data.nombre = habilidadBlanda;
       }
 
       if (habilidadEditar) {
@@ -138,19 +126,7 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
         onCreated(updated);
 
       } else {
-        const newData: DatosHabilidad = {
-          id_categoria_habilidad: categoria,
-          id_portafolio: "",
-          id_nivel_habilidad: nivel,
-        };
-
-        if (esTecnica) {
-          newData.id_tecnologia = tecnologia;
-        } else {
-          newData.nombre = habilidadBlanda;
-        }
-
-        const created = await crearHabilidad(newData);
+        const created = await crearHabilidad(data);
 
         toast.success("Habilidad creada exitosamente", 3000);
 
@@ -202,7 +178,7 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
           />
             {errors.categoria && <p className="text-red-500 text-xs ml-1">{errors.categoria}</p>}
         </div>
-        {categoriaSeleccionada === "Tecnica" && (
+        {categoria === "tecnica" && (
           <div className="space-y-1">
             <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
               Habilidad <span className="text-error-500">*</span>
@@ -224,12 +200,12 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
           </div>
         )}
 
-        {categoriaSeleccionada === "Blanda" && (
+        {categoria === "blanda" && (
           <div className="space-y-1">
             <Input
               value={habilidadBlanda}
-              onChange={(val) => {
-                setHabilidadBlanda(val);
+              onChange={(value) => {
+                setHabilidadBlanda(value);
                 setErrors((prev) => ({ ...prev, habilidad: "" }));
               }}
               placeholder="Ej: Comunicación, Liderazgo..." 
@@ -280,4 +256,4 @@ export default function FormularioHabilidades ({closeModal, onCreated, habilidad
       </form>
     </div>
     )
-}
+};
