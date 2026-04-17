@@ -62,14 +62,12 @@ useEffect(() => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const result = HabilidadSchema.safeParse({
       categoria,
       nivel,
       tecnologia: habilidadEditar ? undefined : tecnologia,
       habilidad: habilidadEditar ? undefined : habilidadBlanda,
     });
-
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.issues.forEach((err) => {
@@ -103,7 +101,6 @@ useEffect(() => {
     }
 
     setLoading(true);
-
     try {
       const esTecnica = categoria.toLowerCase() === "tecnica";
 
