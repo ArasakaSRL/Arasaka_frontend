@@ -180,6 +180,7 @@ export default function Certificaciones() {
                 }}
                 placeholder="Selecciona una categoría"
                 error={errores.categoria}
+                required   // 👈 ESTO ES CLAVE
               />
 
               <Input

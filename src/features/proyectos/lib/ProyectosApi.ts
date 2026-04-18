@@ -5,21 +5,21 @@ export interface ProyectoFormData {
     descripcion?: string;
     fecha_inicio: string;
     fecha_fin?: string;
-    tecnologias: { id_tecnologia: string }[];
-    url_proyecto?: string;
-    url_repositorio?: string;
+    tecnologias: string[];
+    url_demo?: string;
+    url_github?: string;
 }
 
 export interface Proyecto {
     id_portafolio:string;
     id_proyecto: string;
     nombre: string;
-    descripcion?: string;
+    descripcion?: string | null;
     fecha_inicio: string;
-    fecha_fin?: string;
+    fecha_fin: string;
     tecnologias: Tecnologias[]
     url_demo?: string | null;
-    url_repositorio?: string | null;
+    url_github?: string | null;
 }
 
 export interface Tecnologias {
@@ -41,5 +41,10 @@ export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
 
 export const obtenerProyectos = async (): Promise<Proyecto[]> => {
     const response = await apiClient.get("/portafolios/proyectos");
+    return response.data.data;
+}
+
+export const editarProyecto = async (id_proyecto: string, data: Partial<ProyectoFormData>): Promise<Proyecto> => {
+    const response = await apiClient.put(`/portafolios/proyectos/${id_proyecto}`, data);
     return response.data.data;
 }

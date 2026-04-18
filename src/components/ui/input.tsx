@@ -15,10 +15,11 @@ interface Props {
     min?: string;
     max?: string;
     icon?: LucideIcon; // icono opcional de lucide-react
+    disabled?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon, min, max }, ref) => {
+    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon, min, max, disabled }, ref) => {
         const isAtLimit = maxLength !== undefined && value.length === maxLength;
 
         return (
@@ -38,7 +39,12 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
                             rows={3}
+                            disabled={disabled}
                             className={`w-full px-3 py-2 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
+                            ${disabled 
+                                ? "bg-gray-100 cursor-not-allowed" 
+                                : "border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent"
+                            }
                             ${isAtLimit
                                     ? 'border-red-400 focus:ring-1 focus:ring-red-400'
                                     : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
@@ -53,8 +59,13 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             min={min}
                             max={max}
                             value={value}
+                            disabled={disabled}
                             onChange={(e) => onChange(e.target.value)}
                             className={`w-full px-3 text-[14px] py-2 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 
+                            ${disabled 
+                                ? "bg-gray-100 cursor-not-allowed" 
+                                : "border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent"
+                                }
                             ${isAtLimit
                                     ? 'border-gray-300 caret-red-500 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
                                     : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'

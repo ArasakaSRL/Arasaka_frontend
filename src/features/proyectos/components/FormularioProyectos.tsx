@@ -1,44 +1,31 @@
 import { CircleX } from 'lucide-react';
 import { useState } from 'react';
-import DropdownCheckbox from './MenuTecnologias';
-import { crearProyecto, type Proyecto } from '../lib/ProyectosApi';
+import Dropdown from '../../../components/MenuDesplegable';
+import { crearProyecto, editarProyecto,type Proyecto } from '../lib/ProyectosApi';
 import { ProyectoSchema } from '../utils/ProyectosSchema';
 import { toast } from '../../../components/Alerta';
 import { Input } from '@/components/ui/input';
 import { useTecnologias } from '../hooks/useTecnologias';
+import { useEditarProyecto } from '../hooks/editarProyectos';
 
 interface FormularioProps {
     closeModal: () => void;
     onCreated: (nuevoProyecto: Proyecto) => void;
+    proyectoEditar: Proyecto | null;
 }
 
-export default function FormularioProyectos({closeModal, onCreated}:FormularioProps) {
-    const [tecnologias, setTecnologias] = useState<string[]>([]);
+export default function FormularioProyectos({closeModal, onCreated, proyectoEditar}:FormularioProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const { opciones} = useTecnologias();
-
-    const [formularioData, setFormularioData] = useState({
-      title: "",
-      descripcion: "",
-      startDate: "",
-      endDate: "",
-      projectUrl: "",
-      githubUrl: "",
-    });  
-
-    const resetForm = () => {
-      setFormularioData({
-        title: "",
-        descripcion: "",
-        startDate: "",
-        endDate: "",
-        projectUrl: "",
-        githubUrl: "",
-      });
-      setTecnologias([]);
-      setErrors({});
-    };
+    const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
+    const {
+      formularioData,
+      setFormularioData,
+      tecnologias,
+      setTecnologias,
+      resetForm
+    } = useEditarProyecto(proyectoEditar);
 
     const cerrarForm = () => {
       resetForm();
@@ -57,6 +44,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
         [name]: result.success ? "" : result.error.issues[0].message,
       }));
     };
+
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -65,7 +53,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
         descripcion: formularioData.descripcion,
         fechaInicio: formularioData.startDate,
         fechaFin: formularioData.endDate,
-        tecnologias: tecnologias.map(id => ({ id_tecnologia: id })),
+        tecnologias: tecnologias,
         projectUrl: formularioData.projectUrl,
         githubUrl: formularioData.githubUrl,
       });
@@ -99,15 +87,27 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
           descripcion: formularioData.descripcion || undefined,
           fecha_inicio: formularioData.startDate,
           fecha_fin: formularioData.endDate || undefined,
-          tecnologias: tecnologias.map(id => ({ id_tecnologia: id })),
-          url_proyecto: formularioData.projectUrl || undefined,
-          url_repositorio: formularioData.githubUrl || undefined,
+          tecnologias: tecnologias,
+          url_demo: formularioData.projectUrl,
+          url_github: formularioData.githubUrl,
         };
+        let proyectoGuardado;
+        console.log("Payload enviado:", payload);
+        if (proyectoEditar) {
+          proyectoGuardado = await editarProyecto(
+            proyectoEditar.id_proyecto,
+            payload
+          );
 
-      const nuevoProyecto = await crearProyecto(payload);
+          toast.success("Proyecto editado exitosamente", 3000);
+          onCreated(proyectoGuardado); 
+        } else {
+          proyectoGuardado = await crearProyecto(payload);
+          toast.success("Proyecto creado exitosamente", 3000);
+          onCreated(proyectoGuardado);
+        }
+
         resetForm();
-        toast.success("Proyecto creado exitosamente", 3000);
-        onCreated(nuevoProyecto);
         closeModal();
 
       } catch {
@@ -122,7 +122,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
 
       <div className="px-7 pt-4 flex justify-between items-center">
         <h2 className="text-base text-left font-semibold text-primary-500">
-          Nuevo Proyecto
+          {proyectoEditar ? "Editar Proyecto" : "Nuevo Proyecto"}
         </h2>
         <button 
         onClick={cerrarForm}
@@ -144,6 +144,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
             }}
             error={errors.titulo}
             required
+            disabled={!!proyectoEditar}
           />
 
           <Input
@@ -182,6 +183,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
           }}
             error={errors.fechaInicio}
             required
+            disabled={!!proyectoEditar}
           />
             <Input
               label="Fecha de Fin"
@@ -196,19 +198,25 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
               }}
               error={errors.fechaFin}
               required
+              disabled={!!proyectoEditar}
             />
         </div>
         <div className='space-y-1'>
           <label className="block text-sm text-black font-medium-ui mb-2">
             Seleccione la(s) Tecnología(s) <span className="text-error-500">*</span>
           </label>
-          <DropdownCheckbox
+          <Dropdown
+            mode="multiple"
             values={tecnologias}
             onChange={(vals) => {
               setTecnologias(vals);
               setErrors((prev) => ({ ...prev, tecnologias: "" }));
             }}
             options={opciones}
+            searchable
+            isOpen={menuAbierto === "tecnologias"}
+            onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
+            disabled={!!proyectoEditar}
           />
           {errors.tecnologias && (
             <p className="text-red-500 text-xs ml-1">
@@ -241,7 +249,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
             error={errors.githubUrl}
           />
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={cerrarForm}
@@ -260,7 +268,7 @@ export default function FormularioProyectos({closeModal, onCreated}:FormularioPr
               : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
             }`}
           >
-            {loading ? "Creando..." : "Crear Proyecto"}
+            {loading ? "Creando..." : (proyectoEditar ? "Editar Proyecto" : "Crear Proyecto")}
           </button>
         </div>
 

@@ -14,11 +14,7 @@ export const ProyectoSchema = z
       .transform((val) => val.replace(/<[^>]*>?/gm, "")),
       
     tecnologias: z
-      .array(
-        z.object({
-          id_tecnologia: z.string()
-        })
-      )
+      .array(z.string())
       .min(1, "Seleccione al menos una tecnología"),
     
     fechaInicio: z

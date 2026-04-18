@@ -14,11 +14,8 @@ export const HabilidadSchema = z
     habilidad: z
       .string()
       .optional(),
-    tipo: z
-      .string()
-      .min(1, "El tipo de habilidad es obligatorio"),
   }).superRefine((data, ctx) => {
-  if (data.tipo === "Tecnica" && !data.tecnologia) {
+  if (data.categoria === "Tecnica" && !data.tecnologia) {
     ctx.addIssue({
       path: ["tecnologia"],
       message: "Seleccione una tecnología",
@@ -26,7 +23,7 @@ export const HabilidadSchema = z
     });
   }
 
-  if (data.tipo === "Blanda" && !data.habilidad?.trim()) {
+  if (data.categoria === "Blanda" && !data.habilidad?.trim()) {
     ctx.addIssue({
       path: ["habilidad"],
       message: "Ingrese una habilidad",
