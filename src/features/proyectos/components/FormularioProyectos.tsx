@@ -87,11 +87,12 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           descripcion: formularioData.descripcion || undefined,
           fecha_inicio: formularioData.startDate,
           fecha_fin: formularioData.endDate || undefined,
-          tecnologias: tecnologias.map(id => ({ id_tecnologia: id })),
+          tecnologias: tecnologias,
           url_demo: formularioData.projectUrl,
           url_github: formularioData.githubUrl,
         };
         let proyectoGuardado;
+        console.log("Payload enviado:", payload);
         if (proyectoEditar) {
           proyectoGuardado = await editarProyecto(
             proyectoEditar.id_proyecto,

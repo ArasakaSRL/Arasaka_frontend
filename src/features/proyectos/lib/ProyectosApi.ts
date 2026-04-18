@@ -5,7 +5,7 @@ export interface ProyectoFormData {
     descripcion?: string;
     fecha_inicio: string;
     fecha_fin?: string;
-    tecnologias: { id_tecnologia: string }[];
+    tecnologias: string[];
     url_demo?: string;
     url_github?: string;
 }
