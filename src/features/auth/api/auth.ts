@@ -3,6 +3,11 @@ import axios from 'axios'
 import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload } from '../types/auth.types'
 import type { AuthUser } from '@/stores/authStore'
 
+interface AuthenticateResponse {
+  message: string
+  user: AuthUser
+}
+
 // getCsrfCookie: obtiene el token CSRF de Laravel antes de hacer peticiones POST.
 // Laravel usa CSRF (Cross-Site Request Forgery) como medida de seguridad para
 // verificar que las peticiones vienen de tu propio frontend y no de otro sitio malicioso.
@@ -11,20 +16,18 @@ import type { AuthUser } from '@/stores/authStore'
 // Sin esto, Laravel rechaza la petición con error 419 (CSRF token mismatch).
 const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 
-// GET /usuario — obtiene los datos del usuario autenticado
+// GET /autenticar — obtiene el usuario con todas sus relaciones (roles, profesiones, pais, telefonos, portafolio)
 export async function getUsuario(): Promise<AuthUser | null> {
   try {
-    const { data } = await apiClient.get<AuthUser>('/usuario');
-    if ((data as any).message) return null;
-    return data;
+    const { data } = await apiClient.get<AuthenticateResponse>('/autenticar')
+    return data.user
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      return null;
+      return null
     }
-    throw error;
+    throw error
   }
 }
-// Endpoints
 
 // POST /registrar
 export async function registerRequest(payload: RegisterPayload) {
@@ -53,8 +56,8 @@ export async function firebaseAuthRequest(id_token: string) {
 
 // recuperar-contrasena
 export async function sendPasswordResetEmail(correo: string) {
-  const { data } = await apiClient.post('/recuperar-contrasena', { correo });
-  return data;
+  const { data } = await apiClient.post('/recuperar-contrasena', { correo })
+  return data
 }
 
 // restablecer-contrasena
@@ -75,7 +78,6 @@ export async function resendVerificationEmail() {
  * Los query params expires y signature son requeridos por Laravel para validar la firma.
  */
 export async function verifyEmailRequest(id: string, hash: string) {
-  // Extraer expires y signature de la URL actual del navegador
   const params = new URLSearchParams(window.location.search)
   const { data } = await apiClient.get(`/verificar-correo/${id}/${hash}`, {
     params: {
@@ -85,4 +87,3 @@ export async function verifyEmailRequest(id: string, hash: string) {
   })
   return data
 }
-

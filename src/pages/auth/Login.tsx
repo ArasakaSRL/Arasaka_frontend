@@ -50,8 +50,10 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const isFilled = correo.length > 0 && password.length > 0;
+    
     const [socialLoading, setSocialLoading] = useState<string | null>(null);
 
+    //funcion para iniciar sesion con google, github o facebook
     async function handleSocialLogin(provider: AuthProvider, name: string) {
         setSocialLoading(name);
         setApiError(null);
