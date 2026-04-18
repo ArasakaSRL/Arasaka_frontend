@@ -41,6 +41,10 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             rows={3}
                             disabled={disabled}
                             className={`w-full px-3 py-2 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
+                            ${disabled 
+                                ? "bg-gray-100 cursor-not-allowed" 
+                                : "border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent"
+                            }
                             ${isAtLimit
                                     ? 'border-red-400 focus:ring-1 focus:ring-red-400'
                                     : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'

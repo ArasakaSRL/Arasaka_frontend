@@ -10,6 +10,14 @@ export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
   const { proyectos, loading, setProyectos } = useProyectos();
   const [proyectoEditar, setProyectoEditar] = useState<Proyecto | null>(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const paginacion = 5;
+
+  const indexUltimo = paginaActual * paginacion;
+  const indexPrimero = indexUltimo - paginacion;
+  const proyectosPaginados = proyectos.slice(indexPrimero, indexUltimo);
+  const totalPaginas = Math.ceil(proyectos.length / paginacion);
+
   
   const closeModal = () => {
     setModalAbierto(false);
@@ -37,7 +45,7 @@ export default function PageProyectos() {
             {loading ? (
               <p>Cargando...</p>
             ) : (
-              proyectos.map((proyecto) => (
+              proyectosPaginados.map((proyecto) => (
                 <CardProyectos
                   onEditar={handleEditar}
                   key={proyecto.id_proyecto}
@@ -46,6 +54,29 @@ export default function PageProyectos() {
               ))
             )}
         </div>
+        {totalPaginas > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button
+              disabled={paginaActual === 1}
+              onClick={() => setPaginaActual(paginaActual - 1)}
+              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Anterior
+            </button>
+
+            <span className="font-medium">
+              Página {paginaActual} de {totalPaginas}
+            </span>
+
+            <button
+              disabled={paginaActual === totalPaginas}
+              onClick={() => setPaginaActual(paginaActual + 1)}
+              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Siguiente
+            </button>
+          </div>
+        )}
 
             <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-2xl">
               <FormularioProyecto 

@@ -144,6 +144,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             }}
             error={errors.titulo}
             required
+            disabled={!!proyectoEditar}
           />
 
           <Input
@@ -182,6 +183,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           }}
             error={errors.fechaInicio}
             required
+            disabled={!!proyectoEditar}
           />
             <Input
               label="Fecha de Fin"
@@ -196,6 +198,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
               }}
               error={errors.fechaFin}
               required
+              disabled={!!proyectoEditar}
             />
         </div>
         <div className='space-y-1'>
@@ -213,6 +216,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             searchable
             isOpen={menuAbierto === "tecnologias"}
             onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
+            disabled={!!proyectoEditar}
           />
           {errors.tecnologias && (
             <p className="text-red-500 text-xs ml-1">
@@ -245,7 +249,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             error={errors.githubUrl}
           />
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={cerrarForm}
