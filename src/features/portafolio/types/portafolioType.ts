@@ -107,7 +107,6 @@ export type configuracion = {
 };
 
 export type Portafolio = {
-    habilidadesTecnicas(habilidadesTecnicas: any): unknown;
     id: string;
     nombre: string;
     descripcion: string | null;

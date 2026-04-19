@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { Share2, Eye, Menu, X } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
+import { useNavigate } from 'react-router-dom';
+import ShareModal from '@/features/portafolio/components/ShareModal';
 
 interface DashboardHeaderProps {
     onMenuClick: () => void
@@ -7,12 +10,18 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardHeaderProps) {
+    const navigate = useNavigate();
     const user = useAuthStore(s => s.user)
+    const [shareOpen, setShareOpen] = useState(false);
 
-    // Genera las iniciales del usuario: "Juan Perez" → "JP"
     const initials = user
         ? `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`.toUpperCase()
         : '?'
+
+    const handlevistapreviaPrivate = () =>{
+        navigate(`/portafolio/privado/${user?.portafolio?.slug}`);
+    }
+
 
     return (
         <header className="h-16 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 md:px-6 transition-all duration-300">
@@ -36,12 +45,15 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
             </div>
 
             <div className="flex items-center gap-2 md:gap-3">
-                <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors border border-gray-200 text-sm">
+                <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
+                        onClick={() => setShareOpen(true)}>
                     <Share2 size={16} />
                     <span className="hidden sm:inline">Compartir</span>
                 </button>
-
-                <button className="flex items-center gap-2 px-3 py-2 bg-[#CBD5E1] text-slate-700 font-medium rounded-lg text-sm opacity-60 cursor-not-allowed">
+ 
+                <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
+                       onClick={handlevistapreviaPrivate}>
+                    
                     <Eye size={16} />
                     <span className="hidden sm:inline">Vista Previa</span>
                 </button>
@@ -53,6 +65,8 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                     }
                 </div>
             </div>
+
+            <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} />
         </header>
     );
 }

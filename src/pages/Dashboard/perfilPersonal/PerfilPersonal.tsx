@@ -72,7 +72,7 @@ export default function PerfilPersonal() {
                     handleSave={handleSave}
                 />
 
-                {/* Vista previa */}
+           
                 <PerfilPreview
                     user={user}
                     formData={formData}

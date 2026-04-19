@@ -87,11 +87,12 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           descripcion: formularioData.descripcion || undefined,
           fecha_inicio: formularioData.startDate,
           fecha_fin: formularioData.endDate || undefined,
-          tecnologias: tecnologias.map(id => ({ id_tecnologia: id })),
+          tecnologias: tecnologias,
           url_demo: formularioData.projectUrl,
           url_github: formularioData.githubUrl,
         };
         let proyectoGuardado;
+        console.log("Payload enviado:", payload);
         if (proyectoEditar) {
           proyectoGuardado = await editarProyecto(
             proyectoEditar.id_proyecto,
@@ -143,6 +144,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             }}
             error={errors.titulo}
             required
+            disabled={!!proyectoEditar}
           />
 
           <Input
@@ -181,6 +183,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           }}
             error={errors.fechaInicio}
             required
+            disabled={!!proyectoEditar}
           />
             <Input
               label="Fecha de Fin"
@@ -195,6 +198,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
               }}
               error={errors.fechaFin}
               required
+              disabled={!!proyectoEditar}
             />
         </div>
         <div className='space-y-1'>
@@ -212,6 +216,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             searchable
             isOpen={menuAbierto === "tecnologias"}
             onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
+            disabled={!!proyectoEditar}
           />
           {errors.tecnologias && (
             <p className="text-red-500 text-xs ml-1">
@@ -244,7 +249,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             error={errors.githubUrl}
           />
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-2">
           <button
             type="button"
             onClick={cerrarForm}

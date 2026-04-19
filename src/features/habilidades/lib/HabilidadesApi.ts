@@ -1,9 +1,8 @@
 import apiClient from "../../../api/api";
 
 export interface Habilidad {
-  id_categoria_habilidad: string;
-  id_portafolio: string;
-  id_nivel_habilidad: string;
+  categoria_habilidad: string;
+  nivel: string;
   id_tecnologia?: string;
   nombre?: string;
 }
@@ -13,16 +12,6 @@ export interface HabilidadUI {
   nombre: string;
   nivel: string;
   categoria: string;
-}
-
-export interface Categoria {
-  id_categoria_habilidad: string;
-  nombre: string;
-}
-
-export interface Nivel {
-  id_nivel_habilidad: string;
-  nivel: string;
 }
 
 export interface Tecnologia {
@@ -59,16 +48,6 @@ export const obtenerHabilidades = async (): Promise<HabilidadUI[]> => {
     nivel: item["nivel habilidad"],
     categoria: item["categoria habilidad"],
   }));
-};
-
-export const obtenerCategorias = async (): Promise<Categoria[]> => {
-  const response = await apiClient.get("/categorias-habilidad");
-  return response.data.data;
-};
-
-export const obtenerNiveles = async (): Promise<Nivel[]> => {
-  const response = await apiClient.get("/niveles-habilidad");
-  return response.data.data;
 };
 
 export const obtenerTecnologias = async (): Promise<Tecnologia[]> => {
