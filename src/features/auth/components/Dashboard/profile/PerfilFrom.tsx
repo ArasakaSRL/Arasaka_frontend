@@ -159,7 +159,7 @@ export default function PerfilForm({
                         value={formData.biografia}
                         onChange={(val) => handleChange('biografia', val)}
                         error={errors.biografia}
-                        maxLength={200}
+                        maxLength={270}
                         showCounter={true}
                     />
                 </div>

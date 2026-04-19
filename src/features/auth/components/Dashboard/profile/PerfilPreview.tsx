@@ -1,6 +1,10 @@
-import { BriefcaseBusiness, Briefcase, Award, Wrench, BookOpen } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { BriefcaseBusiness, Briefcase, Award, Wrench, BookOpen, Camera, Loader2 } from 'lucide-react';
 import type { Profesion } from '@/features/auth/types/update-perfilPersonal';
 import type { PortafolioCompleto } from '@/features/auth/types/portafolioData';
+import { uploadImage } from '@/firebase/firebaseStorage';
+import { actualizarFoto } from '@/features/auth/api/update-perfilPersonal';
+import { useAuthStore } from '@/stores/authStore';
 
 interface PerfilPreviewProps {
     user: {
@@ -40,6 +44,11 @@ export default function PerfilPreview({
     user, formData, profesiones, portafolio, loadingPortafolio
 }: PerfilPreviewProps) {
 
+    const setUser = useAuthStore(s => s.setUser)
+    const inputRef = useRef<HTMLInputElement>(null)
+    const [uploadingFoto, setUploadingFoto] = useState(false)
+    const [fotoUrl, setFotoUrl] = useState<string | null>(user.url_foto ?? null)
+
     const iniciales = `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`.toUpperCase()
 
     const tieneContenido = portafolio && Object.keys(portafolio).length > 0 && (
@@ -49,6 +58,27 @@ export default function PerfilPreview({
         (portafolio.servicios?.length > 0)
     )
 
+    async function handleFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setUploadingFoto(true)
+        try {
+            const path = `FotosPerfil/${Date.now()}_${file.name}`
+            const url = await uploadImage(file, path)
+            await actualizarFoto({ url_foto: url })
+            setFotoUrl(url)
+            // Actualizar el store con la nueva foto
+            const currentUser = useAuthStore.getState().user
+            if (currentUser) setUser({ ...currentUser, url_foto: url })
+        } catch {
+            // silencioso
+        } finally {
+            setUploadingFoto(false)
+            if (inputRef.current) inputRef.current.value = ''
+        }
+    }
+
     return (
         <div className="lg:col-span-5 space-y-4!">
             <p className="text-xl text-left font-bold text-slate-500!">Vista previa en tiempo real</p>
@@ -56,12 +86,31 @@ export default function PerfilPreview({
             <div className="bg-[#1e2a5e] rounded-2xl p-4 shadow-2xl flex flex-col gap-4">
 
                 <div className="bg-linear-to-br from-slate-300 to-slate-100 rounded-2xl p-6 text-center flex flex-col items-center gap-2">
-                    <div className="w-20 h-20 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 text-2xl font-bold border-4 border-white/50 overflow-hidden">
-                        {user.url_foto
-                            ? <img src={user.url_foto} alt={user.nombre} className="w-full h-full object-cover" />
-                            : iniciales
-                        }
+
+                    <div className="relative group cursor-pointer" onClick={() => inputRef.current?.click()}>
+                        <div className="w-20 h-20 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 text-2xl font-bold border-4 border-white/50 overflow-hidden">
+                            {uploadingFoto ? (
+                                <Loader2 className="w-6 h-6 animate-spin text-slate-500" />
+                            ) : fotoUrl ? (
+                                <img src={fotoUrl} alt={user.nombre} className="w-full h-full object-cover" />
+                            ) : (
+                                iniciales
+                            )}
+                        </div>
+
+                        <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Camera size={20} className="text-white" />
+                        </div>
                     </div>
+
+                    <input
+                        ref={inputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFotoChange}
+                    />
+
                     <div>
                         <h3 className="text-lg font-bold text-slate-800">{formData.nombre} {formData.apellido}</h3>
                         <p className="text-slate-500 text-xs">{formData.correo}</p>
@@ -82,10 +131,10 @@ export default function PerfilPreview({
 
                 <div className="bg-white rounded-2xl p-5 flex flex-col gap-4">
 
-                    {(portafolio?.nombre) && (
+                    {portafolio?.nombre && (
                         <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
                             <span className="text-base">📁</span>
-                            <h3 className="text-sm font-bold text-[#1e2a5e]">{portafolio?.nombre ?? user.portafolio?.nombre}</h3>
+                            <h3 className="text-sm font-bold text-[#1e2a5e]">{portafolio.nombre}</h3>
                         </div>
                     )}
 
@@ -102,19 +151,20 @@ export default function PerfilPreview({
                             </p>
                         </div>
                     ) : (
-                        <>                            {portafolio?.experiencias?.length > 0 && (
-                            <SeccionPreview icon={BookOpen} titulo="Experiencia">
-                                {portafolio.experiencias.slice(0, 2).map(exp => (
-                                    <div key={exp.id_experiencia} className="flex flex-col gap-0.5 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p className="text-xs font-semibold text-slate-800">{exp.cargo}</p>
-                                        <p className="text-[11px] text-slate-500">{exp.nombre_organizacion}</p>
-                                        <p className="text-[11px] text-slate-400">
-                                            {exp.fecha_inicio} — {exp.vigente ? 'Presente' : exp.fecha_fin ?? ''}
-                                        </p>
-                                    </div>
-                                ))}
-                            </SeccionPreview>
-                        )}
+                        <>
+                            {portafolio?.experiencias?.length > 0 && (
+                                <SeccionPreview icon={BookOpen} titulo="Experiencia">
+                                    {portafolio.experiencias.slice(0, 2).map(exp => (
+                                        <div key={exp.id_experiencia} className="flex flex-col gap-0.5 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                            <p className="text-xs font-semibold text-slate-800">{exp.cargo}</p>
+                                            <p className="text-[11px] text-slate-500">{exp.nombre_organizacion}</p>
+                                            <p className="text-[11px] text-slate-400">
+                                                {exp.fecha_inicio} — {exp.vigente ? 'Presente' : exp.fecha_fin ?? ''}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </SeccionPreview>
+                            )}
 
                             {portafolio?.habilidades?.length > 0 && (
                                 <SeccionPreview icon={Award} titulo="Habilidades">

@@ -24,7 +24,7 @@ export const perfilSchema = z.object({
         .string()
         .trim()
         .min(0, 'La descripción debe tener al menos 10 caracteres')
-        .max(200, 'Máximo 200 caracteres permitidos'),
+        .max(270, 'Máximo 270 caracteres permitidos'),
 });
 
 export type PerfilFormData = z.infer<typeof perfilSchema>;
