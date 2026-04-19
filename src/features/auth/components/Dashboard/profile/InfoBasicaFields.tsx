@@ -27,7 +27,7 @@ export default function InfoBasicaFields({
 }: InfoBasicaFieldsProps) {
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0.5! md:gap-3!">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3! md:gap-3!">
                 <Input
                     ref={nombreRef}
                     label="Nombre"

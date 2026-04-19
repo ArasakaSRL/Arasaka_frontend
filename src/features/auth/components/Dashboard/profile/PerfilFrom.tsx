@@ -127,7 +127,7 @@ export default function PerfilForm({
                 <h2 className="text-lg! font-semibold! text-left text-black">Información Básica</h2>
                 <p className="text-sm text-gray-700! text-left mb-8!">Tu información personal será visible en tu portafolio público</p>
 
-                <div className="space-y-2">
+                <div className="space-y-3!">
                     <InfoBasicaFields
                         formData={formData}
                         errors={errors}
