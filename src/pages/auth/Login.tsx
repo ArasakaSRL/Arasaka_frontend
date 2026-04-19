@@ -11,6 +11,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { googleProvider, githubProvider, facebookProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
+import LoginBackground from '@/components/LoginBackground';
 
 const loginSchema = z.object({
     correo: z
@@ -163,12 +164,13 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1">
-            <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1 relative">
+            <LoginBackground />
+            <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline z-10">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 z-10 relative">
                 <img
                     src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
                     alt="Arasaka logo"
@@ -176,7 +178,7 @@ export default function Login() {
                 />
             </div>
 
-            <div className="w-full max-w-md items-start bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative">
+            <div className="w-full max-w-md items-start bg-white rounded-4xl shadow-2xl overflow-hidden border border-gray-300 relative z-10">
 
                 <div className="absolute z-0 inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
 
@@ -279,7 +281,7 @@ export default function Login() {
                 </form>
             </div>
 
-            <footer className="mt-8">
+            <footer className="mt-8 z-10 relative">
                 <p className="text-gray-600! text-sm">Sistema Generador de Portafolios Digitales</p>
             </footer>
         </div>
