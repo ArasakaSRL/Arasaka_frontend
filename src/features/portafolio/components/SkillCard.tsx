@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import type { habilidades } from "../types/portafolioType";
+import type { HabilidadTecnica } from "../types/portafolioType";
 import { Terminal } from 'lucide-react';
 interface Props {
-  habilidades: habilidades[];
+  habilidades: HabilidadTecnica[];
 }
 
 export const SkillsSection = ({ habilidades }: Props) => {
@@ -86,7 +86,7 @@ export const SkillsSection = ({ habilidades }: Props) => {
                             {mainTech?.nombre || hab.nombre}
                           </span>
                           <span className="text-[9px] text-gray-400 font-bold uppercase mt-1 tracking-widest">
-                            {hab.categoria}
+                            {mainTech?.categoria}
                           </span>
                         </div>
                       </div>
