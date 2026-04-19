@@ -43,11 +43,11 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
           {certificaciones.length > 3 && (
             <div className="hidden md:flex items-center gap-4 text-sm font-bold text-[#0a1120]/40 uppercase tracking-widest">
               <button onClick={() => scroll('left')} className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-                <ChevronLeft size={18} /> atrás
+                <ChevronLeft size={18} /> 
               </button>
               <span className="text-slate-200">|</span>
               <button onClick={() => scroll('right')} className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-                adelante <ChevronRight size={18} />
+                 <ChevronRight size={18} />
               </button>
             </div>
           )}

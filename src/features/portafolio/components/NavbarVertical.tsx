@@ -37,7 +37,7 @@ export const NavbarVertical = () => {
   }, []);
 
   return (
-    <div className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:flex flex-col gap-2 p-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_0_40px_rgba(0,0,0,0.3)]">
+    <div className="fixed left-6 top-1/2 -translate-y-1/2 z-100 hidden lg:flex flex-col gap-2 p-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_0_40px_rgba(0,0,0,0.3)]">
       
       {menuItems.map((item) => (
         <button
@@ -71,12 +71,8 @@ export const NavbarVertical = () => {
       ))}
 
      
-      <div className="h-[1px] w-8 mx-auto bg-white/10 my-2" />
+      <div className="h-px w-8 mx-auto bg-white/10 my-2" />
 
-     
-      <button className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-blue-400 transition-all duration-300 hover:scale-110">
-        <Moon size={18} />
-      </button>
     </div>
   );
 };
