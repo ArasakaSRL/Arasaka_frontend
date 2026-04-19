@@ -132,6 +132,8 @@ export default function PerfilPersonal() {
                     setSuccess={setSuccess}
                     handleSave={handleSave}
                 />
+
+
                 <PerfilPreview
                     user={user}
                     formData={formData}

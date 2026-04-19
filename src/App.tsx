@@ -14,8 +14,9 @@ import Dashboard from './pages/Dashboard/index'
 import ResetPassword from './pages/auth/ResetPassword'
 import Configuracion from './features/configuracion/page/Configuracion'
 import PortafolioPage from './features/portafolio/pages/PortfolioPage'
+import PortfolioPagePrivate from './features/portafolio/pages/PortfolioPagePrivate'
 
-export default function App() { // Este slug se puede generar dinámicamente según el portafolio que quieras mostrar
+export default function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -33,7 +34,9 @@ export default function App() { // Este slug se puede generar dinámicamente seg
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
       </Route>
+      <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portfolio/:slug" element={<PortafolioPage />} />
+      <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
     </Routes>
   )
 }

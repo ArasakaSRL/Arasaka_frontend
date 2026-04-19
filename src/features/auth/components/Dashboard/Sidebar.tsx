@@ -81,7 +81,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 />
             )}
 
-            <aside className={`w-54 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 z-40 flex flex-col transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside className={`w-54 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 z-30 flex flex-col transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
                 <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
                     {menuItems.map((item) => (
