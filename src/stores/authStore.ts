@@ -8,6 +8,7 @@ export interface AuthUser {
   biografia?: string
   estado?: boolean
   url_foto?: string
+  portafolio?: { slug: string } | null
 }
 
 interface AuthState {
