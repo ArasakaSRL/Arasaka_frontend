@@ -23,7 +23,7 @@ export const perfilSchema = z.object({
     biografia: z
         .string()
         .trim()
-        .min(10, 'La descripción debe tener al menos 10 caracteres')
+        .min(0, 'La descripción debe tener al menos 10 caracteres')
         .max(200, 'Máximo 200 caracteres permitidos'),
 });
 

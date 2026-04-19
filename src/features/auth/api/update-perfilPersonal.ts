@@ -12,6 +12,7 @@ import type {
     MensajeResponse,
     UsuarioActualizadoResponse,
 } from '../types/update-perfilPersonal'
+import type { PortafolioCompleto } from '../types/portafolioData'
 
 // GET /api/profesiones
 // Devuelve el catálogo completo de profesiones disponibles
@@ -87,5 +88,11 @@ export async function eliminarTelefono(id: string): Promise<MensajeResponse> {
 // Actualiza un teléfono del usuario autenticado
 export async function actualizarTelefono(id: string, payload: TelefonoPayload): Promise<TelefonoResponse> {
     const { data } = await apiClient.patch<TelefonoResponse>(`/usuario/telefonos/${id}`, payload)
+    return data
+}
+
+// GET /api/usuario/Miportafolio
+export async function getPortafolio(): Promise<PortafolioCompleto> {
+    const { data } = await apiClient.get<PortafolioCompleto>('/usuario/Miportafolio')
     return data
 }

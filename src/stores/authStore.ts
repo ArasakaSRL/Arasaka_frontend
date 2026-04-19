@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { PortafolioCompleto } from '@/features/auth/types/portafolioData'
 
 export interface Rol {
   id: string
@@ -46,12 +47,16 @@ export interface AuthUser {
 
 interface AuthState {
   user: AuthUser | null
+  portafolio: PortafolioCompleto | null
   setUser: (user: AuthUser) => void
+  setPortafolio: (portafolio: PortafolioCompleto | null) => void
   clearUser: () => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  portafolio: null,
   setUser: (user) => set({ user }),
-  clearUser: () => set({ user: null }),
+  setPortafolio: (portafolio) => set({ portafolio }),
+  clearUser: () => set({ user: null, portafolio: null }),
 }))

@@ -62,6 +62,8 @@ export default function InfoBasicaFields({
                 onChange={(val) => onChange('correo', val)}
                 error={errors.correo}
                 maxLength={50}
+                readOnly
+                readOnlyMessage="Este campo no es editable"
             />
 
             <PaisSelect

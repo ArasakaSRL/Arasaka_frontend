@@ -44,6 +44,19 @@ export default function PerfilForm({
     const [isDirty, setIsDirty] = useState(false)
     const { setDirty } = useDirtyStore()
 
+    const [initialData, setInitialData] = useState({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        pais: formData.pais,
+        biografia: formData.biografia,
+    })
+
+    const hasChanges =
+        formData.nombre !== initialData.nombre ||
+        formData.apellido !== initialData.apellido ||
+        formData.pais !== initialData.pais ||
+        formData.biografia !== initialData.biografia
+
     const nombreRef = useRef<HTMLInputElement>(null)
     const apellidoRef = useRef<HTMLInputElement>(null)
     const correoRef = useRef<HTMLInputElement>(null)
@@ -90,6 +103,12 @@ export default function PerfilForm({
             handleSave()
             setIsDirty(false)
             setDirty(false)
+            setInitialData({
+                nombre: formData.nombre.trim(),
+                apellido: formData.apellido.trim(),
+                pais: formData.pais,
+                biografia: formData.biografia.trim(),
+            })
         }
     }
 
@@ -147,15 +166,15 @@ export default function PerfilForm({
 
                 <div className="h-2" />
 
-                {isDirty && !success && !apiError && <p className="text-orange-500 text-left text-xs">● Cambios sin guardar</p>}
+                {hasChanges && !success && !apiError && <p className="text-orange-500 text-left text-xs">● Cambios sin guardar</p>}
                 {apiError && <p className="text-red-500 text-left text-xs">{apiError}</p>}
                 {success && <p className="text-green-600 text-left text-xs">Cambios guardados correctamente</p>}
 
                 <div className="flex justify-end pt-4">
                     <button
                         onClick={handleSubmit}
-                        disabled={loading}
-                        className="bg-[#1e2a5e] text-white px-8 py-2 rounded-xl font-normal hover:bg-[#151d41] transition-colors shadow-lg shadow-blue-900/20 disabled:opacity-60"
+                        disabled={loading || !hasChanges}
+                        className="bg-[#1e2a5e] text-white px-8 py-2 rounded-xl font-normal hover:bg-[#151d41] transition-colors shadow-lg shadow-blue-900/20 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         {loading ? 'Guardando...' : 'Guardar Cambios'}
                     </button>

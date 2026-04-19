@@ -7,8 +7,8 @@ interface CodigoPaisOption {
 }
 
 const CODIGOS_PAISES: CodigoPaisOption[] = [
-    { value: '+54', label: 'Argentina (+54)', code: 'AR' },
     { value: '+591', label: 'Bolivia (+591)', code: 'BO' },
+    { value: '+54', label: 'Argentina (+54)', code: 'AR' },
     { value: '+55', label: 'Brasil (+55)', code: 'BR' },
     { value: '+56', label: 'Chile (+56)', code: 'CL' },
     { value: '+57', label: 'Colombia (+57)', code: 'CO' },

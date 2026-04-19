@@ -16,7 +16,7 @@ export default function TelefonosSection({
 
     const [telefonosLocales, setTelefonosLocales] = useState<Telefono[]>(telefonos)
     const [nuevoTelefono, setNuevoTelefono] = useState('')
-    const [codigoPais, setCodigoPais] = useState('+57')
+    const [codigoPais, setCodigoPais] = useState('+591')
     const [editandoId, setEditandoId] = useState<string | null>(null)
     const [telefonoEditado, setTelefonoEditado] = useState('')
 
@@ -105,9 +105,9 @@ export default function TelefonosSection({
                 <button
                     type="button"
                     onClick={handleAgregar}
-                    disabled={!nuevoTelefono.trim()}
+                    disabled={nuevoTelefono.trim().length < 7}
                     className="p-2 shrink-0 rounded-xl bg-[#1e2a5e] text-white hover:bg-[#151d41] transition-colors disabled:opacity-50"
-                ><Plus size={16} /></button>
+                ><Plus size={20} /></button>
             </div>
         </div>
     )

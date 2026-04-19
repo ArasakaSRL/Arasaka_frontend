@@ -61,8 +61,8 @@ export default function Register() {
         setSocialLoading(name);
         setApiError(null);
         try {
-            const id_token = await signInWithProvider(provider);
-            await firebaseAuthRequest(id_token);
+            const { id_token, correo, provider: providerName } = await signInWithProvider(provider);
+            await firebaseAuthRequest(id_token, correo, providerName);
             const user = await getUsuario();
             if (user) setUser(user);
             navigate('/Dashboard/perfilPersonal/PerfilPersonal');

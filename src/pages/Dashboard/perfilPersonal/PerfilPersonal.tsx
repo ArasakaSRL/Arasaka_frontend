@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardLayout from '@/layout/DashboardLayout';
 import { useAuthStore } from '@/stores/authStore';
 import {
@@ -7,6 +7,7 @@ import {
     agregarTelefono,
     eliminarTelefono,
     actualizarTelefono,
+    getPortafolio,
 } from '@/features/auth/api/update-perfilPersonal';
 import type { Profesion, Telefono } from '@/features/auth/types/update-perfilPersonal';
 import { AxiosError } from 'axios';
@@ -25,6 +26,20 @@ export default function PerfilPersonal() {
 
     const user = useAuthStore((state) => state.user)
     const setUser = useAuthStore((state) => state.setUser)
+    const portafolioStore = useAuthStore((state) => state.portafolio)
+    const setPortafolio = useAuthStore((state) => state.setPortafolio)
+    const [loadingPortafolio, setLoadingPortafolio] = useState(true)
+
+    useEffect(() => {
+        if (portafolioStore) {
+            setLoadingPortafolio(false)
+            return
+        }
+        getPortafolio()
+            .then(setPortafolio)
+            .catch(() => setPortafolio(null))
+            .finally(() => setLoadingPortafolio(false))
+    }, [])
 
     const [formData, setFormData] = useState<PerfilFormData>({
         nombre: user?.nombre || '',
@@ -121,6 +136,8 @@ export default function PerfilPersonal() {
                     user={user}
                     formData={formData}
                     profesiones={asignadas}
+                    portafolio={portafolioStore}
+                    loadingPortafolio={loadingPortafolio}
                 />
             </div>
         </DashboardLayout>

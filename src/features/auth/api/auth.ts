@@ -48,9 +48,9 @@ export async function logoutRequest() {
 }
 
 // firebaseAuth
-export async function firebaseAuthRequest(id_token: string) {
+export async function firebaseAuthRequest(id_token: string, correo: string | null, provider: string | null) {
   await getCsrfCookie()
-  const { data } = await apiClient.post('/auth/firebase', { id_token })
+  const { data } = await apiClient.post('/auth/firebase', { id_token, correo, provider })
   return data
 }
 
