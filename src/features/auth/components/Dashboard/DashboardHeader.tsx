@@ -53,8 +53,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
  
                 <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
                        onClick={handlevistapreviaPrivate}>
-                        
-
+                    
                     <Eye size={16} />
                     <span className="hidden sm:inline">Vista Previa</span>
                 </button>
