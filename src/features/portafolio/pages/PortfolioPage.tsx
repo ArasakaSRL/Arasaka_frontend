@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PortfolioHeader from '../components/PortfolioHeader '; 
 import { getPortafolio } from '../lib/portafolio.service';
-import type { Usuario ,habilidades,experiencias,HabilidadTecnica,HabilidadBlanda,Proyectos ,configuracion} from '../types/portafolioType';
+import type { Usuario ,habilidades,experiencias,HabilidadTecnica,HabilidadBlanda,Proyectos ,configuracion,certificaciones} from '../types/portafolioType';
 import HabilidadesTecnicas from '@/features/portafolio/components/HabilidadesTecnicas';
 import ExperienceTimeline from '../components/ExperienceTimeline';
 import HabilidadesBlandas from '../components/HabilidadesBlandas';
 import SeccionProyectos from '../components/SeccionProyectos';
-import { set } from 'zod';
+import { CertificacionesSection } from '../components/CertificacionesSection';
+import { NavbarVertical } from '../components/NavbarVertical';
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
     const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -18,7 +19,7 @@ export default function PortfolioPage() {
     const [habilidadesBlandas, setHabilidadesBlandas] = useState<HabilidadBlanda[]>([]);
     const [proyectos, setProyectos] = useState<Proyectos[]>([]);
     const [configuracion, setConfiguracion] = useState<configuracion | null>(null);
-
+    const [certificaciones, setCertificaciones] = useState<certificaciones[]>([]);
     useEffect(() => {
         const fetchPortfolioData = async () => {
             if (!slug) return;
@@ -34,6 +35,7 @@ export default function PortfolioPage() {
                 setHabilidadesBlandas(data.habilidades.blandas);
                 setProyectos(data.proyectos);
                 setConfiguracion(data.configuracion);
+                setCertificaciones(data.certificaciones);
             } catch (error) {
                 console.error("Error fetching portfolio:", error);
             } finally {
@@ -51,8 +53,7 @@ export default function PortfolioPage() {
     if (!usuario) {
         return <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white">No se encontró el usuario</div>;
     }
-
-    return (
+return (
         <div className="p-3 w-full min-h-screen ">
             <div className="max-w-350 mx-auto flex flex-col gap-6">
                 <PortfolioHeader usuario={usuario} />
@@ -69,6 +70,10 @@ export default function PortfolioPage() {
                     {configuracion?.mostrar_proyectos && (
              <SeccionProyectos proyectos={proyectos} />
                 )}
+                {configuracion?.mostrar_certificaciones && (
+             <CertificacionesSection certificaciones={certificaciones} />
+                )}
+            
         </div>
     );
 }
