@@ -55,7 +55,7 @@ export default function TelefonosSection({
                             <>
                                 <input
                                     value={telefonoEditado}
-                                    onChange={e => setTelefonoEditado(e.target.value)}
+                                    onChange={e => setTelefonoEditado(e.target.value.replace(/\D/g, ''))}
                                     maxLength={15}
                                     className="flex-1 min-w-0 px-3 py-2 text-sm rounded-xl border border-blue-400 outline-none focus:ring-1 focus:ring-blue-600"
                                 />

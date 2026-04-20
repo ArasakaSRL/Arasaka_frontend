@@ -41,7 +41,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             placeholder={placeholder}
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
-                            rows={3}
+                            rows={4}
                             disabled={disabled}
                             className={`w-full px-3 py-2 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
                             ${disabled 

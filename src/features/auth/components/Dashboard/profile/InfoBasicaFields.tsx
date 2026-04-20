@@ -35,7 +35,7 @@ export default function InfoBasicaFields({
                     type="text"
                     placeholder="Tu nombre"
                     value={formData.nombre}
-                    onChange={(val) => onChange('nombre', val)}
+                    onChange={(val) => onChange('nombre', val.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜ\s]/g, ''))}
                     error={errors.nombre}
                     maxLength={40}
                 />
@@ -46,7 +46,7 @@ export default function InfoBasicaFields({
                     type="text"
                     placeholder="Tu apellido"
                     value={formData.apellido}
-                    onChange={(val) => onChange('apellido', val)}
+                    onChange={(val) => onChange('apellido', val.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜ\s]/g, ''))}
                     error={errors.apellido}
                     maxLength={40}
                 />

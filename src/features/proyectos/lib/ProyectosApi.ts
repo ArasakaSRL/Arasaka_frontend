@@ -1,4 +1,5 @@
 import apiClient from "../../../api/api"
+import { useAuthStore } from '@/stores/authStore'
 
 export interface ProyectoFormData {
     nombre: string;
@@ -31,6 +32,7 @@ export interface Tecnologias {
 
 export const crearProyecto = async (data: ProyectoFormData): Promise<Proyecto> => {
   const response = await apiClient.post("/portafolios/proyectos", data);
+  useAuthStore.getState().refreshPortafolio()
   return response.data.data;
 };
 
@@ -46,5 +48,6 @@ export const obtenerProyectos = async (): Promise<Proyecto[]> => {
 
 export const editarProyecto = async (id_proyecto: string, data: Partial<ProyectoFormData>): Promise<Proyecto> => {
     const response = await apiClient.put(`/portafolios/proyectos/${id_proyecto}`, data);
+    useAuthStore.getState().refreshPortafolio()
     return response.data.data;
 }

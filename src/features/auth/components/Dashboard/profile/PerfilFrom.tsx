@@ -51,25 +51,41 @@ export default function PerfilForm({
         biografia: formData.biografia,
     })
 
+    // Verificar si hay cambios en los datos
     const hasChanges =
         formData.nombre !== initialData.nombre ||
         formData.apellido !== initialData.apellido ||
         formData.pais !== initialData.pais ||
         formData.biografia !== initialData.biografia
 
+    // Si el usuario revirtió todos los cambios, limpiar el estado dirty
+    if (!hasChanges && isDirty) {
+        setIsDirty(false)
+        setDirty(false)
+    }
+
     const nombreRef = useRef<HTMLInputElement>(null)
     const apellidoRef = useRef<HTMLInputElement>(null)
     const correoRef = useRef<HTMLInputElement>(null)
     const biografiaRef = useRef<HTMLInputElement>(null)
 
+    // Función para manejar cambios en los campos del formulario
     function handleChange(field: keyof PerfilFormData, val: string) {
         setFormData(prev => ({ ...prev, [field]: val }))
         setIsDirty(true)
         setDirty(true)
-        setErrors(prev => ({ ...prev, [field]: undefined }))
         if (success) setSuccess(false)
+
+        // Validar el campo en tiempo real
+        const result = perfilSchema.shape[field as keyof typeof perfilSchema.shape]?.safeParse(val)
+        if (result && !result.success) {
+            setErrors(prev => ({ ...prev, [field]: result.error.issues[0]?.message }))
+        } else {
+            setErrors(prev => ({ ...prev, [field]: undefined }))
+        }
     }
 
+    // Función para validar el formulario
     function validate(): boolean {
         setFormData(prev => ({
             ...prev,
@@ -85,12 +101,15 @@ export default function PerfilForm({
             correo: formData.correo.trim(),
         })
         if (result.success) { setErrors({}); return true; }
+
         const fieldErrors: FormErrors = {}
+
         result.error.issues.forEach(e => {
             const field = e.path[0] as keyof PerfilFormData
             if (!fieldErrors[field]) fieldErrors[field] = e.message
         })
         setErrors(fieldErrors)
+        
         if (fieldErrors.nombre) nombreRef.current?.focus()
         else if (fieldErrors.apellido) apellidoRef.current?.focus()
         else if (fieldErrors.correo) correoRef.current?.focus()
@@ -98,6 +117,7 @@ export default function PerfilForm({
         return false
     }
 
+    // Función para manejar el envío del formulario
     function handleSubmit() {
         if (validate()) {
             handleSave()

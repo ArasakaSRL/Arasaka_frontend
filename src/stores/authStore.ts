@@ -50,6 +50,7 @@ interface AuthState {
   portafolio: PortafolioCompleto | null
   setUser: (user: AuthUser) => void
   setPortafolio: (portafolio: PortafolioCompleto | null) => void
+  refreshPortafolio: () => Promise<void>
   clearUser: () => void
 }
 
@@ -58,5 +59,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   portafolio: null,
   setUser: (user) => set({ user }),
   setPortafolio: (portafolio) => set({ portafolio }),
+  refreshPortafolio: async () => {
+    try {
+      const { getPortafolio } = await import('@/features/auth/api/update-perfilPersonal')
+      const data = await getPortafolio()
+      set({ portafolio: data })
+    } catch {
+      set({ portafolio: null })
+    }
+  },
   clearUser: () => set({ user: null, portafolio: null }),
 }))

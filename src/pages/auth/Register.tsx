@@ -154,6 +154,7 @@ export default function Register() {
         }
     }
 
+    // Manejadores de cambio para validar en tiempo real
     const handleNombreChange = (val: string) => { setNombre(val.replace(/[^A-Za-z\s]/g, '').slice(0, 40)); setErrors(prev => ({ ...prev, nombre: undefined })); };
     const handleApellidoChange = (val: string) => { setApellido(val.replace(/[^A-Za-z\s]/g, '').slice(0, 40)); setErrors(prev => ({ ...prev, apellido: undefined })); };
     const handleCorreoChange = (val: string) => { setCorreo(val.trimStart().slice(0, 50)); setErrors(prev => ({ ...prev, correo: undefined })); };
