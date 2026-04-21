@@ -24,7 +24,8 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       setFormularioData,
       tecnologias,
       setTecnologias,
-      resetForm
+      resetForm,
+      isDirty,
     } = useEditarProyecto(proyectoEditar);
 
     const cerrarForm = () => {
@@ -154,6 +155,8 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
             value={formularioData.descripcion}
             onChange={(val) => {
               setFormularioData({ ...formularioData, descripcion: val });
+
+              validateField("descripcion", val);
             }}
             error={errors.descripcion}
             maxLength={160}
@@ -261,14 +264,19 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (!!proyectoEditar && !isDirty)}
             className={`text-sm px-4 py-2 rounded-md text-white 
-            ${loading 
-              ? "bg-gray-400 cursor-not-allowed" 
-              : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
+            ${
+              loading || (proyectoEditar && !isDirty)
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
             }`}
           >
-            {loading ? "Creando..." : (proyectoEditar ? "Editar Proyecto" : "Crear Proyecto")}
+            {loading
+              ? "Procesando..."
+              : proyectoEditar
+              ? "Editar Proyecto"
+              : "Crear Proyecto"}
           </button>
         </div>
 

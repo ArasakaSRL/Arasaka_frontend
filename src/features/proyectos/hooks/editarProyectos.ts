@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import type { Proyecto } from "../lib/ProyectosApi";
 
@@ -9,45 +10,63 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
     startDate: "",
     endDate: "",
     projectUrl: "",
-    githubUrl: "", 
+    githubUrl: "",
   });
 
-  const formatoFecha = (fecha: string) => {
-    if(!fecha) return "";
+  const [datosIniciales, setDatosIniciales] = useState(formularioData);
 
+  const [tecnologias, setTecnologias] = useState<string[]>([]);
+  const [tecnologiasIniciales, setTecnologiasIniciales] = useState<string[]>([]);
+
+  const formatoFecha = (fecha: string) => {
+    if (!fecha) return "";
     const [day, month, year] = fecha.split("-");
     return `${year}-${month}-${day}`;
   };
 
-  const [tecnologias, setTecnologias] = useState<string[]>([]);
   useEffect(() => {
     if (proyectoEditar) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormularioData({
+      const data = {
         title: proyectoEditar.nombre,
         descripcion: proyectoEditar.descripcion || "",
         startDate: formatoFecha(proyectoEditar.fecha_inicio),
-        endDate: proyectoEditar.fecha_fin ? formatoFecha(proyectoEditar.fecha_fin) : "",
+        endDate: proyectoEditar.fecha_fin
+          ? formatoFecha(proyectoEditar.fecha_fin)
+          : "",
         projectUrl: proyectoEditar.url_demo || "",
         githubUrl: proyectoEditar.url_github || "",
-      });
+      };
 
-      setTecnologias(
-        proyectoEditar.tecnologias.map(t => t.id_tecnologia)
+      const techs = proyectoEditar.tecnologias.map(
+        (t) => t.id_tecnologia
       );
+
+      setFormularioData(data);
+      setTecnologias(techs);
+
+      setDatosIniciales(data);
+      setTecnologiasIniciales(techs);
     }
   }, [proyectoEditar]);
 
+  const isDirty =
+    JSON.stringify(formularioData) !== JSON.stringify(datosIniciales) ||
+    JSON.stringify(tecnologias) !== JSON.stringify(tecnologiasIniciales);
+
   const resetForm = () => {
-    setFormularioData({
+    const emptyData = {
       title: "",
       descripcion: "",
       startDate: "",
       endDate: "",
       projectUrl: "",
       githubUrl: "",
-    });
+    };
+
+    setFormularioData(emptyData);
+    setDatosIniciales(emptyData);
     setTecnologias([]);
+    setTecnologiasIniciales([]);
   };
 
   return {
@@ -56,6 +75,6 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
     tecnologias,
     setTecnologias,
     resetForm,
+    isDirty,
   };
 };
-
