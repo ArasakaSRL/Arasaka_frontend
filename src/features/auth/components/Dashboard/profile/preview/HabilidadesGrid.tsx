@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Cpu, Brain, Circle } from 'lucide-react';
 
 interface Habilidad {
     id_habilidad: string;
@@ -25,9 +26,9 @@ const estiloCategoria = (categoria: string) => {
 
 const etiquetaCategoria = (categoria: string) => {
     const cat = categoria?.toLowerCase()
-    if (cat?.includes('tecn') || cat?.includes('técn')) return '⚙️'
-    if (cat?.includes('bland')) return '💡'
-    return '🔹'
+    if (cat?.includes('tecn') || cat?.includes('técn')) return <Cpu size={10} />
+    if (cat?.includes('bland')) return <Brain size={10} />
+    return <Circle size={10} />
 }
 
 export default function HabilidadesGrid({ habilidades }: Props) {
@@ -66,10 +67,10 @@ export default function HabilidadesGrid({ habilidades }: Props) {
 
             <div className="flex gap-3 mt-1">
                 <span className="flex items-center gap-1 text-[12px] text-slate-400">
-                    <span className="w-2 h-2 rounded-full bg-[#1e2a5e]/30 inline-block" /> Técnica
+                    <Cpu size={10} className="text-[#1e2a5e]" /> Técnica
                 </span>
                 <span className="flex items-center gap-1 text-[12px] text-slate-400">
-                    <span className="w-2 h-2 rounded-full bg-purple-300 inline-block" /> Blanda
+                    <Brain size={10} className="text-purple-400" /> Blanda
                 </span>
             </div>
         </div>
