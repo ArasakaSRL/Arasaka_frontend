@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Briefcase } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 
 interface Experiencia {
   id_experiencia: string;
@@ -24,8 +24,8 @@ const ExperienceTimeline: React.FC<Props> = ({ experiencias }) => {
     <div className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans">
   
       <div className="flex items-center gap-4 mb-16">
-        <div className="p-2.5 rounded-lg" style={{ backgroundColor: '#E5E5E5' }}>
-          <Briefcase size={24} style={{ color: '#0F1A45' }} strokeWidth={2} />
+        <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
+          <GraduationCap size={28} className="text-blue-600" strokeWidth={2.5} />
         </div>
         <h2 className="text-3xl font-bold tracking-tight" style={{ color: '#0F1A45' }}>
           Experiencia
