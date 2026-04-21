@@ -4,9 +4,15 @@ import type {
     AsignarProfesionPayload,
     ActualizarInformacionPayload,
     ActualizarFotoPayload,
+    ActualizarPaisPayload,
+    PaisResponse,
+    Telefono,
+    TelefonoPayload,
+    TelefonoResponse,
     MensajeResponse,
     UsuarioActualizadoResponse,
 } from '../types/update-perfilPersonal'
+import type { PortafolioCompleto } from '../types/portafolioData'
 
 // GET /api/profesiones
 // Devuelve el catálogo completo de profesiones disponibles
@@ -47,5 +53,46 @@ export async function actualizarInformacion(payload: ActualizarInformacionPayloa
 // Actualiza la URL de la foto de perfil del usuario
 export async function actualizarFoto(payload: ActualizarFotoPayload): Promise<UsuarioActualizadoResponse> {
     const { data } = await apiClient.patch<UsuarioActualizadoResponse>('/usuario/foto', payload)
+    return data
+}
+
+//PATCH /api/usuario/pais
+// Actualiza el país de residencia del usuario
+export async function actualizarPais(payload: ActualizarPaisPayload): Promise<PaisResponse> {
+    const { data } = await apiClient.patch<PaisResponse>('/usuario/pais', payload)
+    return data
+}
+
+// GET /api/usuario/telefonos
+// Devuelve los teléfonos del usuario autenticado
+export async function getTelefonos(): Promise<Telefono[]> {
+    const { data } = await apiClient.get<{ data: Telefono[] }>('/usuario/telefonos')
+    return data.data
+}
+
+// POST /api/usuario/telefonos
+// Agrega un nuevo teléfono al usuario autenticado
+export async function agregarTelefono(payload: TelefonoPayload): Promise<TelefonoResponse> {
+    const { data } = await apiClient.post<TelefonoResponse>('/usuario/telefonos', payload)
+    return data
+}
+
+// DELETE /api/usuario/telefonos/{id}
+// Elimina un teléfono del usuario autenticado
+export async function eliminarTelefono(id: string): Promise<MensajeResponse> {
+    const { data } = await apiClient.delete<MensajeResponse>(`/usuario/telefonos/${id}`)
+    return data
+}
+
+// PATCH /api/usuario/telefonos/{id}
+// Actualiza un teléfono del usuario autenticado
+export async function actualizarTelefono(id: string, payload: TelefonoPayload): Promise<TelefonoResponse> {
+    const { data } = await apiClient.patch<TelefonoResponse>(`/usuario/telefonos/${id}`, payload)
+    return data
+}
+
+// GET /api/usuario/Miportafolio
+export async function getPortafolio(): Promise<PortafolioCompleto> {
+    const { data } = await apiClient.get<PortafolioCompleto>('/usuario/Miportafolio')
     return data
 }

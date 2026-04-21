@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Calendar } from 'lucide-react';
 
@@ -16,11 +16,14 @@ interface Props {
     max?: string;
     icon?: LucideIcon; // icono opcional de lucide-react
     disabled?: boolean;
+    readOnly?: boolean;
+    readOnlyMessage?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon, min, max, disabled }, ref) => {
+    ({ label, type, placeholder, value, onChange, error, maxLength, showCounter, required, icon: Icon, min, max, disabled, readOnly, readOnlyMessage }, ref) => {
         const isAtLimit = maxLength !== undefined && value.length === maxLength;
+        const [showReadOnlyMsg, setShowReadOnlyMsg] = useState(false);
 
         return (
             <div className="flex flex-col gap-1.5 w-full">
@@ -38,7 +41,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             placeholder={placeholder}
                             value={value}
                             onChange={(e) => onChange(e.target.value)}
-                            rows={3}
+                            rows={4}
                             disabled={disabled}
                             className={`w-full px-3 py-2 text-[14px] rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 resize-none
                             ${disabled 
@@ -60,16 +63,18 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             max={max}
                             value={value}
                             disabled={disabled}
+                            readOnly={readOnly}
+                            onClick={() => readOnly && setShowReadOnlyMsg(true)}
+                            onBlur={() => setShowReadOnlyMsg(false)}
                             onChange={(e) => onChange(e.target.value)}
-                            className={`w-full px-3 text-[14px] py-2 rounded-xl border transition-all outline-none placeholder:text-gray-400 text-gray-600 
-                            ${disabled 
-                                ? "bg-gray-100 cursor-not-allowed" 
-                                : "border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent"
-                                }
-                            ${isAtLimit
-                                    ? 'border-gray-300 caret-red-500 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
-                                    : 'border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
-                                }`}
+                            className={`w-full px-3 text-[14px] py-2 rounded-xl border transition-all outline-none placeholder:text-gray-400
+                            ${readOnly
+                                ? 'bg-gray-50 text-gray-600 cursor-default border-gray-200 select-none'
+                                : disabled
+                                ? 'bg-gray-100 text-gray-600 cursor-not-allowed border-gray-200'
+                                : 'text-gray-600 border-gray-300 focus:ring-1 focus:ring-blue-600 focus:border-transparent'
+                            }
+                            ${isAtLimit ? 'border-gray-300 caret-red-500' : ''}`}
                         />
                     )}
                     {type === "date" && (
@@ -90,6 +95,12 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                             {value.length}/{maxLength}
                         </span>
                     </div>
+                )}
+
+                {showReadOnlyMsg && readOnlyMessage && (
+                    <p className="text-red-500 text-[12px] ml-1 animate-in text-left! fade-in slide-in-from-top-1">
+                        {readOnlyMessage}
+                    </p>
                 )}
 
                 {error && (

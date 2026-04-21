@@ -18,7 +18,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
         ? `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`.toUpperCase()
         : '?'
 
-    const handlevistapreviaPrivate = () =>{
+    const handlevistapreviaPrivate = () => {
         navigate(`/portafolio/privado/${user?.portafolio?.slug}`);
     }
 
@@ -46,14 +46,14 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
 
             <div className="flex items-center gap-2 md:gap-3">
                 <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
-                        onClick={() => setShareOpen(true)}>
+                    onClick={() => setShareOpen(true)}>
                     <Share2 size={16} />
                     <span className="hidden sm:inline">Compartir</span>
                 </button>
- 
+
                 <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
-                       onClick={handlevistapreviaPrivate}>
-                    
+                    onClick={handlevistapreviaPrivate}>
+
                     <Eye size={16} />
                     <span className="hidden sm:inline">Vista Previa</span>
                 </button>

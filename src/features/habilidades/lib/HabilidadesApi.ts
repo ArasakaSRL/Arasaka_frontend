@@ -1,4 +1,5 @@
 import apiClient from "../../../api/api";
+import { useAuthStore } from '@/stores/authStore'
 
 export interface Habilidad {
   categoria_habilidad: string;
@@ -21,7 +22,7 @@ export interface Tecnologia {
 
 export const crearHabilidad = async (data: Habilidad) => {
   const res = await apiClient.post("/portafolios/habilidades", data);
-
+  useAuthStore.getState().refreshPortafolio()
   const raw = Array.isArray(res.data.data)
     ? res.data.data[0]
     : res.data.data;
@@ -57,6 +58,7 @@ export const obtenerTecnologias = async (): Promise<Tecnologia[]> => {
 
 export const editarHabilidad = async (id_habilidad: string, data: Partial<Habilidad>) => {
   const res = await apiClient.put(`/portafolios/habilidades/${id_habilidad}`, data);
+  useAuthStore.getState().refreshPortafolio()
 
   const raw = Array.isArray(res.data.data)
     ? res.data.data[0]

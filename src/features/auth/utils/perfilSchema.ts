@@ -1,17 +1,22 @@
 import { z } from 'zod';
 
+const soloLetrasYEspacios = /^[a-zA-ZáéíóúÁÉÍÓÚüÜ\s]+$/;
+const mendajeError = 'El campo solo puede contener letras y espacios';
+
 export const perfilSchema = z.object({
     nombre: z
         .string()
         .trim()
         .min(3, 'El nombre debe tener al menos 2 caracteres')
-        .max(40, 'Máximo 40 caracteres permitidos'),
+        .max(40, 'Máximo 40 caracteres permitidos')
+        .regex(soloLetrasYEspacios, mendajeError),
 
     apellido: z
         .string()
         .trim()
         .min(6, 'El apellido debe tener al menos 6 caracteres')
-        .max(40, 'Máximo 20 caracteres permitidos'),
+        .max(40, 'Máximo 40 caracteres permitidos')
+        .regex(soloLetrasYEspacios, mendajeError),
 
     correo: z
         .string()
@@ -23,8 +28,8 @@ export const perfilSchema = z.object({
     biografia: z
         .string()
         .trim()
-        .min(10, 'La descripción debe tener al menos 10 caracteres')
-        .max(200, 'Máximo 200 caracteres permitidos'),
+        .min(0, 'La descripción debe tener al menos 10 caracteres')
+        .max(270, 'Máximo 270 caracteres permitidos'),
 });
 
 export type PerfilFormData = z.infer<typeof perfilSchema>;

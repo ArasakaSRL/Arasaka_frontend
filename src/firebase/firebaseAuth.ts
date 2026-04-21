@@ -15,10 +15,19 @@ const providerNames: Record<string, string> = {
     [FacebookAuthProvider.PROVIDER_ID]: 'Facebook',
 };
 
-export async function signInWithProvider(provider: AuthProvider): Promise<string> {
+export interface FirebaseAuthResult {
+    id_token: string
+    correo: string | null
+    provider: string | null
+}
+
+export async function signInWithProvider(provider: AuthProvider): Promise<FirebaseAuthResult> {
     try {
         const result = await signInWithPopup(auth, provider);
-        return result.user.getIdToken();
+        const id_token = await result.user.getIdToken();
+        const correo = result.user.email ?? result.user.providerData[0]?.email ?? null;
+        const providerId = result.user.providerData[0]?.providerId ?? null;
+        return { id_token, correo, provider: providerId };
     } catch (err) {
         const error = err as AuthError;
 

@@ -17,6 +17,14 @@ const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
 export const githubProvider = new GithubAuthProvider();
+githubProvider.addScope('user:email');
+githubProvider.addScope('read:user');
+
 export const facebookProvider = new FacebookAuthProvider();
+facebookProvider.addScope('email');
 facebookProvider.addScope('public_profile');
