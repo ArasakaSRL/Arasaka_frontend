@@ -273,7 +273,7 @@ export default function Register() {
                 </form>
             </div>
 
-            <footer className="mt-8">
+            <footer className="mt-8 z-10 relative">
                 <p className="text-gray-600! text-sm font-normal">Sistema Generador de Portafolios Digitales</p>
             </footer>
         </div>

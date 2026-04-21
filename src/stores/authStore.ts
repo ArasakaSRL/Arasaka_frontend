@@ -27,6 +27,7 @@ export interface Portafolio {
   nombre: string
   descripcion?: string
   visibilidad: boolean
+  slug?: string
 }
 
 export interface AuthUser {
