@@ -24,8 +24,19 @@ const opciones = [
   { label: "Privado", value: "privado" },
 ];
 
+const CONFIG_TOTALMENTE_DESACTIVADA: ConfiguracionPortafolio = {
+  id_configuracion_portafolio: "",
+  mostrar_proyectos: false,
+  mostrar_habilidades: false,
+  mostrar_experiencias: false,
+  mostrar_servicios: false,
+  mostrar_certificaciones: false,
+  paleta_colores: null,
+  visibilidad: false,
+};
+
 export default function Configuracion() {
-  const [config, setConfig] = useState<ConfiguracionPortafolio | null>(null);
+  const [config, setConfig] = useState<ConfiguracionPortafolio | null>(CONFIG_TOTALMENTE_DESACTIVADA);
   const [loading, setLoading] = useState(true);
   const [guardando, setGuardando] = useState(false);
 
@@ -121,53 +132,51 @@ export default function Configuracion() {
 
   return (
     <DashboardLayout>
-      <Banner titulo="Configuración del portafolio" descripcion="" />
+      <div className="space-y-6"> 
 
-      <ConfiguracionGeneral titulo="Visibilidad Componentes">
-        <SwitchVisibilidad
-          nombre="Proyectos"
-          value={config.mostrar_proyectos}
-          onChange={(val) =>
-            handleToggle("mostrar_proyectos", val)
-          }
-        />
-        <SwitchVisibilidad
-          nombre="Habilidades"
-          value={config.mostrar_habilidades}
-          onChange={(val) =>
-            handleToggle("mostrar_habilidades", val)
-          }
-        />
-        <SwitchVisibilidad
-          nombre="Experiencias"
-          value={config.mostrar_experiencias}
-          onChange={(val) =>
-            handleToggle("mostrar_experiencias", val)
-          }
-        />
-        <SwitchVisibilidad
-          nombre="Certificaciones"
-          value={config.mostrar_certificaciones}
-          onChange={(val) =>
-            handleToggle("mostrar_certificaciones", val)
-          }
-        />
-      </ConfiguracionGeneral>
+        <Banner titulo="Configuración del portafolio" descripcion="" />
 
-      <ConfiguracionGeneral titulo="Configuración General">
-        <DropdownCertificaciones
-          titulo="Visibilidad portafolio"
-          opciones={opciones}
-          value={selectedOption}
-          onChange={handleChangeDropdown}
-        />
-      </ConfiguracionGeneral>
+        <ConfiguracionGeneral titulo="Visibilidad Componentes">
+          <div className="space-y-4"> 
+            <SwitchVisibilidad
+              nombre="Proyectos"
+              value={config.mostrar_proyectos}
+              onChange={(val) => handleToggle("mostrar_proyectos", val)}
+            />
+            <SwitchVisibilidad
+              nombre="Habilidades"
+              value={config.mostrar_habilidades}
+              onChange={(val) => handleToggle("mostrar_habilidades", val)}
+            />
+            <SwitchVisibilidad
+              nombre="Experiencias"
+              value={config.mostrar_experiencias}
+              onChange={(val) => handleToggle("mostrar_experiencias", val)}
+            />
+            <SwitchVisibilidad
+              nombre="Certificaciones"
+              value={config.mostrar_certificaciones}
+              onChange={(val) => handleToggle("mostrar_certificaciones", val)}
+            />
+          </div>
+        </ConfiguracionGeneral>
 
-      {/* 🔹 Botón */}
-      <div className="mt-8 flex justify-end">
-        <Boton2 onClick={handleGuardar} disabled={guardando}>
-          {guardando ? "Guardando..." : "Guardar Cambios"}
-        </Boton2>
+        <ConfiguracionGeneral titulo="Configuración General">
+          <DropdownCertificaciones
+            titulo="Visibilidad portafolio"
+            opciones={opciones}
+            value={selectedOption}
+            onChange={handleChangeDropdown}
+          />
+        </ConfiguracionGeneral>
+
+        {/* Botón */}
+        <div className="pt-4 flex justify-end">
+          <Boton2 onClick={handleGuardar} disabled={guardando}>
+            {guardando ? "Guardando..." : "Guardar Cambios"}
+          </Boton2>
+        </div>
+
       </div>
     </DashboardLayout>
   );
