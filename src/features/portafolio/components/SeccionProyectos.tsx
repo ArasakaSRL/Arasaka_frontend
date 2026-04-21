@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Code2, ArrowUpRight } from 'lucide-react';
+import { ExternalLink, Code2, ArrowUpRight ,LayoutPanelLeft} from 'lucide-react';
 import type { Proyectos as Proyecto } from '../types/portafolioType';
 import { ChevronRight } from 'lucide-react';
 const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
@@ -10,11 +10,11 @@ const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
         <div className="flex items-center gap-2 mb-3 ">
          <div className="flex items-center gap-4 mb-10">
           <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-          <ChevronRight size={28} className="text-blue-800" strokeWidth={2.5} />
+          <LayoutPanelLeft size={28} className="text-blue-600" strokeWidth={2.5} />
          </div>
         <div>
           <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
-            Proyctos
+            Proyectos
           </h2>
           <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1"></div>
         </div>
@@ -51,7 +51,7 @@ const CardProyectoVertical = ({ proyecto }: { proyecto: Proyecto }) => {
       </div>
 
   
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
 
    
       <div className="absolute inset-0 p-8 flex flex-col justify-end text-left">
