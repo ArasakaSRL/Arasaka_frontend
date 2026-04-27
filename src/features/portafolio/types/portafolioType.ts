@@ -108,6 +108,7 @@ export type configuracion = {
 
 export type Portafolio = {
     id: string;
+    slug: string;
     nombre: string;
     descripcion: string | null;
     visibilidad: boolean;

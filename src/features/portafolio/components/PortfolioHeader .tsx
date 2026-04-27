@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { MessageCircle, MapPin, Mail, Sparkles, ExternalLink } from "lucide-react";
-import type { Usuario, Telefono, Profession } from "../types/portafolioType";
+import type { Usuario } from "../types/portafolioType";
+import ContactarModal from "../../sendGmail/components/ContactarModal";
 
 type Props = {
   usuario: Usuario;
@@ -11,6 +12,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
   const fullName = `${usuario.nombre} ${usuario.apellido}`;
   const mainProfession = usuario.profesiones?.length > 0 ? usuario.profesiones[0].nombre : "Professional";
   const whatsappNumber = usuario.telefonos?.[0]?.numero.replace(/\s+/g, "");
+  const [contactarOpen, setContactarOpen] = useState(false);
 
   return (
     <div
@@ -107,10 +109,8 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
 
         <div className="flex flex-wrap gap-3 mt-8">
           {whatsappNumber && (
-            <a
-              href={`https://wa.me/${whatsappNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => setContactarOpen(true)}
               className="
                 group flex items-center gap-2
                 bg-white text-[#0a1120] 
@@ -122,8 +122,16 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
             >
               <MessageCircle size={18} className="transition-transform group-hover:rotate-12" />
               CONTACTAR
-            </a>
+            </button>
           )}
+
+          <ContactarModal
+            open={contactarOpen}
+            onClose={() => setContactarOpen(false)}
+            correoDestinatario={usuario.correo}
+            nombreDestinatario={fullName}
+            whatsappNumber={whatsappNumber}
+          />
           
           <button
             className="

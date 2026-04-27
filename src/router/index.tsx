@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
 import SuspenseWrapper from '../components/SuspenseWrapper'
-import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades, Certificaiones } from './lazyRoutes'
+import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades, Certificaiones, Mensajes } from './lazyRoutes'
 import Hitos from '@/features/hitos/page/Hitos'
 import Configuracion from '@/features/configuracion/page/Configuracion'
 
@@ -84,6 +84,15 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <Hitos/>
+          </SuspenseWrapper>
+        )
+      },
+
+      {
+        path: '/Dashboard/mensajes/Mensajes',
+        element: (
+          <SuspenseWrapper>
+            <Mensajes />
           </SuspenseWrapper>
         )
       },

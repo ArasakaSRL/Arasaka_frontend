@@ -1,6 +1,6 @@
 import {
     User, Briefcase, Award,
-    Trophy, BarChart3, Settings, LogOut, ShieldCheck,
+    Trophy, BarChart3, Settings, LogOut, ShieldCheck, MessageSquare,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -16,6 +16,7 @@ const menuItems = [
     { icon: Award, label: 'Habilidades', path: '/Dashboard/habilidades/Habilidades' },
     { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
     { icon: ShieldCheck, label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
+    { icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Mensajes' },
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
     { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' }
 ];

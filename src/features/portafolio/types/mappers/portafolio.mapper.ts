@@ -9,6 +9,7 @@ export const mapPortafolio = (api: any): Portafolio => {
 
     return {
         id: data.id,
+        slug: data.slug,
         nombre: data.nombre,
         descripcion: data.descripcion,
         visibilidad: data.visibilidad,
