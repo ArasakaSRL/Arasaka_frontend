@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Calendar, Building2, X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ExternalLink, Calendar, Building2, X, ZoomIn, ChevronLeft, ChevronRight ,GraduationCap} from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import type { certificaciones } from '../types/portafolioType';
@@ -30,7 +30,7 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-              <ChevronRight size={28} className="text-blue-800" strokeWidth={2.5} />
+              <GraduationCap size={28} className="text-blue-600" strokeWidth={2.5} />
             </div>
             <div>
               <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">

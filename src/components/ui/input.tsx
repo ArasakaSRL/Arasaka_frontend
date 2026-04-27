@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { forwardRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Calendar } from 'lucide-react';
@@ -85,28 +86,27 @@ export const Input = forwardRef<HTMLInputElement, Props>(
                     )}
                 </div>
 
-                {maxLength !== undefined && showCounter && (
-                    <div className="flex justify-between items-center ml-1">
-                        {isAtLimit
-                            ? <p className="text-red-500 text-[11px] animate-in fade-in slide-in-from-top-1">Se alcanzó el límite de caracteres permitidos</p>
-                            : <span />
-                        }
-                        <span className={`text-[11px] ml-auto ${isAtLimit ? 'text-red-500' : 'text-gray-400!'}`}>
-                            {value.length}/{maxLength}
-                        </span>
-                    </div>
-                )}
-
-                {showReadOnlyMsg && readOnlyMessage && (
-                    <p className="text-red-500 text-[12px] ml-1 animate-in text-left! fade-in slide-in-from-top-1">
-                        {readOnlyMessage}
-                    </p>
-                )}
-
-                {error && (
-                    <p className="text-red-600! text-[12px] ml-1! w-full text-left animate-in fade-in slide-in-from-top-1">
+                {(showCounter || error) && (
+                <div className="flex justify-between items-center ml-1">
+                    <div>
+                    {error ? (
+                        <p className="text-red-500 text-[12px] animate-in fade-in slide-in-from-top-1">
                         {error}
-                    </p>
+                        </p>
+                    ) : isAtLimit ? (
+                        <p className="text-red-500 text-[11px] animate-in fade-in slide-in-from-top-1">
+                        Se alcanzó el límite de caracteres permitidos
+                        </p>
+                    ) : null}
+                    </div>
+
+                    {maxLength !== undefined && showCounter && (
+                    <span className={`text-[11px] ${isAtLimit ? 'text-red-500' : 'text-gray-400'}`}>
+                        {value.length}/{maxLength}
+                    </span>
+                    )}
+                    
+                </div>
                 )}
             </div>
         );

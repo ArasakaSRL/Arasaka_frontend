@@ -10,6 +10,7 @@ export const ProyectoSchema = z
 
     descripcion: z
       .string()
+      .min(1, "Campo obligatorio")
       .max(160, "La descripción no puede exceder los 160 caracteres")
       .transform((val) => val.replace(/<[^>]*>?/gm, "")),
       

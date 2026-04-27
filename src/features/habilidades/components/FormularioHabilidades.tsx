@@ -1,11 +1,12 @@
 import { CircleX } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dropdown from "@/components/MenuDesplegable";
 import { crearHabilidad, editarHabilidad, type HabilidadUI } from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import { Input } from "@/components/ui/input";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
 import { useHabilidadesData } from "../hooks/useHabilidades";
+import { useEditarHabilidad } from "../utils/editarHabilidades";
 
 interface HabilidadesProps {
   closeModal: () => void;
@@ -22,11 +23,12 @@ interface DatosHabilidad {
 }
 
 export default function FormularioHabilidades ({closeModal, onCreated, habilidadEditar, habilidadesExistentes}:HabilidadesProps) {
-  const [categoria, setCategoria] = useState<string>("");
-  const [nivel, setNivel] = useState<string>(""); 
-  const [tecnologia, setTecnologia] = useState<string>("");
-  const [habilidadBlanda, setHabilidadBlanda] = useState("");
-  const { tecnologias } = useHabilidadesData();  
+  const { tecnologias } = useHabilidadesData();
+  const {
+    formData,
+    setFormData,
+    isDirty
+  } = useEditarHabilidad(habilidadEditar, tecnologias);
   const [loading, setLoading] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -44,29 +46,13 @@ const niveles = [
   { label: "Experto", value: "Experto" },
 ];
 
-useEffect(() => {
-  if (!habilidadEditar) return;
-
-  setCategoria(habilidadEditar.categoria.toLowerCase());
-  setNivel(habilidadEditar.nivel);
-
-  if (habilidadEditar.categoria.toLowerCase() === "tecnica") {
-    const tech = tecnologias.find(
-      (t) => t.label.toLowerCase() === habilidadEditar.nombre.toLowerCase()
-    );
-    setTecnologia(tech?.value || "");
-  } else {
-    setHabilidadBlanda(habilidadEditar.nombre);
-  }
-}, [habilidadEditar, tecnologias]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = HabilidadSchema.safeParse({
-      categoria,
-      nivel,
-      tecnologia: habilidadEditar ? undefined : tecnologia,
-      habilidad: habilidadEditar ? undefined : habilidadBlanda,
+      categoria: formData.categoria,
+      nivel: formData.nivel,
+      tecnologia: habilidadEditar ? undefined : formData.tecnologia,
+      habilidad: habilidadEditar ? undefined : formData.habilidad,
     });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -81,9 +67,9 @@ useEffect(() => {
     const normalizar = (str: string) => str.trim().toLowerCase();
 
     const nombreAValidar = normalizar(
-      categoria === "tecnica"
-        ? tecnologias.find(t => t.value === tecnologia)?.label || ""
-        : habilidadBlanda
+      formData.categoria === "tecnica"
+        ? tecnologias.find(t => t.value === formData.tecnologia)?.label || ""
+        : formData.habilidad
     );
 
     const existe = habilidadesExistentes.some(h => {
@@ -102,24 +88,24 @@ useEffect(() => {
 
     setLoading(true);
     try {
-      const esTecnica = categoria.toLowerCase() === "tecnica";
+      const esTecnica = formData.categoria.toLowerCase() === "tecnica";
 
       const data: DatosHabilidad = {
-        categoria_habilidad: categoria,
-        nivel: nivel,
+        categoria_habilidad: formData.categoria,
+        nivel: formData.nivel,
       };
 
       if (esTecnica) {
-        data.id_tecnologia = tecnologia;
+        data.id_tecnologia = formData.tecnologia;
       } else {
-        data.nombre = habilidadBlanda;
+        data.nombre = formData.habilidad;
       }
 
       if (habilidadEditar) {
         const updated = await editarHabilidad(
           habilidadEditar.id_habilidad,
           {
-            nivel: nivel,
+            nivel: formData.nivel,
           }
         );
 
@@ -128,17 +114,17 @@ useEffect(() => {
         onCreated(updated);
 
       } else {
-        const esTecnica = categoria === "tecnica";
+        const esTecnica = formData.categoria === "tecnica";
 
         const data: DatosHabilidad = {
-          categoria_habilidad: categoria,
-          nivel: nivel,
+          categoria_habilidad: formData.categoria,
+          nivel: formData.nivel,
         };
 
         if (esTecnica) {
-          data.id_tecnologia = tecnologia;
+          data.id_tecnologia = formData.tecnologia;
         } else {
-          data.nombre = habilidadBlanda;
+          data.nombre = formData.habilidad;
         }
 
         const created = await crearHabilidad(data);
@@ -181,9 +167,9 @@ useEffect(() => {
           </label>
           <Dropdown
           mode="single"
-          value={categoria} 
+          value={formData.categoria} 
           onChange={(val) => {
-            setCategoria(val);
+            setFormData({ ...formData, categoria: val });
             setErrors((prev) => ({ ...prev, categoria: "" }));
           }}
           options={categorias}
@@ -193,7 +179,7 @@ useEffect(() => {
           />
             {errors.categoria && <p className="text-red-500 text-xs ml-1">{errors.categoria}</p>}
         </div>
-        {categoria === "tecnica" && (
+        {formData.categoria === "tecnica" && (
           <div className="space-y-1">
             <label className="flex items-center gap-1.5 text-black font-semibold text-[14px] ml-1 -mb-1 w-full text-left pb-1">
               Habilidad <span className="text-error-500">*</span>
@@ -201,9 +187,9 @@ useEffect(() => {
 
             <Dropdown
               mode="single"
-              value={tecnologia}
+              value={formData.tecnologia}
               onChange={(val) => {
-                setTecnologia(val);
+                setFormData({ ...formData, tecnologia: val });
                 setErrors((prev) => ({ ...prev, tecnologia: "" }));
               }}
               options={tecnologias}
@@ -216,12 +202,12 @@ useEffect(() => {
           </div>
         )}
 
-        {categoria === "blanda" && (
+        {formData.categoria === "blanda" && (
           <div className="space-y-1">
             <Input
-              value={habilidadBlanda}
+              value={formData.habilidad}
               onChange={(value) => {
-                setHabilidadBlanda(value);
+                setFormData({ ...formData, habilidad: value });
                 setErrors((prev) => ({ ...prev, habilidad: "" }));
               }}
               placeholder="Ej: Comunicación, Liderazgo..." 
@@ -239,9 +225,9 @@ useEffect(() => {
           </label>
           <Dropdown 
           mode="single"
-            value={nivel} 
+            value={formData.nivel} 
             onChange={(val) => {
-              setNivel(val);
+              setFormData({ ...formData, nivel: val });
               setErrors((prev) => ({ ...prev, nivel: "" }));
             }} 
             options={niveles}
@@ -260,14 +246,19 @@ useEffect(() => {
           </button>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (!!habilidadEditar && !isDirty)}
             className={`text-sm px-4 py-2 rounded-md text-white 
-            ${loading 
-              ? "bg-gray-400 cursor-not-allowed" 
-              : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
-            }`}
+              ${
+                loading || (habilidadEditar && !isDirty)
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-primary-500 hover:bg-secondary-500 cursor-pointer"
+              }`}
             >
-            {loading ? "Guardando..." : habilidadEditar ? "Guardar Cambios" : "Crear Habilidad"}
+              {loading
+                ? "Procesando..."
+                : habilidadEditar
+                ? "Editar Habilidad"
+                : "Crear Habilidad"}
           </button>
         </div>
       </form>
