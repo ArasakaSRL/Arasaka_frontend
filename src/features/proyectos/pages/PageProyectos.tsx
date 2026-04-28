@@ -78,7 +78,7 @@ export default function PageProyectos() {
           </div>
         )}
 
-            <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-2xl">
+            <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-3xl">
               <FormularioProyecto 
               proyectoEditar={proyectoEditar}
               closeModal={closeModal}
