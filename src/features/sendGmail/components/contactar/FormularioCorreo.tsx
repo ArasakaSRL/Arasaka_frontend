@@ -84,7 +84,6 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     onChange={v => onChange('subject', v)}
                     required
                     maxLength={120}
-                    
                 />
             </div>
 

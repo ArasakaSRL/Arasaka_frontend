@@ -36,7 +36,7 @@ export default function App() {
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
       </Route>
-      <Route path="/portfolio/:slug" element={<PortafolioPage />} />
+      <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
     </Routes>
   )
