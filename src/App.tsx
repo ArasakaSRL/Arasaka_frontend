@@ -16,6 +16,7 @@ import Configuracion from './features/configuracion/page/Configuracion'
 import PortafolioPage from './features/portafolio/pages/PortfolioPage'
 import PortfolioPagePrivate from './features/portafolio/pages/PortfolioPagePrivate'
 import Mensajes from './pages/Dashboard/mensajes/Mensajes'
+import ReportesUsr from './features/reportesUsuario/page/ReportesUsr'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/Dashboard/certificaciones/Certificaciones" element={< Certificaciones/>} />
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
         <Route path="/Dashboard/configuracion/Configuracion" element={<Configuracion/>} />
+        <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />

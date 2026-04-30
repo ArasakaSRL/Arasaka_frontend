@@ -17,7 +17,7 @@ const menuItems = [
     { icon: Trophy, label: 'Hitos', path: '/Dashboard/hitos/Hitos' },
     { icon: ShieldCheck, label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
     { icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Mensajes' },
-    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes' },
     { icon: Settings, label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' }
 ];
 interface SidebarProps {

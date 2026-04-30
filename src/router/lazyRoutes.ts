@@ -12,3 +12,4 @@ export const Certificaiones = lazy(() => import('../features/certificaciones/pag
 export const Hitos = lazy(() => import('../features/hitos/page/Hitos')) 
 export const Mensajes = lazy(() => import('../pages/Dashboard/mensajes/Mensajes'))
 export const Configuracion = lazy(() => import('../features/configuracion/page/Configuracion')) 
+export const Estadisticas = lazy(() => import('../features/reportesUsuario/page/ReportesUsr'))
