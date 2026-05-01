@@ -39,4 +39,8 @@ export const ProyectoSchema = z
       .refine((val) => !val || val.startsWith("https://"), {
         message: "Formato de enlace inválido",
       }),
+      imagenes: z
+      .array(z.any())
+      .min(1, "Debe subir al menos una imagen")
+      .max(5, "No puedes subir más de 5 imágenes")
   });

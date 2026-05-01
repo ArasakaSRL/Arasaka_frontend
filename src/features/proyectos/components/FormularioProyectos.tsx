@@ -29,6 +29,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     const { opciones} = useTecnologias();
     const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
     const [imagenes, setImagenes] = useState<Imagen[]>([]);
+    const [submitted, setSubmitted] = useState(false);
     const {
       formularioData,
       setFormularioData,
@@ -56,20 +57,19 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       preview: URL.createObjectURL(file),
       isNew: true,
     }));
-
     setImagenes((prev) => {
-      const combinado = [...prev, ...nuevas];
-      return combinado.slice(0, 5);
+      const combinado = [...prev, ...nuevas].slice(0, 5);
+      return combinado;
     });
+
+    setErrors(prev => ({
+      ...prev,
+      imagenes: "",
+    }));
   };
 
   const eliminarImagen = (index: number) => {
     setImagenes((prev) => {
-      if (prev.length <= 1) {
-        toast.warning("Debe existir al menos una imagen");
-        return prev;
-      }
-
       const copia = [...prev];
       const eliminada = copia[index];
 
@@ -78,6 +78,15 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       }
 
       copia.splice(index, 1);
+
+      // 🔥 validar después de eliminar
+      if (copia.length === 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          imagenes: "Debes subir al menos una imagen",
+        }));
+      }
+
       return copia;
     });
   };
@@ -112,6 +121,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+      setSubmitted(true);
 
       const result = ProyectoSchema.safeParse({
         titulo: formularioData.title,
@@ -121,6 +131,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         tecnologias: tecnologias,
         projectUrl: formularioData.projectUrl,
         githubUrl: formularioData.githubUrl,
+        imagenes: imagenes,
       });
 
       if (!result.success) {
@@ -153,10 +164,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           const files: File[] = imagenes
             .filter((img) => img.file)
             .map((img) => img.file as File);
-
-          if (files.length === 0) {
-            throw new Error("Debe haber al menos una imagen");
-          }
           url_imagen = await uploadMultipleImages(files);
         } else {
           const nuevas = imagenes.filter((img) => img.isNew && img.file);
@@ -170,10 +177,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           const urlsExistentes = existentes.map((img) => img.url as string);
 
           url_imagen = [...urlsExistentes, ...urlsNuevas];
-
-          if (url_imagen.length === 0) {
-            throw new Error("Debe haber al menos una imagen");
-          }
         }
 
         const payload = {
@@ -414,6 +417,11 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
                   </div>
                 ))}
               </div>
+            )}
+            {submitted && errors.imagenes && (
+              <p className="text-red-500 text-xs mt-2">
+                {errors.imagenes}
+              </p>
             )}
         </div>
       </div>
