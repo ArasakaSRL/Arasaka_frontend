@@ -7,6 +7,8 @@ import { toast } from '../../../components/Alerta';
 import { Input } from '@/components/ui/input';
 import { useTecnologias } from '../hooks/useTecnologias';
 import { useEditarProyecto } from '../hooks/editarProyectos';
+import { uploadMultipleImages } from '../../../firebase/firebaseStorage';
+import { useEffect } from 'react';
 
 interface FormularioProps {
     closeModal: () => void;
@@ -15,8 +17,10 @@ interface FormularioProps {
 }
 
 type Imagen = {
-    file: File;
+    file?: File;
     preview: string;
+    url?: string;
+    isNew?: boolean;
 };
 
 export default function FormularioProyectos({closeModal, onCreated, proyectoEditar}:FormularioProps) {
@@ -33,6 +37,60 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       resetForm,
       isDirty,
     } = useEditarProyecto(proyectoEditar);
+
+    useEffect(() => {
+    if (proyectoEditar) {
+      const existentes = proyectoEditar.url_imagen.map((img) => ({
+        url: img.logo,
+        preview: img.logo,
+        isNew: false,
+      }));
+
+      setImagenes(existentes);
+    }
+  }, [proyectoEditar]);
+
+  const handleAddImages = (files: File[]) => {
+    const nuevas: Imagen[] = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+      isNew: true,
+    }));
+
+    setImagenes((prev) => {
+      const combinado = [...prev, ...nuevas];
+      return combinado.slice(0, 5);
+    });
+  };
+
+  const eliminarImagen = (index: number) => {
+    setImagenes((prev) => {
+      if (prev.length <= 1) {
+        toast.warning("Debe existir al menos una imagen");
+        return prev;
+      }
+
+      const copia = [...prev];
+      const eliminada = copia[index];
+
+      if (eliminada.isNew) {
+        URL.revokeObjectURL(eliminada.preview);
+      }
+
+      copia.splice(index, 1);
+      return copia;
+    });
+  };
+
+  const hacerPortada = (index: number) => {
+    setImagenes((prev) => {
+      const copia = [...prev];
+      const [img] = copia.splice(index, 1);
+      copia.unshift(img);
+      return copia;
+    });
+  };
+
 
     const cerrarForm = () => {
       resetForm();
@@ -89,6 +147,35 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       setErrors({});
       setLoading(true);
       try {
+        let url_imagen: string[] = [];
+
+        if (!proyectoEditar) {
+          const files: File[] = imagenes
+            .filter((img) => img.file)
+            .map((img) => img.file as File);
+
+          if (files.length === 0) {
+            throw new Error("Debe haber al menos una imagen");
+          }
+          url_imagen = await uploadMultipleImages(files);
+        } else {
+          const nuevas = imagenes.filter((img) => img.isNew && img.file);
+          const existentes = imagenes.filter((img) => !img.isNew);
+
+          const files: File[] = nuevas.map((img) => img.file as File);
+
+          const urlsNuevas =
+            files.length > 0 ? await uploadMultipleImages(files) : [];
+
+          const urlsExistentes = existentes.map((img) => img.url as string);
+
+          url_imagen = [...urlsExistentes, ...urlsNuevas];
+
+          if (url_imagen.length === 0) {
+            throw new Error("Debe haber al menos una imagen");
+          }
+        }
+
         const payload = {
           nombre: formularioData.title,
           descripcion: formularioData.descripcion || undefined,
@@ -97,6 +184,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           tecnologias: tecnologias,
           url_demo: formularioData.projectUrl,
           url_github: formularioData.githubUrl,
+          url_imagen,
         };
         let proyectoGuardado;
         console.log("Payload enviado:", payload);
@@ -111,12 +199,10 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         } else {
           proyectoGuardado = await crearProyecto(payload);
           toast.success("Proyecto creado exitosamente", 3000);
-          onCreated(proyectoGuardado);
         }
-
+        onCreated(proyectoGuardado);
         resetForm();
         closeModal();
-
       } catch {
         toast.warning("Error al crear proyecto", 3000);
       } finally {
@@ -278,17 +364,10 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
-                  const files = e.target.files ? Array.from(e.target.files) : [];
-
-                  const nuevas = files.map((file) => ({
-                    file,
-                    preview: URL.createObjectURL(file),
-                  }));
-
-                  setImagenes((prev) => {
-                    const combinado = [...prev, ...nuevas];
-                    return combinado.slice(0, 5);
-                  });
+                  const files = e.target.files
+                    ? Array.from(e.target.files)
+                    : [];
+                  handleAddImages(files);
                 }}
               />
             </label>
@@ -318,15 +397,20 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
                     <button
                       type="button"
-                      onClick={() => {
-                        setImagenes((prev) =>
-                          prev.filter((_, i) => i !== index)
-                        );
-                      }}
+                      onClick={() => eliminarImagen(index)}
                       className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1 rounded"
                     >
                       ✕
                     </button>
+                    {index !== 0 && (
+                      <button
+                        type="button"
+                        onClick={() => hacerPortada(index)}
+                        className="absolute bottom-1 left-1 bg-white text-xs px-1"
+                      >
+                        Portada
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -345,6 +429,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
         <button
           type="submit"
+          onClick={handleSubmit}
           disabled={loading || (!!proyectoEditar && !isDirty)}
           className={`text-sm px-4 py-2 rounded-md text-white 
           ${

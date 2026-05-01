@@ -9,6 +9,7 @@ export interface ProyectoFormData {
     tecnologias: string[];
     url_demo?: string;
     url_github?: string;
+    url_imagen: string[];
 }
 
 export interface Proyecto {
@@ -19,8 +20,15 @@ export interface Proyecto {
     fecha_inicio: string;
     fecha_fin: string;
     tecnologias: Tecnologias[]
+    url_imagen: Imagen[];
     url_demo?: string | null;
     url_github?: string | null;
+}
+
+type Imagen = {
+    id_tecnologia: string;
+    nombre: string;
+    logo: string;
 }
 
 export interface Tecnologias {
@@ -31,7 +39,7 @@ export interface Tecnologias {
 }
 
 export const crearProyecto = async (data: ProyectoFormData): Promise<Proyecto> => {
-  const response = await apiClient.post("/portafolios/proyectos", data);
+  const response = await apiClient.post(`/portafolios/proyectos`, data);
   useAuthStore.getState().refreshPortafolio()
   return response.data.data;
 };
