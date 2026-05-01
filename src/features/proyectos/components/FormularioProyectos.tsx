@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { CircleX } from 'lucide-react';
 import { useState } from 'react';
 import Dropdown from '../../../components/MenuDesplegable';
@@ -37,7 +39,14 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       setTecnologias,
       resetForm,
       isDirty,
+      imagenesActuales,
+      setImagenesActuales,
     } = useEditarProyecto(proyectoEditar);
+
+    useEffect(() => {
+      const urls = imagenes.map((img) => img.url ?? img.file?.name ?? "");
+      setImagenesActuales(urls);
+    }, [imagenes]);
 
     useEffect(() => {
     if (proyectoEditar) {
@@ -79,18 +88,16 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
       copia.splice(index, 1);
 
-      // 🔥 validar después de eliminar
       if (copia.length === 0) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          imagenes: "Debes subir al menos una imagen",
+          imagenes: "Debe subir al menos una imagen",
         }));
       }
 
       return copia;
     });
   };
-
   const hacerPortada = (index: number) => {
     setImagenes((prev) => {
       const copia = [...prev];
@@ -418,7 +425,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
                 ))}
               </div>
             )}
-            {submitted && errors.imagenes && (
+            {errors.imagenes && (
               <p className="text-red-500 text-xs mt-2">
                 {errors.imagenes}
               </p>

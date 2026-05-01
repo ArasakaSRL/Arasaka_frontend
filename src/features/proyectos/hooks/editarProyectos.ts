@@ -17,6 +17,8 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
 
   const [tecnologias, setTecnologias] = useState<string[]>([]);
   const [tecnologiasIniciales, setTecnologiasIniciales] = useState<string[]>([]);
+  const [imagenesIniciales, setImagenesIniciales] = useState<string[]>([]);
+  const [imagenesActuales, setImagenesActuales] = useState<string[]>([]);
 
   const formatoFecha = (fecha: string) => {
     if (!fecha) return "";
@@ -26,6 +28,10 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
 
   useEffect(() => {
     if (proyectoEditar) {
+      const urls = proyectoEditar.url_imagen.map(img => img.logo);
+      setImagenesIniciales(urls);
+      setImagenesActuales(urls);
+
       const data = {
         title: proyectoEditar.nombre,
         descripcion: proyectoEditar.descripcion || "",
@@ -51,7 +57,8 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
 
   const isDirty =
     JSON.stringify(formularioData) !== JSON.stringify(datosIniciales) ||
-    JSON.stringify(tecnologias) !== JSON.stringify(tecnologiasIniciales);
+    JSON.stringify(tecnologias) !== JSON.stringify(tecnologiasIniciales) ||
+    JSON.stringify(imagenesActuales) !== JSON.stringify(imagenesIniciales);
 
   const resetForm = () => {
     const emptyData = {
@@ -76,5 +83,8 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
     setTecnologias,
     resetForm,
     isDirty,
+    imagenesActuales,
+    setImagenesActuales,
+    imagenesIniciales,
   };
 };
