@@ -71,3 +71,13 @@ export const editarHabilidad = async (id_habilidad: string, data: Partial<Habili
     categoria: raw["categoria habilidad"],
   };
 };
+
+export const eliminarHabilidad = async (id_habilidad: string) => {
+
+  try {
+    const response = await apiClient.delete(`/portafolios/habilidades/${id_habilidad}`);
+    return response.data;
+  }catch(err){
+    console.log(err)
+  }
+};

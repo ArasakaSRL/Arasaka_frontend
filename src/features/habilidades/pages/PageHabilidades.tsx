@@ -5,7 +5,8 @@ import FormularioHabilidades from "../components/FormularioHabilidades";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { Banner } from "@/features/hitos/components/BannerHitos";
 import ListaHabilidad from "../components/ListaHabilidad";
-import { obtenerHabilidades, type HabilidadUI } from "../lib/HabilidadesApi";
+import { obtenerHabilidades, type HabilidadUI ,eliminarHabilidad} from "../lib/HabilidadesApi";
+import { toast } from "../../../components/Alerta";
 
 export default function PageHabilidades() {
   const [ModalAbierto, setModalAbierto] = useState(false);
@@ -34,6 +35,20 @@ export default function PageHabilidades() {
     setModalAbierto(true);
   }
 
+  const handleEliminar = async (id_habilidad: string) => {
+    try {
+      const response = await eliminarHabilidad(id_habilidad);
+      if (response.message!== "Error al eliminar la habilidad") {
+        setHabilidades((prev) => prev.filter((h) => h.id_habilidad !== id_habilidad));
+        toast.success("Habilidad eliminada exitosamente");
+      } else {
+        toast.error("Error al eliminar la habilidad");
+      }
+    }catch (err){
+      console.log(err)
+    }
+  };
+
 
 return(
       <DashboardLayout>
@@ -43,7 +58,7 @@ return(
           onOpenModal={() => setModalAbierto(true)} 
           textoBoton="Añadir Habilidad" /> 
         <div className="py-4 w-full">
-          <ListaHabilidad habilidad={habilidades} load={loading} onEditar={handleEditar}/>
+          <ListaHabilidad habilidad={habilidades} load={loading} onEditar={handleEditar} onEliminar={handleEliminar}/>
               <ModalForm isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-xl">
                 <FormularioHabilidades 
                 closeModal={closeModal}     
