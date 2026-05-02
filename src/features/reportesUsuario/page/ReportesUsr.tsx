@@ -5,6 +5,7 @@ import { TotalVisitas } from "../components/TotalVisitas";
 import SkillsChart, { type SkillItem } from "../components/Skillschart";
 import { BarChartVisitas } from "../components/BarChartVisitas";
 import { LineChart } from "../components/LineChart";
+import { SeccionScrollHorizontal } from "../components/visibilidad/SeccionScrollHorizontal";
 
 export default function ReportesUsr(){
 
@@ -29,28 +30,32 @@ export default function ReportesUsr(){
                 strokeWidth={32}   
                 radius={130}       
             />
-            <BarChartVisitas
-                data={[
+            <SeccionScrollHorizontal titulo="Estadísticas">
+                <BarChartVisitas data={[
                     { mes: "Ene", visitas: 2000 },
                     { mes: "Feb", visitas: 5000 },
                     { mes: "Mar", visitas: 8000 },
                     { mes: "Abr", visitas: 4000 },
                     { mes: "May", visitas: 10000 },
                     { mes: "Jun", visitas: 3000 },
-                ]}
-            />
+                ]} />
+            </SeccionScrollHorizontal>
             
-            <LineChart
-                data={[
-                    { x: "Ene", y: 2000 },
-                    { x: "Feb", y: 800 },
-                    { x: "Mar", y: 1500 },
-                    { x: "Abr", y: 1200 },
-                    { x: "May", y: 2500 },
-                    { x: "Jun", y: 900 },
-                    { x: "Jul", y: 1800 },
-                ]}
-            />
+            <SeccionScrollHorizontal titulo="Estadísticas">
+                <LineChart
+                    data={[
+                        { x: "Ene", y: 2000 },
+                        { x: "Feb", y: 800 },
+                        { x: "Mar", y: 1500 },
+                        { x: "Abr", y: 1200 },
+                        { x: "May", y: 2500 },
+                        { x: "Jun", y: 900 },
+                        { x: "Jul", y: 1800 },
+                    ]}
+                />
+            </SeccionScrollHorizontal>
+            
+            
             </DashboardLayout>
     );
 }
