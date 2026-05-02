@@ -11,18 +11,12 @@ export interface SkillItem {
 interface SkillsChartProps {
   title?: string;
   skills: SkillItem[];
-  /** Stroke thickness — thicker = smaller hole (default: 56) */
   strokeWidth?: number;
-  /** Semicircle radius (default: 130) */
   radius?: number;
 }
 
-// ─── SVG layout ───────────────────────────────────────────────────────────────
-
 const CX = 170;
 const CY = 185;
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SkillsChart({
   title = "Habilidades desarrolladas",
@@ -32,8 +26,11 @@ export default function SkillsChart({
 }: SkillsChartProps) {
   const [hovered, setHovered] = useState<string | null>(null);
 
+  // 🔹 Total real
   const total = skills.reduce((sum, s) => sum + s.value, 0);
+
   const semiCirc = Math.PI * radius;
+
   const arcPath = `M ${CX - radius} ${CY} A ${radius} ${radius} 0 0 1 ${CX + radius} ${CY}`;
 
   const holeR = radius - strokeWidth * 0.78;
@@ -42,10 +39,13 @@ export default function SkillsChart({
   const pct = (v: number) => Math.round((v / total) * 100);
   const dashLen = (v: number) => (v / total) * semiCirc;
 
+  // 🔹 Orden: mayor atrás
   const sorted = [...skills].sort((a, b) => b.value - a.value);
+
+  // 🔹 Estado activo (NULL = modo total)
   const active = hovered
-    ? (skills.find((s) => s.label === hovered) ?? sorted[0])
-    : sorted[0];
+    ? skills.find((s) => s.label === hovered) ?? null
+    : null;
 
   const textY = CY - 18;
   const svgHeight = CY + 20;
@@ -56,16 +56,13 @@ export default function SkillsChart({
       {/* Title */}
       <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
 
-      {/* Arc only */}
       <div className="w-full" style={{ height: svgHeight }}>
         <svg
           viewBox={`0 0 ${CX * 2} ${svgHeight}`}
           width="100%"
           height={svgHeight}
-          role="img"
-          aria-label={`Gráfico de ${title}`}
         >
-          {/* Background track */}
+          {/* Fondo */}
           <path
             d={arcPath}
             fill="none"
@@ -74,9 +71,10 @@ export default function SkillsChart({
             strokeLinecap="round"
           />
 
-          {/* Skill arcs — largest first (bottom), smallest last (top) */}
+          {/* Arcos */}
           {sorted.map((skill) => {
             const isActive = hovered === skill.label;
+
             return (
               <path
                 key={skill.label}
@@ -88,15 +86,17 @@ export default function SkillsChart({
                 strokeDasharray={`${dashLen(skill.value)} ${semiCirc}`}
                 pathLength={semiCirc}
                 opacity={hovered && !isActive ? 0.25 : 1}
-                className="cursor-pointer"
-                style={{ transition: "opacity 0.2s ease, stroke-width 0.15s ease" }}
+                style={{
+                  transition: "opacity 0.2s ease, stroke-width 0.15s ease",
+                  cursor: "pointer",
+                }}
                 onMouseEnter={() => setHovered(skill.label)}
                 onMouseLeave={() => setHovered(null)}
               />
             );
           })}
 
-          {/* White mask — small donut hole */}
+          {/* Donut interno */}
           <path
             d={holePath}
             fill="none"
@@ -104,28 +104,31 @@ export default function SkillsChart({
             strokeWidth={strokeWidth * 0.45}
           />
 
-          {/* Center label */}
+          {/* 🔥 TEXTO CENTRAL CORREGIDO */}
           <text
             x={CX}
             y={textY}
             textAnchor="middle"
-            fontSize={22}
+            fontSize={40}
             fontWeight="600"
-            fill={active.color}
+            fill={active ? active.color : "#374151"}
             fontFamily="sans-serif"
             style={{ transition: "fill 0.2s ease" }}
           >
-            {active.value}
+            {active ? active.value : total}
           </text>
+
           <text
             x={CX}
             y={textY + 16}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={15}
             fill="#9CA3AF"
             fontFamily="sans-serif"
           >
-            {active.label.toLowerCase()} · {pct(active.value)}%
+            {active
+              ? `${active.label.toLowerCase()} · ${pct(active.value)}%`
+              : `total habilidades · 100%`}
           </text>
         </svg>
       </div>
