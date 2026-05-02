@@ -3,6 +3,7 @@ import { BoxCantidad } from "../components/BoxCantidad";
 import { Banner } from "@/components/Banner";
 import { TotalVisitas } from "../components/TotalVisitas";
 import SkillsChart, { type SkillItem } from "../components/Skillschart";
+import { BarChartVisitas } from "../components/BarChartVisitas";
 
 export default function ReportesUsr(){
 
@@ -24,8 +25,18 @@ export default function ReportesUsr(){
              <SkillsChart
                 title="Habilidades desarrolladas"
                 skills={skills}
-                strokeWidth={32}   // opcional
-                radius={130}       // opcional
+                strokeWidth={32}   
+                radius={130}       
+            />
+            <BarChartVisitas
+                data={[
+                    { mes: "Ene", visitas: 2000 },
+                    { mes: "Feb", visitas: 5000 },
+                    { mes: "Mar", visitas: 8000 },
+                    { mes: "Abr", visitas: 4000 },
+                    { mes: "May", visitas: 10000 },
+                    { mes: "Jun", visitas: 3000 },
+                ]}
             />
             </DashboardLayout>
     );
