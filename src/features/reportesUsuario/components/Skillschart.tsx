@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export interface SkillItem {
   label: string;
   value: number;
@@ -38,7 +36,6 @@ export default function SkillsChart({
   const semiCirc = Math.PI * radius;
   const arcPath = `M ${CX - radius} ${CY} A ${radius} ${radius} 0 0 1 ${CX + radius} ${CY}`;
 
-  // Inner hole: radius shrunk by the stroke so it stays inside the band
   const holeR = radius - strokeWidth * 0.78;
   const holePath = `M ${CX - holeR} ${CY} A ${holeR} ${holeR} 0 0 1 ${CX + holeR} ${CY}`;
 
@@ -50,17 +47,16 @@ export default function SkillsChart({
     ? (skills.find((s) => s.label === hovered) ?? sorted[0])
     : sorted[0];
 
-  // Text sits just above the baseline, well inside the small hole
   const textY = CY - 18;
   const svgHeight = CY + 20;
 
   return (
-    <div className="flex flex-col items-center w-full max-w-xs mx-auto select-none">
+    <div className="flex flex-col items-start w-full max-w-xs select-none">
 
       {/* Title */}
-      <p className="self-start text-sm font-medium text-gray-500 mb-3">{title}</p>
+      <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
 
-      {/* Arc */}
+      {/* Arc only */}
       <div className="w-full" style={{ height: svgHeight }}>
         <svg
           viewBox={`0 0 ${CX * 2} ${svgHeight}`}
@@ -100,7 +96,7 @@ export default function SkillsChart({
             );
           })}
 
-          {/* White mask — carves out the small donut hole */}
+          {/* White mask — small donut hole */}
           <path
             d={holePath}
             fill="none"
@@ -108,12 +104,12 @@ export default function SkillsChart({
             strokeWidth={strokeWidth * 0.45}
           />
 
-          {/* Center label — safely inside the hole */}
+          {/* Center label */}
           <text
             x={CX}
             y={textY}
             textAnchor="middle"
-            fontSize={18}
+            fontSize={22}
             fontWeight="600"
             fill={active.color}
             fontFamily="sans-serif"
@@ -123,94 +119,15 @@ export default function SkillsChart({
           </text>
           <text
             x={CX}
-            y={textY + 14}
+            y={textY + 16}
             textAnchor="middle"
-            fontSize={9}
+            fontSize={10}
             fill="#9CA3AF"
             fontFamily="sans-serif"
           >
             {active.label.toLowerCase()} · {pct(active.value)}%
           </text>
         </svg>
-      </div>
-
-      {/* Top 2 badges */}
-      <div className="flex gap-2 w-full mt-2 mb-4">
-        {sorted.slice(0, 2).map((skill) => (
-          <button
-            key={skill.label}
-            type="button"
-            className="flex items-center gap-2 flex-1 rounded-xl px-3 py-2.5 bg-gray-50 transition-all cursor-pointer"
-            style={{
-              outline:
-                hovered === skill.label
-                  ? `2px solid ${skill.color}`
-                  : "2px solid transparent",
-            }}
-            onMouseEnter={() => setHovered(skill.label)}
-            onMouseLeave={() => setHovered(null)}
-          >
-            <span
-              className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
-              style={{ backgroundColor: skill.color }}
-            />
-            <div className="text-left">
-              <p
-                className="text-base font-semibold leading-none"
-                style={{ color: skill.color }}
-              >
-                {skill.value}
-              </p>
-              <p className="text-[10px] text-gray-400 mt-0.5">
-                {skill.label} · {pct(skill.value)}%
-              </p>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Full legend */}
-      <div className="flex flex-col gap-0.5 w-full">
-        {sorted.map((skill) => (
-          <div
-            key={skill.label}
-            className="flex items-center justify-between text-xs rounded-lg px-2 py-1.5 cursor-pointer transition-colors"
-            style={{
-              backgroundColor:
-                hovered === skill.label ? `${skill.color}18` : "transparent",
-            }}
-            onMouseEnter={() => setHovered(skill.label)}
-            onMouseLeave={() => setHovered(null)}
-          >
-            <span className="flex items-center gap-2">
-              <span
-                className="w-2 h-2 rounded-sm flex-shrink-0"
-                style={{ backgroundColor: skill.color }}
-              />
-              <span className="text-gray-600">{skill.label}</span>
-            </span>
-            <div className="flex items-center gap-2">
-              <div className="w-16 h-1 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${pct(skill.value)}%`,
-                    backgroundColor: skill.color,
-                  }}
-                />
-              </div>
-              <span className="text-gray-400 w-16 text-right tabular-nums">
-                {skill.value} · {pct(skill.value)}%
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Total */}
-      <div className="w-full flex justify-between text-[11px] text-gray-400 border-t border-gray-100 mt-3 pt-2.5">
-        <span>Total</span>
-        <span className="font-medium text-gray-500 tabular-nums">{total} · 100%</span>
       </div>
     </div>
   );
