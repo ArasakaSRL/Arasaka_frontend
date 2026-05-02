@@ -49,10 +49,12 @@ export async function actualizarInformacion(payload: ActualizarInformacionPayloa
     return data
 }
 
-// PATCH /api/usuario/foto
-// Actualiza la URL de la foto de perfil del usuario
+// POST /api/usuario/foto
+// Sube el archivo de foto al backend (Cloudinary) via multipart/form-data
 export async function actualizarFoto(payload: ActualizarFotoPayload): Promise<UsuarioActualizadoResponse> {
-    const { data } = await apiClient.patch<UsuarioActualizadoResponse>('/usuario/foto', payload)
+    const { data } = await apiClient.post<UsuarioActualizadoResponse>('/usuario/foto', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    })
     return data
 }
 
