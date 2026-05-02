@@ -4,6 +4,7 @@ import { Banner } from "@/components/Banner";
 import { TotalVisitas } from "../components/TotalVisitas";
 import SkillsChart, { type SkillItem } from "../components/Skillschart";
 import { BarChartVisitas } from "../components/BarChartVisitas";
+import { LineChart } from "../components/LineChart";
 
 export default function ReportesUsr(){
 
@@ -36,6 +37,18 @@ export default function ReportesUsr(){
                     { mes: "Abr", visitas: 4000 },
                     { mes: "May", visitas: 10000 },
                     { mes: "Jun", visitas: 3000 },
+                ]}
+            />
+            
+            <LineChart
+                data={[
+                    { x: "Ene", y: 2000 },
+                    { x: "Feb", y: 800 },
+                    { x: "Mar", y: 1500 },
+                    { x: "Abr", y: 1200 },
+                    { x: "May", y: 2500 },
+                    { x: "Jun", y: 900 },
+                    { x: "Jul", y: 1800 },
                 ]}
             />
             </DashboardLayout>
