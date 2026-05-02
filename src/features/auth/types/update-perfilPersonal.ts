@@ -19,9 +19,7 @@ export interface ActualizarInformacionPayload {
 }
 
 // Payload para actualizar foto de perfil
-export interface ActualizarFotoPayload {
-    url_foto: string
-}
+export type ActualizarFotoPayload = FormData
 
 // Payload para actualizar país
 export interface ActualizarPaisPayload {
