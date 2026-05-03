@@ -1,39 +1,45 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from 'react'
 
-// PortfolioHeaderTracker.tsx
 const VISITOR_KEY = 'hf_visitor'
+const API_BASE    = 'http://localhost:8000'//no olvidar colocar el link deploy
 
-export function PortfolioHeaderTracker({
-    children,
-    portfolioSlug
-}: {
+interface Props {
     children:      React.ReactNode
     portfolioSlug: string
-}) {
+}
+
+export function PortfolioHeaderTracker({ children, portfolioSlug }: Props) {
     const wrapperRef  = useRef<HTMLDivElement>(null)
     const hoverTimers = useRef<Record<string, number>>({})
 
-    // ── Inicialización ──
-    useEffect(() => {
-        let visitorId = localStorage.getItem(VISITOR_KEY)
-        if (!visitorId) {
-            visitorId = crypto.randomUUID()
-            localStorage.setItem(VISITOR_KEY, visitorId)
-        }
-        navigator.sendBeacon(
-            '/api/heatmap/iniciar',
-            JSON.stringify({
-                visitor_id:     visitorId,
-                portfolio_slug: portfolioSlug
-            })
-        )
-    }, [portfolioSlug])
+    function enviar(campo: string, valor: number) {
+        const visitorId = localStorage.getItem(VISITOR_KEY)
+        if (!visitorId) return
 
-    function getVisitorId() {
-        return localStorage.getItem(VISITOR_KEY)
+        // ── LOG TEMPORAL ──
+        console.log('📊 Heatmap track:', {
+            campo,
+            valor,
+            visitor_id:     visitorId,
+            portfolio_slug: portfolioSlug,
+            timestamp:      new Date().toISOString()
+        })
+        // ── FIN LOG TEMPORAL ──
+
+        const payload = new Blob(
+            [JSON.stringify({
+                visitor_id:     visitorId,
+                portfolio_slug: portfolioSlug,
+                campo,
+                valor
+            })],
+            { type: 'application/json' }
+        )
+
+        navigator.sendBeacon(`${API_BASE}/api/public/heatmap/perfil/track`, payload)
     }
 
-    // ── Captura de clics con coordenadas ──
+    // ── Clics ──
     useEffect(() => {
         const el = wrapperRef.current
         if (!el) return
@@ -41,42 +47,15 @@ export function PortfolioHeaderTracker({
         function onClic(e: MouseEvent) {
             const target = (e.target as HTMLElement).closest('[data-track]')
             if (!target) return
-
-            const elemento = (target as HTMLElement).dataset.track!
-            const rect     = target.getBoundingClientRect()
-            const x        = (e.clientX - rect.left) / rect.width
-            const y        = (e.clientY - rect.top)  / rect.height
-            const visitorId = getVisitorId()
-            if (!visitorId) return
-
-            // Request 1 — incrementa el contador en interaccion_perfil
-            navigator.sendBeacon(
-                '/api/heatmap/perfil/clic',
-                JSON.stringify({
-                    visitor_id:     visitorId,
-                    portfolio_slug: portfolioSlug,
-                    elemento,           // "clic_foto_perfil", "clic_github"...
-                })
-            )
-
-            // Request 2 — guarda la coordenada exacta en clic_perfil
-            navigator.sendBeacon(
-                '/api/heatmap/perfil/clic-posicion',
-                JSON.stringify({
-                    visitor_id:     visitorId,
-                    portfolio_slug: portfolioSlug,
-                    elemento,
-                    x,
-                    y
-                })
-            )
+            const campo = (target as HTMLElement).dataset.track!
+            enviar(campo, 1)
         }
 
         el.addEventListener('click', onClic)
         return () => el.removeEventListener('click', onClic)
     }, [portfolioSlug])
 
-    // ── Captura de hovers ──
+    // ── Hovers ──
     useEffect(() => {
         const el = wrapperRef.current
         if (!el) return
@@ -99,18 +78,8 @@ export function PortfolioHeaderTracker({
             delete hoverTimers.current[zona]
             if (ms < 200) return
 
-            const visitorId = getVisitorId()
-            if (!visitorId) return
-
-            navigator.sendBeacon(
-                '/api/heatmap/perfil/hover',
-                JSON.stringify({
-                    visitor_id:     visitorId,
-                    portfolio_slug: portfolioSlug,
-                    zona,   // "foto", "correo"
-                    ms
-                })
-            )
+            enviar(`hover_${zona}_count`, 1)
+            enviar(`hover_${zona}_ms`, ms)
         }
 
         el.addEventListener('mouseover', onEnter)

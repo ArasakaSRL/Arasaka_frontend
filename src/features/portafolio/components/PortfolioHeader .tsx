@@ -31,7 +31,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
 
       <div className="relative w-full md:w-[42%] flex items-center justify-center py-6 md:py-0 md:pl-12 z-10">
         <div className="absolute w-56 h-56 md:w-72 md:h-72 bg-blue-500/15 blur-[60px] rounded-full"></div>
-        <div className="relative group">
+        <div data-hover="foto"  data-track="clic_foto_perfil" className="relative group">
           <div className="
             relative z-10
             w-48 h-48 md:w-64 md:h-64 
@@ -80,7 +80,10 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
 
   
           <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-white/5 w-fit">
-            <div className="flex items-center gap-2 group cursor-pointer">
+            <div 
+              data-hover="correo"      
+              data-track="clic_correo"
+              className="flex items-center gap-2 group cursor-pointer">
               <Mail size={16} className="text-blue-400/70 group-hover:text-blue-400 transition-colors" />
               <span className="text-xs font-light text-white/50 group-hover:text-white/80 transition-colors">
                 {usuario.correo}
@@ -89,14 +92,18 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
 
             {/* Contenedor de logos estáticos */}
             <div className="flex items-center gap-4">
-              <div className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
+              <div 
+                data-track="clic_linkedin"
+                className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
                 <img 
                   src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg" 
                   alt="LinkedIn" 
                   className="w-6 h-6"
                 />
               </div>
-              <div className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
+              <div 
+                data-track="clic_github"
+                className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
                 <img 
                   src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" 
                   alt="GitHub" 
@@ -110,6 +117,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
         <div className="flex flex-wrap gap-3 mt-8">
           {whatsappNumber && (
             <button
+              data-track="clic_contactar"
               onClick={() => setContactarOpen(true)}
               className="
                 group flex items-center gap-2
@@ -134,6 +142,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
           />
           
           <button
+            data-track="clic_descargar_cv"
             className="
               flex items-center gap-2
               bg-white/5 hover:bg-white/10
