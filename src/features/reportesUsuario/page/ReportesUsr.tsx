@@ -9,6 +9,7 @@ import { SeccionScrollHorizontal } from "../components/visibilidad/SeccionScroll
 import { useEffect, useState } from "react";
 import type { EstadisticasData, NivelesHabilidad } from "../types/reportes";
 import { getEstadisticasPortafolio, getVisitantes } from "../apis/reportesApi";
+import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
 
 const COLOR_MAP: Record<string, string> = {
   Principiante: "#D85A30",
@@ -133,8 +134,8 @@ console.log('skillsChartData:', skillsChartData)
             ]}
           />
         </SeccionScrollHorizontal>
-
       </div>
+      <PerfilReplica></PerfilReplica>
     </DashboardLayout>
   );
 }

@@ -41,3 +41,21 @@ export const getVisitantes = async () => {
     const response = await apiClient.get('/reportesUsr/heatmap/visitantes')
     return response.data
 }
+
+interface InteraccionesPerfil {
+    hover_foto_count:   number | null
+    hover_foto_ms:      number | null
+    hover_correo_count: number | null
+    hover_correo_ms:    number | null
+    clic_foto_perfil:   number | null
+    clic_correo:        number | null
+    clic_linkedin:      number | null
+    clic_github:        number | null
+    clic_contactar:     number | null
+    clic_descargar_cv:  number | null
+}
+
+export const getInteraccionesPerfil = async (): Promise<InteraccionesPerfil> => {
+    const response = await apiClient.get('/reportesUsr/heatmap/perfil')
+    return response.data
+}
