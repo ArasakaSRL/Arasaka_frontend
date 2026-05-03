@@ -14,6 +14,7 @@ import { PortfolioHeaderTracker } from '@/features/reportesUsuario/components/ca
 import { useVisitor } from '../hooks/useVisitor';
 import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesBlandasTracker';
 import { useHabilidadesTecnicasTracker } from '../hooks/useHabilidadesTecnicasTracker';
+import { ExperienciaTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ExperienciaTracker';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -96,7 +97,9 @@ export default function PortfolioPage() {
             )}
             {configuracion?.mostrar_experiencias && (
                 <section id="experiencia">
-                    <ExperienceTimeline experiencias={experiencias} />
+                    <ExperienciaTracker portfolioSlug={slug!}>
+                        <ExperienceTimeline experiencias={experiencias} />
+                    </ExperienciaTracker>
                 </section>
             )}
             {configuracion?.mostrar_proyectos && (
