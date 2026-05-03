@@ -59,3 +59,8 @@ export const getInteraccionesPerfil = async (): Promise<InteraccionesPerfil> => 
     const response = await apiClient.get('/reportesUsr/heatmap/perfil')
     return response.data
 }
+
+export async function getHeatmapPerfil() {
+  const { data } = await apiClient.get('/reportesUsr/heatmap/perfil')
+  return data
+}

@@ -25,3 +25,16 @@ export interface EstadisticasData {
 export interface EstadisticasResponse {
   data: EstadisticasData;
 }
+
+export interface HeatmapPerfil {
+  hover_foto_count:   number | null
+  hover_foto_ms:      number | null
+  hover_correo_count: number | null
+  hover_correo_ms:    number | null
+  clic_foto_perfil:   number | null
+  clic_correo:        number | null
+  clic_linkedin:      number | null
+  clic_github:        number | null
+  clic_contactar:     number | null
+  clic_descargar_cv:  number | null
+}

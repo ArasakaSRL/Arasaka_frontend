@@ -7,8 +7,8 @@ import { BarChartVisitas } from "../components/BarChartVisitas";
 import { LineChart } from "../components/LineChart";
 import { SeccionScrollHorizontal } from "../components/visibilidad/SeccionScrollHorizontal";
 import { useEffect, useState } from "react";
-import type { EstadisticasData, NivelesHabilidad } from "../types/reportes";
-import { getEstadisticasPortafolio, getVisitantes } from "../apis/reportesApi";
+import type { EstadisticasData, HeatmapPerfil, NivelesHabilidad } from "../types/reportes";
+import { getEstadisticasPortafolio, getHeatmapPerfil, getVisitantes } from "../apis/reportesApi";
 import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
 
 const COLOR_MAP: Record<string, string> = {
@@ -20,12 +20,14 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 export default function ReportesUsr() {
+  const [heatmapPerfil, setHeatmapPerfil] = useState<HeatmapPerfil | null>(null)
   const [data, setData] = useState<EstadisticasData | null>(null);
   const [loading, setLoading] = useState(true);
   const [visitantes, setVisitantes] = useState<number>(0)
 
   
   useEffect(() => {
+    getHeatmapPerfil().then(setHeatmapPerfil).catch(console.error)
     const fetchReportes = async () => {
         try {
             // Separadas — si una falla no rompe la otra
@@ -78,6 +80,20 @@ export default function ReportesUsr() {
 
 console.log('skillsChartData:', skillsChartData)  
 
+    const intensidadPerfil = heatmapPerfil
+      ? calcularIntensidad([
+          heatmapPerfil.clic_foto_perfil,
+          heatmapPerfil.clic_correo,
+          heatmapPerfil.clic_linkedin,
+          heatmapPerfil.clic_github,
+          heatmapPerfil.clic_contactar,
+          heatmapPerfil.clic_descargar_cv,
+          heatmapPerfil.hover_foto_count,
+          heatmapPerfil.hover_correo_count,
+        ])
+      : 0
+    
+    
   return (
     <DashboardLayout>
       <Banner titulo="Reportes y Estadisticas" descripcion="" />
@@ -135,7 +151,12 @@ console.log('skillsChartData:', skillsChartData)
           />
         </SeccionScrollHorizontal>
       </div>
-      <PerfilReplica></PerfilReplica>
+      <PerfilReplica intensidades={{ perfil: intensidadPerfil }} />
     </DashboardLayout>
   );
+}
+
+function calcularIntensidad(valores: (number | null)[]): number {
+  const suma = valores.reduce((acc, v) => acc + (v ?? 0), 0)
+  return Math.min(suma / 100, 1)
 }

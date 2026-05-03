@@ -6,8 +6,19 @@ import HabilidadesBlandas from '@/features/portafolio/components/HabilidadesBlan
 import ExperienceTimeline from '@/features/portafolio/components/ExperienceTimeline';
 import SeccionProyectos from '@/features/portafolio/components/SeccionProyectos';
 import { CertificacionesSection } from '@/features/portafolio/components/CertificacionesSection';
+import { HeatmapSeccion } from '../heatmap/HeatmapSeccion';
 
-export function PerfilReplica() {
+interface Intensidades {
+  perfil: number
+  // más adelante: habilidades, experiencia, proyectos, certificaciones
+}
+
+interface PerfilReplicaProps {
+  intensidades: Intensidades
+}
+
+
+export function PerfilReplica({ intensidades }: PerfilReplicaProps) {
   const slug = useAuthStore((state) => state.user?.portafolio?.slug);
   const { data, loading, noDisponible } = usePortfolioData(slug);
 
@@ -19,25 +30,40 @@ export function PerfilReplica() {
 
   return (
     <>
-      <PortfolioHeader usuario={usuario} />
+        <HeatmapSeccion intensidad={intensidades.perfil}>
+          <PortfolioHeader usuario={usuario} />
+        </HeatmapSeccion>
 
       {configuracion?.mostrar_habilidades && (
         <>
-          <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={() => {}} onCerrar={() => {}} />
-          <HabilidadesBlandas blandas={habilidadesBlandas} />
+          <HeatmapSeccion intensidad={0}>
+            <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={() => {}} onCerrar={() => {}} />
+          </HeatmapSeccion>
+
+          <HeatmapSeccion intensidad={0}>
+            <HabilidadesBlandas blandas={habilidadesBlandas} />
+          </HeatmapSeccion>
         </>
       )}
 
       {configuracion?.mostrar_experiencias && (
-        <ExperienceTimeline experiencias={experiencias} />
+        <HeatmapSeccion>
+            <ExperienceTimeline experiencias={experiencias} />
+        </HeatmapSeccion>
+        
       )}
 
       {configuracion?.mostrar_proyectos && (
-        <SeccionProyectos proyectos={proyectos} />
+        <HeatmapSeccion>
+            <SeccionProyectos proyectos={proyectos} />
+        </HeatmapSeccion>
+        
       )}
 
       {configuracion?.mostrar_certificaciones && (
-        <CertificacionesSection certificaciones={certificaciones} />
+        <HeatmapSeccion>
+            <CertificacionesSection certificaciones={certificaciones} />
+        </HeatmapSeccion>
       )}
     </>
   );
