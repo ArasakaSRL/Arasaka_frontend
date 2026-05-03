@@ -5,7 +5,7 @@ import type { HabilidadBlanda } from '../types/portafolioType';
 
 interface Props {
   blandas: HabilidadBlanda[];
-  onVisible: (id: string) => void;
+  onVisible?: (id: string) => void;
 }
 
 const HabilidadesBlandas: React.FC<Props> = ({ blandas, onVisible  }) => {
@@ -34,7 +34,7 @@ const HabilidadesBlandas: React.FC<Props> = ({ blandas, onVisible  }) => {
   );
 };
 
-const PildoraBlanda = ({ habilidad, index, onVisible  }: { habilidad: HabilidadBlanda; index: number; onVisible: (id: string) => void }) => {
+const PildoraBlanda = ({ habilidad, index, onVisible  }: { habilidad: HabilidadBlanda; index: number; onVisible?: (id: string) => void }) => {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +42,7 @@ const PildoraBlanda = ({ habilidad, index, onVisible  }: { habilidad: HabilidadB
     const observer = new IntersectionObserver(
       ([entry]) => {setIsVisible(entry.isIntersecting)
         if (entry.isIntersecting) {
-            onVisible(habilidad.id_habilidad)  
+            onVisible?.(habilidad.id_habilidad)  
             observer.disconnect()              
         }
       },

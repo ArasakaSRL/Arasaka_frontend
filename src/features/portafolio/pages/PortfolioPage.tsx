@@ -13,10 +13,12 @@ import { CertificacionesSection } from '../components/CertificacionesSection';
 import { PortfolioHeaderTracker } from '@/features/reportesUsuario/components/capturarInteracciones/PortfolioHeaderTracker';
 import { useVisitor } from '../hooks/useVisitor';
 import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesBlandasTracker';
+import { useHabilidadesTecnicasTracker } from '../hooks/useHabilidadesTecnicasTracker';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
-    const { iniciarVisita } = useVisitor()
+    const { iniciarVisita } = useVisitor() 
+    const { trackExpandir, trackCerrar }       = useHabilidadesTecnicasTracker(slug!)
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [, setHabilidades] = useState<habilidades | null>(null);
     const [loading, setLoading] = useState(true);
@@ -85,9 +87,9 @@ export default function PortfolioPage() {
             </div>
             {configuracion?.mostrar_habilidades && (
                 <section id="habilidades">
-                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} />
+                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={trackExpandir} onCerrar={trackCerrar} />
                     <HabilidadesBlandasTracker portfolioSlug={slug!}>
-                        <HabilidadesBlandas blandas={habilidadesBlandas} />
+                        <HabilidadesBlandas blandas={habilidadesBlandas}/>
                     </HabilidadesBlandasTracker>
                 </section>
 

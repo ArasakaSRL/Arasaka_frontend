@@ -4,11 +4,13 @@ import type { HabilidadTecnica } from '../types/portafolioType';
 
 interface Props {
   tecnicas: HabilidadTecnica[];
+  onExpandir?:   (id: string) => void
+  onCerrar?:     (id: string) => void
 }
 
-const HabilidadesTecnicas: React.FC<Props> = ({ tecnicas }) => {
+const HabilidadesTecnicas: React.FC<Props> = ({ tecnicas, onExpandir, onCerrar }) => {
   const todasLasTecnologias = tecnicas.flatMap(grupo => 
-    grupo.tecnologias.map(tech => ({ ...tech, nivelPadre: grupo.nivel }))
+    grupo.tecnologias.map(tech => ({ ...tech, nivelPadre: grupo.nivel, id_habilidad: grupo.id_habilidad }))
   );
 
   return (
@@ -27,19 +29,28 @@ const HabilidadesTecnicas: React.FC<Props> = ({ tecnicas }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {todasLasTecnologias.map((tech, index) => (
-          <TarjetaInteractiva key={`${tech.nombre}-${index}`} tech={tech} />
+          <TarjetaInteractiva key={`${tech.nombre}-${index}`} tech={tech} onExpandir={onExpandir} onCerrar={onCerrar}  />
         ))}
       </div>
     </div>
   );
 };
 
-const TarjetaInteractiva = ({ tech }: { tech: any }) => {
+const TarjetaInteractiva = ({ tech, onExpandir, onCerrar }: { tech: any; onExpandir?: (id: string) => void; onCerrar?:   (id: string) => void}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
+  function handleClic() {
+    const nuevoEstado = !isExpanded
+    setIsExpanded(nuevoEstado)
 
+    if (nuevoEstado) {
+      onExpandir?.(tech.id_habilidad)  
+    } else {
+      onCerrar?.(tech.id_habilidad)   
+    }
+  }
   const porcentajeNivel = (nivel: string) => {
     const n = nivel?.toLowerCase();
     if (n?.includes('avanzado') || n?.includes('experto')) return '90%';
@@ -60,7 +71,7 @@ const TarjetaInteractiva = ({ tech }: { tech: any }) => {
   return (
     <div
       ref={domRef}
-      onClick={() => setIsExpanded(!isExpanded)}
+      onClick={handleClic}
       className={`group relative h-48 cursor-pointer transition-all duration-700 transform ${
         isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
       }`}
