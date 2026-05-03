@@ -15,6 +15,7 @@ import { useVisitor } from '../hooks/useVisitor';
 import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesBlandasTracker';
 import { useHabilidadesTecnicasTracker } from '../hooks/useHabilidadesTecnicasTracker';
 import { ExperienciaTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ExperienciaTracker';
+import { ProyectosTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ProyectosTracker';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -104,7 +105,9 @@ export default function PortfolioPage() {
             )}
             {configuracion?.mostrar_proyectos && (
                 <section id="proyectos">
-                    <SeccionProyectos proyectos={proyectos} />
+                    <ProyectosTracker portfolioSlug={slug!}>
+                        <SeccionProyectos proyectos={proyectos} />
+                    </ProyectosTracker>
                 </section>
             )}
             {configuracion?.mostrar_certificaciones && (
