@@ -16,6 +16,7 @@ import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components
 import { useHabilidadesTecnicasTracker } from '../hooks/useHabilidadesTecnicasTracker';
 import { ExperienciaTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ExperienciaTracker';
 import { ProyectosTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ProyectosTracker';
+import { CertificacionesTracker } from '@/features/reportesUsuario/components/capturarInteracciones/CertificacionesTracker';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -112,7 +113,9 @@ export default function PortfolioPage() {
             )}
             {configuracion?.mostrar_certificaciones && (
                 <section id="certificaciones">
-                    <CertificacionesSection certificaciones={certificaciones} />
+                    <CertificacionesTracker portfolioSlug={slug!}>
+                        <CertificacionesSection certificaciones={certificaciones} />
+                    </CertificacionesTracker>
                 </section>
             )}
 
