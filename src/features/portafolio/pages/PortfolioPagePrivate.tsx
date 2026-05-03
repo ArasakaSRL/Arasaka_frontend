@@ -10,6 +10,7 @@ import SeccionProyectos from '../components/SeccionProyectos';
 import { NavbarVertical } from '../components/NavbarVertical';
 import { CertificacionesSection } from '../components/CertificacionesSection';
 import { set } from 'zod';
+import { useVisitor } from '../hooks/useVisitor';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -23,12 +24,15 @@ export default function PortfolioPage() {
     const [configuracion, setConfiguracion] = useState<configuracion | null>(null);
     const [certificaciones, setCertificaciones] = useState<certificaciones[]>([]);
 
+    const { iniciarVisita } = useVisitor();
+
     useEffect(() => {
         const fetchPortfolioData = async () => {
             if (!slug) return;
             
             try {
                 setLoading(true);
+                iniciarVisita(slug)
                 const data = await getPortafolioPrivate(slug);
                 console.log("Datos del portafolio:", data);
                 setUsuario(data.usuario);
