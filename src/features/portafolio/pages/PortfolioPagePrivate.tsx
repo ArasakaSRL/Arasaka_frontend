@@ -10,8 +10,6 @@ import SeccionProyectos from '../components/SeccionProyectos';
 import { NavbarVertical } from '../components/NavbarVertical';
 import { CertificacionesSection } from '../components/CertificacionesSection';
 import { set } from 'zod';
-import { useVisitor } from '../hooks/useVisitor';
-import { PortfolioHeaderTracker } from '@/features/reportesUsuario/components/capturarInteracciones/PortfolioHeaderTracker';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -25,7 +23,6 @@ export default function PortfolioPage() {
     const [configuracion, setConfiguracion] = useState<configuracion | null>(null);
     const [certificaciones, setCertificaciones] = useState<certificaciones[]>([]);
 
-    const { iniciarVisita } = useVisitor();
 
     useEffect(() => {
         const fetchPortfolioData = async () => {
@@ -33,7 +30,6 @@ export default function PortfolioPage() {
             
             try {
                 setLoading(true);
-                iniciarVisita(slug)
                 const data = await getPortafolioPrivate(slug);
                 console.log("Datos del portafolio:", data);
                 setUsuario(data.usuario);
@@ -68,9 +64,7 @@ export default function PortfolioPage() {
                 <NavbarVertical /> 
             <div className="max-w-350 mx-auto flex flex-col gap-6">
                 <section id="inicio">
-                    <PortfolioHeaderTracker portfolioSlug={slug!}>
-                        <PortfolioHeader usuario={usuario} />
-                    </PortfolioHeaderTracker>
+                    <PortfolioHeader usuario={usuario} />
                 </section>
             </div>
             {configuracion?.mostrar_habilidades && (

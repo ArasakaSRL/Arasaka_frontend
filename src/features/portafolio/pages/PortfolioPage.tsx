@@ -12,6 +12,7 @@ import { NavbarVertical } from '../components/NavbarVertical';
 import { CertificacionesSection } from '../components/CertificacionesSection';
 import { PortfolioHeaderTracker } from '@/features/reportesUsuario/components/capturarInteracciones/PortfolioHeaderTracker';
 import { useVisitor } from '../hooks/useVisitor';
+import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesBlandasTracker';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -85,7 +86,9 @@ export default function PortfolioPage() {
             {configuracion?.mostrar_habilidades && (
                 <section id="habilidades">
                     <HabilidadesTecnicas tecnicas={habilidadesTecnicas} />
-                    <HabilidadesBlandas blandas={habilidadesBlandas} />
+                    <HabilidadesBlandasTracker portfolioSlug={slug!}>
+                        <HabilidadesBlandas blandas={habilidadesBlandas} />
+                    </HabilidadesBlandasTracker>
                 </section>
 
             )}
