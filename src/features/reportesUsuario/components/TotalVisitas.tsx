@@ -5,7 +5,7 @@ interface Props {
 
 export function TotalVisitas({ nombre, total }: Props) {
   return (
-    <div className="w-full max-w-xl mx-auto bg-[#27357a] rounded-2xl py-10 px-6 text-center shadow-md">
+    <div className="w-full max-w-lg mx-auto bg-[#27357a] rounded-2xl py-10 px-6 text-center shadow-md">
       {/* Título */}
       <p className="text-white text-lg md:text-xl font-medium mb-2">
         {nombre}

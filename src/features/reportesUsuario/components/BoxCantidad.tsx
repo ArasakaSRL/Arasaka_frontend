@@ -5,7 +5,7 @@ interface Props {
 
 export function BoxCantidad({ nombre, total }: Props) {
   return (
-    <div className="w-[220px] rounded-xl overflow-hidden border border-gray-300 shadow-sm">
+    <div className="w-[300px] rounded-xl overflow-hidden border border-gray-300 shadow-sm">
       {/* Header */}
       <div className="bg-[#0f172a] text-white text-center py-2 text-sm font-medium">
         {nombre}

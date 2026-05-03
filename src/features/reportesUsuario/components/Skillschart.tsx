@@ -50,6 +50,12 @@ export default function SkillsChart({
   const textY = CY - 18;
   const svgHeight = CY + 20;
 
+  const duplicados = active
+      ? skills.filter(s => s.value === active.value && s.label !== active.label)
+      : []
+
+  const hayDuplicados = duplicados.length > 0
+
   return (
     <div className="flex flex-col items-start w-full max-w-xs select-none">
 
@@ -119,16 +125,18 @@ export default function SkillsChart({
           </text>
 
           <text
-            x={CX}
-            y={textY + 16}
-            textAnchor="middle"
-            fontSize={15}
-            fill="#9CA3AF"
-            fontFamily="sans-serif"
+              x={CX}
+              y={textY + 16}
+              textAnchor="middle"
+              fontSize={hayDuplicados ? 11 : 15}  // ← más pequeño si hay duplicados
+              fill="#9CA3AF"
+              fontFamily="sans-serif"
           >
-            {active
-              ? `${active.label.toLowerCase()} · ${pct(active.value)}%`
-              : `total habilidades · 100%`}
+              {active
+                  ? hayDuplicados
+                      ? `${active.label} · ${duplicados.map(d => d.label).join(', ')} · ${pct(active.value)}%`
+                      : `${active.label.toLowerCase()} · ${pct(active.value)}%`
+                  : `total habilidades · 100%`}
           </text>
         </svg>
       </div>
