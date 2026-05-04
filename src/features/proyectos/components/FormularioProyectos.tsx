@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CircleX } from 'lucide-react';
+import { CircleX, CircleStar  } from 'lucide-react';
 import { useState } from 'react';
 import Dropdown from '../../../components/MenuDesplegable';
 import { crearProyecto, editarProyecto,type Proyecto } from '../lib/ProyectosApi';
@@ -400,15 +400,15 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
                     {/* etiqueta portada */}
                     {index === 0 && (
-                      <span className="absolute top-1 left-1 bg-primary-500 text-white text-[10px] px-2 py-0.5 rounded">
-                        Portada
+                      <span className="absolute top-1 left-1 text-yellow-500 text-[10px] rounded-full cursor-pointer hover:bg-yellow-200">
+                        <CircleStar  size={20}/>
                       </span>
                     )}
 
                     <button
                       type="button"
                       onClick={() => eliminarImagen(index)}
-                      className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1 rounded"
+                      className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1 rounded hover:bg-black/80 cursor-pointer"
                     >
                       ✕
                     </button>
@@ -416,9 +416,9 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
                       <button
                         type="button"
                         onClick={() => hacerPortada(index)}
-                        className="absolute bottom-1 left-1 bg-white text-xs px-1"
+                        className="absolute bottom-1 text-primary-500 left-1 bg-white text-xs cursor-pointer rounded-full hover:bg-gray-200"
                       >
-                        Portada
+                        <CircleStar size={20} />
                       </button>
                     )}
                   </div>
