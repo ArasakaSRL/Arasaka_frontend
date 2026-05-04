@@ -10,6 +10,7 @@ import { HeatmapSeccion } from '../heatmap/HeatmapSeccion';
 
 interface Intensidades {
   perfil: number
+  tecnicas: number
   // más adelante: habilidades, experiencia, proyectos, certificaciones
 }
 
@@ -36,7 +37,7 @@ export function PerfilReplica({ intensidades }: PerfilReplicaProps) {
 
       {configuracion?.mostrar_habilidades && (
         <>
-          <HeatmapSeccion intensidad={0}>
+          <HeatmapSeccion intensidad={intensidades.tecnicas}>
             <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={() => {}} onCerrar={() => {}} />
           </HeatmapSeccion>
 

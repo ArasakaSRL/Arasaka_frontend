@@ -38,3 +38,8 @@ export interface HeatmapPerfil {
   clic_contactar:     number | null
   clic_descargar_cv:  number | null
 }
+
+export interface HeatmapHabilidadesTecnicas {
+  clic_expandir: number | null
+  clic_cerrar:   number | null
+}

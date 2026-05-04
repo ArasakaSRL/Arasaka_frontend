@@ -37,9 +37,9 @@ export function HeatmapSeccion({ children,intensidad = 0}: HeatSectionProps) {
     const r  = Math.max(cx, cy)
 
     const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-    grad.addColorStop(0,   `rgba(255, 80,  0, ${0.6 * intensidad})`)
-    grad.addColorStop(0.5, `rgba(255, 180, 0, ${0.4 * intensidad})`)
-    grad.addColorStop(1,   `rgba(53,  130, 220, ${0.15 * intensidad})`)
+    grad.addColorStop(0,   `rgba(255, 80,  0, ${0.9 * intensidad})`)   // era 0.6
+    grad.addColorStop(0.5, `rgba(255, 180, 0, ${0.7 * intensidad})`)   // era 0.4
+    grad.addColorStop(1,   `rgba(53,  130, 220, ${0.4 * intensidad})`) // era 0.15
 
     ctx.fillStyle = grad
     ctx.fillRect(0, 0, canvas.width, canvas.height)
