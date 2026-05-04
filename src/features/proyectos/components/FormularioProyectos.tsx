@@ -32,6 +32,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
     const [imagenes, setImagenes] = useState<Imagen[]>([]);
     const [submitted, setSubmitted] = useState(false);
+    const [dragging, setDragging] = useState(false);
     const {
       formularioData,
       setFormularioData,
@@ -39,7 +40,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       setTecnologias,
       resetForm,
       isDirty,
-      imagenesActuales,
       setImagenesActuales,
     } = useEditarProyecto(proyectoEditar);
 
@@ -60,18 +60,37 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     }
   }, [proyectoEditar]);
 
+  const MAX_IMAGES = 5 * 1024 * 1024;
+
   const handleAddImages = (files: File[]) => {
-    const nuevas: Imagen[] = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-      isNew: true,
-    }));
+    const validas: Imagen[] = [];
+
+    files.forEach((file) => {
+      if (!file.type || !file.type.startsWith("image/")) {
+        toast.warning(`"${file.name}" no es una imagen válida`, 3000);
+        return;
+      }
+      // validar tamaño
+      if (file.size > MAX_IMAGES) {
+        toast.warning(`"${file.name}" supera los 5MB`, 3000);
+        return;
+      }
+
+      validas.push({
+        file,
+        preview: URL.createObjectURL(file),
+        isNew: true,
+      });
+    });
+
+    if (validas.length === 0) return;
+
     setImagenes((prev) => {
-      const combinado = [...prev, ...nuevas].slice(0, 5);
+      const combinado = [...prev, ...validas].slice(0, 5);
       return combinado;
     });
 
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       imagenes: "",
     }));
@@ -107,6 +126,23 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     });
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    handleAddImages(files);
+  };
+
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  }
+  const handleDragEnter = () => setDragging(true);
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setDragging(false);
+    }
+  };
 
     const cerrarForm = () => {
       resetForm();
@@ -358,7 +394,13 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         </div>
 
         <div className="flex-1 flex flex-col">
-          <div className="w-full border-2 border-dashed border-gray-300 rounded-xl min-h-80 flex flex-col items-center justify-center text-center p-6">
+          <div onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            className={`w-full border-2 border-dashed rounded-xl min-h-80 flex flex-col items-center justify-center text-center p-6 transition
+              ${dragging ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
+          >
             <p className="text-gray-500 text-sm mb-2">
               Arrastra las imágenes aquí
             </p>
