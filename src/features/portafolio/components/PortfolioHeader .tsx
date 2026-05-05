@@ -158,8 +158,7 @@ const PortfolioHeader: React.FC<Props> = ({
         </div>
 
         <div className="flex flex-wrap gap-3 mt-8">
-          {whatsappNumber && (
-            <button
+          <button
               data-track="clic_contactar"
               onClick={() => setContactarOpen(true)}
               className="
@@ -174,7 +173,6 @@ const PortfolioHeader: React.FC<Props> = ({
               <MessageCircle size={18} className="transition-transform group-hover:rotate-12" />
               CONTACTAR
             </button>
-          )}
           <ContactarModal
             open={contactarOpen}
             onClose={() => setContactarOpen(false)}
