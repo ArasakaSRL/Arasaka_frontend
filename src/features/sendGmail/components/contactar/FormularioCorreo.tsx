@@ -45,6 +45,7 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
         setTouched(p => ({ ...p, [field]: true }))
     }
 
+    // Devuelve el error del campo si ha sido tocado, o undefined si no hay error o no ha sido tocado
     function getError(field: keyof FormData): string | undefined {
         if (!touched[field]) return undefined
         if (field === 'from') {
