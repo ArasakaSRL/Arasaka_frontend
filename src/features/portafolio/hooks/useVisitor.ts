@@ -1,5 +1,7 @@
+import apiClient from "@/api/api"
+
 const VISITOR_KEY = 'hf_visitor'
-const API_BASE    = 'http://localhost:8000'  // ← sin barra al final
+const API_BASE = apiClient.defaults.baseURL?.replace('/api', '') || ''  // ← sin barra al final
 
 export function useVisitor() {
 

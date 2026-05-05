@@ -162,6 +162,9 @@ console.log('skillsChartData:', skillsChartData)
           />
         </SeccionScrollHorizontal>
       </div>
+      <h2 className="text-base md:text-lg font-semibold text-black">
+          Mapa de Calor
+        </h2>
       <PerfilReplica intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }}  clicsPerfil={clicsPerfil}/>
     </DashboardLayout>
   );

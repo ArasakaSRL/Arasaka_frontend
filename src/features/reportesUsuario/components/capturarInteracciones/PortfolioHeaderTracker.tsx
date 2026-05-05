@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { getHeatmapCoords } from '../../utils/heatmap'
+import apiClient from '@/api/api'
 
 const VISITOR_KEY = 'hf_visitor'
-const API_BASE    = 'http://localhost:8000'//no olvidar colocar el link deploy
+const API_BASE = apiClient.defaults.baseURL//no olvidar colocar el link deploy
 
 interface Props {
     children:      React.ReactNode
@@ -37,7 +38,7 @@ export function PortfolioHeaderTracker({ children, portfolioSlug }: Props) {
             { type: 'application/json' }
         )
 
-        navigator.sendBeacon(`${API_BASE}/api/public/heatmap/perfil/track`, payload)
+        navigator.sendBeacon(`${API_BASE}/public/heatmap/perfil/track`, payload)
     }
 
     // ── Clics ──
@@ -61,7 +62,7 @@ export function PortfolioHeaderTracker({ children, portfolioSlug }: Props) {
             )
 
             navigator.sendBeacon(
-                `${API_BASE}/api/public/heatmap/perfil/clic-coords`,
+                `${API_BASE}/public/heatmap/perfil/clic-coords`,
                 payload
             )
         }
