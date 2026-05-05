@@ -1,18 +1,61 @@
 import React, { useState } from "react";
 import { MessageCircle, MapPin, Mail, Sparkles, ExternalLink } from "lucide-react";
-import type { Usuario } from "../types/portafolioType";
+import type {
+  Usuario,
+  Proyectos,
+  HabilidadTecnica,
+  HabilidadBlanda,
+  experiencias as Experiencia,
+  certificaciones as Certificacion,
+} from "../types/portafolioType";
 import ContactarModal from "../../sendGmail/components/ContactarModal";
+import { generateCV } from "../lib/cv.generator";
+import { toast } from "@/components/Alerta";
 
 type Props = {
   usuario: Usuario;
+  proyectos?: Proyectos[];
+  tecnicas?: HabilidadTecnica[];
+  blandas?: HabilidadBlanda[];
+  experiencias?: Experiencia[];
+  certificaciones?: Certificacion[];
   onUploadCover?: () => void;
 };
 
-const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
+const PortfolioHeader: React.FC<Props> = ({
+  usuario,
+  proyectos = [],
+  tecnicas = [],
+  blandas = [],
+  experiencias = [],
+  certificaciones = [],
+}) => {
   const fullName = `${usuario.nombre} ${usuario.apellido}`;
   const mainProfession = usuario.profesiones?.length > 0 ? usuario.profesiones[0].nombre : "Professional";
   const whatsappNumber = usuario.telefonos?.[0]?.numero.replace(/\s+/g, "");
   const [contactarOpen, setContactarOpen] = useState(false);
+  const [descargandoCV, setDescargandoCV] = useState(false);
+
+  const handleDescargarCV = async () => {
+    if (descargandoCV) return;
+    setDescargandoCV(true);
+    try {
+      await generateCV({
+        usuario,
+        proyectos,
+        tecnicas,
+        blandas,
+        experiencias,
+        certificaciones,
+      });
+      toast.success("pdf generado con éxito");
+    } catch (err) {
+      console.error("Error generando CV:", err);
+      toast.error("Ocurrió un error al generar el pdf");
+    } finally {
+      setDescargandoCV(false);
+    }
+  };
 
   return (
     <div
@@ -108,8 +151,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
         </div>
 
         <div className="flex flex-wrap gap-3 mt-8">
-          {whatsappNumber && (
-            <button
+          <button
               onClick={() => setContactarOpen(true)}
               className="
                 group flex items-center gap-2
@@ -123,7 +165,6 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
               <MessageCircle size={18} className="transition-transform group-hover:rotate-12" />
               CONTACTAR
             </button>
-          )}
 
           <ContactarModal
             open={contactarOpen}
@@ -134,6 +175,8 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
           />
           
           <button
+            onClick={handleDescargarCV}
+            disabled={descargandoCV}
             className="
               flex items-center gap-2
               bg-white/5 hover:bg-white/10
@@ -141,9 +184,10 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
               text-white/90 px-7 py-3 rounded-xl
               text-xs font-semibold transition-all
               hover:border-white/20
+              disabled:opacity-60 disabled:cursor-not-allowed
             "
           >
-            <span>Descargar CV</span>
+            <span>{descargandoCV ? "Generando..." : "Descargar CV"}</span>
             <ExternalLink size={14} />
           </button>
         </div>
