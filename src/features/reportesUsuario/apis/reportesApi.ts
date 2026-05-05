@@ -74,3 +74,13 @@ export const getClicsPerfil = async () => {
     const response = await apiClient.get('/reportesUsr/heatmap/perfil/clics')
     return response.data
 }
+
+export async function getVisitasPorMes() {
+    const { data } = await apiClient.get('/reportesUsr/visitas-por-mes')
+    return data as { mes: string; visitas: number }[]
+}
+
+export async function getCrecimientoMensual() {
+    const { data } = await apiClient.get('/reportesUsr/crecimiento-mensual')
+    return data as { mes: string; total: number }[]
+}

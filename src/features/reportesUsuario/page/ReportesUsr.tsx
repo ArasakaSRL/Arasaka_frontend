@@ -8,7 +8,7 @@ import { LineChart } from "../components/LineChart";
 import { SeccionScrollHorizontal } from "../components/visibilidad/SeccionScrollHorizontal";
 import { useEffect, useState } from "react";
 import type { EstadisticasData, HeatmapHabilidadesTecnicas, HeatmapPerfil, NivelesHabilidad } from "../types/reportes";
-import { getClicsPerfil, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes } from "../apis/reportesApi";
+import { getClicsPerfil, getCrecimientoMensual, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes, getVisitasPorMes } from "../apis/reportesApi";
 import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
 
 const COLOR_MAP: Record<string, string> = {
@@ -28,11 +28,20 @@ export default function ReportesUsr() {
   const [visitantes, setVisitantes] = useState<number>(0)
   const [clicsPerfil, setClicsPerfil] = useState<{ x: number, y: number, intensidad: number }[]>([])
 
-  
+  const [visitasPorMes, setVisitasPorMes]       = useState<{ mes: string; visitas: number }[]>([])
+  const [crecimientoMensual, setCrecimiento] = useState<{ mes: string; visitas: number }[]>([])
+
   useEffect(() => {
     getHeatmapPerfil().then(setHeatmapPerfil).catch(console.error)
     getClicsPerfil().then(setClicsPerfil).catch(console.error)  
     getHeatmapHabilidadesTecnicas().then(setHeatmapTecnicas).catch(console.error)
+    getVisitasPorMes().then(setVisitasPorMes).catch(console.error)
+    getCrecimientoMensual()
+    .then(data => setCrecimiento(data.map((d: { mes: string; total: number }) => ({
+        mes:    d.mes,
+        visitas: d.total,
+    }))))
+    .catch(console.error)
     const fetchReportes = async () => {
         try {
             // Separadas — si una falla no rompe la otra
@@ -66,6 +75,29 @@ export default function ReportesUsr() {
   }
 
   if (!data) return null;
+
+  function generarUltimosMeses(n = 6): { mes: string; visitas: number }[] {
+      const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+      const hoy   = new Date()
+      return Array.from({ length: n }, (_, i) => {
+          const d = new Date(hoy.getFullYear(), hoy.getMonth() - (n - 1 - i), 1)
+          return {
+              mes:    meses[d.getMonth()],
+              visitas: 0,
+          }
+      })
+  }
+
+// merge con los datos reales
+  function mergearVisitas(
+      base: { mes: string; visitas: number }[],
+      reales: { mes: string; visitas: number }[]
+  ) {
+      return base.map(b => {
+          const encontrado = reales.find(r => r.mes === b.mes)
+          return encontrado ? { ...b, visitas: encontrado.visitas } : b
+      })
+  }
 
   const getTotalHabilidades = (niveles: NivelesHabilidad | undefined) => {
     if (!niveles) return 0;
@@ -130,14 +162,7 @@ console.log('skillsChartData:', skillsChartData)
 
         <SeccionScrollHorizontal titulo="Estadísticas de Visitas">
           <BarChartVisitas
-            data={[
-              { mes: "Ene", visitas: 2000 },
-              { mes: "Feb", visitas: 5000 },
-              { mes: "Mar", visitas: 8000 },
-              { mes: "Abr", visitas: 4000 },
-              { mes: "May", visitas: 10000 },
-              { mes: "Jun", visitas: 3000 },
-            ]}
+            data={mergearVisitas(generarUltimosMeses(6), visitasPorMes)}
           />
         </SeccionScrollHorizontal>
 
@@ -150,19 +175,14 @@ console.log('skillsChartData:', skillsChartData)
 
         <SeccionScrollHorizontal titulo="Crecimiento Mensual">
           <LineChart
-            data={[
-              { x: "Ene", y: 2000 },
-              { x: "Feb", y: 800 },
-              { x: "Mar", y: 1500 },
-              { x: "Abr", y: 1200 },
-              { x: "May", y: 2500 },
-              { x: "Jun", y: 900 },
-              { x: "Jul", y: 1800 },
-            ]}
+              data={mergearVisitas(generarUltimosMeses(7), crecimientoMensual).map(d => ({
+                  x: d.mes,
+                  y: d.visitas,
+              }))}
           />
         </SeccionScrollHorizontal>
       </div>
-      <h2 className="text-base md:text-lg font-semibold text-black">
+      <h2 className="text-base md:text-5xl font-semibold text-black">
           Mapa de Calor
         </h2>
       <PerfilReplica intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }}  clicsPerfil={clicsPerfil}/>
@@ -174,3 +194,5 @@ function calcularIntensidad(valores: (number | null)[]): number {
   const suma = valores.reduce<number>((acc, v) => acc + (v ?? 0), 0)
   return Math.min(suma / 20, 1)
 }
+
+

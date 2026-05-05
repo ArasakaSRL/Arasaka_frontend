@@ -26,10 +26,10 @@ export function LineChart({ data, width = 600, height = 300 }: Props) {
   const points = data.map((d, i) => {
     const x = padding + i * stepX;
 
-    const y =
-      height -
-      padding -
-      ((d.y - minY) / (maxY - minY || 1)) * chartHeight;
+    const rango = maxY - minY
+    const y = rango === 0
+      ? height - padding - chartHeight * 0.1  // 10% desde abajo cuando todo es 0
+      : height - padding - ((d.y - minY) / rango) * chartHeight
 
     return { x, y, value: d.y, label: d.x };
   });
@@ -47,8 +47,13 @@ export function LineChart({ data, width = 600, height = 300 }: Props) {
     Z
   `;
 
+  const todosEnCero = data.every(d => d.y === 0)
+  
   return (
     <svg width={width} height={height}>
+      <text x={width / 2} y={height / 2} textAnchor="middle" fontSize="13" fill="#9ca3af">
+        Sin datos aún
+      </text>
       {/* Gradiente */}
       <defs>
         <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
