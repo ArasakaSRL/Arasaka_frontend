@@ -168,6 +168,6 @@ console.log('skillsChartData:', skillsChartData)
 }
 
 function calcularIntensidad(valores: (number | null)[]): number {
-  const suma = valores.reduce((acc, v) => acc + (v ?? 0), 0)
-  return Math.min(suma / 20, 1)  // era / 100
+  const suma = valores.reduce<number>((acc, v) => acc + (v ?? 0), 0)
+  return Math.min(suma / 20, 1)
 }
