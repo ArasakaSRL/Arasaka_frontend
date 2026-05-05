@@ -8,7 +8,7 @@ import { LineChart } from "../components/LineChart";
 import { SeccionScrollHorizontal } from "../components/visibilidad/SeccionScrollHorizontal";
 import { useEffect, useState } from "react";
 import type { EstadisticasData, HeatmapHabilidadesTecnicas, HeatmapPerfil, NivelesHabilidad } from "../types/reportes";
-import { getClicsPerfil, getCrecimientoMensual, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes, getVisitasPorMes } from "../apis/reportesApi";
+import { getClicsBlandas, getClicsCertificaciones, getClicsExperiencia, getClicsPerfil, getClicsProyectos, getClicsTecnicas, getCrecimientoMensual, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes, getVisitasPorMes } from "../apis/reportesApi";
 import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
 
 const COLOR_MAP: Record<string, string> = {
@@ -26,14 +26,27 @@ export default function ReportesUsr() {
   const [data, setData] = useState<EstadisticasData | null>(null);
   const [loading, setLoading] = useState(true);
   const [visitantes, setVisitantes] = useState<number>(0)
+  
   const [clicsPerfil, setClicsPerfil] = useState<{ x: number, y: number, intensidad: number }[]>([])
-
+  const [clicsTecnicas,      setClicsTecnicas]      = useState<{ x: number, y: number, intensidad: number }[]>([])
+  const [clicsBlandas,       setClicsBlandas]        = useState<{ x: number, y: number, intensidad: number }[]>([])
+  const [clicsExperiencia,   setClicsExperiencia]    = useState<{ x: number, y: number, intensidad: number }[]>([])
+  const [clicsProyectos,     setClicsProyectos]      = useState<{ x: number, y: number, intensidad: number }[]>([])
+  const [clicsCertificaciones, setClicsCertificaciones] = useState<{ x: number, y: number, intensidad: number }[]>([])
+  
   const [visitasPorMes, setVisitasPorMes]       = useState<{ mes: string; visitas: number }[]>([])
   const [crecimientoMensual, setCrecimiento] = useState<{ mes: string; visitas: number }[]>([])
 
   useEffect(() => {
     getHeatmapPerfil().then(setHeatmapPerfil).catch(console.error)
-    getClicsPerfil().then(setClicsPerfil).catch(console.error)  
+
+    getClicsPerfil().then(setClicsPerfil).catch(console.error)
+    getClicsTecnicas().then(setClicsTecnicas).catch(console.error)
+    getClicsBlandas().then(setClicsBlandas).catch(console.error)
+    getClicsExperiencia().then(setClicsExperiencia).catch(console.error)
+    getClicsProyectos().then(setClicsProyectos).catch(console.error)
+    getClicsCertificaciones().then(setClicsCertificaciones).catch(console.error) 
+     
     getHeatmapHabilidadesTecnicas().then(setHeatmapTecnicas).catch(console.error)
     getVisitasPorMes().then(setVisitasPorMes).catch(console.error)
     getCrecimientoMensual()
@@ -185,7 +198,14 @@ console.log('skillsChartData:', skillsChartData)
       <h2 className="text-base md:text-5xl font-semibold text-black">
           Mapa de Calor
         </h2>
-      <PerfilReplica intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }}  clicsPerfil={clicsPerfil}/>
+      <PerfilReplica 
+        intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }}  
+        clicsPerfil={clicsPerfil}
+        clicsTecnicas={clicsTecnicas}
+        clicsBlandas={clicsBlandas}
+        clicsExperiencia={clicsExperiencia}
+        clicsProyectos={clicsProyectos}
+        clicsCertificaciones={clicsCertificaciones}/>
     </DashboardLayout>
   );
 }

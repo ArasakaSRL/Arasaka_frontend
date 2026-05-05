@@ -84,3 +84,28 @@ export async function getCrecimientoMensual() {
     const { data } = await apiClient.get('/reportesUsr/crecimiento-mensual')
     return data as { mes: string; total: number }[]
 }
+
+export async function getClicsTecnicas() {
+    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-tecnicas/clics')
+    return data as { x: number; y: number; intensidad: number }[]
+}
+
+export async function getClicsBlandas() {
+    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-blandas/clics')
+    return data as { x: number; y: number; intensidad: number }[]
+}
+
+export async function getClicsExperiencia() {
+    const { data } = await apiClient.get('/reportesUsr/heatmap/experiencia/clics')
+    return data as { x: number; y: number; intensidad: number }[]
+}
+
+export async function getClicsProyectos() {
+    const { data } = await apiClient.get('/reportesUsr/heatmap/proyecto/clics')
+    return data as { x: number; y: number; intensidad: number }[]
+}
+
+export async function getClicsCertificaciones() {
+    const { data } = await apiClient.get('/reportesUsr/heatmap/certificacion/clics')
+    return data as { x: number; y: number; intensidad: number }[]
+}

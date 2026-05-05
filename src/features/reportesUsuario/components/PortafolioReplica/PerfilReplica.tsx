@@ -8,6 +8,7 @@ import SeccionProyectos from '@/features/portafolio/components/SeccionProyectos'
 import { CertificacionesSection } from '@/features/portafolio/components/CertificacionesSection';
 import { HeatmapSeccion } from '../heatmap/HeatmapSeccion';
 
+type Clics = { x: number; y: number; intensidad: number }[]
 interface Intensidades {
   perfil: number
   tecnicas: number
@@ -16,15 +17,30 @@ interface Intensidades {
 
 interface PerfilReplicaProps {
   intensidades: Intensidades
-  clicsPerfil:  { x: number, y: number, intensidad: number }[]
+  clicsPerfil?:       Clics
+  clicsTecnicas?:     Clics
+  clicsBlandas?:      Clics
+  clicsExperiencia?:  Clics
+  clicsProyectos?:    Clics
+  clicsCertificaciones?: Clics
 }
 
+function calcMax(clics: Clics): number {
+    return clics.length > 0 ? Math.max(...clics.map(c => c.intensidad), 1) : 1
+}
 
-export function PerfilReplica({ intensidades,  clicsPerfil= []  }: PerfilReplicaProps) {
+export function PerfilReplica({ 
+  intensidades,  
+  clicsPerfil= [],
+  clicsTecnicas      = [],
+  clicsBlandas       = [],
+  clicsExperiencia   = [],
+  clicsProyectos     = [],
+  clicsCertificaciones = [], 
 
-  const maxIntensidad = clicsPerfil.length > 0  // ← proteger
-        ? Math.max(...clicsPerfil.map(c => c.intensidad), 1)
-        : 1
+}: PerfilReplicaProps) {
+
+  const maxIntensidad = calcMax(clicsPerfil)
 
   const slug = useAuthStore((state) => state.user?.portafolio?.slug);
   const { data, loading, noDisponible } = usePortfolioData(slug);
@@ -43,28 +59,32 @@ export function PerfilReplica({ intensidades,  clicsPerfil= []  }: PerfilReplica
 
       {configuracion?.mostrar_habilidades && (
         <>
-            <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={() => {}} onCerrar={() => {}} />
-            <HabilidadesBlandas blandas={habilidadesBlandas} />
+            <HeatmapSeccion puntos={clicsTecnicas} maxIntensidad={calcMax(clicsTecnicas)}>
+              <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={() => {}} onCerrar={() => {}} />
+            </HeatmapSeccion>
+            <HeatmapSeccion puntos={clicsBlandas} maxIntensidad={calcMax(clicsBlandas)}>
+              <HabilidadesBlandas blandas={habilidadesBlandas} />
+            </HeatmapSeccion>
         </>
       )}
 
       {configuracion?.mostrar_experiencias && (
-        <HeatmapSeccion>
-            <ExperienceTimeline experiencias={experiencias} />
+        <HeatmapSeccion puntos={clicsExperiencia} maxIntensidad={calcMax(clicsExperiencia)}>
+          <ExperienceTimeline experiencias={experiencias} />
         </HeatmapSeccion>
         
       )}
 
       {configuracion?.mostrar_proyectos && (
-        <HeatmapSeccion>
-            <SeccionProyectos proyectos={proyectos} />
+        <HeatmapSeccion puntos={clicsProyectos} maxIntensidad={calcMax(clicsProyectos)}>
+          <SeccionProyectos proyectos={proyectos} />
         </HeatmapSeccion>
         
       )}
 
       {configuracion?.mostrar_certificaciones && (
-        <HeatmapSeccion>
-            <CertificacionesSection certificaciones={certificaciones} />
+        <HeatmapSeccion puntos={clicsCertificaciones} maxIntensidad={calcMax(clicsCertificaciones)}>
+          <CertificacionesSection certificaciones={certificaciones} />
         </HeatmapSeccion>
       )}
     </>
