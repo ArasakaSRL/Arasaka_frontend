@@ -116,6 +116,31 @@ async function tryUrl(url: string, label: string): Promise<string | null> {
   return jpeg;
 }
 
+function clipImageToCircle(dataUrl: string, size: number): Promise<string | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { resolve(null); return; }
+      ctx.fillStyle = `rgb(${NAVY[0]}, ${NAVY[1]}, ${NAVY[2]})`;
+      ctx.fillRect(0, 0, size, size);
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+      ctx.clip();
+      const scale = Math.max(size / img.width, size / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+
 async function loadImageAsDataUrl(url: string): Promise<string | null> {
   console.log("[CV] cargando foto de perfil:", url);
 
@@ -163,7 +188,8 @@ export async function generateCV(data: CVData): Promise<void> {
 
   let mainY = MAIN_TOP;
 
-  const photoDataUrl = usuario.foto_perfil ? await loadImageAsDataUrl(usuario.foto_perfil) : null;
+  const rawPhotoDataUrl = usuario.foto_perfil ? await loadImageAsDataUrl(usuario.foto_perfil) : null;
+  const photoDataUrl = rawPhotoDataUrl ? await clipImageToCircle(rawPhotoDataUrl, 110) : null;
 
   // ===== Helpers =====
   const drawSidebarBg = () => {
@@ -231,12 +257,8 @@ export async function generateCV(data: CVData): Promise<void> {
   let fotoOk = false;
   if (photoDataUrl) {
     try {
-      let fmt: "PNG" | "JPEG" | "WEBP" = "JPEG";
-      if (photoDataUrl.startsWith("data:image/png")) fmt = "PNG";
-      else if (photoDataUrl.startsWith("data:image/webp")) fmt = "WEBP";
-      else if (photoDataUrl.startsWith("data:image/jpeg") || photoDataUrl.startsWith("data:image/jpg")) fmt = "JPEG";
-      console.log("[CV] insertando foto en PDF, formato:", fmt);
-      doc.addImage(photoDataUrl, fmt, photoX, photoY, photoSize, photoSize, undefined, "FAST");
+      console.log("[CV] insertando foto circular en PDF");
+      doc.addImage(photoDataUrl, "PNG", photoX, photoY, photoSize, photoSize, undefined, "FAST");
       fotoOk = true;
       console.log("[CV] foto insertada OK");
     } catch (e) {
