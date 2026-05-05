@@ -10,8 +10,18 @@ import HabilidadesBlandas from '../components/HabilidadesBlandas';
 import SeccionProyectos from '../components/SeccionProyectos';
 import { NavbarVertical } from '../components/NavbarVertical';
 import { CertificacionesSection } from '../components/CertificacionesSection';
+import { PortfolioHeaderTracker } from '@/features/reportesUsuario/components/capturarInteracciones/PortfolioHeaderTracker';
+import { useVisitor } from '../hooks/useVisitor';
+import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesBlandasTracker';
+import { useHabilidadesTecnicasTracker } from '../hooks/useHabilidadesTecnicasTracker';
+import { ExperienciaTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ExperienciaTracker';
+import { ProyectosTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ProyectosTracker';
+import { CertificacionesTracker } from '@/features/reportesUsuario/components/capturarInteracciones/CertificacionesTracker';
+
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
+    const { iniciarVisita } = useVisitor() 
+    const { trackExpandir, trackCerrar }       = useHabilidadesTecnicasTracker(slug!)
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [, setHabilidades] = useState<habilidades | null>(null);
     const [loading, setLoading] = useState(true);
@@ -29,6 +39,7 @@ export default function PortfolioPage() {
             try {
                 setLoading(true);
                 setNoDisponible(false);
+                iniciarVisita(slug)
                 const data = await getPortafolioPublic(slug);
                 setUsuario(data.usuario);
                 setHabilidades(data.habilidades);
@@ -72,36 +83,39 @@ export default function PortfolioPage() {
             <NavbarVertical />
             <div className="max-w-350 mx-auto flex flex-col gap-6">
                 <section id="inicio">
-                    <PortfolioHeader
-                        usuario={usuario}
-                        proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
-                        tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
-                        blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
-                        experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
-                        certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
-                    />
+                    <PortfolioHeaderTracker portfolioSlug={slug!}>
+                        <PortfolioHeader usuario={usuario} />
+                    </PortfolioHeaderTracker>
                 </section>
             </div>
             {configuracion?.mostrar_habilidades && (
                 <section id="habilidades">
-                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} />
-                    <HabilidadesBlandas blandas={habilidadesBlandas} />
+                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={trackExpandir} onCerrar={trackCerrar} />
+                    <HabilidadesBlandasTracker portfolioSlug={slug!}>
+                        <HabilidadesBlandas blandas={habilidadesBlandas}/>
+                    </HabilidadesBlandasTracker>
                 </section>
 
             )}
             {configuracion?.mostrar_experiencias && (
                 <section id="experiencia">
-                    <ExperienceTimeline experiencias={experiencias} />
+                    <ExperienciaTracker portfolioSlug={slug!}>
+                        <ExperienceTimeline experiencias={experiencias} />
+                    </ExperienciaTracker>
                 </section>
             )}
             {configuracion?.mostrar_proyectos && (
                 <section id="proyectos">
-                    <SeccionProyectos proyectos={proyectos} />
+                    <ProyectosTracker portfolioSlug={slug!}>
+                        <SeccionProyectos proyectos={proyectos} />
+                    </ProyectosTracker>
                 </section>
             )}
             {configuracion?.mostrar_certificaciones && (
                 <section id="certificaciones">
-                    <CertificacionesSection certificaciones={certificaciones} />
+                    <CertificacionesTracker portfolioSlug={slug!}>
+                        <CertificacionesSection certificaciones={certificaciones} />
+                    </CertificacionesTracker>
                 </section>
             )}
 

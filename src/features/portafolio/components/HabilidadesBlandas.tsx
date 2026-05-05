@@ -5,9 +5,10 @@ import type { HabilidadBlanda } from '../types/portafolioType';
 
 interface Props {
   blandas: HabilidadBlanda[];
+  onVisible?: (id: string) => void;
 }
 
-const HabilidadesBlandas: React.FC<Props> = ({ blandas }) => {
+const HabilidadesBlandas: React.FC<Props> = ({ blandas, onVisible  }) => {
   return (
     <div className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans">
      
@@ -26,20 +27,25 @@ const HabilidadesBlandas: React.FC<Props> = ({ blandas }) => {
      
       <div className="flex flex-wrap gap-4 justify-center md:justify-start">
         {blandas.map((habilidad, index) => (
-          <PildoraBlanda key={habilidad.id_habilidad} habilidad={habilidad} index={index} />
+          <PildoraBlanda key={habilidad.id_habilidad} habilidad={habilidad} index={index} onVisible={onVisible} />
         ))}
       </div>
     </div>
   );
 };
 
-const PildoraBlanda = ({ habilidad, index }: { habilidad: HabilidadBlanda; index: number }) => {
+const PildoraBlanda = ({ habilidad, index, onVisible  }: { habilidad: HabilidadBlanda; index: number; onVisible?: (id: string) => void }) => {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
+      ([entry]) => {setIsVisible(entry.isIntersecting)
+        if (entry.isIntersecting) {
+            onVisible?.(habilidad.id_habilidad)  
+            observer.disconnect()              
+        }
+      },
       { threshold: 0.1 }
     );
     if (domRef.current) observer.observe(domRef.current);
@@ -49,6 +55,7 @@ const PildoraBlanda = ({ habilidad, index }: { habilidad: HabilidadBlanda; index
   return (
     <div
       ref={domRef}
+      data-habilidad-id={habilidad.id_habilidad} 
       style={{ transitionDelay: `${index * 100}ms` }}
       className={`group flex items-center gap-3 px-6 py-4 rounded-full border border-slate-100 bg-white shadow-sm transition-all duration-700 transform ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'

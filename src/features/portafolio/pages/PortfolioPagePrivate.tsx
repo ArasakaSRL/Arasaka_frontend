@@ -23,6 +23,7 @@ export default function PortfolioPage() {
     const [configuracion, setConfiguracion] = useState<configuracion | null>(null);
     const [certificaciones, setCertificaciones] = useState<certificaciones[]>([]);
 
+
     useEffect(() => {
         const fetchPortfolioData = async () => {
             if (!slug) return;

@@ -63,6 +63,8 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
           {certificaciones.map((cert) => (
             <motion.div 
               key={cert.id_certificacion}
+              data-cert-id={cert.id_certificacion}     
+              data-cert-action="clic_abrir_modal"       
               whileHover={{ y: -5 }}
               whileTap={{ scale: 0.98 }}
               className="flex-none w-75 md:w-[calc(33.333%-1.35rem)] snap-start"
@@ -121,7 +123,7 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
                     <span className="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border border-blue-100">
                       {selectedCert.categoria}
                     </span>
-                    <button onClick={() => setSelectedId(null)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-all">
+                    <button data-cert-id={selectedId} data-cert-action="clic_cerrar_modal" onClick={() => setSelectedId(null)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-all">
                       <X size={20} />
                     </button>
                   </div>
@@ -151,6 +153,8 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
                 </div>
 
                 <a 
+                  data-cert-id={selectedCert.id_certificacion} 
+                  data-cert-action="clic_ver_credencial"  
                   href={ selectedCert.url_certificado || undefined } target="_blank" rel="noopener noreferrer"
                   className="mt-10 flex items-center justify-center gap-3 w-full py-4 bg-[#0a1120] text-white font-black uppercase text-xs rounded-2xl hover:bg-blue-700 transition-all shadow-xl active:scale-95"
                 >

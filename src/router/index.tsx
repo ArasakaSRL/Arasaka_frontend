@@ -4,6 +4,7 @@ import SuspenseWrapper from '../components/SuspenseWrapper'
 import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades, Certificaiones, Mensajes } from './lazyRoutes'
 import Hitos from '@/features/hitos/page/Hitos'
 import Configuracion from '@/features/configuracion/page/Configuracion'
+import ReportesUsr from '@/features/reportesUsuario/page/ReportesUsr'
 
 
 export const router = createBrowserRouter([
@@ -102,6 +103,15 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <Configuracion></Configuracion>
+          </SuspenseWrapper>
+        )
+      },
+
+      {
+        path: '/Dashboard/estadisticas/Reportes',
+        element: (
+          <SuspenseWrapper>
+            <ReportesUsr></ReportesUsr>
           </SuspenseWrapper>
         )
       }
