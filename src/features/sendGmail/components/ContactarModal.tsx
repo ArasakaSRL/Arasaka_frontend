@@ -58,7 +58,7 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="bg-[#0a1120] border border-white/10 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+                        className="bg-[#0a1120] border border-white/10 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                     >
                         <div className="flex items-center justify-between px-6 py-3 border-b border-white/10">
                             <h2 className="text-white font-bold text-base">
@@ -69,7 +69,7 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
                             </button>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-6 overflow-y-auto flex-1">
                             {modo === 'elegir' && (
                                 <OpcionesContacto
                                     whatsappNumber={whatsappNumber}

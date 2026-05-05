@@ -11,8 +11,9 @@ export default function EnvioExitoso({ nombreDestinatario, onClose }: Props) {
             <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
                 <Mail size={28} className="text-green-400" />
             </div>
-            <p className="text-white font-bold">¡Mensaje enviado!</p>
+            <p className="text-white font-bold">Mensaje enviado</p>
             <p className="text-white/50 text-sm">Tu mensaje fue enviado a {nombreDestinatario}</p>
+            <p className="text-green-400 text-sm font-medium">Correo enviado con éxito</p>
             <button onClick={onClose} className="mt-2 text-blue-400 text-sm hover:underline">
                 Cerrar
             </button>

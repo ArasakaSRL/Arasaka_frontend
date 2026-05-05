@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { resetPasswordRequest } from '@/features/auth/api/auth'; // Tu endpoint
 import { toast } from 'react-hot-toast';
@@ -21,6 +21,9 @@ export default function ResetPassword() {
     const [searchParams] = useSearchParams();
     const email = searchParams.get('email') || ''; // Captura el correo de la URL
     const navigate = useNavigate();
+
+    const passwordRef = useRef<HTMLInputElement>(null)
+    const passwordConfirmRef = useRef<HTMLInputElement>(null)
 
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -53,6 +56,10 @@ export default function ResetPassword() {
             }
 
             setErrors(fieldErrors);
+
+            if (firstErrorKey === 'password') passwordRef.current?.focus()
+            else if (firstErrorKey === 'password_confirmation') passwordConfirmRef.current?.focus()
+
             return;
         }
 
@@ -105,6 +112,7 @@ export default function ResetPassword() {
                         <span className="font-bold break-all ml-1">{email}</span>
                     </p>
                     <AuthInput
+                        ref={passwordRef}
                         label="Nueva contraseña"
                         placeholder="Ingresa tu nueva contraseña"
                         type="password"
@@ -116,6 +124,7 @@ export default function ResetPassword() {
                     />
 
                     <AuthInput
+                        ref={passwordConfirmRef}
                         label="Confirmar contraseña"
                         placeholder="Confirma tu contraseña"
                         type="password"
