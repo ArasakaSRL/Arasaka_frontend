@@ -1,6 +1,7 @@
 
 import apiClient from '@/api/api'
 import { useEffect, useRef } from 'react'
+import { getHeatmapCoords } from '../../utils/heatmap'
 
 const VISITOR_KEY = 'hf_visitor'
 const API_BASE = apiClient.defaults.baseURL?.replace('/api', '') || ''
@@ -37,12 +38,25 @@ export function CertificacionesTracker({ children, portfolioSlug }: Props) {
         )
     }
 
+    function enviarCoordenadas(idCertificacion: string, campo: string, x: number, y: number) {
+        const visitorId = localStorage.getItem(VISITOR_KEY)
+        if (!visitorId) return
+        const payload = new Blob(
+            [JSON.stringify({ visitor_id: visitorId, portfolio_slug: portfolioSlug, id_certificacion: idCertificacion, campo, x, y })],
+            { type: 'application/json' }
+        )
+        navigator.sendBeacon(`${API_BASE}/api/public/heatmap/certificacion/clic-coords`, payload)
+    }
+
     // ── Clics ──
     useEffect(() => {
         const el = wrapperRef.current
         if (!el) return
 
         function onClic(e: MouseEvent) {
+            const el = wrapperRef.current
+            if (!el) return
+            const coords = getHeatmapCoords(e, el)
             const target = (e.target as HTMLElement).closest('[data-cert-action]')
             if (!target) return
 
@@ -52,6 +66,7 @@ export function CertificacionesTracker({ children, portfolioSlug }: Props) {
             const id = (idTarget as HTMLElement).dataset.certId!
 
             enviar(id, accion, 1)
+            enviarCoordenadas(id, accion, coords.x, coords.y)
         }
 
         el.addEventListener('click', onClic)

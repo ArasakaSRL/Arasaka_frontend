@@ -10,7 +10,7 @@ interface Props {
 
 const HabilidadesBlandas: React.FC<Props> = ({ blandas, onVisible  }) => {
   return (
-    <div className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans">
+    <div data-track="clic_general"  className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans">
      
       <div className="flex items-center gap-4 mb-10">
         <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">

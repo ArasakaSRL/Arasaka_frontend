@@ -67,6 +67,7 @@ const TimelineItem = ({ exp, formatDate }: { exp: Experiencia, formatDate: (s: s
   return (
     <div
       ref={domRef}
+      data-track="clic_general"
       data-experiencia-id={exp.id_experiencia}
       className={`mb-12 ml-10 transition-all duration-1000 ease-in-out transform ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'

@@ -2,6 +2,7 @@
 
 import apiClient from '@/api/api'
 import { useEffect, useRef } from 'react'
+import { getHeatmapCoords } from '../../utils/heatmap'
 
 const VISITOR_KEY = 'hf_visitor'
 const API_BASE = apiClient.defaults.baseURL?.replace('/api', '') || ''
@@ -43,10 +44,30 @@ export function ExperienciaTracker({ children, portfolioSlug }: Props) {
         )
     }
 
+    function enviarCoordenadas(idExperiencia: string, campo: string, x: number, y: number) {
+        const visitorId = localStorage.getItem(VISITOR_KEY)
+        if (!visitorId) return
+        const payload = new Blob(
+            [JSON.stringify({ visitor_id: visitorId, portfolio_slug: portfolioSlug, id_experiencia: idExperiencia, campo, x, y })],
+            { type: 'application/json' }
+        )
+        navigator.sendBeacon(`${API_BASE}/api/public/heatmap/experiencia/clic-coords`, payload)
+    }
+
     // ── Hovers ──
     useEffect(() => {
         const el = wrapperRef.current
         if (!el) return
+
+        function onClic(e: MouseEvent) {
+            const el = wrapperRef.current
+            if (!el) return
+            const coords = getHeatmapCoords(e, el)
+            const target = (e.target as HTMLElement).closest('[data-experiencia-id]')
+            if (!target) return
+            const id = (target as HTMLElement).dataset.experienciaId!
+            enviarCoordenadas(id, 'clic_general', coords.x, coords.y)
+        }
 
         function onEnter(e: MouseEvent) {
             const target = (e.target as HTMLElement).closest('[data-experiencia-id]')
@@ -70,9 +91,12 @@ export function ExperienciaTracker({ children, portfolioSlug }: Props) {
             enviar(id, 'hover_ms', ms)
         }
 
+       
+        el.addEventListener('click', onClic)
         el.addEventListener('mouseover', onEnter)
         el.addEventListener('mouseout',  onLeave)
         return () => {
+            el.removeEventListener('click', onClic)
             el.removeEventListener('mouseover', onEnter)
             el.removeEventListener('mouseout',  onLeave)
         }

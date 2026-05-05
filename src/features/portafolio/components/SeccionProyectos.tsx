@@ -33,7 +33,7 @@ const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
 
 const CardProyectoVertical = ({ proyecto }: { proyecto: Proyecto }) => {
   return (
-    <div data-proyecto-id={proyecto.id_proyecto} className="group relative aspect-3/4 w-full overflow-hidden rounded-2xl bg-[#0a1120] border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20">
+    <div data-proyecto-action="clic_general" data-proyecto-id={proyecto.id_proyecto} className="group relative aspect-3/4 w-full overflow-hidden rounded-2xl bg-[#0a1120] border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20">
       
      
       <div className="absolute inset-0">

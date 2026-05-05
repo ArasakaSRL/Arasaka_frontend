@@ -41,12 +41,7 @@ export function PortfolioHeaderTracker({ children, portfolioSlug }: Props) {
         navigator.sendBeacon(`${API_BASE}/public/heatmap/perfil/track`, payload)
     }
 
-    // ── Clics ──
-    useEffect(() => {
-        const el = wrapperRef.current
-        if (!el) return
-        
-        function enviarCoordenadas(campo: string, x: number, y: number) {
+    function enviarCoordenadas(campo: string, x: number, y: number) {
             const visitorId = localStorage.getItem(VISITOR_KEY)
             if (!visitorId) return
 
@@ -66,6 +61,11 @@ export function PortfolioHeaderTracker({ children, portfolioSlug }: Props) {
                 payload
             )
         }
+
+    // ── Clics ──
+    useEffect(() => {
+        const el = wrapperRef.current
+        if (!el) return
 
         function onClic(e: MouseEvent) {
             const el = wrapperRef.current

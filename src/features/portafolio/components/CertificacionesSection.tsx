@@ -24,7 +24,7 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 md:p-12 font-sans bg-transparent">
+    <div data-track="clic_general" className="w-full max-w-5xl mx-auto p-4 md:p-12 font-sans bg-transparent">
 
       <div className="flex flex-col mb-16 px-2">
         <div className="flex items-center justify-between">

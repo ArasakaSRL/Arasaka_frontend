@@ -71,6 +71,7 @@ const TarjetaInteractiva = ({ tech, onExpandir, onCerrar }: { tech: any; onExpan
   return (
     <div
       ref={domRef}
+      data-track="clic_general"
       onClick={handleClic}
       className={`group relative h-48 cursor-pointer transition-all duration-700 transform ${
         isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'

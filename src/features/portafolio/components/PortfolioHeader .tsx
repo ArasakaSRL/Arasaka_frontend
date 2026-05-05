@@ -59,6 +59,7 @@ const PortfolioHeader: React.FC<Props> = ({
 
   return (
     <div
+      data-track="clic_general"
       className="
         w-full rounded-xl
         min-h-75 md:min-h-85vh 
