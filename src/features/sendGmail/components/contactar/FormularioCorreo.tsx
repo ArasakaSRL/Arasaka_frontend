@@ -99,6 +99,7 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     placeholder="tu@correo.com"
                     value={form.from}
                     onChange={v => { onChange('from', v); touch('from') }}
+                    maxLength={50}
                     error={getError('from')}
                 />
             </div>
