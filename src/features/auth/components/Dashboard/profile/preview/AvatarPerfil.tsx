@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { Camera, Loader2 } from 'lucide-react';
-import { uploadImage } from '@/firebase/firebaseStorage';
 import { actualizarFoto } from '@/features/auth/api/update-perfilPersonal';
 import { useAuthStore } from '@/stores/authStore';
 import type { Profesion } from '@/features/auth/types/update-perfilPersonal';
@@ -33,8 +32,11 @@ export default function AvatarPerfil({ user, formData, profesiones }: Props) {
         if (!file) return
         setUploadingFoto(true)
         try {
-            const url = await uploadImage(file, `FotosPerfil/${Date.now()}_${file.name}`)
-            await actualizarFoto({ url_foto: url })
+            const formData = new FormData()
+            formData.append('foto_perfil', file)
+            formData.append('_method', 'PATCH')
+            const response = await actualizarFoto(formData)
+            const url = response.data.url_foto ?? ''
             setFotoUrl(url)
             const currentUser = useAuthStore.getState().user
             if (currentUser) setUser({ ...currentUser, url_foto: url })

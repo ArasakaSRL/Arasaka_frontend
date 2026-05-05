@@ -1,5 +1,5 @@
 import {
-  type HabilidadUI
+  type HabilidadUI,eliminarHabilidad
 } from "../lib/HabilidadesApi";
 import HabilidadItem from "./CardHabilidad";
 
@@ -7,9 +7,10 @@ interface Props {
   habilidad: HabilidadUI[];
   load: boolean;
   onEditar: (habilidad: HabilidadUI) => void;
+  onEliminar: (id_habilidad: string) => void;
 }
 
-export default function HabilidadesList({ habilidad, load, onEditar }: Props) {
+export default function HabilidadesList({ habilidad, load, onEditar, onEliminar }: Props) {
   if (load) return <p>Cargando...</p>;
 
 const tecnicas = habilidad.filter(
@@ -41,6 +42,7 @@ const blandas = habilidad.filter(
                 nombre={hab.nombre}
                 nivel={hab.nivel}
                 onEditar={() => onEditar(hab)}
+                onEliminar={() => onEliminar(hab.id_habilidad)}
               />
             ))
           )}
@@ -66,6 +68,7 @@ const blandas = habilidad.filter(
                 nombre={hab.nombre}
                 nivel={hab.nivel}
                 onEditar={() => onEditar(hab)}
+                onEliminar={() => onEliminar(hab.id_habilidad)}
               />
             ))
           )}

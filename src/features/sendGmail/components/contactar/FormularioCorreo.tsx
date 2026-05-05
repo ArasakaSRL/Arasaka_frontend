@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
-import { Send, Loader2, Paperclip, X, UploadCloud } from 'lucide-react'
+import { Send, Loader2, Paperclip, X, UploadCloud, AlertCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 const ACCEPTED = '.jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.zip,.rar'
-const MAX_FILES = 5
+const MAX_FILES = 3
 const MAX_MB = 10
 
 interface FormData {
@@ -33,20 +33,47 @@ function fileIcon(name: string) {
     return '📎'
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export default function FormularioCorreo({ form, files, loading, error, onChange, onFilesChange, onSubmit, onVolver }: Props) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [dragging, setDragging] = useState(false)
     const [fileError, setFileError] = useState<string | null>(null)
+    const [touched, setTouched] = useState<Partial<Record<keyof FormData, boolean>>>({})
+
+    function touch(field: keyof FormData) {
+        setTouched(p => ({ ...p, [field]: true }))
+    }
+
+    function getError(field: keyof FormData): string | undefined {
+        if (!touched[field]) return undefined
+        if (field === 'from') {
+            if (!form.from.trim()) return 'Campo obligatorio'
+            if (!EMAIL_RE.test(form.from)) return 'Correo inválido'
+        }
+        if (field === 'subject' && !form.subject.trim()) return 'Campo obligatorio'
+        if (field === 'content' && !form.content.trim()) return 'Campo obligatorio'
+    }
+
+    const isValid = !!form.from.trim() && EMAIL_RE.test(form.from) && !!form.subject.trim() && !!form.content.trim()
+
+    function handleSubmit(e: React.FormEvent) {
+        setTouched({ from: true, subject: true, content: true })
+        if (!isValid) { e.preventDefault(); return }
+        onSubmit(e)
+    }
 
     function addFiles(incoming: FileList | null) {
         if (!incoming) return
         setFileError(null)
         const next = [...files]
+        let limitReached = false
         for (const f of Array.from(incoming)) {
-            if (next.length >= MAX_FILES) { setFileError(`Máximo ${MAX_FILES} archivos`); break }
+            if (next.length >= MAX_FILES) { limitReached = true; break }
             if (f.size > MAX_MB * 1024 * 1024) { setFileError(`"${f.name}" supera ${MAX_MB}MB`); continue }
             if (!next.find(x => x.name === f.name && x.size === f.size)) next.push(f)
         }
+        if (limitReached) setFileError('limit')
         onFilesChange(next)
     }
 
@@ -55,7 +82,7 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
     }
 
     return (
-        <form onSubmit={onSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <button
                 type="button"
                 onClick={onVolver}
@@ -70,8 +97,8 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     type="text"
                     placeholder="tu@correo.com"
                     value={form.from}
-                    onChange={v => onChange('from', v)}
-                    required
+                    onChange={v => { onChange('from', v); touch('from') }}
+                    error={getError('from')}
                 />
             </div>
 
@@ -81,10 +108,9 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     type="text"
                     placeholder="Asunto del mensaje"
                     value={form.subject}
-                    onChange={v => onChange('subject', v)}
-                    required
+                    onChange={v => { onChange('subject', v.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')); touch('subject') }}
                     maxLength={120}
-                    
+                    error={getError('subject')}
                 />
             </div>
 
@@ -94,10 +120,10 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     type="textarea"
                     placeholder="Escribe tu mensaje..."
                     value={form.content}
-                    onChange={v => onChange('content', v)}
-                    required
+                    onChange={v => { onChange('content', v); touch('content') }}
                     maxLength={2000}
                     showCounter
+                    error={getError('content')}
                 />
             </div>
 
@@ -107,12 +133,17 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                 </label>
 
                 <div
-                    onClick={() => inputRef.current?.click()}
-                    onDragOver={e => { e.preventDefault(); setDragging(true) }}
+                    onClick={() => files.length < MAX_FILES && inputRef.current?.click()}
+                    onDragOver={e => { e.preventDefault(); if (files.length < MAX_FILES) setDragging(true) }}
                     onDragLeave={() => setDragging(false)}
                     onDrop={e => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files) }}
-                    className={`flex flex-col items-center justify-center gap-1.5 border-2 border-dashed rounded-xl py-5 cursor-pointer transition-colors
-                        ${dragging ? 'border-blue-500/60 bg-blue-500/10' : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/[0.07]'}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 border-2 border-dashed rounded-xl py-5 transition-colors
+                        ${files.length >= MAX_FILES
+                            ? 'border-white/5 bg-white/[0.02] cursor-not-allowed opacity-50'
+                            : dragging
+                                ? 'border-blue-500/60 bg-blue-500/10 cursor-pointer'
+                                : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/[0.07] cursor-pointer'
+                        }`}
                 >
                     <UploadCloud size={22} className="text-white/30" />
                     <p className="text-white/40 text-xs">Arrastra archivos o <span className="text-blue-400 underline">selecciona</span></p>
@@ -128,7 +159,20 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     onChange={e => addFiles(e.target.files)}
                 />
 
-                {fileError && <p className="text-red-400 text-xs">{fileError}</p>}
+                {fileError === 'limit' ? (
+                    <div className="flex items-start gap-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3">
+                        <AlertCircle size={15} className="text-amber-400 shrink-0 mt-0.5" />
+                        <div className="flex flex-col gap-0.5">
+                            <p className="text-amber-300 text-xs font-semibold">Límite de archivos alcanzado</p>
+                            <p className="text-amber-400/70 text-[11px]">Solo puedes adjuntar un máximo de {MAX_FILES} archivos por mensaje.</p>
+                        </div>
+                    </div>
+                ) : fileError ? (
+                    <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
+                        <AlertCircle size={15} className="text-red-400 shrink-0" />
+                        <p className="text-red-300 text-xs">{fileError}</p>
+                    </div>
+                ) : null}
 
                 {files.length > 0 && (
                     <ul className="flex flex-col gap-1.5 mt-1">
@@ -152,8 +196,8 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
 
             <button
                 type="submit"
-                disabled={loading}
-                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50"
+                disabled={loading || !isValid}
+                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 {loading ? 'Enviando...' : 'Enviar mensaje'}

@@ -1,9 +1,11 @@
-import { SquarePen } from 'lucide-react';
-
+import { SquarePen,Trash2  } from 'lucide-react';
+import { useState } from 'react';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 type Props = {
   nombre: string;
   nivel: string;
   onEditar: () => void;
+  onEliminar: () => void;
 };
 
 const nivelesOrden = [
@@ -19,7 +21,8 @@ const getWidth = (nivel: string) => {
   return index >= 0 ? `${(index + 1) * 20}%` : "10%";
 };
 
-export default function HabilidadItem({ nombre, nivel, onEditar }: Props) {
+export default function HabilidadItem({ nombre, nivel, onEditar, onEliminar }: Props) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="w-full border border-primary-500 rounded-lg p-3 bg-white flex items-center justify-between">
       
@@ -43,6 +46,21 @@ export default function HabilidadItem({ nombre, nivel, onEditar }: Props) {
         <button onClick={onEditar}>
           <SquarePen size={16} className="text-gray-500 hover:text-black" />
         </button>
+<>
+  <button onClick={() => setIsModalOpen(true)}>
+    <Trash2 size={16} className="text-gray-500 hover:text-black" />
+  </button>
+
+  <ConfirmDeleteModal
+    isOpen={isModalOpen}
+    nombre={nombre}
+    onClose={() => setIsModalOpen(false)}
+    onConfirm={() => {
+      onEliminar();
+      setIsModalOpen(false);
+    }}
+  />
+</>
       </div>
     </div>
   );
