@@ -40,6 +40,12 @@ const PortfolioHeader: React.FC<Props> = ({
     if (descargandoCV) return;
     setDescargandoCV(true);
     try {
+        console.log("📄 Usuario:", usuario);
+    console.log("📁 Proyectos:", proyectos);
+    console.log("🛠️ Técnicas:", tecnicas);
+    console.log("🤝 Blandas:", blandas);
+    console.log("💼 Experiencias:", experiencias);
+    console.log("📜 Certificaciones:", certificaciones);
       await generateCV({
         usuario,
         proyectos,

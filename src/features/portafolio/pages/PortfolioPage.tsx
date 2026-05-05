@@ -84,7 +84,14 @@ export default function PortfolioPage() {
             <div className="max-w-350 mx-auto flex flex-col gap-6">
                 <section id="inicio">
                     <PortfolioHeaderTracker portfolioSlug={slug!}>
-                        <PortfolioHeader usuario={usuario} />
+                         <PortfolioHeader
+                        usuario={usuario}
+                        proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
+                        tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
+                        blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
+                        experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
+                        certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
+                    />
                     </PortfolioHeaderTracker>
                 </section>
             </div>

@@ -54,7 +54,14 @@ export function PerfilReplica({
   return (
     <>
         <HeatmapSeccion puntos={clicsPerfil} maxIntensidad={maxIntensidad}>
-          <PortfolioHeader usuario={usuario} />
+           <PortfolioHeader
+                        usuario={usuario}
+                        proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
+                        tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
+                        blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
+                        experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
+                        certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
+                    />
         </HeatmapSeccion>
 
       {configuracion?.mostrar_habilidades && (
