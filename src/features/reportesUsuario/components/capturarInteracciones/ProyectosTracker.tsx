@@ -1,7 +1,8 @@
+import apiClient from '@/api/api'
 import { useEffect, useRef } from 'react'
 
 const VISITOR_KEY = 'hf_visitor'
-const API_BASE    = 'http://localhost:8000'
+const API_BASE = apiClient.defaults.baseURL?.replace('/api', '') || ''
 
 interface Props {
     children:      React.ReactNode
