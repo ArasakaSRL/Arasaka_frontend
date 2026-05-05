@@ -108,8 +108,7 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
         </div>
 
         <div className="flex flex-wrap gap-3 mt-8">
-          {whatsappNumber && (
-            <button
+          <button
               onClick={() => setContactarOpen(true)}
               className="
                 group flex items-center gap-2
@@ -123,7 +122,6 @@ const PortfolioHeader: React.FC<Props> = ({ usuario }) => {
               <MessageCircle size={18} className="transition-transform group-hover:rotate-12" />
               CONTACTAR
             </button>
-          )}
 
           <ContactarModal
             open={contactarOpen}
