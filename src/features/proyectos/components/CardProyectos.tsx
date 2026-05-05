@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Proyecto, Tecnologias } from "../lib/ProyectosApi";
-import {CircleX} from "lucide-react";
+import {CircleX, Images, Star} from "lucide-react";
 
 interface Props {
     proyecto:Proyecto;
@@ -11,36 +11,14 @@ export default function CardProyectos ({proyecto, onEditar}:Props) {
   const tecnlogiasVisibles = proyecto.tecnologias.slice(0, 3);
   const tecnologiasOcultas = proyecto.tecnologias.length - 3;
 
-  const portada = proyecto.url_imagen?.[0]?.logo;
-  const extraImg = (proyecto.url_imagen?.length || 0) - 1;
-
   const [openGaleria, setOpenGaleria] = useState(false);
 
     return(
     <>
-      <div className="flex text-left border-2 border-primary-500 rounded-xl p-5 flex-col justify-between overflow-hidden">
-        
-        {/* 🔹 IMAGEN */}
-        {portada && (
-          <div
-            className="relative w-full h-40 mb-3 rounded-lg overflow-hidden cursor-pointer"
-            onClick={() => setOpenGaleria(true)}
-          >
-            <img
-              src={portada}
-              alt="portada"
-              className="w-full h-full object-cover"
-            />
-
-            {extraImg > 0 && (
-              <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                +{extraImg}
-              </div>
-            )}
-          </div>
-        )}
-
+      <div className="flex text-left border-2 border-primary-500 rounded-xl p-5 flex-col justify-between overflow-hidden"> 
         <div className="flex flex-col justify-between w-full min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <div>
           <h3 className="text-sm font-semibold text-gray-800">
             {proyecto.nombre}
           </h3>
@@ -48,6 +26,18 @@ export default function CardProyectos ({proyecto, onEditar}:Props) {
           <p className="text-xs text-gray-500 mt-1 py-2">
             {proyecto.fecha_inicio} - {proyecto.fecha_fin || "Actualidad"}
           </p>
+          </div>
+          <div>    
+          {proyecto.url_imagen?.length > 0 && (
+            <button
+              onClick={() => setOpenGaleria(true)}
+              className="text-primary-500 hover:text-primary-700 transition cursor-pointer bg-primary-100 p-1 rounded-md"
+            >
+              <Images size={18} />
+            </button>
+          )}
+          </div>
+          </div>
 
           <p className="text-sm text-gray-600 mt-3 line-clamp-3 break-words">
             {proyecto.descripcion}
@@ -95,11 +85,19 @@ export default function CardProyectos ({proyecto, onEditar}:Props) {
 
             <div className="grid grid-cols-2 gap-3 mt-6">
               {proyecto.url_imagen.map((img, i) => (
-                <img
-                  key={i}
-                  src={img.logo}
-                  className="w-full h-40 object-cover rounded"
-                />
+                <div key={i} className="relative">
+                  <img
+                    src={img.logo}
+                    className="w-full h-40 object-cover rounded"
+                  />
+
+                  {/* indicador portada */}
+                  {i === 0 && (
+                    <div className="absolute top-2 left-2 bg-yellow-400 text-white p-1 rounded-full shadow">
+                      <Star size={14} />
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

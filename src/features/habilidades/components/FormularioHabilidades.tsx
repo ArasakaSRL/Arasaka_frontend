@@ -211,7 +211,7 @@ const niveles = [
                 setErrors((prev) => ({ ...prev, habilidad: "" }));
               }}
               placeholder="Ej: Comunicación, Liderazgo..." 
-              label={"Ingrese la habilidad"} 
+              label={"Habilidad"} 
               type={"text"}  
               disabled={!!habilidadEditar}
               error={errors.habilidad}
