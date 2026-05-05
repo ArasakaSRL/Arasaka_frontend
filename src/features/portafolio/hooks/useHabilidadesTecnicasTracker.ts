@@ -1,4 +1,3 @@
-// src/features/portafolio/hooks/useHabilidadesTecnicasTracker.ts
 
 const VISITOR_KEY = 'hf_visitor'
 const API_BASE    = 'http://localhost:8000'

@@ -16,10 +16,16 @@ interface Intensidades {
 
 interface PerfilReplicaProps {
   intensidades: Intensidades
+  clicsPerfil:  { x: number, y: number, intensidad: number }[]
 }
 
 
-export function PerfilReplica({ intensidades }: PerfilReplicaProps) {
+export function PerfilReplica({ intensidades,  clicsPerfil= []  }: PerfilReplicaProps) {
+
+  const maxIntensidad = clicsPerfil.length > 0  // ← proteger
+        ? Math.max(...clicsPerfil.map(c => c.intensidad), 1)
+        : 1
+
   const slug = useAuthStore((state) => state.user?.portafolio?.slug);
   const { data, loading, noDisponible } = usePortfolioData(slug);
 
@@ -31,19 +37,14 @@ export function PerfilReplica({ intensidades }: PerfilReplicaProps) {
 
   return (
     <>
-        <HeatmapSeccion intensidad={intensidades.perfil}>
+        <HeatmapSeccion puntos={clicsPerfil} maxIntensidad={maxIntensidad}>
           <PortfolioHeader usuario={usuario} />
         </HeatmapSeccion>
 
       {configuracion?.mostrar_habilidades && (
         <>
-          <HeatmapSeccion intensidad={intensidades.tecnicas}>
             <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={() => {}} onCerrar={() => {}} />
-          </HeatmapSeccion>
-
-          <HeatmapSeccion intensidad={0}>
             <HabilidadesBlandas blandas={habilidadesBlandas} />
-          </HeatmapSeccion>
         </>
       )}
 

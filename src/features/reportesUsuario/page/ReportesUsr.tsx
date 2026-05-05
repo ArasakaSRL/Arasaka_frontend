@@ -8,7 +8,7 @@ import { LineChart } from "../components/LineChart";
 import { SeccionScrollHorizontal } from "../components/visibilidad/SeccionScrollHorizontal";
 import { useEffect, useState } from "react";
 import type { EstadisticasData, HeatmapHabilidadesTecnicas, HeatmapPerfil, NivelesHabilidad } from "../types/reportes";
-import { getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes } from "../apis/reportesApi";
+import { getClicsPerfil, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes } from "../apis/reportesApi";
 import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
 
 const COLOR_MAP: Record<string, string> = {
@@ -26,10 +26,12 @@ export default function ReportesUsr() {
   const [data, setData] = useState<EstadisticasData | null>(null);
   const [loading, setLoading] = useState(true);
   const [visitantes, setVisitantes] = useState<number>(0)
+  const [clicsPerfil, setClicsPerfil] = useState<{ x: number, y: number, intensidad: number }[]>([])
 
   
   useEffect(() => {
     getHeatmapPerfil().then(setHeatmapPerfil).catch(console.error)
+    getClicsPerfil().then(setClicsPerfil).catch(console.error)  
     getHeatmapHabilidadesTecnicas().then(setHeatmapTecnicas).catch(console.error)
     const fetchReportes = async () => {
         try {
@@ -160,7 +162,7 @@ console.log('skillsChartData:', skillsChartData)
           />
         </SeccionScrollHorizontal>
       </div>
-      <PerfilReplica intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }} />
+      <PerfilReplica intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }}  clicsPerfil={clicsPerfil}/>
     </DashboardLayout>
   );
 }

@@ -69,3 +69,8 @@ export async function getHeatmapHabilidadesTecnicas() {
   const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-tecnicas')
   return data
 }
+
+export const getClicsPerfil = async () => {
+    const response = await apiClient.get('/reportesUsr/heatmap/perfil/clics')
+    return response.data
+}
