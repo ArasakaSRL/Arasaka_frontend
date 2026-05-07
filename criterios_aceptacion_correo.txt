@@ -1,0 +1,47 @@
+CRITERIOS DE ACEPTACIÓN — Envío de mensaje vía correo electrónico
+==================================================================
+
+CA-01: Al hacer clic en "Enviar" con el campo "Tu correo" vacío, se muestra el mensaje
+       "Campo obligatorio" debajo del campo.
+
+CA-02: Al hacer clic en "Enviar" con el campo "Asunto" vacío, se muestra el mensaje
+       "Campo obligatorio" debajo del campo.
+
+CA-03: Al hacer clic en "Enviar" con el campo "Mensaje" vacío, se muestra el mensaje
+       "Campo obligatorio" debajo del campo.
+
+CA-04: Al ingresar un correo sin el carácter "@" en el campo "Tu correo", se muestra
+       el mensaje "Correo inválido" debajo del campo en tiempo real.
+
+CA-05: Al hacer clic en "Enviar" con todos los campos obligatorios correctamente
+       llenados, se muestra el mensaje "Correo enviado con éxito".
+
+CA-06: Al hacer clic en "Enviar" y ocurrir un error de red o del servidor, se muestra
+       el mensaje "No se pudo enviar el correo. Intenta de nuevo."
+
+CA-07: Al hacer clic en "Enviar", el botón se deshabilita mientras la petición está
+       en curso y se reactiva al finalizar.
+
+CA-08: El botón "Enviar" permanece deshabilitado mientras exista al menos un campo
+       obligatorio vacío o con datos inválidos.
+
+CA-09: El campo "Mensaje" permite un máximo de 2000 caracteres, mostrando un contador
+       en tiempo real.
+
+CA-10: El campo "Tu correo" permite un máximo de 50 caracteres.
+
+CA-11: El campo "Asunto" solo permite caracteres alfabéticos (letras, tildes y
+       espacios), con un máximo de 120 caracteres.
+
+CA-12: Se pueden adjuntar un máximo de 3 archivos por mensaje. Al intentar agregar
+       más, se muestra el mensaje "Límite de archivos alcanzado".
+
+CA-13: Cada archivo adjunto no puede superar los 10MB. Al intentar adjuntar un archivo
+       que exceda este límite, se muestra el mensaje indicando el nombre del archivo
+       y que supera el límite permitido.
+
+CA-14: Los tipos de archivo permitidos como adjunto son:
+       - Imágenes:    .jpg, .png, .gif, .webp
+       - Documentos:  .pdf, .doc, .docx, .xls, .xlsx
+       - Texto:       .txt, .csv
+       - Comprimidos: .zip, .rar
