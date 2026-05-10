@@ -1,15 +1,17 @@
 import { useState } from "react";
 import Modal from "@/components/Modal"
 import FormularioProyecto from "../components/FormularioProyectos";
-import CardProyectos from "../components/CardProyectos";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { useProyectos } from "../hooks/getProyectos";
-import { Banner } from "@/features/hitos/components/BannerHitos";
+import { Banner } from "@/components/Banner";
 import type { Proyecto } from "../lib/ProyectosApi";
+import ListaProyectos from "../components/ListaProyectos";
 export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
   const { proyectos, loading, setProyectos } = useProyectos();
   const [proyectoEditar, setProyectoEditar] = useState<Proyecto | null>(null);
+  const [proyectoEliminar, setProyectoEliminar] = useState<Proyecto | null>(null);
+  const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
   const [paginaActual, setPaginaActual] = useState(1);
   const paginacion = 5;
 
@@ -34,49 +36,72 @@ export default function PageProyectos() {
         <Banner 
           titulo="Proyectos" 
           descripcion="Gestiona tus proyectos de software" 
-          onOpenModal={() => {
+          totalItems={proyectos.length}
+          editando={modoAccion === "editar"}
+          eliminando={modoAccion === "eliminar"}
+          onAgregar={() => {
+            setModoAccion(null);
             setProyectoEditar(null);
             setModalAbierto(true);
-          }} 
-          textoBoton="Añadir Proyecto" >
+          }}
+          onEditar={() => {
+            setModoAccion("editar");
+          }}
+          onEliminar={() => {
+            setModoAccion("eliminar");
+          }}
+          onCancelar={() => {
+            setModoAccion(null);
+            setProyectoEliminar(null);
+          }}>
         </Banner>
         <div className="py-4 w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {loading ? (
-              <p>Cargando...</p>
-            ) : (
-              proyectosPaginados.map((proyecto) => (
-                <CardProyectos
-                  onEditar={handleEditar}
-                  key={proyecto.id_proyecto}
-                  proyecto={proyecto}
-                />
-              ))
-            )}
-        </div>
-        {totalPaginas > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-6">
-            <button
-              disabled={paginaActual === 1}
-              onClick={() => setPaginaActual(paginaActual - 1)}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Anterior
-            </button>
+          <ListaProyectos
+            proyectos={proyectosPaginados}
+            loading={loading}
+            modoAccion={modoAccion}
+            onEditar={(proyecto) => {
+              handleEditar(proyecto);
+              setModoAccion(null);
+            }}
+            onEliminarSeleccionado={(proyecto) => {
+              setProyectoEliminar(proyecto);
+            }}
+          />
+          {totalPaginas > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-6">
 
-            <span className="font-medium">
-              Página {paginaActual} de {totalPaginas}
-            </span>
+              <button
+                disabled={paginaActual === 1}
+                onClick={() => setPaginaActual(paginaActual - 1)}
+                className="
+                  px-3 py-1
+                  bg-gray-200
+                  rounded
+                  disabled:opacity-50
+                "
+              >
+                Anterior
+              </button>
 
-            <button
-              disabled={paginaActual === totalPaginas}
-              onClick={() => setPaginaActual(paginaActual + 1)}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Siguiente
-            </button>
-          </div>
-        )}
+              <span className="font-medium">
+                Página {paginaActual} de {totalPaginas}
+              </span>
+
+              <button
+                disabled={paginaActual === totalPaginas}
+                onClick={() => setPaginaActual(paginaActual + 1)}
+                className="
+                  px-3 py-1
+                  bg-gray-200
+                  rounded
+                  disabled:opacity-50
+                "
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
 
             <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-3xl">
               <FormularioProyecto 
