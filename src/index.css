@@ -221,7 +221,7 @@ h1 {
   margin: 32px 0;
   @media (max-width: 1024px) {
     font-size: 36px;
-    margin: 20px 0;
+    margin: 15px 0;
   }
 }
 h2 {

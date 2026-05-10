@@ -1,5 +1,5 @@
 import {
-  type HabilidadUI,eliminarHabilidad
+  type HabilidadUI
 } from "../lib/HabilidadesApi";
 import HabilidadItem from "./CardHabilidad";
 
@@ -7,10 +7,17 @@ interface Props {
   habilidad: HabilidadUI[];
   load: boolean;
   onEditar: (habilidad: HabilidadUI) => void;
-  onEliminar: (id_habilidad: string) => void;
+  onEliminar: (habilidad: HabilidadUI) => void;
+  modoAccion: "editar" | "eliminar" | null;
 }
 
-export default function HabilidadesList({ habilidad, load, onEditar, onEliminar }: Props) {
+export default function HabilidadesList({ 
+  habilidad, 
+  load, 
+  onEditar, 
+  onEliminar, 
+  modoAccion
+}: Props) {
   if (load) return <p>Cargando...</p>;
 
 const tecnicas = habilidad.filter(
@@ -20,6 +27,8 @@ const tecnicas = habilidad.filter(
 const blandas = habilidad.filter(
   (h) => h.categoria === "blanda"
 );
+
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       
@@ -41,8 +50,18 @@ const blandas = habilidad.filter(
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
                 nivel={hab.nivel}
-                onEditar={() => onEditar(hab)}
-                onEliminar={() => onEliminar(hab.id_habilidad)}
+                editable={modoAccion === "editar"}
+                eliminando={modoAccion === "eliminar"}
+                onSelect={() => {
+                  if (modoAccion === "editar") {
+                    onEditar(hab);
+                    return;
+                  }
+                  if (modoAccion === "eliminar") {
+                    onEliminar(hab);
+                    return;
+                  }
+                }}
               />
             ))
           )}
@@ -67,8 +86,18 @@ const blandas = habilidad.filter(
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
                 nivel={hab.nivel}
-                onEditar={() => onEditar(hab)}
-                onEliminar={() => onEliminar(hab.id_habilidad)}
+                editable={modoAccion === "editar"}
+                eliminando={modoAccion === "eliminar"}
+                onSelect={() => {
+                  if (modoAccion === "editar") {
+                    onEditar(hab);
+                    return;
+                  }
+                  if (modoAccion === "eliminar") {
+                    onEliminar(hab);
+                    return;
+                  }
+                }}
               />
             ))
           )}
