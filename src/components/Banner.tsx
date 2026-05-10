@@ -1,5 +1,5 @@
 import { Boton2 } from "@/components/ui/Boton2";
-
+import { Trash2, SquarePen, CirclePlus, BookmarkX } from 'lucide-react';
 type Props = {
   titulo: string;
   descripcion: string;
@@ -89,6 +89,7 @@ export const Banner = ({
               flex items-center gap-2
             "
           >
+            <CirclePlus size={16} />
             Agregar
           </Boton2>
         )}
@@ -99,22 +100,28 @@ export const Banner = ({
               <Boton2
                 onClick={onEditar}
                 className="
-                  px-4 py-2
-                  bg-amber-500 hover:bg-amber-600
+                  mt-1
+                  px-4 py-1.5
+                  bg-blue-600 hover:bg-blue-700
                   text-sm
-                "
+                  flex items-center gap-2
+                  "
               >
+                <SquarePen size={16} />
                 Editar
               </Boton2>
             ) : (
               <Boton2
                 onClick={onCancelar}
                 className="
-                  px-4 py-2
+                  mt-1
+                  px-4 py-1.5
                   bg-gray-500 hover:bg-gray-600
                   text-sm
+                  flex items-center gap-2
                 "
               >
+                <BookmarkX size={16} />
                 Cancelar
               </Boton2>
             )}
@@ -122,22 +129,28 @@ export const Banner = ({
               <Boton2
                 onClick={onEliminar}
                 className="
-                  px-4 py-2
+                  mt-1
+                  px-4 py-1.5
                   bg-red-600 hover:bg-red-700
                   text-sm
+                  flex items-center gap-2
                 "
               >
+                <Trash2 size={16} />
                 Eliminar
               </Boton2>
             ) : (
               <Boton2
                 onClick={onCancelar}
                 className="
-                  px-4 py-2
+                  mt-1
+                  px-4 py-1.5
                   bg-gray-500 hover:bg-gray-600
                   text-sm
+                  flex items-center gap-2
                 "
               >
+                <BookmarkX size={16} />
                 Cancelar
               </Boton2>
             )}

@@ -10,6 +10,7 @@ export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
   const { proyectos, loading, setProyectos } = useProyectos();
   const [proyectoEditar, setProyectoEditar] = useState<Proyecto | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [proyectoEliminar, setProyectoEliminar] = useState<Proyecto | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
   const [paginaActual, setPaginaActual] = useState(1);
