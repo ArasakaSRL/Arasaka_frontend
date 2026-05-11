@@ -69,6 +69,7 @@ export const Banner = ({
           className="
             text-sm
             md:text-base
+            text-left
             text-gray-200
           "
         >
@@ -83,10 +84,11 @@ export const Banner = ({
             onClick={onAgregar}
             className="
               mt-1
-              px-4 py-1.5
+              px-3 py-2
+              sm:px-4 sm:py-1.5
               bg-blue-600 hover:bg-blue-700
-              text-sm
-              flex items-center gap-2
+              text-xs sm:text-sm
+              flex items-center justify-center gap-2
             "
           >
             <CirclePlus size={16} />
@@ -94,65 +96,86 @@ export const Banner = ({
           </Boton2>
         )}
 
-        {totalItems > 0 && (
+        {totalItems > 0 && (onEditar || onEliminar) && (
           <>
-            {!editando ? (
-              <Boton2
-                onClick={onEditar}
-                className="
-                  mt-1
-                  px-4 py-1.5
-                  bg-blue-600 hover:bg-blue-700
-                  text-sm
-                  flex items-center gap-2
+            {onEditar && (
+              !editando ? (
+                <Boton2
+                  onClick={onEditar}
+                  className="
+                    mt-1
+                    px-3 py-2
+                    sm:px-4 sm:py-1.5
+                    bg-blue-600 hover:bg-blue-700
+                    text-xs sm:text-sm
+                    flex items-center justify-center gap-2
+                    min-w-11
                   "
-              >
-                <SquarePen size={16} />
-                Editar
-              </Boton2>
-            ) : (
-              <Boton2
-                onClick={onCancelar}
-                className="
-                  mt-1
-                  px-4 py-1.5
-                  bg-gray-500 hover:bg-gray-600
-                  text-sm
-                  flex items-center gap-2
-                "
-              >
-                <BookmarkX size={16} />
-                Cancelar
-              </Boton2>
+                >
+                  <SquarePen size={16} />
+
+                  <span className="hidden sm:inline">
+                    Editar
+                  </span>
+                </Boton2>
+              ) : (
+                <Boton2
+                  onClick={onCancelar}
+                  className="
+                    mt-1
+                    px-3 py-2
+                    sm:px-4 sm:py-1.5
+                    bg-gray-500 hover:bg-gray-600
+                    text-xs sm:text-sm
+                    flex items-center justify-center gap-2
+                    min-w-11
+                  "
+                >
+                  <BookmarkX size={16} />
+                  <span className="hidden sm:inline">
+                    Cancelar
+                  </span>
+                </Boton2>
+              )
             )}
-            {!eliminando ? (
-              <Boton2
-                onClick={onEliminar}
-                className="
-                  mt-1
-                  px-4 py-1.5
-                  bg-red-600 hover:bg-red-700
-                  text-sm
-                  flex items-center gap-2
-                "
-              >
-                <Trash2 size={16} />
-                Eliminar
-              </Boton2>
-            ) : (
-              <Boton2
-                onClick={onCancelar}
-                className="
-                  mt-1
-                  px-4 py-1.5
-                  bg-gray-500 hover:bg-gray-600
-                  text-sm
-                  flex items-center gap-2
-                "
-              >
-                <BookmarkX size={16} />
-                Cancelar
-              </Boton2>
+            {onEliminar && (
+              !eliminando ? (
+                <Boton2
+                  onClick={onEliminar}
+                  className="
+                    mt-1
+                    px-3 py-2
+                    sm:px-4 sm:py-1.5
+                    bg-red-600 hover:bg-red-700
+                    text-xs sm:text-sm
+                    flex items-center justify-center gap-2
+                    min-w-11
+                  "
+                >
+                  <Trash2 size={16} />
+                  <span className="hidden sm:inline">
+                    Eliminar
+                  </span>
+                </Boton2>
+              ) : (
+                <Boton2
+                  onClick={onCancelar}
+                  className="
+                    mt-1
+                    px-3 py-2
+                    sm:px-4 sm:py-1.5
+                    bg-gray-500 hover:bg-gray-600
+                    text-xs sm:text-sm
+                    flex items-center justify-center gap-2
+                    min-w-11
+                  "
+                >
+                  <BookmarkX size={16} />
+                  <span className="hidden sm:inline">
+                    Cancelar
+                  </span>
+                </Boton2>
+              )
             )}
           </>
         )}

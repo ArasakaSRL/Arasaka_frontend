@@ -3,7 +3,7 @@ import { useCategorias } from '../hooks/useCategorias';
 import { useCertificaciones } from "../hooks/useCertificaciones";
 import { useCrearCertificacion } from "../hooks/useCrearCertificacion"; 
 
-import { Banner } from "@/components/Banner";
+import { Banner } from "@/features/hitos/components/BannerHitos";
 import { ImagenUploader } from "../components/ImagenUploader";
 import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 import DashboardLayout from "@/layout/DashboardLayout";

@@ -48,9 +48,6 @@ export default function PageProyectos() {
           onEditar={() => {
             setModoAccion("editar");
           }}
-          onEliminar={() => {
-            setModoAccion("eliminar");
-          }}
           onCancelar={() => {
             setModoAccion(null);
             setProyectoEliminar(null);

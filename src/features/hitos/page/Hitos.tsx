@@ -12,6 +12,16 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
 
+type Experiencia = {
+  id: string;
+  cargo: string;
+  nombre_organizacion: string;
+  descripcion: string;
+  fecha_inicio: string;
+  fecha_fin: string | null;
+  vigente: boolean;
+}
+
 
 // Función auxiliar para extraer el día, mes (en español) y año
 const obtenerDatosDeFecha = (fechaString: string) => {
@@ -31,7 +41,7 @@ const obtenerDatosDeFecha = (fechaString: string) => {
     const anio = format(fecha, 'yyyy');
     
     return { diaAbreviado, mes, diaNumero, anio };
-  } catch (e) {
+  } catch{
     return { diaAbreviado: "---", mes: "---", diaNumero: 0, anio: "----" };
   }
 };
@@ -46,10 +56,12 @@ export default function Hitos() {
   const [fechaInicioForm, setFechaInicioForm] = useState("");
   const [fechaFinForm, setFechaFinForm] = useState("");
   
-  const [experiencias, setExperiencias] = useState<any[]>([]);
+  const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [hitoEliminar, setHitoEliminar] = useState<Experiencia | null>(null);
+  const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
 
   // 2. FUNCIONES DE CARGA Y EFECTOS
   const cargarExperiencias = async () => {
@@ -153,7 +165,25 @@ export default function Hitos() {
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
         {/**onOpenModal={() => setOpenModal(true)} */}
-        <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Hito" titulo="Experiencias e hitos importantes" descripcion="" />
+        <Banner 
+        titulo="Experiencias e hitos importantes" 
+        descripcion="" 
+        totalItems={experiencias.length}
+        eliminando={modoAccion === "eliminar"}
+        onAgregar={() => {
+          resetForm();
+
+          setOpenModal(true);
+        }}
+        onEliminar={() => {
+          toast.warning("Selecciona un hito");
+          setModoAccion("eliminar");
+        }}
+        onCancelar={() => {
+          setModoAccion(null);
+          setHitoEliminar(null);
+        }}
+        />
       </div>
 
       <ModalForm 
@@ -279,7 +309,7 @@ export default function Hitos() {
       </ModalForm>
 
       {/* RENDERIZADO DE LAS TARJETAS DINÁMICAS */}
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      <div className="space-y-4">
         {isLoading ? (
           <p className="text-center text-gray-500">Cargando experiencias...</p>
         ) : experiencias.length === 0 ? (
@@ -299,6 +329,12 @@ export default function Hitos() {
                 diaAbreviado={datosFecha.diaAbreviado}
                 diaNumero={datosFecha.diaNumero}
                 fechaTexto={`${datosFecha.mes}, ${datosFecha.anio}`} // Ej: "Octubre, 2019"
+                eliminando={modoAccion === "eliminar"}
+                onSelect={() => {
+                  if (modoAccion === "eliminar") {
+                    setHitoEliminar(exp);
+                  }
+                }}
               />
             );
           })
