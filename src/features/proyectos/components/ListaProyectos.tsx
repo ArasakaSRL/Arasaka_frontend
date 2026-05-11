@@ -6,7 +6,7 @@ interface Props {
   loading: boolean;
   modoAccion: "editar" | "eliminar" | null;
   onEditar: (proyecto: Proyecto) => void;
-  onEliminarSeleccionado: (
+  onEliminar: (
     proyecto: Proyecto
   ) => void;
 }
@@ -16,7 +16,7 @@ export default function ListaProyectos({
   loading,
   modoAccion,
   onEditar,
-  onEliminarSeleccionado,
+  onEliminar,
 }: Props) {
 
   if (loading) {
@@ -38,7 +38,7 @@ export default function ListaProyectos({
               return;
             }
             if (modoAccion === "eliminar") {
-              onEliminarSeleccionado(proyecto);
+              onEliminar(proyecto);
             }
           }}
         />

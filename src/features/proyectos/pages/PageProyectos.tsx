@@ -62,7 +62,7 @@ export default function PageProyectos() {
               handleEditar(proyecto);
               setModoAccion(null);
             }}
-            onEliminarSeleccionado={(proyecto) => {
+            onEliminar={(proyecto) => {
               setProyectoEliminar(proyecto);
             }}
           />

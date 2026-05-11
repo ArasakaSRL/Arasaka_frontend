@@ -8,14 +8,21 @@ export type Certificado = {
 type Props = {
   cert: Certificado;
   onClick: () => void;
+  eliminando?:boolean;
 };
 
 // CertificadoCard.tsx - sacar el posicionamiento, la card no debe saber dónde está
-export function CertificadoCard({ cert, onClick }: Props) {
+export function CertificadoCard({ cert, onClick, eliminando }: Props) {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer rounded-xl overflow-hidden bg-white p-2 shadow-sm hover:scale-105 transition w-full h-full"
+      className={`rounded-xl overflow-hidden bg-white p-2 shadow-sm transition w-full h-full
+        ${
+          eliminando
+            ? ` cursor-pointer hover:bg-red-50 hover:ring-2 hover:ring-red-400`
+            : ` cursor-pointer hover:scale-105`
+        }
+      `}
     >
       <img
         src={cert.imagen}
