@@ -15,7 +15,10 @@ import ResetPassword from './pages/auth/ResetPassword'
 import Configuracion from './features/configuracion/page/Configuracion'
 import PortafolioPage from './features/portafolio/pages/PortfolioPage'
 import PortfolioPagePrivate from './features/portafolio/pages/PortfolioPagePrivate'
-import Mensajes from './pages/Dashboard/mensajes/Mensajes'
+import MensajesPrincipal from './pages/Dashboard/mensajes/MensajesPrincipal'
+import MensajesRecibidos from './pages/Dashboard/mensajes/MensajesRecibidos'
+import MensajesEnviados from './pages/Dashboard/mensajes/MensajesEnviados'
+import MensajesDestacados from './pages/Dashboard/mensajes/MensajesDestacados'
 import ReportesUsr from './features/reportesUsuario/page/ReportesUsr'
 
 export default function App() {
@@ -25,7 +28,10 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/Dashboard/perfilPersonal/PerfilPersonal" element={<PerfilPersonal />} />
-        <Route path="/Dashboard/mensajes/Mensajes" element={<Mensajes />} />
+        <Route path="/Dashboard/mensajes/Principal" element={<MensajesPrincipal />} />
+        <Route path="/Dashboard/mensajes/Recibidos" element={<MensajesRecibidos />} />
+        <Route path="/Dashboard/mensajes/Enviados" element={<MensajesEnviados />} />
+        <Route path="/Dashboard/mensajes/Destacados" element={<MensajesDestacados />} />
         <Route path="/auth/Login" element={<Login />} />
         <Route path="/auth/Register" element={<Register />} />
         <Route path="/Dashboard/proyectos/Proyectos" element={<Proyectos />} />

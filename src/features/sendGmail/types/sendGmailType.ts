@@ -18,6 +18,7 @@ export interface Mensaje {
     asunto: string;
     contenido: string;
     leido: boolean;
+    destacado: boolean;
     fecha_envio: string;
     adjuntos: AdjuntoMensaje[];
 }

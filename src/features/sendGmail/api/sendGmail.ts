@@ -48,3 +48,17 @@ export async function getMensaje(id: string): Promise<Mensaje> {
     const { data } = await apiClient.get<Mensaje>(`/mensajes/${id}`)
     return data
 }
+
+// POST /api/mensajes/{id}/destacar (requiere sesión activa)
+// Toggle destacado del mensaje, devuelve el nuevo estado
+export async function toggleDestacado(id: string): Promise<{ destacado: boolean }> {
+    const { data } = await apiClient.post<{ destacado: boolean }>(`/mensajes/${id}/destacar`)
+    return data
+}
+
+// GET /api/mensajes/destacados (requiere sesión activa)
+// Devuelve los mensajes destacados del usuario autenticado
+export async function getMensajesDestacados(): Promise<unknown> {
+    const { data } = await apiClient.get('/mensajes/destacados')
+    return data
+}

@@ -1,6 +1,6 @@
 import { Inbox, Send } from 'lucide-react'
 
-export type Tab = 'recibidos' | 'enviados'
+export type Tab = 'recibidos' | 'enviados' | 'destacados'
 
 interface Props {
     tab: Tab
