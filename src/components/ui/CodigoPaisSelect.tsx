@@ -53,7 +53,7 @@ const customStyles: StylesConfig<CodigoPaisOption> = {
     }),
     singleValue: (base) => ({ ...base, color: '#374151', fontSize: '14px', display: 'flex', alignItems: 'center' }),
     placeholder: (base) => ({ ...base, color: '#9ca3af', fontSize: '13px' }),
-    menu: (base) => ({ ...base, borderRadius: '0.75rem', overflow: 'hidden', zIndex: 20, minWidth: '220px' }),
+    menu: (base) => ({ ...base, borderRadius: '0.75rem', overflow: 'hidden', zIndex: 9999, minWidth: '220px' }),
     dropdownIndicator: (base) => ({ ...base, padding: '0 6px' }),
     indicatorSeparator: () => ({ display: 'none' }),
 }
@@ -91,6 +91,13 @@ export default function CodigoPaisSelect({ value, onChange }: CodigoPaisSelectPr
             styles={customStyles}
             placeholder="+00"
             noOptionsMessage={() => 'No encontrado'}
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            isSearchable
+            filterOption={(option, input) =>
+                option.data.label.toLowerCase().includes(input.toLowerCase()) ||
+                option.data.value.includes(input)
+            }
         />
     )
 }

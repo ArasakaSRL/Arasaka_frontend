@@ -6,9 +6,12 @@ import type { Profesion } from '@/features/auth/types/update-perfilPersonal';
 interface ProfesionesSectionProps {
     asignadas: Profesion[];
     setAsignadas: React.Dispatch<React.SetStateAction<Profesion[]>>;
+    onAgregar?: (p: Profesion) => void;
+    onQuitar?: (p: Profesion) => void;
+    onChange?: () => void;
 }
 
-export default function ProfesionesSection({ asignadas, setAsignadas }: ProfesionesSectionProps) {
+export default function ProfesionesSection({ asignadas, setAsignadas, onAgregar, onQuitar, onChange }: ProfesionesSectionProps) {
 
     const [catalogo, setCatalogo] = useState<Profesion[]>([])
     const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -22,6 +25,12 @@ export default function ProfesionesSection({ asignadas, setAsignadas }: Profesio
     const disponibles = catalogo.filter(p => !asignadas.some(a => a.id_profesion === p.id_profesion))
 
     async function handleAsignar(profesion: Profesion) {
+        if (onAgregar) {
+            onAgregar(profesion)
+            setDropdownOpen(false)
+            onChange?.()
+            return
+        }
         setLoadingId(profesion.id_profesion)
         try {
             await asignarProfesion({ id_profesion: profesion.id_profesion })
@@ -33,6 +42,11 @@ export default function ProfesionesSection({ asignadas, setAsignadas }: Profesio
     }
 
     async function handleDesasignar(profesion: Profesion) {
+        if (onQuitar) {
+            onQuitar(profesion)
+            onChange?.()
+            return
+        }
         setLoadingId(profesion.id_profesion)
         try {
             await desasignarProfesion(profesion.id_profesion)

@@ -5,7 +5,6 @@ import DashboardLayout from '@/layout/DashboardLayout'
 import PageHeader from '@/components/ui/PageHeader'
 import MensajesStats from '@/features/sendGmail/components/principal/MensajesStats'
 import MensajesRecientesCard from '@/features/sendGmail/components/principal/MensajesRecientesCard'
-import ActividadReciente from '@/features/sendGmail/components/principal/ActividadReciente'
 import { Inbox, Send, Mail, MessageSquare, Star, Loader2 } from 'lucide-react'
 
 function normalizeArray(res: unknown): Mensaje[] {

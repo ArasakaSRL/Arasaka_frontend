@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
 import SuspenseWrapper from '../components/SuspenseWrapper'
-import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades, Certificaiones, MensajesPrincipal, MensajesRecibidos, MensajesEnviados, MensajesDestacados } from './lazyRoutes'
+import { Home, About, NotFound, PerfilGeneral, PerfilEditar, PerfilTelefonos, PerfilPortafolio, Login, Register, Proyectos, Habilidades, Certificaiones, MensajesPrincipal, MensajesRecibidos, MensajesEnviados, MensajesDestacados } from './lazyRoutes'
 import Hitos from '@/features/hitos/page/Hitos'
 import Configuracion from '@/features/configuracion/page/Configuracion'
 import ReportesUsr from '@/features/reportesUsuario/page/ReportesUsr'
@@ -30,12 +30,20 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'Dashboard/perfilPersonal/PerfilPersonal',
-        element: (
-          <SuspenseWrapper>
-            <PerfilPersonal />
-          </SuspenseWrapper>
-        ),
+        path: 'Dashboard/perfil/General',
+        element: (<SuspenseWrapper><PerfilGeneral /></SuspenseWrapper>),
+      },
+      {
+        path: 'Dashboard/perfil/Editar',
+        element: (<SuspenseWrapper><PerfilEditar /></SuspenseWrapper>),
+      },
+      {
+        path: 'Dashboard/perfil/Telefonos',
+        element: (<SuspenseWrapper><PerfilTelefonos /></SuspenseWrapper>),
+      },
+      {
+        path: 'Dashboard/perfil/Portafolio',
+        element: (<SuspenseWrapper><PerfilPortafolio /></SuspenseWrapper>),
       },
 
       {
