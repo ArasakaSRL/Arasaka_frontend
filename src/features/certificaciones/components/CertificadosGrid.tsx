@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { CertificadoCard, type Certificado } from "./CertificadoCard";
 import { CertificadoViewer } from "./CertificadoViewer";
+type Props = {
+  certificados: Certificado[];
+  modoAccion: "editar" | "eliminar" | null;
+  onEliminar: (cert: Certificado) => void;
+}
 
-export function CertificadosGrid({ certificados }: { certificados: Certificado[] }) {
+export function CertificadosGrid({ certificados, modoAccion, onEliminar}: Props) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   const calcularLayout = (certs: Certificado[]) => {
@@ -60,9 +65,21 @@ export function CertificadosGrid({ certificados }: { certificados: Certificado[]
         {layout.map(({ cert }, index) => (
           <div
             key={cert.id}
-            className="w-full bg-white rounded-xl shadow-sm overflow-hidden p-2"
+            className={`w-full bg-white rounded-xl shadow-sm overflow-hidden p-2 transition-all select-none
+              ${
+                modoAccion==="eliminar"
+                  ? `cursor-pointer hover:bg-red-50 hover:ring-2 hover:ring-red-400`
+                  : `cursor-pointer `
+              }
+            `}
             style={{ height: cert.orientacion === "vertical" ? "70vw" : "50vw" }}
-            onClick={() => setViewerIndex(index)}
+            onClick={() => {
+            if (modoAccion==="eliminar") {
+              onEliminar?.(cert);
+              return;
+            }
+            setViewerIndex(index);
+          }}
           >
             <img
               src={cert.imagen}
@@ -88,7 +105,14 @@ export function CertificadosGrid({ certificados }: { certificados: Certificado[]
           >
             <CertificadoCard
               cert={cert}
-              onClick={() => setViewerIndex(index)}
+              onClick={() => {
+                if (modoAccion==="eliminar") {
+                  onEliminar?.(cert);
+                return;
+                }
+                setViewerIndex(index);
+              }}
+              eliminando = {modoAccion === "eliminar"}
             />
           </div>
         ))}

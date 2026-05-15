@@ -10,6 +10,8 @@ type CardHitosProps = {
   diaNumero: number;    
   fechaTexto: string;   
   disabled?: boolean;
+  eliminando?: boolean;
+  onSelect?: () => void;
 };
 
 const borderColors = {
@@ -29,14 +31,33 @@ export function CardHitos({
   diaNumero,
   fechaTexto,
   disabled = false, 
+  eliminando,
+  onSelect,
 }: CardHitosProps) {
   return (
-    <div className={`w-full ${disabled ? "opacity-60 grayscale" : ""}`}>
+    <div 
+    onClick={onSelect}
+    className={`
+      w-full
+      p-2
+      rounded-xl
+      transition-colors
+      ${
+        eliminando
+          ? `
+            cursor-pointer
+            hover:bg-red-50
+          `
+          : ""
+      }
+      ${disabled ? "opacity-60 grayscale" : ""}
+    `}
+    >
       
-      <div className="grid gap-3 items-start grid-cols-[auto_1fr]">
+      <div className="grid w-full items-start gap-3 sm:gap-6 grid-cols-[110px_1fr] sm:grid-cols-[160px_1fr]">
         
         {/* Fecha */}
-        <div>
+        <div >
           <FechaHito
             diaAbreviado={diaAbreviado}
             diaNumero={diaNumero}
@@ -45,33 +66,33 @@ export function CardHitos({
           />
         </div>
 
-        <div className="flex">
+        <div className="flex w-full">
           
           {/* Línea lateral dinámica */}
           <div
             className={`border-r-4 pr-3 mr-3 ${
               disabled
-                ? "border-[var(--color-dark-300)]"
+                ? "border-dark-300"
                 : borderColors[color]
             }`}
           />
 
           {/* Contenido */}
           <div
-            className={`grid gap-x-2 gap-y-1 text-[10px] sm:text-sm md:text-base grid-cols-[max-content_1fr] ${
+            className={`grid gap-x-2 gap-y-1 text-[10px] sm:text-sm md:text-base grid-cols-[max-content_1fr]  ${
               disabled
-                ? "text-[var(--color-dark-500)]"
+                ? "text-dark-500"
                 : ""
             }`}
           >
-            <div className="font-semibold">Cargo:</div>
-            <div>{cargo}</div>
+            <div className="font-semibold text-left">Cargo:</div>
+            <div className="text-left">{cargo}</div>
 
-            <div className="font-semibold">Organización:</div>
-            <div>{organizacion}</div>
+            <div className="font-semibold text-left">Organización:</div>
+            <div className="text-left">{organizacion}</div>
 
-            <div className="font-semibold">Descripción:</div>
-            <div>{descripcion}</div>
+            <div className="font-semibold text-left">Descripción:</div>
+            <div className="text-left">{descripcion}</div>
           </div>
 
         </div>
@@ -80,7 +101,7 @@ export function CardHitos({
       <div
         className={`mt-4 border-b ${
           disabled
-            ? "border-[var(--color-dark-200)]"
+            ? "border-dark-200"
             : "border-gray-300"
         }`}
       ></div>

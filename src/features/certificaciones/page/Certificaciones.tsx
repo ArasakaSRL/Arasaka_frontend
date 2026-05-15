@@ -15,11 +15,13 @@ import { toast } from "@/components/Alerta";
 import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
+import type { Certificado } from "../components/CertificadoCard";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   const [filtroCategoriaId, setFiltroCategoriaId] = useState<string | null>(null);
+  const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
+  const [certificadoEliminar, setCertificadoEliminar] =   useState<Certificado | null>(null);
   
   // ESTADOS DEL FORMULARIO
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
@@ -150,7 +152,26 @@ export default function Certificaciones() {
   return (
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
-        <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Certificacion" titulo="Certificaciones y logros" descripcion=""  ></Banner>
+        <Banner 
+          titulo="Certificaciones"
+          descripcion=""
+          totalItems={certificados.length}
+          eliminando={modoAccion === "eliminar"}
+          onAgregar={() => {
+            setModoAccion(null);
+            setOpenModal(true);
+          }}
+          onEliminar={() => {
+            toast.warning(
+              "Selecciona una certificación"
+            );
+            setModoAccion("eliminar");
+          }}
+          onCancelar={() => {
+            setModoAccion(null);
+            setCertificadoEliminar(null);
+          }}
+        />
 
         <ModalForm isOpen={openModal} closeModal={cerrarModal} maxWidth="max-w-5xl">
           <div className="p-6 space-y-4">
@@ -357,7 +378,12 @@ export default function Certificaciones() {
              No hay certificaciones en esta categoría.
            </div>
         ) : (
-          <CertificadosGrid certificados={certificados} />
+          <CertificadosGrid 
+          certificados={certificados} 
+          modoAccion = {modoAccion} 
+          onEliminar={(certs) => {
+              setCertificadoEliminar(certs);
+            }}/>
         )}
         
       </div>
