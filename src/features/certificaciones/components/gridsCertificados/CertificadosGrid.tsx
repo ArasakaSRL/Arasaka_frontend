@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { CertificadoCard, type Certificado } from "./CertificadoCard";
-import { CertificadoViewer } from "./CertificadoViewer";
+import { CertificadoCard, type Certificado } from "../ordenarCards/CertificadoCard";
+import { CertificadoViewer } from "../CertificadoViewer";
 
 type Props = {
   certificados: Certificado[];

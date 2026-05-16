@@ -8,18 +8,13 @@ import { ImagenUploader } from "../components/ImagenUploader";
 import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { uploadImage } from "@/firebase/firebaseStorage";
-import { CertificadosGrid } from "../components/CertificadosGrid";
 import { Carousel } from "../components/carruselCards/Carrusel";
 import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
 import { toast } from "@/components/Alerta";
 import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import type { Certificado } from "../components/CertificadoCard";
-import BotonSegmentado from "../components/botonSegmentado";
-import { CardHibrida } from "../components/ordenarCards/cardHibrida";
-import { GridHibrido } from "../components/gridsCertificados/GridHibrido";
-import { CardTexto } from "../components/ordenarCards/CardTexto";
+import { SeccionCertificados } from "../components/SeccionCertificados";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
@@ -362,31 +357,6 @@ export default function Certificaciones() {
           )}
         </div>
 
-        {/* CERTIFICACIONES (responsivo corregido anteriormente) */}
-        <h2 className="
-          text-lg
-          sm:text-xl
-          md:text-4xl
-          lg:text-5xl
-          text-dark-500
-          tracking-widest
-          font-semibold-ui
-          mt-6
-          flex justify-center text-center items-center gap-2
-        ">
-          CERTIFICACIONES
-          <CardHibrida
-            titulo="Certificación en Finanzas Públicas"
-            descripcion="Análisis y sostenibilidad fiscal aplicada."
-            institucion="Ministerio de Economía"
-            fecha="2025"
-            categoria="Idiomas"
-            imagen="https://firebasestorage.googleapis.com/v0/b/arasaka-tis.firebasestorage.app/o/certificaciones%2F1777870483400_pexels-suzyhazelwood-34137259.jpg?alt=media&token=699c8413-de3c-4463-8c2b-457ba0bd7d43"
-          />
-          {isUsingFallbackCerts && (
-            <span className="text-xs text-orange-500 font-normal tracking-normal hidden sm:inline"></span>
-          )}
-        </h2>
         {/* Manejo de carga y grid de certificados igual */}
         {isLoadingCerts ? (
           <div className="flex justify-center items-center h-40 text-gray-400">
@@ -397,23 +367,16 @@ export default function Certificaciones() {
              No hay certificaciones en esta categoría.
            </div>
         ) : (
-          <CertificadosGrid 
-          certificados={certificados} 
-          modoAccion = {modoAccion} 
-          certificadosEliminar={certificadosEliminar}
-          onEliminar={(cert) => {
-            toggleEliminar(cert.id);
-          }}/>
+          <SeccionCertificados
+            certificados={certificados}
+            modoAccion={modoAccion}
+            certificadosEliminar={certificadosEliminar}
+            onEliminar={(cert) => {
+              toggleEliminar(cert.id);
+            }}
+          />
         )}
-        
       </div>
-      <CardTexto 
-        titulo="Certificación en Finanzas Públicas"
-        descripcion="Análisis y sostenibilidad fiscal aplicada."
-        institucion="Ministerio de Economía"
-        fecha="2025"
-        categoria="Idiomas"
-      ></CardTexto>
     </DashboardLayout>
   );
 }

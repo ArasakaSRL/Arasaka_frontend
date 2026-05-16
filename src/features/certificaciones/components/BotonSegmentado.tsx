@@ -1,39 +1,65 @@
-import { useState } from "react";
 import { List, LayoutList, Grid2x2 } from "lucide-react";
 
-type Vista = "grid" | "list" | "layout";
+export type Vista =
+  | "cards"
+  | "hibrido"
+  | "detalles";
 
-export default function BotonSegmentado() {
-  const [active, setActive] = useState<Vista>("grid");
+type Props = {
+  vista: Vista;
+  onChange: (vista: Vista) => void;
+};
+
+export default function BotonSegmentado({
+  vista,
+  onChange,
+}: Props) {
 
   const items = [
     {
-      id: "grid",
+      id: "cards",
       icon: Grid2x2,
     },
     {
-      id: "layout",
+      id: "hibrido",
       icon: LayoutList,
     },
     {
-      id: "list",
+      id: "detalles",
       icon: List,
     },
   ] as const;
 
   return (
-    <div className="inline-flex items-center rounded-2xl bg-white p-1 shadow-sm border border-gray-200">
+    <div
+      className="
+        inline-flex
+        items-center
+        rounded-2xl
+        bg-white
+        p-1
+        shadow-sm
+        border border-gray-200
+      "
+    >
       {items.map((item) => {
+
         const Icon = item.icon;
-        const isActive = active === item.id;
+
+        const isActive =
+          vista === item.id;
 
         return (
           <button
             key={item.id}
-            onClick={() => setActive(item.id)}
+            onClick={() =>
+              onChange(item.id)
+            }
             className={`
-              flex h-12 w-12 items-center justify-center
-              rounded-xl transition-all duration-200
+              flex h-12 w-12
+              items-center justify-center
+              rounded-xl
+              transition-all duration-200
               ${
                 isActive
                   ? "bg-black text-white"
@@ -41,7 +67,10 @@ export default function BotonSegmentado() {
               }
             `}
           >
-            <Icon size={22} strokeWidth={2.3} />
+            <Icon
+              size={22}
+              strokeWidth={2.3}
+            />
           </button>
         );
       })}

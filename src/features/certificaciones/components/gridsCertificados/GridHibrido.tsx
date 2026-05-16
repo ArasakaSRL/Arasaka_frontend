@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { CertificadoViewer } from "../CertificadoViewer";
-import { CardHibrida } from "../ordenarCards/cardHibrida";
+import { CardHibrida } from "@/features/certificaciones/components/ordenarCards/CardHibrida";
 
 export type CertificacionHibrida = {
   id: string;
   titulo: string;
-  descripcion: string;
-  institucion: string;
-  fecha: string;
-  categoria: string;
+  descripcion?: string;
+  institucion?: string;
+  fecha?: string;
+  categoria?: string;
   imagen: string;
 };
 
@@ -32,10 +32,10 @@ export function GridHibrido({
           <CardHibrida
             key={cert.id}
             titulo={cert.titulo}
-            descripcion={cert.descripcion}
-            institucion={cert.institucion}
-            fecha={cert.fecha}
-            categoria={cert.categoria}
+            descripcion={''+cert.descripcion}
+            institucion={''+cert.institucion}
+            fecha={''+cert.fecha}
+            categoria={''+cert.categoria}
             imagen={cert.imagen}
             onClick={() => setViewerIndex(index)}
           />
@@ -57,10 +57,10 @@ export function GridHibrido({
           <CardHibrida
             key={cert.id}
             titulo={cert.titulo}
-            descripcion={cert.descripcion}
-            institucion={cert.institucion}
-            fecha={cert.fecha}
-            categoria={cert.categoria}
+            descripcion={''+cert.descripcion}
+            institucion={''+cert.institucion}
+            fecha={''+cert.fecha}
+            categoria={''+cert.categoria}
             imagen={cert.imagen}
             onClick={() => setViewerIndex(index)}
           />
