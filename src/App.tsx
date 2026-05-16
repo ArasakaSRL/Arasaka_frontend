@@ -23,6 +23,7 @@ import PerfilGeneral from './pages/Dashboard/perfil/PerfilGeneral'
 import PerfilEditar from './pages/Dashboard/perfil/PerfilEditar'
 import PerfilTelefonos from './pages/Dashboard/perfil/PerfilTelefonos'
 import PerfilPortafolio from './pages/Dashboard/perfil/PerfilPortafolio'
+import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 
 export default function App() {
   return (
@@ -45,6 +46,8 @@ export default function App() {
         <Route path="/Dashboard/certificaciones/Certificaciones" element={< Certificaciones/>} />
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
         <Route path="/Dashboard/configuracion/Configuracion" element={<Configuracion/>} />
+        <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
+        <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />

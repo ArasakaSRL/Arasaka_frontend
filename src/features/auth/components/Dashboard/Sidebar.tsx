@@ -1,6 +1,6 @@
 import {
     User, Briefcase, Award,
-    Trophy, BarChart3, Settings, LogOut, ShieldCheck, MessageSquare,
+    Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
     Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -48,7 +48,13 @@ const menuItems: MenuItem[] = [
         ]
     },
     { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
-    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
+    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
+        submenu: [
+            { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
+            { icon: HatGlasses ,           label: 'Visibilidad General',  path: '/Dashboard/configuracion/General' },
+        ]
+
+    },
 ];
 
 interface SidebarProps {
