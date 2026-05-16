@@ -23,6 +23,7 @@ import PerfilGeneral from './pages/Dashboard/perfil/PerfilGeneral'
 import PerfilEditar from './pages/Dashboard/perfil/PerfilEditar'
 import PerfilTelefonos from './pages/Dashboard/perfil/PerfilTelefonos'
 import PerfilPortafolio from './pages/Dashboard/perfil/PerfilPortafolio'
+import VistaProyecto from '@/features/vistaProyectos/pages/PageVistaProyectos'
 
 export default function App() {
   return (
@@ -52,6 +53,8 @@ export default function App() {
       </Route>
       <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
+      <Route path="/portafolio/:slug/proyectos/:id" element={<VistaProyecto />} />
+      <Route path="/portafolio/privado/:slug/proyectos/:id" element={<VistaProyecto />} />
     </Routes>
   )
 }

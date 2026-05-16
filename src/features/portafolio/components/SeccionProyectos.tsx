@@ -1,8 +1,11 @@
 import React from 'react';
 import { ExternalLink, Code2, ArrowUpRight ,LayoutPanelLeft} from 'lucide-react';
 import type { Proyectos as Proyecto } from '../types/portafolioType';
-import { ChevronRight } from 'lucide-react';
+import { useNavigate,useParams } from 'react-router-dom';
+
 const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
+  const { slug } = useParams();
+  
   return (
     <div className="w-full  max-w-5xl mx-auto p-4 md:p-12 font-sans bg-white">
 
@@ -24,16 +27,20 @@ const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {proyectos.map((proyecto) => (
-          <CardProyectoVertical key={proyecto.id_proyecto} proyecto={proyecto} />
+          <CardProyectoVertical key={proyecto.id_proyecto} proyecto={proyecto} slug={slug ?? ''} />
         ))}
       </div>
     </div>
   );
 };
 
-const CardProyectoVertical = ({ proyecto }: { proyecto: Proyecto }) => {
+const CardProyectoVertical = ({ proyecto, slug }: { proyecto: Proyecto; slug: string }) => {
+  const navigate = useNavigate();
+  const handleNavegacion = () => {
+    navigate(`/portafolio/${slug}/proyectos/${proyecto.id_proyecto}`);
+  }
   return (
-    <div data-proyecto-action="clic_general" data-proyecto-id={proyecto.id_proyecto} className="group relative aspect-3/4 w-full overflow-hidden rounded-2xl bg-[#0a1120] border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20">
+    <div onClick={handleNavegacion} data-proyecto-action="clic_general" data-proyecto-id={proyecto.id_proyecto} className="group relative aspect-3/4 w-full overflow-hidden rounded-2xl bg-[#0a1120] border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20">
       
      
       <div className="absolute inset-0">
