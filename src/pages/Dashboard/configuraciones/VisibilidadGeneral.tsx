@@ -111,7 +111,7 @@ export default function VisibilidadGeneral() {
 
         <Banner
           titulo="Visibilidad General"
-          descripcion="Configuración global del portafolio"
+          descripcion=""
         />
 
         <ConfiguracionGeneral titulo="Configuración General">

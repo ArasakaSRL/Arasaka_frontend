@@ -98,7 +98,7 @@ export default function VisibilidadComponentes() {
 
         <Banner
           titulo="Visibilidad de Componentes"
-          descripcion="Controla qué se muestra en el portafolio"
+          descripcion=""
         />
 
         <ConfiguracionGeneral titulo="Visibilidad Componentes">
