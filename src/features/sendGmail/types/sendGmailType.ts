@@ -3,6 +3,7 @@ export interface EmailRequest {
     from: string;
     subject: string;
     content: string;
+    nombre_remitente?: string;
     adjuntos?: File[];
 }
 
