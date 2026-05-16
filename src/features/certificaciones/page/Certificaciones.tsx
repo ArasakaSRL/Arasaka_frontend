@@ -16,12 +16,16 @@ import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Certificado } from "../components/CertificadoCard";
+import BotonSegmentado from "../components/botonSegmentado";
+import { CardHibrida } from "../components/ordenarCards/cardHibrida";
+import { GridHibrido } from "../components/gridsCertificados/GridHibrido";
+import { CardTexto } from "../components/ordenarCards/CardTexto";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   const [filtroCategoriaId, setFiltroCategoriaId] = useState<string | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
-  const [certificadoEliminar, setCertificadoEliminar] =   useState<Certificado | null>(null);
+  const [certificadosEliminar, setCertificadosEliminar]= useState<string[]>([]);
   
   // ESTADOS DEL FORMULARIO
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
@@ -58,6 +62,14 @@ export default function Certificaciones() {
     imagen: false,
     fecha: false,
   });
+
+  const toggleEliminar = (id: string) => {
+    setCertificadosEliminar((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id]
+    );
+  };
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
@@ -113,7 +125,7 @@ export default function Certificaciones() {
 
       setOpenModal(false);
       setTituloForm("");
-      setInstitucionForm(""); // 👇 3. LIMPIAMOS EL ESTADO
+      setInstitucionForm(""); 
       setDescripcionForm("");
       setFechaObtencionForm("");
       setArchivoImagenForm(null);
@@ -169,7 +181,7 @@ export default function Certificaciones() {
           }}
           onCancelar={() => {
             setModoAccion(null);
-            setCertificadoEliminar(null);
+            setCertificadosEliminar([]);
           }}
         />
 
@@ -363,11 +375,18 @@ export default function Certificaciones() {
           flex justify-center text-center items-center gap-2
         ">
           CERTIFICACIONES
+          <CardHibrida
+            titulo="Certificación en Finanzas Públicas"
+            descripcion="Análisis y sostenibilidad fiscal aplicada."
+            institucion="Ministerio de Economía"
+            fecha="2025"
+            categoria="Idiomas"
+            imagen="https://firebasestorage.googleapis.com/v0/b/arasaka-tis.firebasestorage.app/o/certificaciones%2F1777870483400_pexels-suzyhazelwood-34137259.jpg?alt=media&token=699c8413-de3c-4463-8c2b-457ba0bd7d43"
+          />
           {isUsingFallbackCerts && (
             <span className="text-xs text-orange-500 font-normal tracking-normal hidden sm:inline"></span>
           )}
         </h2>
-        
         {/* Manejo de carga y grid de certificados igual */}
         {isLoadingCerts ? (
           <div className="flex justify-center items-center h-40 text-gray-400">
@@ -381,12 +400,20 @@ export default function Certificaciones() {
           <CertificadosGrid 
           certificados={certificados} 
           modoAccion = {modoAccion} 
-          onEliminar={(certs) => {
-              setCertificadoEliminar(certs);
-            }}/>
+          certificadosEliminar={certificadosEliminar}
+          onEliminar={(cert) => {
+            toggleEliminar(cert.id);
+          }}/>
         )}
         
       </div>
+      <CardTexto 
+        titulo="Certificación en Finanzas Públicas"
+        descripcion="Análisis y sostenibilidad fiscal aplicada."
+        institucion="Ministerio de Economía"
+        fecha="2025"
+        categoria="Idiomas"
+      ></CardTexto>
     </DashboardLayout>
   );
 }

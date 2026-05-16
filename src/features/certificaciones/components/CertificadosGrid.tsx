@@ -1,130 +1,142 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CertificadoCard, type Certificado } from "./CertificadoCard";
 import { CertificadoViewer } from "./CertificadoViewer";
+
 type Props = {
   certificados: Certificado[];
   modoAccion: "editar" | "eliminar" | null;
+  certificadosEliminar: string[];
   onEliminar: (cert: Certificado) => void;
-}
+};
 
-export function CertificadosGrid({ certificados, modoAccion, onEliminar}: Props) {
+type Columna = {
+  altura: number;
+  items: {
+    cert: Certificado;
+    index: number;
+  }[];
+};
+
+export function CertificadosGrid({
+  certificados,
+  modoAccion,
+  certificadosEliminar,
+  onEliminar,
+}: Props) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
-  const calcularLayout = (certs: Certificado[]) => {
-    type Item = { cert: Certificado; col: number; row: number; colSpan: number; rowSpan: number };
-    const items: Item[] = [];
-    const ocupado: Set<string> = new Set();
-    const estaOcupado = (col: number, row: number) => ocupado.has(`${col},${row}`);
-    const ocuparCeldas = (col: number, row: number, colSpan: number, rowSpan: number) => {
-      for (let r = row; r < row + rowSpan; r++)
-        for (let c = col; c < col + colSpan; c++)
-          ocupado.add(`${c},${r}`);
-    };
-    const siguienteCeldaLibre = (col: number, row: number): [number, number] => {
-      let c = col, r = row;
-      while (estaOcupado(c, r)) { c++; if (c > 4) { c = 1; r++; } }
-      return [c, r];
-    };
+  const columnas = useMemo(() => {
+    const cols: Columna[] = [
+      { altura: 0, items: [] },
+      { altura: 0, items: [] },
+      { altura: 0, items: [] },
+    ];
 
-    let col = 1, row = 1;
-    for (const cert of certs) {
-      [col, row] = siguienteCeldaLibre(col, row);
-      if (cert.orientacion === "vertical") {
-        let placed = false;
-        for (let c = col; c <= 4; c++) {
-          if (!estaOcupado(c, row) && !estaOcupado(c, row + 1)) {
-            items.push({ cert, col: c, row, colSpan: 1, rowSpan: 2 });
-            ocuparCeldas(c, row, 1, 2);
-            col = c + 1;
-            placed = true;
-            break;
-          }
+    certificados.forEach((cert, index) => {
+      /**
+       * Peso visual
+       */
+      const peso =
+        cert.orientacion === "vertical"
+          ? 2.2
+          : 1;
+
+      /**
+       * Buscar columna más baja
+       */
+      let columnaMenor = cols[0];
+
+      for (const col of cols) {
+        if (col.altura < columnaMenor.altura) {
+          columnaMenor = col;
         }
-        if (!placed) {
-          row++; col = 1;
-          items.push({ cert, col, row, colSpan: 1, rowSpan: 2 });
-          ocuparCeldas(col, row, 1, 2);
-          col = 2;
-        }
-      } else {
-        items.push({ cert, col, row, colSpan: 1, rowSpan: 1 });
-        ocuparCeldas(col, row, 1, 1);
-        col++;
-        if (col > 4) { col = 1; row++; }
       }
-    }
-    return items;
-  };
 
-  const layout = calcularLayout(certificados);
+      /**
+       * Insertar certificado
+       */
+      columnaMenor.items.push({
+        cert,
+        index,
+      });
+
+      columnaMenor.altura += peso;
+    });
+
+    return cols;
+  }, [certificados]);
 
   return (
     <>
-      {/* ── MÓVIL: carrusel horizontal ── */}
-      <div className="flex md:hidden flex-col gap-4">
-        {layout.map(({ cert }, index) => (
-          <div
-            key={cert.id}
-            className={`w-full bg-white rounded-xl shadow-sm overflow-hidden p-2 transition-all select-none
-              ${
-                modoAccion==="eliminar"
-                  ? `cursor-pointer hover:bg-red-50 hover:ring-2 hover:ring-red-400`
-                  : `cursor-pointer `
-              }
-            `}
-            style={{ height: cert.orientacion === "vertical" ? "70vw" : "50vw" }}
-            onClick={() => {
-            if (modoAccion==="eliminar") {
-              onEliminar?.(cert);
-              return;
-            }
-            setViewerIndex(index);
-          }}
-          >
-            <img
-              src={cert.imagen}
-              alt={cert.titulo}
-              className="w-full h-full object-contain"
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* ── DESKTOP: grid con layout inteligente ── */}
-      <div
-        className="hidden md:grid grid-cols-4 gap-4"
-        style={{ gridAutoRows: "220px" }}
-      >
-        {layout.map(({ cert, col, row, colSpan, rowSpan }, index) => (
-          <div
-            key={cert.id}
-            style={{
-              gridColumn: `${col} / span ${colSpan}`,
-              gridRow: `${row} / span ${rowSpan}`,
-            }}
-          >
+      {/* ───────── MOBILE ───────── */}
+      <div className="flex md:hidden flex-col gap-5">
+        {certificados.map((cert, index) => (
+          <div key={cert.id}>
             <CertificadoCard
               cert={cert}
+              eliminando={modoAccion === "eliminar"}
+              seleccionado={certificadosEliminar.includes(cert.id)}
               onClick={() => {
-                if (modoAccion==="eliminar") {
-                  onEliminar?.(cert);
-                return;
+                if (modoAccion === "eliminar") {
+                  onEliminar(cert);
+                  return;
                 }
+
                 setViewerIndex(index);
               }}
-              eliminando = {modoAccion === "eliminar"}
             />
           </div>
         ))}
       </div>
 
+      {/* ───────── DESKTOP MASONRY ───────── */}
+      <div className="hidden md:grid grid-cols-3 gap-6 items-start">
+        {columnas.map((columna, colIndex) => (
+          <div
+            key={colIndex}
+            className="flex flex-col gap-6"
+          >
+            {columna.items.map(({ cert, index }) => (
+              <CertificadoCard
+                key={cert.id}
+                cert={cert}
+                eliminando={modoAccion === "eliminar"}
+                seleccionado={certificadosEliminar.includes(cert.id)}
+                onClick={() => {
+                  if (modoAccion === "eliminar") {
+                    onEliminar(cert);
+                    return;
+                  }
+
+                  setViewerIndex(index);
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* ───────── VIEWER ───────── */}
       {viewerIndex !== null && (
         <CertificadoViewer
-          certificados={layout.map(l => l.cert)}
+          certificados={certificados}
           indexActual={viewerIndex}
           onClose={() => setViewerIndex(null)}
-          onNext={() => setViewerIndex(p => p === null ? null : (p + 1) % layout.length)}
-          onPrev={() => setViewerIndex(p => p === null ? null : (p - 1 + layout.length) % layout.length)}
+          onNext={() =>
+            setViewerIndex((p) =>
+              p === null
+                ? null
+                : (p + 1) % certificados.length
+            )
+          }
+          onPrev={() =>
+            setViewerIndex((p) =>
+              p === null
+                ? null
+                : (p - 1 + certificados.length) %
+                  certificados.length
+            )
+          }
         />
       )}
     </>
