@@ -1,18 +1,19 @@
 import { useMemo, useState } from "react";
-import { CertificadoCard, type Certificado } from "../ordenarCards/CertificadoCard";
 import { CertificadoViewer } from "../CertificadoViewer";
+import type { CertificacionAPI } from "../../types";
+import { CertificadoCard, type Certificado } from "../ordenarCards/CertificadoCard";
 
 type Props = {
-  certificados: Certificado[];
+  certificados: CertificacionAPI[];
   modoAccion: "editar" | "eliminar" | null;
   certificadosEliminar: string[];
-  onEliminar: (cert: Certificado) => void;
+  onEliminar: (cert: CertificacionAPI) => void;
 };
 
 type Columna = {
   altura: number;
   items: {
-    cert: Certificado;
+    cert: CertificacionAPI;
     index: number;
   }[];
 };
@@ -24,6 +25,13 @@ export function CertificadosGrid({
   onEliminar,
 }: Props) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+
+  const adaptarCertificado = (cert: CertificacionAPI): Certificado => ({
+    id: cert.id_certificacion,
+    titulo: cert.titulo,
+    imagen: cert.url_archivo,
+    orientacion: (cert.orientacion_imagen as "horizontal" | "vertical") || "horizontal",
+  });
 
   const columnas = useMemo(() => {
     const cols: Columna[] = [
@@ -37,7 +45,7 @@ export function CertificadosGrid({
        * Peso visual
        */
       const peso =
-        cert.orientacion === "vertical"
+        cert.orientacion_imagen === "vertical"
           ? 2.2
           : 1;
 
@@ -71,11 +79,11 @@ export function CertificadosGrid({
       {/* ───────── MOBILE ───────── */}
       <div className="flex md:hidden flex-col gap-5">
         {certificados.map((cert, index) => (
-          <div key={cert.id}>
+          <div key={cert.id_certificacion}>
             <CertificadoCard
-              cert={cert}
+              cert={adaptarCertificado(cert)}
               eliminando={modoAccion === "eliminar"}
-              seleccionado={certificadosEliminar.includes(cert.id)}
+              seleccionado={certificadosEliminar.includes(cert.id_certificacion)}
               onClick={() => {
                 if (modoAccion === "eliminar") {
                   onEliminar(cert);
@@ -98,10 +106,10 @@ export function CertificadosGrid({
           >
             {columna.items.map(({ cert, index }) => (
               <CertificadoCard
-                key={cert.id}
-                cert={cert}
+                key={cert.id_certificacion}
+                cert={adaptarCertificado(cert)}
                 eliminando={modoAccion === "eliminar"}
-                seleccionado={certificadosEliminar.includes(cert.id)}
+                seleccionado={certificadosEliminar.includes(cert.id_certificacion)}
                 onClick={() => {
                   if (modoAccion === "eliminar") {
                     onEliminar(cert);

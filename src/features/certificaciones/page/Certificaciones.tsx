@@ -409,7 +409,8 @@ export default function Certificaciones() {
             modoAccion={modoAccion}
             certificadosEliminar={certificadosEliminar}
             onEliminar={(cert) => {
-              toggleEliminar(cert.id);
+              // 👇 CAMBIO AQUÍ: Usamos el nuevo ID de la API
+              toggleEliminar(cert.id_certificacion); 
             }}
           />
         )}

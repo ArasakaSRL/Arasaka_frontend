@@ -1,8 +1,9 @@
+import type { CertificacionAPI } from "../../types";
 import { CardTexto } from "../ordenarCards/CardTexto";
-import type { Certificado } from "../ordenarCards/CertificadoCard";
+
 
 type Props = {
-  certificados: Certificado[];
+  certificados: CertificacionAPI[];
 
   modoAccion:
     | "editar"
@@ -12,7 +13,7 @@ type Props = {
   certificadosEliminar: string[];
 
   onEliminar: (
-    cert: Certificado
+    cert: CertificacionAPI
   ) => void;
 };
 
@@ -34,18 +35,18 @@ export function GridDetalles({
     >
       {certificados.map((cert) => (
         <CardTexto
-          key={cert.id}
+          key={cert.id_certificacion}
           titulo={cert.titulo}
-          descripcion={""+cert.descripcion}
-          institucion={""+cert.institucion}
-          fecha={""+cert.fecha}
-          categoria={""+cert.categoria}
+          descripcion={cert.descripcion || ""}
+          institucion={cert.institucion_emisora || ""}
+          fecha={cert.fecha_obtencion ? cert.fecha_obtencion.split('T')[0] : ""}
+          categoria={cert.categoria_certificacion?.nombre_categoria || ""}
           eliminando={
           modoAccion === "eliminar"
         }
 
         seleccionado={
-          certificadosEliminar.includes(cert.id)
+          certificadosEliminar.includes(cert.id_certificacion)
         }
 
         onClick={() => {

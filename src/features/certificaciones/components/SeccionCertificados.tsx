@@ -8,10 +8,10 @@ import { CertificadosGrid } from "./gridsCertificados/CertificadosGrid";
 import { GridDetalles } from "./gridsCertificados/GridDetalles";
 import { GridHibrido } from "./gridsCertificados/GridHibrido";
 
-import type { Certificado } from "./ordenarCards/CertificadoCard";
+import type { CertificacionAPI } from "../types";
 
 type Props = {
-  certificados: Certificado[];
+  certificados: CertificacionAPI[];
 
   modoAccion:
     | "editar"
@@ -21,7 +21,7 @@ type Props = {
   certificadosEliminar: string[];
 
   onEliminar: (
-    cert: Certificado
+    cert: CertificacionAPI
   ) => void;
 };
 

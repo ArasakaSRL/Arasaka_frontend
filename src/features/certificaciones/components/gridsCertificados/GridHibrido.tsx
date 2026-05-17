@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CertificadoViewer } from "../CertificadoViewer";
 import { CardHibrida } from "@/features/certificaciones/components/ordenarCards/CardHibrida";
-import type { Certificado } from "../ordenarCards/CertificadoCard";
+import type { CertificacionAPI } from "../../types";
 
 export type CertificacionHibrida = {
   id: string;
@@ -14,7 +14,7 @@ export type CertificacionHibrida = {
 };
 
 type Props = {
-  certificados: Certificado[];
+  certificados: CertificacionAPI[];
 
   modoAccion:
     | "editar"
@@ -24,7 +24,7 @@ type Props = {
   certificadosEliminar: string[];
 
   onEliminar: (
-    cert: Certificado
+    cert: CertificacionAPI
   ) => void;
 };
 
@@ -45,13 +45,13 @@ export function GridHibrido({
 
         {certificados.map((cert, index) => (
           <CardHibrida
-            key={cert.id}
+            key={cert.id_certificacion}
             titulo={cert.titulo}
-            descripcion={''+cert.descripcion}
-            institucion={''+cert.institucion}
-            fecha={''+cert.fecha}
-            categoria={''+cert.categoria}
-            imagen={cert.imagen}
+            descripcion={cert.descripcion || ""}
+            institucion={cert.institucion_emisora || ""}
+            fecha={cert.fecha_obtencion ? cert.fecha_obtencion.split('T')[0] : ""}
+            categoria={cert.categoria_certificacion?.nombre_categoria || ""}
+            imagen={cert.url_archivo}
             onClick={() => {
             if (modoAccion === "eliminar") {
               onEliminar(cert);
@@ -77,19 +77,19 @@ export function GridHibrido({
 
         {certificados.map((cert, index) => (
           <CardHibrida
-            key={cert.id}
+            key={cert.id_certificacion}
             titulo={cert.titulo}
-            descripcion={""+cert.descripcion}
-            institucion={""+cert.institucion}
-            fecha={""+cert.fecha}
-            categoria={""+cert.categoria}
-            imagen={cert.imagen}
+            descripcion={cert.descripcion || ""}
+            institucion={cert.institucion_emisora || ""}
+            fecha={cert.fecha_obtencion ? cert.fecha_obtencion.split('T')[0] : ""}
+            categoria={cert.categoria_certificacion?.nombre_categoria || ""}
+            imagen={cert.url_archivo}
             eliminando={
               modoAccion === "eliminar"
             }
 
             seleccionado={
-              certificadosEliminar.includes(cert.id)
+              certificadosEliminar.includes(cert.id_certificacion)
             }
             onClick={() => {
               if (modoAccion === "eliminar") {
@@ -108,9 +108,9 @@ export function GridHibrido({
       {viewerIndex !== null && (
         <CertificadoViewer
           certificados={certificados.map((cert) => ({
-            id: cert.id,
+            id: cert.id_certificacion,
             titulo: cert.titulo,
-            imagen: cert.imagen,
+            imagen: cert.url_archivo,
             orientacion: "horizontal",
           }))}
           indexActual={viewerIndex}
