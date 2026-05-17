@@ -11,6 +11,7 @@ import ModalForm from "@/components/Modal";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
+import { BotonEliminar } from "@/features/certificaciones/components/BotonEliminar";
 
 type Experiencia = {
   id: string;
@@ -60,7 +61,7 @@ export default function Hitos() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [hitoEliminar, setHitoEliminar] = useState<Experiencia | null>(null);
+  const [hitosEliminar, setHitosEliminar]= useState<string[]>([]);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
 
   // 2. FUNCIONES DE CARGA Y EFECTOS
@@ -85,6 +86,15 @@ export default function Hitos() {
     setSubmitted(false);
   }
 }, [openModal]);
+
+const toggleEliminar = (id: string) => {
+    setHitosEliminar((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id]
+    );
+  };
+
 
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
@@ -181,7 +191,7 @@ export default function Hitos() {
         }}
         onCancelar={() => {
           setModoAccion(null);
-          setHitoEliminar(null);
+          setHitosEliminar([]);
         }}
         />
       </div>
@@ -309,7 +319,18 @@ export default function Hitos() {
       </ModalForm>
 
       {/* RENDERIZADO DE LAS TARJETAS DINÁMICAS */}
-      <div className="space-y-4">
+      <div
+        className="
+          flex
+          flex-col
+          items-center
+
+          px-4
+          sm:px-0
+          md:px-10
+          lg:px-40
+        "
+      >
         {isLoading ? (
           <p className="text-center text-gray-500">Cargando experiencias...</p>
         ) : experiencias.length === 0 ? (
@@ -329,16 +350,31 @@ export default function Hitos() {
                 diaAbreviado={datosFecha.diaAbreviado}
                 diaNumero={datosFecha.diaNumero}
                 fechaTexto={`${datosFecha.mes}, ${datosFecha.anio}`} // Ej: "Octubre, 2019"
-                eliminando={modoAccion === "eliminar"}
+                eliminando={
+                  modoAccion === "eliminar"
+                }
+
+                seleccionado={
+                  hitosEliminar.includes(exp.id)
+                }
+
                 onSelect={() => {
                   if (modoAccion === "eliminar") {
-                    setHitoEliminar(exp);
+                    toggleEliminar(exp.id);
                   }
                 }}
               />
             );
           })
         )}
+
+        <BotonEliminar
+          count={hitosEliminar.length}
+          onDeselectAll={() => {
+          setHitosEliminar([]);
+          setModoAccion(null);
+          }}
+          />
       </div>
     </DashboardLayout>
   );

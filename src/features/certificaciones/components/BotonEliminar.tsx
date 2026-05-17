@@ -2,7 +2,7 @@ import { useState } from "react";
 
 interface BotonEliminarProps {
   count: number;
-  onDeleteAll: () => void;
+  onDeleteAll?: () => void;
   onDeselectAll: () => void;
 }
 

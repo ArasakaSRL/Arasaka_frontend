@@ -36,7 +36,7 @@ const menuItems: MenuItem[] = [
     },
     { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos' },
     { icon: Award,         label: 'Habilidades',     path: '/Dashboard/habilidades/Habilidades' },
-    { icon: Trophy,        label: 'Hitos',           path: '/Dashboard/hitos/Hitos' },
+    { icon: Trophy,        label: 'Experiencias',           path: '/Dashboard/hitos/Hitos' },
     { icon: ShieldCheck,   label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
     {
         icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Principal',
