@@ -15,13 +15,15 @@ import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SeccionCertificados } from "../components/SeccionCertificados";
+import { BotonEliminar } from "../components/BotonEliminar";
+import { useEliminarCertificaciones } from "../hooks/useEliminarCertificaciones";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   const [filtroCategoriaId, setFiltroCategoriaId] = useState<string | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
   const [certificadosEliminar, setCertificadosEliminar]= useState<string[]>([]);
-  
+
   // ESTADOS DEL FORMULARIO
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
   const [tituloForm, setTituloForm] = useState("");
@@ -38,12 +40,16 @@ export default function Certificaciones() {
 
   const { categorias, isLoading, isUsingFallback } = useCategorias();
   const { registrarCertificacion, isCreating} = useCrearCertificacion();
+  const { eliminarCertificaciones, isDeleting } = useEliminarCertificaciones();
+  
   //error
   const { 
     certificados, 
     isLoadingCerts, 
     isUsingFallbackCerts 
   } = useCertificaciones( filtroCategoriaId); // <-- Aquí pasamos el filtro de categoría
+
+  const isBusy = isCreating || isUploadingToFirebase || isDeleting;
 
   const opcionesCategorias = categorias.map((cat) => ({
     label: cat.nombre,
@@ -64,6 +70,43 @@ export default function Certificaciones() {
         ? prev.filter((x) => x !== id)
         : [...prev, id]
     );
+  };
+
+  const handleEliminarSeleccionados = async () => {
+    try {
+      await eliminarCertificaciones(certificadosEliminar); // string[]
+      toast.success(`${certificadosEliminar.length} certificación(es) eliminada(s)`);
+      setCertificadosEliminar([]);
+      setModoAccion(null);
+    } catch {
+      toast.error("Error al eliminar");
+    }
+  };
+
+  const handleEliminar = async () => {
+
+    // activar modo eliminar
+    if (modoAccion !== "eliminar") {
+
+      toast.warning(
+        "Selecciona una certificación"
+      );
+
+      setModoAccion("eliminar");
+
+      return;
+    }
+
+    // validar selección
+    if (certificadosEliminar.length === 0) {
+
+      toast.warning(
+        "No seleccionaste certificados"
+      );
+
+      return;
+    }
+    await handleEliminarSeleccionados();
   };
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
@@ -134,7 +177,6 @@ export default function Certificaciones() {
     }
   };
 
-  const isBusy = isCreating || isUploadingToFirebase; // Variable para desactivar botones mientras carga
   const resetForm = () => {
     setTituloForm("");
     setInstitucionForm("");
@@ -168,12 +210,7 @@ export default function Certificaciones() {
             setModoAccion(null);
             setOpenModal(true);
           }}
-          onEliminar={() => {
-            toast.warning(
-              "Selecciona una certificación"
-            );
-            setModoAccion("eliminar");
-          }}
+          onEliminar={handleEliminar}
           onCancelar={() => {
             setModoAccion(null);
             setCertificadosEliminar([]);
@@ -376,7 +413,16 @@ export default function Certificaciones() {
             }}
           />
         )}
+        <BotonEliminar
+          count={certificadosEliminar.length}
+          onDeleteAll={handleEliminarSeleccionados}
+          onDeselectAll={() => {
+            setCertificadosEliminar([]);
+            setModoAccion(null);
+          }}
+        />
       </div>
+      
     </DashboardLayout>
   );
 }

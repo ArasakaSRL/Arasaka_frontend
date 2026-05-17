@@ -34,3 +34,12 @@ export interface CrearCertificacionDTO {
   orientacion_imagen: "horizontal" | "vertical";
   id_categoria_certificacion: string;
 }
+export interface EliminarMultiplesDTO {
+  ids: string[];
+}
+
+// Lo que responde la API
+export interface EliminarMultiplesResponse {
+  message: string;
+  total_eliminadas: number;
+}
