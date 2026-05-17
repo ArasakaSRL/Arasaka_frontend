@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Share2, Eye, Menu, X } from 'lucide-react';
+import { Share2, Eye, Menu, X, ExternalLink } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import ShareModal from '@/features/portafolio/components/ShareModal';
+import { generateCV } from '@/features/portafolio/lib/cv.generator';
+import { getPortafolioPrivate } from '@/features/portafolio/lib/portafolio.service';
+import { toast } from '@/components/Alerta';
 
 interface DashboardHeaderProps {
     onMenuClick: () => void
@@ -13,6 +16,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
     const navigate = useNavigate();
     const user = useAuthStore(s => s.user)
     const [shareOpen, setShareOpen] = useState(false);
+    const [descargandoCV, setDescargandoCV] = useState(false);
 
     const initials = user
         ? `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`.toUpperCase()
@@ -22,6 +26,27 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
         navigate(`/portafolio/privado/${user?.portafolio?.slug}`);
     }
 
+    const handleDescargarCV = async () => {
+        if (descargandoCV || !user?.portafolio?.slug) return;
+        setDescargandoCV(true);
+        try {
+            const portafolio = await getPortafolioPrivate(user.portafolio.slug);
+            await generateCV({
+                usuario: portafolio.usuario,
+                proyectos: portafolio.proyectos,
+                tecnicas: portafolio.habilidades.tecnicas,
+                blandas: portafolio.habilidades.blandas,
+                experiencias: portafolio.experiencias,
+                certificaciones: portafolio.certificaciones,
+            });
+            toast.success("pdf generado con éxito");
+        } catch (err) {
+            console.error("Error generando CV:", err);
+            toast.error("Ocurrió un error al generar el pdf");
+        } finally {
+            setDescargandoCV(false);
+        }
+    };
 
     return (
         <header className="h-16 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 md:px-6 transition-all duration-300">
@@ -53,9 +78,17 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
 
                 <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
                     onClick={handlevistapreviaPrivate}>
-
                     <Eye size={16} />
                     <span className="hidden sm:inline">Vista Previa</span>
+                </button>
+
+                <button
+                    className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                    onClick={handleDescargarCV}
+                    disabled={descargandoCV}
+                >
+                    <ExternalLink size={16} />
+                    <span className="hidden sm:inline">{descargandoCV ? 'Generando...' : 'Descargar CV'}</span>
                 </button>
 
                 <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center font-bold text-sm shadow-sm bg-[#1e2a5e] text-white">
