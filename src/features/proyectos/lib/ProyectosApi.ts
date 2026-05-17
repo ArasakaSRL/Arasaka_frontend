@@ -9,7 +9,7 @@ export interface ProyectoFormData {
     tecnologias: string[];
     url_demo?: string;
     url_github?: string;
-    url_imagen: string[];
+    url_imagen?: string[];
 }
 
 export interface Proyecto {

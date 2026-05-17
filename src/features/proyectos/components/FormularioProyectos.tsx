@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CircleX, CircleStar  } from 'lucide-react';
+import { CircleX } from 'lucide-react';
 import { useState } from 'react';
 import Dropdown from '../../../components/MenuDesplegable';
 import { crearProyecto, editarProyecto,type Proyecto } from '../lib/ProyectosApi';
@@ -31,8 +30,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     const { opciones} = useTecnologias();
     const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
     const [imagenes, setImagenes] = useState<Imagen[]>([]);
-    const [submitted, setSubmitted] = useState(false);
-    const [dragging, setDragging] = useState(false);
     const {
       formularioData,
       setFormularioData,
@@ -44,7 +41,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     } = useEditarProyecto(proyectoEditar);
 
     useEffect(() => {
-      const urls = imagenes.map((img) => img.url ?? img.file?.name ?? "");
+      const urls = imagenes.map((img) => img.url ?? img.preview);
       setImagenesActuales(urls);
     }, [imagenes]);
 
@@ -59,42 +56,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       setImagenes(existentes);
     }
   }, [proyectoEditar]);
-
-  const MAX_IMAGES = 5 * 1024 * 1024;
-
-  const handleAddImages = (files: File[]) => {
-    const validas: Imagen[] = [];
-
-    files.forEach((file) => {
-      if (!file.type || !file.type.startsWith("image/")) {
-        toast.warning(`"${file.name}" no es una imagen válida`, 3000);
-        return;
-      }
-      // validar tamaño
-      if (file.size > MAX_IMAGES) {
-        toast.warning(`"${file.name}" supera los 5MB`, 3000);
-        return;
-      }
-
-      validas.push({
-        file,
-        preview: URL.createObjectURL(file),
-        isNew: true,
-      });
-    });
-
-    if (validas.length === 0) return;
-
-    setImagenes((prev) => {
-      const combinado = [...prev, ...validas].slice(0, 5);
-      return combinado;
-    });
-
-    setErrors((prev) => ({
-      ...prev,
-      imagenes: "",
-    }));
-  };
 
     const cerrarForm = () => {
       resetForm();
@@ -116,7 +77,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setSubmitted(true);
 
       const result = ProyectoSchema.safeParse({
         titulo: formularioData.title,
@@ -126,7 +86,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         tecnologias: tecnologias,
         projectUrl: formularioData.projectUrl,
         githubUrl: formularioData.githubUrl,
-        imagenes: imagenes,
       });
 
       if (!result.success) {
@@ -144,23 +103,24 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         const element = document.querySelector(
           `[name="${firstErrorField}"]`
         ) as HTMLElement;
-
         element?.focus();
-
         return;
       }
-
       setErrors({});
       setLoading(true);
       try {
-        let url_imagen: string[] = [];
+        let proyectoGuardado;
+        const basePayload = {
+          nombre: formularioData.title,
+          descripcion: formularioData.descripcion || undefined,
+          fecha_inicio: formularioData.startDate,
+          fecha_fin: formularioData.endDate || undefined,
+          tecnologias,
+          url_demo: formularioData.projectUrl,
+          url_github: formularioData.githubUrl,
+        };
 
-        if (!proyectoEditar) {
-          const files: File[] = imagenes
-            .filter((img) => img.file)
-            .map((img) => img.file as File);
-          url_imagen = await uploadMultipleImages(files);
-        } else {
+        if (proyectoEditar) {
           const nuevas = imagenes.filter((img) => img.isNew && img.file);
           const existentes = imagenes.filter((img) => !img.isNew);
 
@@ -169,33 +129,24 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           const urlsNuevas =
             files.length > 0 ? await uploadMultipleImages(files) : [];
 
-          const urlsExistentes = existentes.map((img) => img.url as string);
+          const urlsExistentes = existentes.map(
+            (img) => img.url as string
+          );
 
-          url_imagen = [...urlsExistentes, ...urlsNuevas];
-        }
+          const payload = {
+            ...basePayload,
+            url_imagen: [...urlsExistentes, ...urlsNuevas],
+          };
 
-        const payload = {
-          nombre: formularioData.title,
-          descripcion: formularioData.descripcion || undefined,
-          fecha_inicio: formularioData.startDate,
-          fecha_fin: formularioData.endDate || undefined,
-          tecnologias: tecnologias,
-          url_demo: formularioData.projectUrl,
-          url_github: formularioData.githubUrl,
-          url_imagen,
-        };
-        let proyectoGuardado;
-        console.log("Payload enviado:", payload);
-        if (proyectoEditar) {
           proyectoGuardado = await editarProyecto(
             proyectoEditar.id_proyecto,
             payload
           );
 
           toast.success("Proyecto editado exitosamente", 3000);
-          onCreated(proyectoGuardado); 
         } else {
-          proyectoGuardado = await crearProyecto(payload);
+          proyectoGuardado = await crearProyecto(basePayload);
+
           toast.success("Proyecto creado exitosamente", 3000);
         }
         onCreated(proyectoGuardado);
@@ -226,7 +177,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         }`}
       >
         <div className={proyectoEditar ? "flex-1" : "w-full"}>
-          <form onSubmit={handleSubmit} className="w-full space-y-3 text-left">
+          <form className="w-full space-y-3 text-left" id="proyecto-form" onSubmit={handleSubmit}>
             <Input 
               label="Título del Proyecto"
               type="text"
@@ -371,7 +322,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
         <button
           type="submit"
-          onClick={handleSubmit}
+          form="proyecto-form"
           disabled={loading || (!!proyectoEditar && !isDirty)}
           className={`text-sm px-4 py-2 rounded-md text-white 
           ${
