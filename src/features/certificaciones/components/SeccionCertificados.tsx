@@ -84,6 +84,9 @@ export function SeccionCertificados({
       {vista === "hibrido" && (
         <GridHibrido
           certificados={certificados}
+          modoAccion={modoAccion}
+          certificadosEliminar={certificadosEliminar}
+          onEliminar={onEliminar}
         />
       )}
 

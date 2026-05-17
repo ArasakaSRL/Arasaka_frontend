@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CertificadoViewer } from "../CertificadoViewer";
 import { CardHibrida } from "@/features/certificaciones/components/ordenarCards/CardHibrida";
+import type { Certificado } from "../ordenarCards/CertificadoCard";
 
 export type CertificacionHibrida = {
   id: string;
@@ -13,11 +14,25 @@ export type CertificacionHibrida = {
 };
 
 type Props = {
-  certificados: CertificacionHibrida[];
+  certificados: Certificado[];
+
+  modoAccion:
+    | "editar"
+    | "eliminar"
+    | null;
+
+  certificadosEliminar: string[];
+
+  onEliminar: (
+    cert: Certificado
+  ) => void;
 };
 
 export function GridHibrido({
   certificados,
+  modoAccion,
+  certificadosEliminar,
+  onEliminar,
 }: Props) {
 
   const [viewerIndex, setViewerIndex] =
@@ -37,7 +52,14 @@ export function GridHibrido({
             fecha={''+cert.fecha}
             categoria={''+cert.categoria}
             imagen={cert.imagen}
-            onClick={() => setViewerIndex(index)}
+            onClick={() => {
+            if (modoAccion === "eliminar") {
+              onEliminar(cert);
+              return;
+            }
+
+            setViewerIndex(index);
+          }}
           />
         ))}
 
@@ -57,12 +79,26 @@ export function GridHibrido({
           <CardHibrida
             key={cert.id}
             titulo={cert.titulo}
-            descripcion={''+cert.descripcion}
-            institucion={''+cert.institucion}
-            fecha={''+cert.fecha}
-            categoria={''+cert.categoria}
+            descripcion={""+cert.descripcion}
+            institucion={""+cert.institucion}
+            fecha={""+cert.fecha}
+            categoria={""+cert.categoria}
             imagen={cert.imagen}
-            onClick={() => setViewerIndex(index)}
+            eliminando={
+              modoAccion === "eliminar"
+            }
+
+            seleccionado={
+              certificadosEliminar.includes(cert.id)
+            }
+            onClick={() => {
+              if (modoAccion === "eliminar") {
+                onEliminar(cert);
+                return;
+              }
+
+              setViewerIndex(index);
+            }}
           />
         ))}
 

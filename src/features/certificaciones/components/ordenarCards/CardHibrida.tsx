@@ -6,6 +6,8 @@ type Props = {
   categoria: string;
   imagen: string;
   onClick?: () => void;
+  eliminando?: boolean;
+  seleccionado?: boolean;
 };
 
 export function CardHibrida({
@@ -16,22 +18,43 @@ export function CardHibrida({
   categoria,
   imagen,
   onClick,
+  eliminando,
+  seleccionado,
 }: Props) {
   return (
     <div
       onClick={onClick}
-      className="
+      className={`
         group flex gap-4
         rounded-2xl
-        border border-[var(--color-light-700)]
-        bg-[var(--color-light-500)]
+        border
         p-4
         shadow-sm
         transition-all duration-300
-        hover:-translate-y-1
-        hover:shadow-xl
         cursor-pointer
-      "
+
+        ${
+          eliminando
+            ? seleccionado
+              ? `
+                border-red-500
+                bg-red-50
+                ring-2 ring-red-500
+              `
+              : `
+                border-[var(--color-light-700)]
+                bg-[var(--color-light-500)]
+                hover:bg-red-50
+                hover:ring-2 hover:ring-red-400
+              `
+            : `
+              border-[var(--color-light-700)]
+              bg-[var(--color-light-500)]
+              hover:-translate-y-1
+              hover:shadow-xl
+            `
+        }
+      `}
     >
       {/* Imagen */}
       <div
@@ -44,11 +67,16 @@ export function CardHibrida({
         <img
           src={imagen}
           alt={titulo}
-          className="
+          className={`
             h-full w-full object-cover
             transition-transform duration-500
-            group-hover:scale-105
-          "
+
+            ${
+              eliminando
+                ? ""
+                : "group-hover:scale-105"
+            }
+          `}
         />
       </div>
 
