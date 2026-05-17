@@ -92,16 +92,10 @@ export function SeccionCertificados({
 
       {vista === "detalles" && (
         <GridDetalles
-          certificados={certificados.map(
-            (cert) => ({
-              id: cert.id,
-              titulo: cert.titulo,
-              descripcion: "",
-              institucion: "",
-              fecha: "",
-              categoria: "",
-            })
-          )}
+          certificados={certificados}
+          modoAccion={modoAccion}
+          certificadosEliminar={certificadosEliminar}
+          onEliminar={onEliminar}
         />
       )}
 

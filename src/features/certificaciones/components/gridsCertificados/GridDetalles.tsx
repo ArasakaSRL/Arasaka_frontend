@@ -1,21 +1,26 @@
 import { CardTexto } from "../ordenarCards/CardTexto";
-
-
-export type Detalle = {
-  id: string;
-  titulo: string;
-  descripcion?: string;
-  institucion?: string;
-  fecha?: string;
-  categoria?: string;
-};
+import type { Certificado } from "../ordenarCards/CertificadoCard";
 
 type Props = {
-  certificados: Detalle[];
+  certificados: Certificado[];
+
+  modoAccion:
+    | "editar"
+    | "eliminar"
+    | null;
+
+  certificadosEliminar: string[];
+
+  onEliminar: (
+    cert: Certificado
+  ) => void;
 };
 
 export function GridDetalles({
   certificados,
+  modoAccion,
+  certificadosEliminar,
+  onEliminar,
 }: Props) {
   return (
     <div
@@ -27,14 +32,28 @@ export function GridDetalles({
         items-start
       "
     >
-      {certificados.map((detalle) => (
+      {certificados.map((cert) => (
         <CardTexto
-          key={detalle.id}
-          titulo={detalle.titulo}
-          descripcion={""+detalle.descripcion}
-          institucion={detalle.institucion}
-          fecha={detalle.fecha}
-          categoria={detalle.categoria}
+          key={cert.id}
+          titulo={cert.titulo}
+          descripcion={""+cert.descripcion}
+          institucion={""+cert.institucion}
+          fecha={""+cert.fecha}
+          categoria={""+cert.categoria}
+          eliminando={
+          modoAccion === "eliminar"
+        }
+
+        seleccionado={
+          certificadosEliminar.includes(cert.id)
+        }
+
+        onClick={() => {
+          if (modoAccion === "eliminar") {
+            onEliminar(cert);
+            return;
+          }
+        }}
         />
       ))}
     </div>

@@ -5,6 +5,8 @@ type Props = {
   fecha?: string;
   categoria?: string;
   onClick?: () => void;
+  eliminando?: boolean;
+  seleccionado?: boolean;
 };
 
 export function CardTexto({
@@ -14,20 +16,41 @@ export function CardTexto({
   fecha,
   categoria,
   onClick,
+  eliminando,
+  seleccionado,
 }: Props) {
   return (
     <div
       onClick={onClick}
-      className="
+      className={`
         rounded-xl
-        border border-[var(--color-primary-100)]
-        bg-light-500
         px-5 py-4
         transition-all duration-300
-        hover:shadow-lg
-        hover:-translate-y-[2px]
         cursor-pointer
-      "
+        border
+
+        ${
+          eliminando
+            ? seleccionado
+              ? `
+                border-red-500
+                bg-red-50
+                ring-2 ring-red-500
+              `
+              : `
+                border-[var(--color-primary-100)]
+                bg-light-500
+                hover:bg-red-50
+                hover:ring-2 hover:ring-red-400
+              `
+            : `
+              border-[var(--color-primary-100)]
+              bg-light-500
+              hover:shadow-lg
+              hover:-translate-y-[2px]
+            `
+        }
+      `}
     >
 
       {/* ───────────────────────────── */}
