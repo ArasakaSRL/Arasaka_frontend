@@ -8,7 +8,7 @@ import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import { registerRequest, getUsuario, resendVerificationEmail, firebaseAuthRequest } from '@/features/auth/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
-import { googleProvider, githubProvider, facebookProvider } from '@/firebase/config';
+import { googleProvider, githubProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
 import LoginBackground from '@/components/LoginBackground';
 

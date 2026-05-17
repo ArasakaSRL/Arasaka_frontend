@@ -3,6 +3,7 @@ export interface EmailRequest {
     from: string;
     subject: string;
     content: string;
+    nombre_remitente?: string;
     adjuntos?: File[];
 }
 
@@ -18,6 +19,7 @@ export interface Mensaje {
     asunto: string;
     contenido: string;
     leido: boolean;
+    destacado: boolean;
     fecha_envio: string;
     adjuntos: AdjuntoMensaje[];
 }

@@ -66,7 +66,7 @@ export default function Login() {
             const user = await getUsuario();
             if (user) setUser(user);
             getPortafolio().then(setPortafolio).catch(() => setPortafolio(null))
-            navigate('/Dashboard/perfilPersonal/PerfilPersonal');
+            navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const axiosError = err as AxiosError<{ message?: string }>;
             const firebaseError = err as { code?: string; message?: string };
@@ -151,7 +151,7 @@ export default function Login() {
             await loginRequest({ correo, password });
             const user = await getUsuario();
             if (user) setUser(user)
-            navigate('/Dashboard/perfilPersonal/PerfilPersonal');
+            navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
             const raw = error?.response?.data?.message
