@@ -49,7 +49,10 @@ const menuItems: MenuItem[] = [
     },
     { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
     { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
+    { icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
+    { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
 ];
+
 
 interface SidebarProps {
     isOpen: boolean
