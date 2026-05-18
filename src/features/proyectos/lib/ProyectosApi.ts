@@ -16,7 +16,7 @@ export interface Proyecto {
     id_portafolio:string;
     id_proyecto: string;
     nombre: string;
-    descripcion?: string | null;
+    descripcion: string;
     fecha_inicio: string;
     fecha_fin: string;
     tecnologias: Tecnologias[]
@@ -25,7 +25,7 @@ export interface Proyecto {
     url_github?: string | null;
 }
 
-type Imagen = {
+export interface Imagen {
     id_tecnologia: string;
     nombre: string;
     logo: string;
