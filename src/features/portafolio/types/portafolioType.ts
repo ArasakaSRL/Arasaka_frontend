@@ -121,3 +121,44 @@ export type Portafolio = {
     redes_profesionales: redes_profesionales[];
     configuracion: configuracion;
 };
+
+export interface Portfolio {
+  id: string;
+  name: string;
+  description: string;
+  visibility: 'public' | 'private';
+  githubUrl?: string;
+  linkedinUrl?: string;
+  createdAt: string; 
+}
+
+export type CreatePortafolio ={
+    nombre: string;
+    descripcion: string;
+    visibilidad: boolean;
+    redesProfesionales: RedesProfesionales[];
+}
+
+export type RedesProfesionales = {
+    nombre: string;
+    url: string;
+};
+
+export type GetPortafolio ={
+    success: boolean;
+    message: string;
+    data: DataPortafolio[];
+}
+
+export type DataPortafolio = {
+    id_portafolio: string;
+    nombre: string;
+    descripcion: string;
+    slug: string;
+    visibilidad: boolean;
+    fecha_creacion: string;
+    fecha_actualizacion: boolean;
+    link_activo: boolean;
+    fecha_expiracion_link: boolean;
+    duracion_link: boolean;
+}

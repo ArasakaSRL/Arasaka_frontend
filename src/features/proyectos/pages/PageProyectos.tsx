@@ -5,12 +5,15 @@ import DashboardLayout from "@/layout/DashboardLayout";
 import { useProyectos } from "../hooks/getProyectos";
 import { Banner } from "@/components/Banner";
 import type { Proyecto } from "../lib/ProyectosApi";
+import { eliminarProyecto } from "../lib/ProyectosApi";
 import ListaProyectos from "../components/ListaProyectos";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { toast } from "../../../components/Alerta";
+
 export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
   const { proyectos, loading, setProyectos } = useProyectos();
   const [proyectoEditar, setProyectoEditar] = useState<Proyecto | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [proyectoEliminar, setProyectoEliminar] = useState<Proyecto | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
   const [paginaActual, setPaginaActual] = useState(1);
@@ -21,22 +24,33 @@ export default function PageProyectos() {
   const proyectosPaginados = proyectos.slice(indexPrimero, indexUltimo);
   const totalPaginas = Math.ceil(proyectos.length / paginacion);
 
-  
   const closeModal = () => {
     setModalAbierto(false);
     setProyectoEditar(null);
+    setModoAccion(null);
   };
 
   const handleEditar = (proyecto: Proyecto) => {
     setProyectoEditar(proyecto);
     setModalAbierto(true);
-  }
+  };
+
+  const handleEliminar = async (id_proyecto: string) => {
+    try {
+      await eliminarProyecto(id_proyecto);
+      setProyectos((prev) => prev.filter((p) => p.id_proyecto !== id_proyecto));
+      toast.success("Proyecto eliminado exitosamente");
+    } catch (err) {
+      console.log(err);
+      toast.error("Error al eliminar el proyecto");
+    }
+  };
 
     return (
       <DashboardLayout>
-        <Banner 
-          titulo="Proyectos" 
-          descripcion="Gestiona tus proyectos de software" 
+        <Banner
+          titulo="Proyectos"
+          descripcion="Gestiona tus proyectos de software"
           totalItems={proyectos.length}
           editando={modoAccion === "editar"}
           eliminando={modoAccion === "eliminar"}
@@ -46,7 +60,12 @@ export default function PageProyectos() {
             setModalAbierto(true);
           }}
           onEditar={() => {
+            toast.warning("Selecciona un proyecto");
             setModoAccion("editar");
+          }}
+          onEliminar={() => {
+            toast.warning("Selecciona un proyecto");
+            setModoAccion("eliminar");
           }}
           onCancelar={() => {
             setModoAccion(null);
@@ -68,7 +87,6 @@ export default function PageProyectos() {
           />
           {totalPaginas > 1 && (
             <div className="flex justify-center items-center gap-4 mt-6">
-
               <button
                 disabled={paginaActual === 1}
                 onClick={() => setPaginaActual(paginaActual - 1)}
@@ -81,11 +99,9 @@ export default function PageProyectos() {
               >
                 Anterior
               </button>
-
               <span className="font-medium">
                 Página {paginaActual} de {totalPaginas}
               </span>
-
               <button
                 disabled={paginaActual === totalPaginas}
                 onClick={() => setPaginaActual(paginaActual + 1)}
@@ -102,7 +118,7 @@ export default function PageProyectos() {
           )}
 
             <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-3xl">
-              <FormularioProyecto 
+              <FormularioProyecto
               proyectoEditar={proyectoEditar}
               closeModal={closeModal}
               onCreated={(proyectoGuardado) => {
@@ -121,6 +137,21 @@ export default function PageProyectos() {
               });
             }} />
             </Modal>
+
+            <ConfirmDeleteModal
+              isOpen={!!proyectoEliminar}
+              nombre={proyectoEliminar?.nombre}
+              onClose={() => {
+                setProyectoEliminar(null);
+                setModoAccion(null);
+              }}
+              onConfirm={async () => {
+                if (!proyectoEliminar) return;
+                await handleEliminar(proyectoEliminar.id_proyecto);
+                setProyectoEliminar(null);
+                setModoAccion(null);
+              }}
+            />
         </div>
       </DashboardLayout>
     )

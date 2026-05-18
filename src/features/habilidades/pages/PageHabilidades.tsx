@@ -52,7 +52,7 @@ export default function PageHabilidades() {
     }
   };
 
-
+ 
 return(
       <DashboardLayout>
         <Banner

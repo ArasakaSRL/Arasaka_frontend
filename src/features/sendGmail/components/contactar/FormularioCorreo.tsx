@@ -10,6 +10,7 @@ interface FormData {
     from: string
     subject: string
     content: string
+    nombre_remitente: string
 }
 
 interface Props {
@@ -91,6 +92,16 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
             >
                 ← Volver
             </button>
+
+            <div className="[&_label]:text-white/70 [&_label]:font-medium [&_input]:bg-white/5 [&_input]:border-white/10 [&_input]:text-white [&_input]:placeholder:text-white/20 [&_input]:focus:ring-blue-500/40 [&_input]:focus:border-blue-500/50 [&_input]:rounded-xl">
+                <Input
+                    label="Tu nombre"
+                    type="text"
+                    placeholder="Tu nombre completo"
+                    value={form.nombre_remitente}
+                    onChange={v => { onChange('nombre_remitente', v); touch('nombre_remitente' as keyof FormData) }}
+                />
+            </div>
 
             <div className="[&_label]:text-white/70 [&_label]:font-medium [&_input]:bg-white/5 [&_input]:border-white/10 [&_input]:text-white [&_input]:placeholder:text-white/20 [&_input]:focus:ring-blue-500/40 [&_input]:focus:border-blue-500/50 [&_input]:rounded-xl">
                 <Input
