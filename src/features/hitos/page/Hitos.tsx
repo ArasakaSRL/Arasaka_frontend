@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { CardHitos } from "../components/cardHitos";
-import { getExperiencias, crearExperiencia } from "../apis/experienciasApi";
+import { getExperiencias, crearExperiencia, eliminarMultiplesExperiencias } from "../apis/experienciasApi";
 
 // Importamos date-fns para las fechas y el idioma español
 import { parseISO, isAfter, format } from 'date-fns';
@@ -95,6 +95,45 @@ const toggleEliminar = (id: string) => {
     );
   };
 
+const handleEliminar = async () => {
+    // 1. Si no estamos en modo eliminar, lo activamos
+    if (modoAccion !== "eliminar") {
+      toast.warning("Selecciona al menos un hito para eliminar");
+      setModoAccion("eliminar");
+      return;
+    }
+
+    // 2. Si ya estamos en modo eliminar, validamos si seleccionó algo
+    if (hitosEliminar.length === 0) {
+      toast.warning("No seleccionaste ningún hito");
+      return;
+    }
+
+    // 3. Si seleccionó algo, disparamos la eliminación masiva
+    await handleEliminarSeleccionados();
+  };
+
+const handleEliminarSeleccionados = async () => {
+    if (hitosEliminar.length === 0) return;
+
+    try {
+      // Opcional: podrías usar setIsLoading(true) si quieres que se vea cargando
+      await eliminarMultiplesExperiencias(hitosEliminar);
+      
+      toast.success(`${hitosEliminar.length} hitos eliminados correctamente`);
+      
+      // Limpiamos los estados
+      setHitosEliminar([]);
+      setModoAccion(null);
+      
+      // Volvemos a pedir los datos actualizados al backend
+      cargarExperiencias();
+      
+    } catch (error) {
+      toast.error("Ocurrió un error al intentar eliminar los hitos");
+      console.error(error);
+    }
+  };
 
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
@@ -176,7 +215,7 @@ const toggleEliminar = (id: string) => {
       <div className="mb-6 sm:mb-8 md:mb-10">
         {/**onOpenModal={() => setOpenModal(true)} */}
         <Banner 
-        titulo="Experiencias e hitos importantes" 
+        titulo="Experiencias importantes de la trayectoria " 
         descripcion="" 
         totalItems={experiencias.length}
         eliminando={modoAccion === "eliminar"}
@@ -185,10 +224,7 @@ const toggleEliminar = (id: string) => {
 
           setOpenModal(true);
         }}
-        onEliminar={() => {
-          toast.warning("Selecciona un hito");
-          setModoAccion("eliminar");
-        }}
+        onEliminar={handleEliminar}
         onCancelar={() => {
           setModoAccion(null);
           setHitosEliminar([]);
@@ -370,6 +406,7 @@ const toggleEliminar = (id: string) => {
 
         <BotonEliminar
           count={hitosEliminar.length}
+          onDeleteAll={handleEliminarSeleccionados}
           onDeselectAll={() => {
           setHitosEliminar([]);
           setModoAccion(null);
