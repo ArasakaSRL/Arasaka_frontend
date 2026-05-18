@@ -1,41 +1,35 @@
-// src/features/certificaciones/hooks/useCertificaciones.ts
 import { useState, useEffect } from 'react';
-import type { CertificacionAPI } from '../types';
-import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
+import type { Categoria } from '../types';
+import { getCategorias } from '../apis/categoriasApi';
 
-export function useCertificaciones(idCategoriaFiltro: string | null) {
-  const [certificados, setCertificados] = useState<CertificacionAPI[]>([]);
-  const [isLoadingCerts, setIsLoadingCerts] = useState<boolean>(true);
-  const [isUsingFallbackCerts, setIsUsingFallbackCerts] = useState<boolean>(false);
+export function useCategorias() {
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUsingFallback, setIsUsingFallback] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchCerts = async () => {
+    const fetchCategorias = async () => {
       try {
-        setIsLoadingCerts(true);
-        let data: CertificacionAPI[];
-
-        if (idCategoriaFiltro) {
-          data = await getCertificacionesPorCategoria(idCategoriaFiltro);
+        setIsLoading(true);
+        const data = await getCategorias();
+       
+        // Si la API responde pero está vacía
+        if (data && data.length > 0) {
+          setCategorias(data);
+          setIsUsingFallback(false);
         } else {
-          data = await getTodasCertificaciones();
-        }
-
-        if (data) {
-          // 👇 LA DATA YA VIENE PERFECTA ("nombre"), LA PASAMOS DIRECTO
-          setCertificados(data);
-          setIsUsingFallbackCerts(false);
+          setIsUsingFallback(true);
         }
       } catch (err) {
-        console.error('Error al obtener los certificados', err);
-        setCertificados([]); 
-        setIsUsingFallbackCerts(true);
+
+        console.error('La base de datos está caída, usando datos de prueba.', err);
+        // Si hay error (BD caída), seteamos los datos de prueba
+        setIsUsingFallback(true);
       } finally {
-        setIsLoadingCerts(false);
+        setIsLoading(false);
       }
     };
-
-    fetchCerts();
-  }, [idCategoriaFiltro]);
-
-  return { certificados, isLoadingCerts, isUsingFallbackCerts };
+    fetchCategorias();
+  }, []);
+  return { categorias, isLoading, isUsingFallback };
 }
