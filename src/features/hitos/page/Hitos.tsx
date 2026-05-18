@@ -215,7 +215,7 @@ const handleEliminarSeleccionados = async () => {
       <div className="mb-6 sm:mb-8 md:mb-10">
         {/**onOpenModal={() => setOpenModal(true)} */}
         <Banner 
-        titulo="Experiencias importantes de la trayectoria " 
+        titulo="Experiencias " 
         descripcion="" 
         totalItems={experiencias.length}
         eliminando={modoAccion === "eliminar"}
