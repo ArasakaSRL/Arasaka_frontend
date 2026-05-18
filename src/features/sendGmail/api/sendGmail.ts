@@ -11,6 +11,7 @@ export async function sendGmail(emailData: EmailRequest): Promise<EmailResponse>
         fd.append('from', emailData.from)
         fd.append('subject', emailData.subject)
         fd.append('content', emailData.content)
+        if (emailData.nombre_remitente) fd.append('nombre_remitente', emailData.nombre_remitente)
         emailData.adjuntos.forEach(f => fd.append('adjuntos[]', f))
         const { data } = await apiClient.post<EmailResponse>('/enviar-correo-brevo', fd, {
             headers: { 'Content-Type': 'multipart/form-data' },

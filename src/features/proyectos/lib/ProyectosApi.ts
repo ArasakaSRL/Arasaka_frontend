@@ -59,3 +59,9 @@ export const editarProyecto = async (id_proyecto: string, data: Partial<Proyecto
     useAuthStore.getState().refreshPortafolio()
     return response.data.data;
 }
+
+export const eliminarProyecto = async (id_proyecto: string) => {
+    const response = await apiClient.delete(`/portafolios/proyectos/${id_proyecto}`);
+    useAuthStore.getState().refreshPortafolio()
+    return response.data;
+}

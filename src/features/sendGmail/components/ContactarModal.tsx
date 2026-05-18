@@ -18,7 +18,7 @@ type Modo = 'elegir' | 'gmail'
 
 export default function ContactarModal({ open, onClose, correoDestinatario, nombreDestinatario, whatsappNumber }: Props) {
     const [modo, setModo] = useState<Modo>('elegir')
-    const [form, setForm] = useState({ from: '', subject: '', content: '' })
+    const [form, setForm] = useState({ from: '', subject: '', content: '', nombre_remitente: '' })
     const [files, setFiles] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
     const [enviado, setEnviado] = useState(false)
@@ -28,7 +28,7 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
         onClose()
         setTimeout(() => {
             setModo('elegir')
-            setForm({ from: '', subject: '', content: '' })
+            setForm({ from: '', subject: '', content: '', nombre_remitente: '' })
             setFiles([])
             setEnviado(false)
             setError(null)
