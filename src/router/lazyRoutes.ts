@@ -19,3 +19,6 @@ export const MensajesEnviados = lazy(() => import('../pages/Dashboard/mensajes/M
 export const MensajesDestacados = lazy(() => import('../pages/Dashboard/mensajes/MensajesDestacados'))
 export const Configuracion = lazy(() => import('../features/configuracion/page/Configuracion')) 
 export const Estadisticas = lazy(() => import('../features/reportesUsuario/page/ReportesUsr'))
+export const VistaProyecto = lazy(() => import('../features/vistaProyectos/pages/PageVistaProyecto'))
+export const VisibilidadComponentes = lazy(() => import('../pages/Dashboard/configuraciones/VisibilidadComponentes')) 
+export const VisibilidadGeneral = lazy(() => import('../pages/Dashboard/configuraciones/VisibilidadGeneral'))

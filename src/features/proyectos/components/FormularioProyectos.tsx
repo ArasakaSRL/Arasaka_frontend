@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CircleX, CircleStar  } from 'lucide-react';
+import { CircleX } from 'lucide-react';
 import { useState } from 'react';
 import Dropdown from '../../../components/MenuDesplegable';
 import { crearProyecto, editarProyecto,type Proyecto } from '../lib/ProyectosApi';
@@ -11,7 +10,7 @@ import { useTecnologias } from '../hooks/useTecnologias';
 import { useEditarProyecto } from '../hooks/editarProyectos';
 import { uploadMultipleImages } from '../../../firebase/firebaseStorage';
 import { useEffect } from 'react';
-
+import UploaderImagenes from './SubirImagenes';
 interface FormularioProps {
     closeModal: () => void;
     onCreated: (nuevoProyecto: Proyecto) => void;
@@ -31,8 +30,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     const { opciones} = useTecnologias();
     const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
     const [imagenes, setImagenes] = useState<Imagen[]>([]);
-    const [submitted, setSubmitted] = useState(false);
-    const [dragging, setDragging] = useState(false);
     const {
       formularioData,
       setFormularioData,
@@ -44,7 +41,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     } = useEditarProyecto(proyectoEditar);
 
     useEffect(() => {
-      const urls = imagenes.map((img) => img.url ?? img.file?.name ?? "");
+      const urls = imagenes.map((img) => img.url ?? img.preview);
       setImagenesActuales(urls);
     }, [imagenes]);
 
@@ -59,90 +56,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       setImagenes(existentes);
     }
   }, [proyectoEditar]);
-
-  const MAX_IMAGES = 5 * 1024 * 1024;
-
-  const handleAddImages = (files: File[]) => {
-    const validas: Imagen[] = [];
-
-    files.forEach((file) => {
-      if (!file.type || !file.type.startsWith("image/")) {
-        toast.warning(`"${file.name}" no es una imagen válida`, 3000);
-        return;
-      }
-      // validar tamaño
-      if (file.size > MAX_IMAGES) {
-        toast.warning(`"${file.name}" supera los 5MB`, 3000);
-        return;
-      }
-
-      validas.push({
-        file,
-        preview: URL.createObjectURL(file),
-        isNew: true,
-      });
-    });
-
-    if (validas.length === 0) return;
-
-    setImagenes((prev) => {
-      const combinado = [...prev, ...validas].slice(0, 5);
-      return combinado;
-    });
-
-    setErrors((prev) => ({
-      ...prev,
-      imagenes: "",
-    }));
-  };
-
-  const eliminarImagen = (index: number) => {
-    setImagenes((prev) => {
-      const copia = [...prev];
-      const eliminada = copia[index];
-
-      if (eliminada.isNew) {
-        URL.revokeObjectURL(eliminada.preview);
-      }
-
-      copia.splice(index, 1);
-
-      if (copia.length === 0) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          imagenes: "Debe subir al menos una imagen",
-        }));
-      }
-
-      return copia;
-    });
-  };
-  const hacerPortada = (index: number) => {
-    setImagenes((prev) => {
-      const copia = [...prev];
-      const [img] = copia.splice(index, 1);
-      copia.unshift(img);
-      return copia;
-    });
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setDragging(false);
-    const files = Array.from(e.dataTransfer.files);
-    handleAddImages(files);
-  };
-
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  }
-  const handleDragEnter = () => setDragging(true);
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-      setDragging(false);
-    }
-  };
 
     const cerrarForm = () => {
       resetForm();
@@ -164,7 +77,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setSubmitted(true);
 
       const result = ProyectoSchema.safeParse({
         titulo: formularioData.title,
@@ -174,7 +86,6 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         tecnologias: tecnologias,
         projectUrl: formularioData.projectUrl,
         githubUrl: formularioData.githubUrl,
-        imagenes: imagenes,
       });
 
       if (!result.success) {
@@ -192,23 +103,24 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         const element = document.querySelector(
           `[name="${firstErrorField}"]`
         ) as HTMLElement;
-
         element?.focus();
-
         return;
       }
-
       setErrors({});
       setLoading(true);
       try {
-        let url_imagen: string[] = [];
+        let proyectoGuardado;
+        const basePayload = {
+          nombre: formularioData.title,
+          descripcion: formularioData.descripcion || undefined,
+          fecha_inicio: formularioData.startDate,
+          fecha_fin: formularioData.endDate || undefined,
+          tecnologias,
+          url_demo: formularioData.projectUrl,
+          url_github: formularioData.githubUrl,
+        };
 
-        if (!proyectoEditar) {
-          const files: File[] = imagenes
-            .filter((img) => img.file)
-            .map((img) => img.file as File);
-          url_imagen = await uploadMultipleImages(files);
-        } else {
+        if (proyectoEditar) {
           const nuevas = imagenes.filter((img) => img.isNew && img.file);
           const existentes = imagenes.filter((img) => !img.isNew);
 
@@ -217,33 +129,24 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           const urlsNuevas =
             files.length > 0 ? await uploadMultipleImages(files) : [];
 
-          const urlsExistentes = existentes.map((img) => img.url as string);
+          const urlsExistentes = existentes.map(
+            (img) => img.url as string
+          );
 
-          url_imagen = [...urlsExistentes, ...urlsNuevas];
-        }
+          const payload = {
+            ...basePayload,
+            url_imagen: [...urlsExistentes, ...urlsNuevas],
+          };
 
-        const payload = {
-          nombre: formularioData.title,
-          descripcion: formularioData.descripcion || undefined,
-          fecha_inicio: formularioData.startDate,
-          fecha_fin: formularioData.endDate || undefined,
-          tecnologias: tecnologias,
-          url_demo: formularioData.projectUrl,
-          url_github: formularioData.githubUrl,
-          url_imagen,
-        };
-        let proyectoGuardado;
-        console.log("Payload enviado:", payload);
-        if (proyectoEditar) {
           proyectoGuardado = await editarProyecto(
             proyectoEditar.id_proyecto,
             payload
           );
 
           toast.success("Proyecto editado exitosamente", 3000);
-          onCreated(proyectoGuardado); 
         } else {
-          proyectoGuardado = await crearProyecto(payload);
+          proyectoGuardado = await crearProyecto(basePayload);
+
           toast.success("Proyecto creado exitosamente", 3000);
         }
         onCreated(proyectoGuardado);
@@ -269,9 +172,12 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           </button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6 px-6 pb-6">
-        <div className="flex-1">
-          <form onSubmit={handleSubmit} className="w-full space-y-3 text-left">
+      <div className={`px-6 pb-6 gap-6 flex flex-col ${
+          proyectoEditar ? "md:flex-row" : ""
+        }`}
+      >
+        <div className={proyectoEditar ? "flex-1" : "w-full"}>
+          <form className="w-full space-y-3 text-left" id="proyecto-form" onSubmit={handleSubmit}>
             <Input 
               label="Título del Proyecto"
               type="text"
@@ -393,86 +299,16 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           </form>
         </div>
 
-        <div className="flex-1 flex flex-col">
-          <div onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            className={`w-full border-2 border-dashed rounded-xl min-h-80 flex flex-col items-center justify-center text-center p-6 transition
-              ${dragging ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
-          >
-            <p className="text-gray-500 text-sm mb-2">
-              Arrastra las imágenes aquí
-            </p>
-            <p className="text-gray-400 text-xs mb-4">
-              o
-            </p>
-
-            <label className="px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 text-sm">
-              Seleccionar imágenes
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const files = e.target.files
-                    ? Array.from(e.target.files)
-                    : [];
-                  handleAddImages(files);
-                }}
-              />
-            </label>
-            <p className="text-xs text-gray-400 mt-4">
-              Máximo 5 imágenes (la primera será la portada)
-            </p>
+        {proyectoEditar && (
+          <div className="flex-1 flex flex-col">
+            <UploaderImagenes
+              imagenes={imagenes}
+              setImagenes={setImagenes}
+              errors={errors}
+              setErrors={setErrors}
+            />
           </div>
-            {imagenes.length > 0 && (
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                {imagenes.map((img, index) => (
-                  <div
-                    key={index}
-                    className="relative rounded-lg overflow-hidden border"
-                  >
-                    <img
-                      src={img.preview}
-                      alt="preview"
-                      className="w-full h-24 object-cover"
-                    />
-
-                    {/* etiqueta portada */}
-                    {index === 0 && (
-                      <span className="absolute top-1 left-1 text-yellow-500 text-[10px] rounded-full cursor-pointer hover:bg-yellow-200">
-                        <CircleStar  size={20}/>
-                      </span>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={() => eliminarImagen(index)}
-                      className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1 rounded hover:bg-black/80 cursor-pointer"
-                    >
-                      ✕
-                    </button>
-                    {index !== 0 && (
-                      <button
-                        type="button"
-                        onClick={() => hacerPortada(index)}
-                        className="absolute bottom-1 text-primary-500 left-1 bg-white text-xs cursor-pointer rounded-full hover:bg-gray-200"
-                      >
-                        <CircleStar size={20} />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-            {errors.imagenes && (
-              <p className="text-red-500 text-xs mt-2">
-                {errors.imagenes}
-              </p>
-            )}
-        </div>
+        )}
       </div>
       <div className="flex justify-end gap-2 px-6 pb-4">
         <button
@@ -486,7 +322,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
         <button
           type="submit"
-          onClick={handleSubmit}
+          form="proyecto-form"
           disabled={loading || (!!proyectoEditar && !isDirty)}
           className={`text-sm px-4 py-2 rounded-md text-white 
           ${

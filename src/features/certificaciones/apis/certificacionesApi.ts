@@ -1,5 +1,5 @@
 import apiClient from '@/api/api';
-import type { CertificacionAPI, CertificacionesResponse, CrearCertificacionDTO } from '../types'; 
+import type { CertificacionAPI, CertificacionesResponse, CertificacionUnicaResponse, CrearCertificacionDTO, EliminarMultiplesResponse } from '../types'; 
 
 export const getTodasCertificaciones = async (): Promise<CertificacionAPI[]> => {
   try {
@@ -32,3 +32,26 @@ export const crearCertificacion =  async (crearCertificacionDTO: CrearCertificac
     throw error; 
   }
 }
+
+export const eliminarMultiplesCertificaciones = async (ids: string[]): Promise<EliminarMultiplesResponse> => {
+  try {
+    const response = await apiClient.delete<EliminarMultiplesResponse>('/certificaciones/multiple', {
+      data: { ids }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar múltiples certificaciones:', error);
+    throw error;
+  }
+}
+
+export const getCertificacionPorId = async (idCertificacion: string): Promise<CertificacionAPI> => {
+  try {
+    // 👈 AQUÍ ESTÁ LA CLAVE: Usamos CertificacionUnicaResponse
+    const response = await apiClient.get<CertificacionUnicaResponse>(`/certificaciones/${idCertificacion}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error al obtener la certificación por ID:', error);
+    throw error;
+  }
+};
