@@ -31,6 +31,9 @@ const CONFIG_TOTALMENTE_DESACTIVADA: ConfiguracionPortafolio = {
   mostrar_experiencias: false,
   mostrar_servicios: false,
   mostrar_certificaciones: false,
+  mostrar_redes_profesionales: false,
+  mostrar_cv: false,
+  mostrar_contacto: false,
   paleta_colores: null,
   visibilidad: false,
 };
