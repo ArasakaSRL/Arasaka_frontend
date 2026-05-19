@@ -107,12 +107,7 @@ export function GridHibrido({
       {/* ───────── VIEWER ───────── */}
       {viewerIndex !== null && (
         <CertificadoViewer
-          certificados={certificados.map((cert) => ({
-            id: cert.id_certificacion,
-            titulo: cert.titulo,
-            imagen: cert.url_archivo,
-            orientacion: "horizontal",
-          }))}
+          certificados={certificados} 
           indexActual={viewerIndex}
           onClose={() => setViewerIndex(null)}
           onNext={() =>
