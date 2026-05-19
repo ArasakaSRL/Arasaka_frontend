@@ -30,7 +30,7 @@ const menuItems: MenuItem[] = [
         submenu: [
             { icon: User,       label: 'Vista General', path: '/Dashboard/perfil/General' },
             { icon: UserPen,     label: 'Actualizar Perfil', path: '/Dashboard/perfil/Editar' },
-            { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
+           // { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
             //{ icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
         ]
     },
