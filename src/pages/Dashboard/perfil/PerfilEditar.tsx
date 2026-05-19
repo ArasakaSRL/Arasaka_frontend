@@ -12,7 +12,7 @@ import { useDirtyStore } from '@/stores/dirtyStore'
 import type { Profesion } from '@/features/auth/types/update-perfilPersonal'
 import type { PerfilFormData } from '@/features/auth/components/Dashboard/profile/PerfilFrom'
 import { AxiosError } from 'axios'
-import { Pencil, Briefcase } from 'lucide-react'
+import { UserPen, Briefcase } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 type FormErrors = Partial<Record<keyof PerfilFormData, string>>
@@ -140,7 +140,7 @@ export default function PerfilEditar() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
                 <div className="lg:col-span-12">
-                    <PageHeader icon={Pencil} title="Editar Perfil" description="Actualiza tu información personal y profesional" />
+                    <PageHeader icon={UserPen} title="Actualizar Perfil" description="Actualiza tu información personal y profesional" />
                 </div>
 
                 {/* Formulario */}
