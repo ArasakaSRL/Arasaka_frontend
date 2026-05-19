@@ -102,7 +102,9 @@ export type configuracion = {
     mostrar_experiencias: boolean;
     mostrar_servicios: boolean;
     mostrar_certificaciones: boolean;
-    mostrar_redes_profesionales: boolean | null;
+    mostrar_redes_profesionales: boolean;
+    mostrar_cv: boolean;
+    mostrar_contacto: boolean;
     paleta_colores: string;
 };
 

@@ -91,6 +91,9 @@ export default function PortfolioPage() {
                         blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
                         experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
                         certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
+                        mostrarCV={configuracion?.mostrar_cv ?? true}
+                        mostrarContacto={configuracion?.mostrar_contacto ?? true}
+                        mostrarRedes={configuracion?.mostrar_redes_profesionales ?? true}
                     />
                     </PortfolioHeaderTracker>
                 </section>
