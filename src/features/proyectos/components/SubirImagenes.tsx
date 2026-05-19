@@ -1,5 +1,6 @@
 import { CircleStar, CircleX } from "lucide-react";
 import { toast } from "../../../components/Alerta";
+import { useState } from "react";
 
 type Imagen = {
   file?: File;
@@ -22,6 +23,7 @@ export default function UploaderImagenes({
   setErrors,
 }: Props) {
   const MAX_IMAGES = 5 * 1024 * 1024;
+  const [drag, setDrag] = useState(false);
 
   const handleAddImages = (files: File[]) => {
     const validas: Imagen[] = [];
@@ -82,9 +84,28 @@ export default function UploaderImagenes({
     });
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDrag(false);
+    const files = Array.from(e.dataTransfer.files);
+    handleAddImages(files);
+  };
+
   return (
     <div className="flex-1 flex flex-col">
-      <div className="w-full border-2 border-dashed rounded-xl min-h-80 flex flex-col items-center justify-center text-center p-6 border-gray-300">
+      <div onDragOver={(e) => {e.preventDefault();}} 
+      onDragEnter={(e) => {e.preventDefault(); 
+        setDrag(true);}} 
+        onDragLeave={() => setDrag(false)} 
+        onDrop={handleDrop} 
+        className={` w-full border-2 border-dashed rounded-xl min-h-80 flex flex-col items-center justify-center text-center p-6 transition-color hover:border-blue-600 cursor-pointer
+          ${
+            drag
+              ? "border-primary-500 bg-primary-50"
+              : "border-gray-300"
+          }
+        `}>
         <p className="text-gray-500 text-sm mb-2">
           Arrastra las imágenes aquí
         </p>

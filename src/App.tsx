@@ -24,6 +24,7 @@ import PerfilEditar from './pages/Dashboard/perfil/PerfilEditar'
 import PerfilTelefonos from './pages/Dashboard/perfil/PerfilTelefonos'
 import PerfilPortafolio from './pages/Dashboard/perfil/PerfilPortafolio'
 import PagePortafolio from './features/portafolio/pages/PagePortafolio'
+import TegnologiaPage from './features/tegnologias/page/TegnologiaPage'
 import PageVistaProyecto from './features/vistaProyectos/pages/PageVistaProyecto'
 import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 
@@ -51,10 +52,11 @@ export default function App() {
         <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
+        <Route path="/Dashboard/tegnologias" element={<TegnologiaPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
-         <Route path="/portafolio/gestion" element={<PagePortafolio />} />
+         <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />
       </Route>
       <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
