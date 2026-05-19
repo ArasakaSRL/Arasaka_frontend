@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, Phone, FolderOpen,
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen, Blocks,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -29,35 +29,13 @@ const menuItems: MenuItem[] = [
         icon: User, label: 'Perfil Personal', path: '/Dashboard/perfil/General',
         submenu: [
             { icon: User,       label: 'Vista General', path: '/Dashboard/perfil/General' },
-            { icon: UserPen,     label: 'Actualizar Perfil', path: '/Dashboard/perfil/Editar' },
+            { icon: Pencil,     label: 'Editar Perfil', path: '/Dashboard/perfil/Editar' },
             { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
-            //{ icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
+            { icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
         ]
     },
-    { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos' },
-    { icon: Award,         label: 'Habilidades',     path: '/Dashboard/habilidades/Habilidades' },
-    { icon: Trophy,        label: 'Experiencias',           path: '/Dashboard/hitos/Hitos' },
-    { icon: ShieldCheck,   label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
-    {
-        icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Principal',
-        submenu: [
-            { icon: LayoutDashboard, label: 'Principal',  path: '/Dashboard/mensajes/Principal' },
-            { icon: Inbox,           label: 'Recibidos',  path: '/Dashboard/mensajes/Recibidos' },
-            { icon: Send,            label: 'Enviados',   path: '/Dashboard/mensajes/Enviados' },
-            { icon: Star,            label: 'Destacados', path: '/Dashboard/mensajes/Destacados' },
-        ]
-    },
-    { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
-   //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
-   //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
-    { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
-    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
-        submenu: [
-            { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
-            { icon: HatGlasses ,           label: 'Visibilidad General',  path: '/Dashboard/configuracion/General' },
-        ]
-
-    },
+    { icon: Blocks, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
+    { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
 ];
 
 
@@ -172,7 +150,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                                         <span className="flex-1 text-left">{item.label}</span>
                                         <ChevronRight size={14} className={`transition-transform duration-200 ${desktopOpen === item.label ? 'rotate-90' : ''}`} />
                                     </button>
-
                                     <AnimatePresence>
                                         {desktopOpen === item.label && (
                                             <motion.div
