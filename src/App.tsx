@@ -52,7 +52,7 @@ export default function App() {
         <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
-        <Route path="/Dashboard/tegnologias" element={<TegnologiaPage />} />
+        <Route path="/Dashboard/tecnologias" element={<TegnologiaPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
