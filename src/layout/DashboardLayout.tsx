@@ -6,7 +6,6 @@ import SidderAdmin from '@/components/SidderAdmin';
 interface DashboardLayoutProps {
     children: React.ReactNode;
 }
-
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const user = useAuthStore((state) => state.user);
 
