@@ -32,7 +32,7 @@ export default function MensajesPrincipal() {
     }, [])
 
     const stats = [
-        { label: 'No leídos',  value: recibidos.filter(m => !m.leido).length, icon: Mail,  color: 'text-[#1e2a5e]',   bg: 'bg-blue-50',    border: 'border-blue-100',    path: '/Dashboard/mensajes/Recibidos' },
+        { label: 'No leídos',  value: recibidos.filter(m => !m.leido).length, icon: Mail,  color: 'text-[#1e2a5e]',   bg: 'bg-blue-50',    border: 'border-blue-100' },
         { label: 'Recibidos',  value: recibidos.length,                        icon: Inbox, color: 'text-indigo-600',  bg: 'bg-indigo-50',  border: 'border-indigo-100',  path: '/Dashboard/mensajes/Recibidos' },
         { label: 'Enviados',   value: enviados.length,                         icon: Send,  color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', path: '/Dashboard/mensajes/Enviados' },
         { label: 'Destacados', value: destacados.length,                       icon: Star,  color: 'text-amber-500',   bg: 'bg-amber-50',   border: 'border-amber-100',   path: '/Dashboard/mensajes/Destacados' },

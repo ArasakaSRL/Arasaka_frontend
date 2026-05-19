@@ -8,7 +8,7 @@ interface Stat {
     color: string
     bg: string
     border: string
-    path: string
+    path?: string
 }
 
 interface Props {
@@ -23,8 +23,8 @@ export default function MensajesStats({ stats }: Props) {
             {stats.map(({ label, value, icon: Icon, color, bg, border, path }) => (
                 <button
                     key={label}
-                    onClick={() => navigate(path)}
-                    className={`${bg} border ${border} rounded-2xl p-5 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all text-left`}
+                    onClick={() => path && navigate(path)}
+                    className={`${bg} border ${border} rounded-2xl p-5 flex items-center gap-4 transition-all text-left ${path ? 'hover:shadow-md hover:scale-[1.02] cursor-pointer' : 'cursor-default'}`}
                 >
                     <div className={`w-10 h-10 rounded-xl border ${border} flex items-center justify-center ${bg} shrink-0`}>
                         <Icon size={18} className={color} />
