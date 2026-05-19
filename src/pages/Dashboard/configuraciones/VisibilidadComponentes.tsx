@@ -123,6 +123,21 @@ export default function VisibilidadComponentes() {
               value={config.mostrar_certificaciones}
               onChange={(val) => handleToggle("mostrar_certificaciones", val)}
             />
+            <SwitchVisibilidad
+              nombre="Redes Profesionales"
+              value={config.mostrar_redes_profesionales}
+              onChange={(val) => handleToggle("mostrar_redes_profesionales", val)}
+            />
+            <SwitchVisibilidad
+              nombre="Descargar CV"
+              value={config.mostrar_cv}
+              onChange={(val) => handleToggle("mostrar_cv", val)}
+            />
+            <SwitchVisibilidad
+              nombre="Contacto"
+              value={config.mostrar_contacto}
+              onChange={(val) => handleToggle("mostrar_contacto", val)}
+            />
           </div>
         </ConfiguracionGeneral>
 

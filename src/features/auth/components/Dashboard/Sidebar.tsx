@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen,
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, Phone, FolderOpen,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -29,9 +29,9 @@ const menuItems: MenuItem[] = [
         icon: User, label: 'Perfil Personal', path: '/Dashboard/perfil/General',
         submenu: [
             { icon: User,       label: 'Vista General', path: '/Dashboard/perfil/General' },
-            { icon: Pencil,     label: 'Editar Perfil', path: '/Dashboard/perfil/Editar' },
-            { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
-            { icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
+            { icon: UserPen,     label: 'Actualizar Perfil', path: '/Dashboard/perfil/Editar' },
+           // { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
+            //{ icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
         ]
     },
     { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos' },
@@ -48,7 +48,13 @@ const menuItems: MenuItem[] = [
         ]
     },
     { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
+<<<<<<< HEAD
     { icon: LayoutDashboard, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
+=======
+   //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
+   //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
+    { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
+>>>>>>> 4b9522228c8ba63cb443a330808e580b0fcbdfe8
     { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
         submenu: [
             { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
