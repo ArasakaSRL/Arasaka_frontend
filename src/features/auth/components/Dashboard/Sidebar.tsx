@@ -48,7 +48,7 @@ const menuItems: MenuItem[] = [
         ]
     },
     { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
-    { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
+    { icon: LayoutDashboard, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
     { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
         submenu: [
             { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
