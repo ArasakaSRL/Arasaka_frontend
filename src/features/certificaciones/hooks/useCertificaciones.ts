@@ -1,18 +1,17 @@
 // src/features/certificaciones/hooks/useCertificaciones.ts
 import { useState, useEffect } from 'react';
 
-import type { Certificado } from '../components/CertificadoCard';
+// Ya no importamos 'Certificado', solo la API
 import type { CertificacionAPI } from '../types';
 import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
 
 export function useCertificaciones( idCategoriaFiltro: string | null) {
-  const [certificados, setCertificados] = useState<Certificado[]>([]);
+  // 1. 👇 El estado ahora guarda la interfaz completa de la API
+  const [certificados, setCertificados] = useState<CertificacionAPI[]>([]);
   const [isLoadingCerts, setIsLoadingCerts] = useState<boolean>(true);
   const [isUsingFallbackCerts, setIsUsingFallbackCerts] = useState<boolean>(false);
 
   useEffect(() => {
-  
-
     const fetchCerts = async () => {
       try {
         setIsLoadingCerts(true);
@@ -25,14 +24,9 @@ export function useCertificaciones( idCategoriaFiltro: string | null) {
         }
 
         if (data) {
-          const certificadosMapeados: Certificado[] = data.map(apiCert => ({
-            id: apiCert.id_certificacion,
-            titulo: apiCert.titulo,
-            imagen: apiCert.url_archivo,
-            orientacion: apiCert.orientacion_imagen
-          }));
-          
-          setCertificados(certificadosMapeados);
+          // 2. 👇 EL CAMBIO CLAVE: Guardamos la data tal cual llega del backend
+          // Sin recortarla, para que la UI reciba las fechas, instituciones y categorías completas.
+          setCertificados(data);
           setIsUsingFallbackCerts(false);
         }
       } catch (err) {

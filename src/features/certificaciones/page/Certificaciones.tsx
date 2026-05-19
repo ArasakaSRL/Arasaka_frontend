@@ -8,21 +8,23 @@ import { ImagenUploader } from "../components/ImagenUploader";
 import { DropdownCertificaciones } from "../components/DropdownCertificaciones";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { uploadImage } from "@/firebase/firebaseStorage";
-import { CertificadosGrid } from "../components/CertificadosGrid";
 import { Carousel } from "../components/carruselCards/Carrusel";
 import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
 import { toast } from "@/components/Alerta";
 import ModalForm from "@/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import type { Certificado } from "../components/CertificadoCard";
+import { SeccionCertificados } from "../components/SeccionCertificados";
+import { BotonEliminar } from "../components/BotonEliminar";
+import { useEliminarCertificaciones } from "../hooks/useEliminarCertificaciones";
+import EliminarModal from "../components/EliminarModal";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   const [filtroCategoriaId, setFiltroCategoriaId] = useState<string | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
-  const [certificadoEliminar, setCertificadoEliminar] =   useState<Certificado | null>(null);
-  
+  const [certificadosEliminar, setCertificadosEliminar]= useState<string[]>([]);
+
   // ESTADOS DEL FORMULARIO
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
   const [tituloForm, setTituloForm] = useState("");
@@ -39,12 +41,18 @@ export default function Certificaciones() {
 
   const { categorias, isLoading, isUsingFallback } = useCategorias();
   const { registrarCertificacion, isCreating} = useCrearCertificacion();
+  const { eliminarCertificaciones, isDeleting } = useEliminarCertificaciones();
+
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  
   //error
   const { 
     certificados, 
     isLoadingCerts, 
     isUsingFallbackCerts 
   } = useCertificaciones( filtroCategoriaId); // <-- Aquí pasamos el filtro de categoría
+
+  const isBusy = isCreating || isUploadingToFirebase || isDeleting;
 
   const opcionesCategorias = categorias.map((cat) => ({
     label: cat.nombre,
@@ -58,6 +66,42 @@ export default function Certificaciones() {
     imagen: false,
     fecha: false,
   });
+
+  const toggleEliminar = (id: string) => {
+    setCertificadosEliminar((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleEliminarSeleccionados = async () => {
+    try {
+      await eliminarCertificaciones(certificadosEliminar); // string[]
+      toast.success(`${certificadosEliminar.length} certificación(es) eliminada(s)`);
+      setCertificadosEliminar([]);
+      setModoAccion(null);
+      setIsConfirmDeleteOpen(false); 
+    } catch {
+      toast.error("Error al eliminar");
+      setIsConfirmDeleteOpen(false); 
+    }
+  };
+
+  const handleEliminar = async () => {
+    if (modoAccion !== "eliminar") {
+      toast.warning("Selecciona una certificación");
+      setModoAccion("eliminar");
+      return;
+    }
+
+    if (certificadosEliminar.length === 0) {
+      toast.warning("No seleccionaste certificados");
+      return;
+    }
+    
+    setIsConfirmDeleteOpen(true);
+  };
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
@@ -113,7 +157,7 @@ export default function Certificaciones() {
 
       setOpenModal(false);
       setTituloForm("");
-      setInstitucionForm(""); // 👇 3. LIMPIAMOS EL ESTADO
+      setInstitucionForm(""); 
       setDescripcionForm("");
       setFechaObtencionForm("");
       setArchivoImagenForm(null);
@@ -127,7 +171,6 @@ export default function Certificaciones() {
     }
   };
 
-  const isBusy = isCreating || isUploadingToFirebase; // Variable para desactivar botones mientras carga
   const resetForm = () => {
     setTituloForm("");
     setInstitucionForm("");
@@ -161,15 +204,10 @@ export default function Certificaciones() {
             setModoAccion(null);
             setOpenModal(true);
           }}
-          onEliminar={() => {
-            toast.warning(
-              "Selecciona una certificación"
-            );
-            setModoAccion("eliminar");
-          }}
+          onEliminar={handleEliminar}
           onCancelar={() => {
             setModoAccion(null);
-            setCertificadoEliminar(null);
+            setCertificadosEliminar([]);
           }}
         />
 
@@ -350,24 +388,6 @@ export default function Certificaciones() {
           )}
         </div>
 
-        {/* CERTIFICACIONES (responsivo corregido anteriormente) */}
-        <h2 className="
-          text-lg
-          sm:text-xl
-          md:text-4xl
-          lg:text-5xl
-          text-dark-500
-          tracking-widest
-          font-semibold-ui
-          mt-6
-          flex justify-center text-center items-center gap-2
-        ">
-          CERTIFICACIONES
-          {isUsingFallbackCerts && (
-            <span className="text-xs text-orange-500 font-normal tracking-normal hidden sm:inline"></span>
-          )}
-        </h2>
-        
         {/* Manejo de carga y grid de certificados igual */}
         {isLoadingCerts ? (
           <div className="flex justify-center items-center h-40 text-gray-400">
@@ -378,15 +398,34 @@ export default function Certificaciones() {
              No hay certificaciones en esta categoría.
            </div>
         ) : (
-          <CertificadosGrid 
-          certificados={certificados} 
-          modoAccion = {modoAccion} 
-          onEliminar={(certs) => {
-              setCertificadoEliminar(certs);
-            }}/>
+          <SeccionCertificados
+            certificados={certificados}
+            modoAccion={modoAccion}
+            certificadosEliminar={certificadosEliminar}
+            onEliminar={(cert) => {
+              // 👇 CAMBIO AQUÍ: Usamos el nuevo ID de la API
+              toggleEliminar(cert.id_certificacion); 
+            }}
+          />
         )}
-        
+        <BotonEliminar
+          count={certificadosEliminar.length}
+          onDeleteAll={handleEliminar}
+          onDeselectAll={() => {
+            setCertificadosEliminar([]);
+            setModoAccion(null);
+          }}
+        />
       </div>
+
+      <EliminarModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={() => setIsConfirmDeleteOpen(false)}
+        onConfirm={handleEliminarSeleccionados} // 🔥 ESTA ES LA QUE REALMENTE BORRA
+        titulo="Eliminar certificaciones"
+        nombre={`${certificadosEliminar.length} certificación(es) seleccionada(s)`}
+      />
+      
     </DashboardLayout>
   );
 }

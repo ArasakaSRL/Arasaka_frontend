@@ -4,11 +4,32 @@ import type { Portfolio ,GetPortafolio} from '@/features/portafolio/types/portaf
 import { PortfolioCard } from '@/features/portafolio/components/PortfolioCard';
 import { NewPortfolioModal } from '@/features/portafolio/components/NewPortfolioModal';
 import { createPortafolio ,obtnerPortafolio} from '@/features/portafolio/lib/portafolio.service';
+import DashboardLayout from "@/layout/DashboardLayout";
+
+import { useEffect } from 'react';
 export default function PagePortafolio() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const getPortafolios = async () => {
+    try{
+            const getPortafolios = await obtnerPortafolio();
+      setPortfolios(getPortafolios.data.map((p) => ({
+        id: p.id_portafolio,
+        name: p.nombre,
+        description: p.descripcion,
+        visibility: p.visibilidad ? 'public' : 'private',
+        createdAt: new Date().toISOString(), 
+      })));
+    }catch(error){
+      console.error("Error fetching portfolios:", error);
+    }
 
+  }
+
+  useEffect(() => {
+    getPortafolios();
+  }, []);
   const handleCreatePortfolio =  async (newPortfolio: Omit<Portfolio, 'id' | 'createdAt'>) => {
     try {
       const created = await createPortafolio({
@@ -20,14 +41,7 @@ export default function PagePortafolio() {
           ...(newPortfolio.linkedinUrl ? [{ nombre: 'LinkedIn', url: newPortfolio.linkedinUrl }] : []),
         ],
       });
-      const getPortafolios = await obtnerPortafolio();
-      setPortfolios(getPortafolios.data.map((p) => ({
-        id: p.id_portafolio,
-        name: p.nombre,
-        description: p.descripcion,
-        visibility: p.visibilidad ? 'public' : 'private',
-        createdAt: new Date().toISOString(), 
-      })));
+      getPortafolios();
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error creating portfolio:", error);
@@ -40,9 +54,11 @@ export default function PagePortafolio() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-sans">
+     <DashboardLayout>
+    <div className="">
      
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-xs">
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-linear-to-br from-[#0a1a3a] to-[#112e57] rounded-xl flex items-center justify-center text-white shadow-md">
@@ -134,5 +150,6 @@ export default function PagePortafolio() {
         onCreate={handleCreatePortfolio}
       />
     </div>
+    </DashboardLayout>
   );
 }

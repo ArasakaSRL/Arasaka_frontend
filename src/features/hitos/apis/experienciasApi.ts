@@ -21,3 +21,15 @@ export const crearExperiencia = async (datos: any) => {
     throw err;
   }
 };
+
+export const eliminarMultiplesExperiencias = async (ids: string[]) => {
+  try {
+    const response = await apiClient.delete('/experiencias/multiple', {
+      data: { ids }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar múltiples experiencias:', error);
+    throw error;
+  }
+};

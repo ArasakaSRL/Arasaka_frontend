@@ -23,7 +23,8 @@ export default function TelefonosHeader({ total, modoEliminar, onActivarEliminar
                 <span className="text-[12px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-[#1e2a5e] border border-blue-100">
                     {total} {total === 1 ? 'número' : 'números'}
                 </span>
-                {total > 0 && !modoEliminar && (
+                {/**
+                *  {total > 0 && !modoEliminar && (
                     <button
                         onClick={onActivarEliminar}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 text-xs font-medium transition-all"
@@ -31,6 +32,7 @@ export default function TelefonosHeader({ total, modoEliminar, onActivarEliminar
                         <Trash2 size={13} /> Eliminar
                     </button>
                 )}
+                */}
                 {modoEliminar && (
                     <button
                         onClick={onCancelarEliminar}

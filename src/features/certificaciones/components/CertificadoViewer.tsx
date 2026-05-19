@@ -1,7 +1,8 @@
-import type { Certificado } from "./CertificadoCard";
+import type { CertificacionAPI } from "../types";
+
 
 type Props = {
-  certificados: Certificado[];
+  certificados: CertificacionAPI[];
   indexActual: number;
   onClose: () => void;
   onNext: () => void;
@@ -52,7 +53,7 @@ export function CertificadoViewer({
 
       {/* IMAGEN */}
       <img
-        src={cert.imagen}
+        src={cert.url_archivo}
         alt={cert.titulo}
         className="max-w-[90%] max-h-[90%] object-contain rounded-lg"
       />
