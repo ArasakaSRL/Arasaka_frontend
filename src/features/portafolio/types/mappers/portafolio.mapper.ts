@@ -45,8 +45,9 @@ export const mapPortafolio = (api: any): Portafolio => {
             mostrar_experiencias: data.configuracion?.mostrar_experiencias ?? false,
             mostrar_servicios: data.configuracion?.mostrar_servicios ?? false,
             mostrar_certificaciones: data.configuracion?.mostrar_certificaciones ?? false,
-            mostrar_redes_profesionales:
-                data.configuracion?.mostrar_redes_profesionales ?? false,
+            mostrar_redes_profesionales: data.configuracion?.mostrar_redes_profesionales ?? true,
+            mostrar_cv: data.configuracion?.mostrar_cv ?? true,
+            mostrar_contacto: data.configuracion?.mostrar_contacto ?? true,
             paleta_colores: data.configuracion?.paleta_colores ?? "default",
         },
     };

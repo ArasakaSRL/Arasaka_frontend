@@ -140,7 +140,7 @@ export default function Configuracion() {
         <Banner titulo="Configuración del portafolio" descripcion="" />
 
         <ConfiguracionGeneral titulo="Visibilidad Componentes">
-          <div className="space-y-4">
+          <div className="space-y-4"> 
             <SwitchVisibilidad
               nombre="Proyectos"
               value={config.mostrar_proyectos}
@@ -157,29 +157,9 @@ export default function Configuracion() {
               onChange={(val) => handleToggle("mostrar_experiencias", val)}
             />
             <SwitchVisibilidad
-              nombre="Servicios"
-              value={config.mostrar_servicios}
-              onChange={(val) => handleToggle("mostrar_servicios", val)}
-            />
-            <SwitchVisibilidad
               nombre="Certificaciones"
               value={config.mostrar_certificaciones}
               onChange={(val) => handleToggle("mostrar_certificaciones", val)}
-            />
-            <SwitchVisibilidad
-              nombre="Redes Profesionales"
-              value={config.mostrar_redes_profesionales}
-              onChange={(val) => handleToggle("mostrar_redes_profesionales", val)}
-            />
-            <SwitchVisibilidad
-              nombre="Descargar CV"
-              value={config.mostrar_cv}
-              onChange={(val) => handleToggle("mostrar_cv", val)}
-            />
-            <SwitchVisibilidad
-              nombre="Contacto"
-              value={config.mostrar_contacto}
-              onChange={(val) => handleToggle("mostrar_contacto", val)}
             />
           </div>
         </ConfiguracionGeneral>
