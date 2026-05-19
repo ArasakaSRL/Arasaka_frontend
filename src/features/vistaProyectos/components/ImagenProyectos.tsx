@@ -26,7 +26,7 @@ export const ImagenProyecto = ({
   if (!imagenes?.length) {
     return (
       <div
-        className=" w-full h-105 rounded-3xl border flex items-center justify-center bg-gray-100
+        className=" w-full h-70 rounded-3xl border flex items-center justify-center bg-gray-100
         "
       >
         <ImageOff
@@ -127,7 +127,6 @@ export const ImagenProyecto = ({
       </div>
 
       {/* THUMBNAILS */}
-
       {imagenes.length > 1 && (
         <div className="flex gap-3 overflow-x-auto pb-1">
 

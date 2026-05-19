@@ -48,13 +48,9 @@ const menuItems: MenuItem[] = [
         ]
     },
     { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
-<<<<<<< HEAD
-    { icon: LayoutDashboard, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
-=======
    //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
    //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
     { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
->>>>>>> 4b9522228c8ba63cb443a330808e580b0fcbdfe8
     { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
         submenu: [
             { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
