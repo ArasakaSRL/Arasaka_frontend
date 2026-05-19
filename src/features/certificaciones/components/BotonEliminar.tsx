@@ -20,12 +20,12 @@ export function BotonEliminar({ count, onDeleteAll, onDeselectAll }: BotonElimin
       >
         <div
           className="flex items-center bg-[#1a1a1a] rounded-full h-[52px] overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-          style={{ maxWidth: hovered ? "320px" : "52px" }} // ✅ más ancho para que quepa "Desmarcar todo"
+          style={{ maxWidth: hovered ? "320px" : "52px" }} 
         >
           {/* Acciones deslizables */}
           <div
             className="flex items-center overflow-hidden whitespace-nowrap transition-all duration-300"
-            style={{ width: hovered ? "260px" : 0, opacity: hovered ? 1 : 0 }} // ✅ ancho aumentado
+            style={{ width: hovered ? "260px" : 0, opacity: hovered ? 1 : 0 }} 
           >
             <button
               onClick={onDeleteAll}
@@ -33,7 +33,7 @@ export function BotonEliminar({ count, onDeleteAll, onDeselectAll }: BotonElimin
             >
               <span className="text-green-400 text-base leading-none">✓</span>
               <span className="text-[10px] text-white/70 font-medium tracking-wide">
-                Eliminar todo
+                Eliminar 
               </span>
             </button>
             <button
