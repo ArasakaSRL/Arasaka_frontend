@@ -202,7 +202,7 @@ export default function Register() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1 py-12 md:py-8">
-            <LoginBackground />
+            
             <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>

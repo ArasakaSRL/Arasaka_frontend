@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
             { icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
         ]
     },
-    { icon: Blocks, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
+    { icon: Blocks, label: 'Tecnologías',   path: '/Dashboard/tecnologias' },
     { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
 ];
 

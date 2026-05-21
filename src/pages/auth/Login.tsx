@@ -187,7 +187,7 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1 relative">
-            <LoginBackground />
+            
             <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline z-10">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>
