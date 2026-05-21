@@ -9,7 +9,7 @@ import { getPortafolio } from '@/features/auth/api/update-perfilPersonal';
 import { loginRequest, getUsuario, sendPasswordResetEmail, firebaseAuthRequest } from '@/features/auth/api/auth';
 import { useAuthStore } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
-import { googleProvider, githubProvider, facebookProvider } from '@/firebase/config';
+import { googleProvider, githubProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
 import LoginBackground from '@/components/LoginBackground';
 
@@ -31,13 +31,26 @@ const loginSchema = z.object({
         .regex(/[^A-Za-z0-9]/, 'Debe contener un carácter especial'),
 });
 
-type FieldErrors = Partial<Record<'correo' | 'password', string>>;
+const usernameSchema = z.object({
+    username: z.string().trim().min(3, 'El usuario debe tener al menos 3 caracteres').max(30, 'Máximo 30 caracteres'),
+    password: z
+        .string()
+        .min(12, 'la contraseña debe tener 12 caracteres')
+        .max(12, 'Máximo 12 caracteres permitidos')
+        .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
+        .regex(/[a-z]/, 'Debe contener al menos una minúscula')
+        .regex(/[0-9]/, 'Debe contener al menos un número')
+        .regex(/[^A-Za-z0-9]/, 'Debe contener un carácter especial'),
+});
+
+type FieldErrors = Partial<Record<'correo' | 'username' | 'password', string>>;
 
 export default function Login() {
 
     // Referencias para el foco (Criterio: Posicionar foco en primer error)
     const correoRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const usernameRef = useRef<HTMLInputElement>(null);
 
     //estados para recuperar contraseña
     const [resetLoading, setResetLoading] = useState(false);
@@ -47,12 +60,16 @@ export default function Login() {
     const setUser = useAuthStore(s => s.setUser);
     const setPortafolio = useAuthStore(s => s.setPortafolio);
     const [correo, setCorreo] = useState('');
+    const [username, setUsername] = useState('');
+    const [loginMode, setLoginMode] = useState<'correo' | 'username'>('correo');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<FieldErrors>({});
     const [apiError, setApiError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const isFilled = correo.length > 0 && password.length > 0;
+    const isFilled = loginMode === 'correo'
+        ? correo.length > 0 && password.length > 0
+        : username.length > 0 && password.length > 0
 
     const [socialLoading, setSocialLoading] = useState<string | null>(null);
 
@@ -126,7 +143,10 @@ export default function Login() {
      */
     async function handleLogin() {
         setApiError(null);
-        const result = loginSchema.safeParse({ correo, password });
+
+        const result = loginMode === 'correo'
+            ? loginSchema.safeParse({ correo, password })
+            : usernameSchema.safeParse({ username, password })
 
         if (!result.success) {
             const fieldErrors: FieldErrors = {};
@@ -139,16 +159,18 @@ export default function Login() {
             }
             setErrors(fieldErrors);
 
-            // Criterio: Posiciona el foco del teclado en el primer campo con error
             if (firstErrorKey === 'correo') correoRef.current?.focus();
+            else if (firstErrorKey === 'username') usernameRef.current?.focus();
             else if (firstErrorKey === 'password') passwordRef.current?.focus();
-
             return;
         }
         setErrors({});
         setLoading(true);
         try {
-            await loginRequest({ correo, password });
+            const payload = loginMode === 'correo'
+                ? { correo, password }
+                : { username, password }
+            await loginRequest(payload);
             const user = await getUsuario();
             if (user) setUser(user)
             navigate('/Dashboard/perfil/General');
@@ -196,17 +218,48 @@ export default function Login() {
                         Los campos marcados con <span className="text-red-500">*</span> son obligatorios
                     </p>
 
-                    <AuthInput
-                        ref={correoRef}
-                        label="Correo"
-                        placeholder="tu@correo.com"
-                        type="email"
-                        value={correo}
-                        onChange={handleCorreoChange}
-                        error={errors.correo}
-                        maxLength={50}
-                        required
-                    />
+                    <div className="flex bg-gray-100 rounded-xl p-1 mb-3">
+                        {(['correo', 'username'] as const).map(mode => (
+                            <button
+                                key={mode}
+                                type="button"
+                                onClick={() => { setLoginMode(mode); setErrors({}) }}
+                                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                    loginMode === mode
+                                        ? 'bg-white text-[#1e2a5e] shadow-sm'
+                                        : 'text-gray-400 hover:text-gray-600'
+                                }`}
+                            >
+                                {mode === 'correo' ? 'Correo' : 'Usuario'}
+                            </button>
+                        ))}
+                    </div>
+
+                    {loginMode === 'correo' ? (
+                        <AuthInput
+                            ref={correoRef}
+                            label="Correo"
+                            placeholder="tu@correo.com"
+                            type="email"
+                            value={correo}
+                            onChange={handleCorreoChange}
+                            error={errors.correo}
+                            maxLength={50}
+                            required
+                        />
+                    ) : (
+                        <AuthInput
+                            ref={usernameRef}
+                            label="Usuario"
+                            placeholder="tu_usuario"
+                            type="text"
+                            value={username}
+                            onChange={v => setUsername(v.slice(0, 30))}
+                            error={errors.username}
+                            maxLength={30}
+                            required
+                        />
+                    )}
 
                     <AuthInput
                         ref={passwordRef}

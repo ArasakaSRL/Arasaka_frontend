@@ -18,6 +18,7 @@ import MensajesPrincipal from './pages/Dashboard/mensajes/MensajesPrincipal'
 import MensajesRecibidos from './pages/Dashboard/mensajes/MensajesRecibidos'
 import MensajesEnviados from './pages/Dashboard/mensajes/MensajesEnviados'
 import MensajesDestacados from './pages/Dashboard/mensajes/MensajesDestacados'
+import Cuenta from './pages/Dashboard/cuenta/Cuenta'
 import ReportesUsr from './features/reportesUsuario/page/ReportesUsr'
 import PerfilGeneral from './pages/Dashboard/perfil/PerfilGeneral'
 import PerfilEditar from './pages/Dashboard/perfil/PerfilEditar'
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/Dashboard/certificaciones/Certificaciones" element={< Certificaciones/>} />
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
         <Route path="/Dashboard/configuracion/Configuracion" element={<Configuracion/>} />
+        <Route path="/Dashboard/cuenta/Cuenta" element={<Cuenta />} />
         <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
@@ -56,7 +58,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
-         <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />
+        <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />
       </Route>
       <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />

@@ -5,9 +5,10 @@ import {useAuthStore} from '@/stores/authStore';
 import SidderAdmin from '@/components/SidderAdmin';
 interface DashboardLayoutProps {
     children: React.ReactNode;
+    hideSidebar?: boolean;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, hideSidebar = false }: DashboardLayoutProps) {
     const user = useAuthStore((state) => state.user);
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,19 +19,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 onMenuClick={() => setSidebarOpen(prev => !prev)}
                 sidebarOpen={sidebarOpen}
             />
-            {user?.correo === 'jhonvergara437@gmail.com' ? (
-                <SidderAdmin
-                isOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-                />
-             ) : (
-           <Sidebar
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-           />
-         )}
 
-            <main className="pt-14 md:ml-54 min-h-screen transition-all duration-300">
+            {!hideSidebar && (
+                user?.correo === 'jhonvergara437@gmail.com' ? (
+                    <SidderAdmin
+                        isOpen={sidebarOpen}
+                        onClose={() => setSidebarOpen(false)}
+                    />
+                ) : (
+                    <Sidebar
+                        isOpen={sidebarOpen}
+                        onClose={() => setSidebarOpen(false)}
+                    />
+                )
+            )}
+
+            <main className={`pt-14 min-h-screen transition-all duration-300 ${hideSidebar ? '' : 'md:ml-54'}`}>
                 <div className="max-w-full sm:p-6 md:p-2">
                     {children}
                 </div>

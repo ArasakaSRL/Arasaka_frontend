@@ -18,7 +18,8 @@ export interface RegisterPayload {
   portafolio?: PortafolioPayload
 }
 export interface LoginPayload {
-  correo: string
+  correo?: string
+  username?: string
   password: string
 }
 
@@ -27,8 +28,35 @@ export interface LoginResponse {
 }
 
 export interface ResetPasswordPayload {
-  token: string //"token": "abc123...", usando cookies de sesión en lugar de tokens JWT
+  token: string
   correo: string
   password: string
   password_confirmation: string
+}
+
+export interface CambiarContrasenaPayload {
+  contrasena_actual: string
+  contrasena_nueva: string
+  contrasena_nueva_confirmation: string
+}
+
+export interface CambiarContrasenaResponse {
+  message: string
+}
+
+export interface VerificarCorreoPayload {
+  correo_nuevo: string
+}
+
+export interface VerificarCorreoResponse {
+  message: string
+}
+
+export interface ConfirmarCorreoPayload {
+  correo_nuevo: string
+  codigo: string
+}
+
+export interface ConfirmarCorreoResponse {
+  message: string
 }

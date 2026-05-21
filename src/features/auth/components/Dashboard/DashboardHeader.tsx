@@ -91,7 +91,10 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                     <span className="hidden sm:inline">{descargandoCV ? 'Generando...' : 'Descargar CV'}</span>
                 </button>
 
-                <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center font-bold text-sm shadow-sm bg-[#1e2a5e] text-white">
+                <div
+                    onClick={() => navigate('/Dashboard/cuenta/Cuenta')}
+                    className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center font-bold text-sm shadow-sm bg-[#1e2a5e] text-white cursor-pointer hover:ring-2 hover:ring-[#1e2a5e]/40 transition-all"
+                >
                     {user?.url_foto
                         ? <img src={user.url_foto} alt={user.nombre} className="w-full h-full object-cover" />
                         : initials
