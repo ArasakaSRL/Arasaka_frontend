@@ -34,6 +34,7 @@ export interface AuthUser {
   id: string
   nombre: string
   apellido: string
+  username: string
   correo: string
   biografia?: string
   descripcion_laboral?: string

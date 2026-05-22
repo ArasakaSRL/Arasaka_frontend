@@ -15,6 +15,7 @@ export interface ActualizarInformacionPayload {
     nombre?: string
     apellido?: string
     correo?: string
+    username?: string
     biografia?: string
 }
 
