@@ -22,7 +22,7 @@ function formatDate(iso: string) {
 
 export default function ListaMensajes({ mensajes, loading, tab, onAbrir, onDestacadoChange }: Props) {
     const [toggling, setToggling] = useState<string | null>(null)
-    const correoUsuario = useAuthStore(s => s.user?.correo ?? '')
+    const correoUsuario = useAuthStore(s => s.portafolioSeleccionado?.informacion_basica?.gmail ?? s.user?.correo ?? '')
 
     function getNombre(m: Mensaje) {
         if (tab === 'enviados') return m.destinatario.correo

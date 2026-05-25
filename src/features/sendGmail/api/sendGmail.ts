@@ -30,16 +30,20 @@ export async function getPortafolios(): Promise<Portafolio[]> {
 }
 
 // GET /api/mensajes/recibidos (requiere sesión activa)
-// Devuelve los mensajes recibidos del usuario autenticado
-export async function getMensajesRecibidos(): Promise<unknown> {
-    const { data } = await apiClient.get('/mensajes/recibidos')
+// Devuelve los mensajes recibidos del portafolio seleccionado
+export async function getMensajesRecibidos(idPortafolio?: string): Promise<unknown> {
+    const { data } = await apiClient.get('/mensajes/recibidos', {
+        params: idPortafolio ? { id_portafolio: idPortafolio } : undefined,
+    })
     return data
 }
 
 // GET /api/mensajes/enviados (requiere sesión activa)
-// Devuelve los mensajes enviados del usuario autenticado
-export async function getMensajesEnviados(): Promise<unknown> {
-    const { data } = await apiClient.get('/mensajes/enviados')
+// Devuelve los mensajes enviados del portafolio seleccionado
+export async function getMensajesEnviados(idPortafolio?: string): Promise<unknown> {
+    const { data } = await apiClient.get('/mensajes/enviados', {
+        params: idPortafolio ? { id_portafolio: idPortafolio } : undefined,
+    })
     return data
 }
 
@@ -59,7 +63,9 @@ export async function toggleDestacado(id: string): Promise<{ destacado: boolean 
 
 // GET /api/mensajes/destacados (requiere sesión activa)
 // Devuelve los mensajes destacados del usuario autenticado
-export async function getMensajesDestacados(): Promise<unknown> {
-    const { data } = await apiClient.get('/mensajes/destacados')
+export async function getMensajesDestacados(idPortafolio?: string): Promise<unknown> {
+    const { data } = await apiClient.get('/mensajes/destacados', {
+        params: idPortafolio ? { id_portafolio: idPortafolio } : undefined,
+    })
     return data
 }

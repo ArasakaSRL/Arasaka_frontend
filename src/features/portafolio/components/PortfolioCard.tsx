@@ -1,20 +1,21 @@
 import React from 'react';
-import { Eye, Lock, Calendar, Settings } from 'lucide-react';
+import { Eye, Lock, Calendar, Settings, CheckCircle2 } from 'lucide-react';
 import type  { Portfolio } from '@/features/portafolio/types/portafolioType';
 
 interface PortfolioCardProps {
   portfolio: Portfolio;
   viewMode: 'grid' | 'list';
   onManage?: (id: string) => void;
+  isActive?: boolean;
 }
 
-export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMode, onManage }) => {
+export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMode, onManage, isActive }) => {
   const isList = viewMode === 'list';
 
   if (isList) {
     /* ================= VISTA LISTA: TODO EN UNA SOLA LÍNEA HORIZONTAL ================= */
     return (
-      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+      <div className={`bg-white border rounded-xl p-4 transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full ${isActive ? 'border-blue-400 shadow-[0_0_0_2px_rgba(59,130,246,0.15)]' : 'border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)]'}`}>
         
         {/* Bloque Izquierdo: Estado + Título + Descripción */}
         <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1 min-w-0">
@@ -31,10 +32,17 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMod
             )}
           </div>
 
-          {/* 2. Título (un ancho fijo sugerido para que queden alineados en fila) */}
-          <h3 className="text-base font-bold text-gray-800 capitalize truncate md:w-48 shrink-0">
-            {portfolio.name}
-          </h3>
+          {/* 2. Título */}
+          <div className="flex items-center gap-2 md:w-48 shrink-0 min-w-0">
+            <h3 className="text-base font-bold text-gray-800 capitalize truncate">
+              {portfolio.name}
+            </h3>
+            {isActive && (
+              <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-full">
+                <CheckCircle2 size={10} /> Activo
+              </span>
+            )}
+          </div>
 
           {/* 3. Descripción */}
           <p className="text-sm text-gray-400 font-normal truncate flex-1">
@@ -87,7 +95,7 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMod
 
   /* ================= VISTA CUADRÍCULA: COMPACTA Y DELGADA ================= */
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_4px_25px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col justify-between h-full w-full max-w-[310px] mx-auto">
+    <div className={`bg-white border rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between h-full w-full max-w-77.5 mx-auto ${isActive ? 'border-blue-400 shadow-[0_0_0_2px_rgba(59,130,246,0.15)]' : 'border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_4px_25px_rgba(0,0,0,0.04)]'}`}>
       <div>
         <div className="mb-3 flex items-center justify-between">
           {portfolio.visibility === 'public' ? (
@@ -105,9 +113,16 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMod
           </span>
         </div>
 
-        <h3 className="text-lg font-bold text-gray-800 capitalize mb-1 truncate">
-          {portfolio.name}
-        </h3>
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="text-lg font-bold text-gray-800 capitalize truncate">
+            {portfolio.name}
+          </h3>
+          {isActive && (
+            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-full">
+              <CheckCircle2 size={10} /> Activo
+            </span>
+          )}
+        </div>
         <p className="text-sm text-gray-400 leading-relaxed font-normal mb-6 line-clamp-3">
           {portfolio.description}
         </p>

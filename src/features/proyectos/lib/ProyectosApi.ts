@@ -38,30 +38,38 @@ export interface Tecnologias {
     logo?: string;
 }
 
+const getIdPortafolio = (): string => {
+    const id = useAuthStore.getState().portafolioSeleccionado?.id_portafolio
+    if (!id) throw new Error('No hay portafolio seleccionado')
+    return id
+}
+
 export const crearProyecto = async (data: ProyectoFormData): Promise<Proyecto> => {
-  const response = await apiClient.post(`/portafolios/proyectos`, data);
-  useAuthStore.getState().refreshPortafolio()
-  return response.data.data;
-};
+    const id = getIdPortafolio()
+    const response = await apiClient.post(`/portafolios/${id}/proyectos`, data)
+    useAuthStore.getState().refreshPortafolio()
+    return response.data.data
+}
 
 export const obtenerTecnologia = async (): Promise<Tecnologias[]> => {
-    const response = await apiClient.get("/tecnologias");
-    return response.data.data;
+    const response = await apiClient.get('/tecnologias')
+    return response.data.data
 }
 
 export const obtenerProyectos = async (): Promise<Proyecto[]> => {
-    const response = await apiClient.get("/portafolios/proyectos");
-    return response.data.data;
+    const id = getIdPortafolio()
+    const response = await apiClient.get(`/portafolios/${id}/proyectos`)
+    return response.data.data
 }
 
 export const editarProyecto = async (id_proyecto: string, data: Partial<ProyectoFormData>): Promise<Proyecto> => {
-    const response = await apiClient.put(`/portafolios/proyectos/${id_proyecto}`, data);
+    const response = await apiClient.put(`/portafolios/proyectos/${id_proyecto}`, data)
     useAuthStore.getState().refreshPortafolio()
-    return response.data.data;
+    return response.data.data
 }
 
 export const eliminarProyecto = async (id_proyecto: string) => {
-    const response = await apiClient.delete(`/portafolios/proyectos/${id_proyecto}`);
+    const response = await apiClient.delete(`/portafolios/proyectos/${id_proyecto}`)
     useAuthStore.getState().refreshPortafolio()
-    return response.data;
+    return response.data
 }

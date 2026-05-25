@@ -49,6 +49,16 @@ interface Servicio {
     activo: boolean
 }
 
+export interface InformacionBasica {
+    id_informacion_basica: string
+    nombre_completo: string
+    gmail: string
+    pais: string
+    foto_perfil: string | null
+    foto_perfil_public_id: string | null
+    biografia: string | null
+}
+
 export interface PortafolioCompleto {
     id_portafolio: string
     id_usuario: string
@@ -58,6 +68,7 @@ export interface PortafolioCompleto {
     slug: string
     fecha_creacion: string
     fecha_actualizacion: string
+    informacion_basica: InformacionBasica | null
     proyectos: Proyecto[]
     habilidades: Habilidad[]
     experiencias: Experiencia[]

@@ -28,10 +28,12 @@ export default function PortafolioContenido({ portafolio, loadingPortafolio }: P
 
     return (
         <div className="bg-white rounded-2xl p-5 flex flex-col gap-4">
-            {portafolio?.nombre && (
+            {portafolio && (
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
                     <span className="text-base">📁</span>
-                    <h3 className="text-sm font-bold text-[#1e2a5e]">{portafolio.nombre}</h3>
+                    <h3 className="text-sm font-bold text-[#1e2a5e]">
+                        {portafolio.nombre}
+                    </h3>
                 </div>
             )}
 

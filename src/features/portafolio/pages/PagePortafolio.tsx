@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { LayoutGrid, List, Plus, FolderOpen } from 'lucide-react';
 
 import type { Portfolio } from '@/features/portafolio/types/portafolioType';
+import type { PortafolioCompleto } from '@/features/auth/types/portafolioData';
 import  { toast } from "@/components/Alerta";
 import { PortfolioCard } from '@/features/portafolio/components/PortfolioCard';
 import { NewPortfolioModal } from '@/features/portafolio/components/NewPortfolioModal';
+import { useAuthStore } from '@/stores/authStore';
+import { useNavigate } from 'react-router-dom';
 
 import {
   createPortafolio,
@@ -15,9 +18,13 @@ import DashboardLayout from '@/layout/DashboardLayout';
 
 export default function PagePortafolio() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+  const [portafoliosCompletos, setPortafoliosCompletos] = useState<PortafolioCompleto[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [loading, setLoading] = useState(true);
+  const setPortafolioSeleccionado = useAuthStore(s => s.setPortafolioSeleccionado);
+  const portafolioSeleccionado = useAuthStore(s => s.portafolioSeleccionado);
+  const navigate = useNavigate();
 
   const getPortafolios = async () => {
     try {
@@ -25,15 +32,17 @@ export default function PagePortafolio() {
 
       const response = await obtnerPortafolio();
 
+      setPortafoliosCompletos(response.data as unknown as PortafolioCompleto[]);
+
       setPortfolios(
         response.data.map((p) => ({
           id: p.id_portafolio,
           name: p.nombre,
           description: p.descripcion,
           visibility: p.visibilidad ? 'public' : 'private',
-             createdAt: new Date(p.fecha_creacion)
-      .toLocaleDateString('es-ES')
-      .replace(/\//g, '-'),
+          createdAt: new Date(p.fecha_creacion)
+            .toLocaleDateString('es-ES')
+            .replace(/\//g, '-'),
         }))
       );
     } catch (error) {
@@ -77,7 +86,12 @@ export default function PagePortafolio() {
   };
 
   const handleManagePortfolio = (id: string) => {
-    console.log('Gestionando portafolio con ID:', id);
+    const completo = portafoliosCompletos.find(p => p.id_portafolio === id);
+    if (completo) {
+      setPortafolioSeleccionado(completo);
+      toast.success(`Gestionando: ${completo.nombre}`);
+    }
+    navigate('/Dashboard/perfil/General');
   };
 
   return (
@@ -191,6 +205,7 @@ export default function PagePortafolio() {
                   portfolio={portfolio}
                   viewMode={viewMode}
                   onManage={handleManagePortfolio}
+                  isActive={portfolio.id === portafolioSeleccionado?.id_portafolio}
                 />
               ))}
             </div>

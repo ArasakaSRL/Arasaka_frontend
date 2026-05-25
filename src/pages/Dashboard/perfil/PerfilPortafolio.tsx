@@ -7,18 +7,19 @@ import PortafolioContenido from '@/features/auth/components/Dashboard/profile/pr
 import { FolderOpen } from 'lucide-react'
 
 export default function PerfilPortafolio() {
-    const portafolioStore = useAuthStore(s => s.portafolio)
+    const portafolioSeleccionado = useAuthStore(s => s.portafolioSeleccionado)
     const setPortafolio = useAuthStore(s => s.setPortafolio)
-    const [loadingPortafolio, setLoadingPortafolio] = useState(!portafolioStore)
+    const [portafolioCompleto, setPortafolioCompleto] = useState<typeof portafolioSeleccionado>(null)
+    const [loadingPortafolio, setLoadingPortafolio] = useState(true)
 
     useEffect(() => {
-        if (portafolioStore) return
-        getPortafolio()
-            .then(setPortafolio)
-            .catch(() => setPortafolio(null))
+        if (!portafolioSeleccionado) return
+        setLoadingPortafolio(true)
+        getPortafolio(portafolioSeleccionado.id_portafolio)
+            .then(data => { setPortafolioCompleto(data); setPortafolio(data) })
+            .catch(() => setPortafolioCompleto(null))
             .finally(() => setLoadingPortafolio(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [portafolioSeleccionado?.id_portafolio])
 
     return (
         <DashboardLayout>
@@ -29,7 +30,7 @@ export default function PerfilPortafolio() {
                 </div>
 
                 <div className="lg:col-span-12">
-                    <PortafolioContenido portafolio={portafolioStore} loadingPortafolio={loadingPortafolio} />
+                    <PortafolioContenido portafolio={portafolioCompleto} loadingPortafolio={loadingPortafolio} />
                 </div>
 
             </div>

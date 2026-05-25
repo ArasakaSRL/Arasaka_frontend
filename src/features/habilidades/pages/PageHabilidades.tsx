@@ -8,8 +8,10 @@ import ListaHabilidad from "../components/ListaHabilidad";
 import { obtenerHabilidades, type HabilidadUI ,eliminarHabilidad} from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function PageHabilidades() {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   const [ModalAbierto, setModalAbierto] = useState(false);
   const [habilidades, setHabilidades] = useState<HabilidadUI[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,8 +32,9 @@ export default function PageHabilidades() {
   };
 
   useEffect(() => {
+    if (!idPortafolio) return
     fetchHabilidades();
-  }, []);
+  }, [idPortafolio]);
 
   const handleEditar = (habilidad: HabilidadUI) => {
     setHabilidadesEditar(habilidad);

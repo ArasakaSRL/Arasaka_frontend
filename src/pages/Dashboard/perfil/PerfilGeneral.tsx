@@ -2,34 +2,38 @@ import { useEffect, useState } from 'react'
 import DashboardLayout from '@/layout/DashboardLayout'
 import PageHeader from '@/components/ui/PageHeader'
 import { useAuthStore } from '@/stores/authStore'
-import { getPortafolio } from '@/features/auth/api/update-perfilPersonal'
 import AvatarPerfil from '@/features/auth/components/Dashboard/profile/preview/AvatarPerfil'
 import PortafolioContenido from '@/features/auth/components/Dashboard/profile/preview/PortafolioContenido'
 import { User, Mail, MapPin, Phone, Briefcase, LayoutDashboard } from 'lucide-react'
+import { getPortafolio } from '@/features/auth/api/update-perfilPersonal'
+import type { PortafolioCompleto } from '@/features/auth/types/portafolioData'
 
 export default function PerfilGeneral() {
     const user = useAuthStore(s => s.user)
-    const portafolioStore = useAuthStore(s => s.portafolio)
-    const setPortafolio = useAuthStore(s => s.setPortafolio)
-    const [loadingPortafolio, setLoadingPortafolio] = useState(!portafolioStore)
+    const portafolio = useAuthStore(s => s.portafolioSeleccionado)
+    const info = portafolio?.informacion_basica
+    const [portafolioCompleto, setPortafolioCompleto] = useState<PortafolioCompleto | null>(null)
+    const [loadingCompleto, setLoadingCompleto] = useState(true)
 
     useEffect(() => {
-        if (portafolioStore) return
-        getPortafolio()
-            .then(setPortafolio)
-            .catch(() => setPortafolio(null))
-            .finally(() => setLoadingPortafolio(false))
-            //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if (!portafolio?.id_portafolio) return
+        setLoadingCompleto(true)
+        getPortafolio(portafolio.id_portafolio)
+            .then(setPortafolioCompleto)
+            .catch(() => setPortafolioCompleto(null))
+            .finally(() => setLoadingCompleto(false))
+    }, [portafolio?.id_portafolio])
 
     if (!user) return null
 
+    const telefonos = portafolio?.telefonos?.map((t: { telefono: string }) => t.telefono).join(', ') || '—'
+
     const campos = [
-        { icon: User,      label: 'Nombre completo', value: `${user.nombre} ${user.apellido}` },
-        { icon: Mail,      label: 'Correo',           value: user.correo },
-        { icon: MapPin,    label: 'País',              value: user.pais?.nombre || '—' },
-        { icon: Phone,     label: 'Teléfonos',         value: user.telefonos?.map(t => t.telefono).join(', ') || '—' },
-        { icon: Briefcase, label: 'Descripción',       value: user.biografia || '—' },
+        { icon: User,      label: 'Nombre completo', value: info?.nombre_completo || '—' },
+        { icon: Mail,      label: 'Gmail',            value: info?.gmail || '—' },
+        { icon: MapPin,    label: 'País',              value: info?.pais || '—' },
+        { icon: Phone,     label: 'Teléfonos',         value: telefonos },
+        { icon: Briefcase, label: 'Descripción',       value: info?.biografia || '—' },
     ]
 
     return (
@@ -41,7 +45,6 @@ export default function PerfilGeneral() {
                 </div>
 
                 <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    
                     <div className="divide-y divide-gray-50">
                         {campos.map(({ icon: Icon, label, value }) => (
                             <div key={label} className="flex flex-col px-6 py-4 hover:bg-slate-50/60 transition-colors gap-1.5">
@@ -61,10 +64,10 @@ export default function PerfilGeneral() {
                     <div className="bg-[#1e2a5e] rounded-2xl p-4 shadow-2xl flex flex-col gap-4">
                         <AvatarPerfil
                             user={user}
-                            formData={{ nombre: user.nombre, apellido: user.apellido, biografia: user.biografia ?? '', correo: user.correo }}
-                            profesiones={user.profesiones?.map(p => ({ id_profesion: p.id_profesion, nombre: p.nombre })) ?? []}
+                            formData={{ nombre: info?.nombre_completo?.split(' ')[0] ?? user.nombre, apellido: info?.nombre_completo?.split(' ').slice(1).join(' ') ?? user.apellido, biografia: info?.biografia ?? '', correo: info?.gmail ?? user.correo }}
+                            profesiones={portafolio?.profesiones?.map((p: { id_profesion: string; nombre: string }) => ({ id_profesion: p.id_profesion, nombre: p.nombre })) ?? []}
                         />
-                        <PortafolioContenido portafolio={portafolioStore} loadingPortafolio={loadingPortafolio} />
+                        <PortafolioContenido portafolio={portafolioCompleto} loadingPortafolio={loadingCompleto} />
                     </div>
                 </div>
 

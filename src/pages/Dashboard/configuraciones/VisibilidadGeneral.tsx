@@ -6,6 +6,7 @@ import { DropdownCertificaciones } from "@/features/certificaciones/components/D
 import { Boton2 } from "@/components/ui/Boton2";
 import { toast } from "@/components/Alerta";
 import { actualizarConfiguracion, getConfiguracion } from "@/features/configuracion/apis/configuracionApi";
+import { useAuthStore } from "@/stores/authStore";
 
 
 import type {
@@ -25,6 +26,7 @@ const opciones = [
 ];
 
 export default function VisibilidadGeneral() {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   const [config, setConfig] =
     useState<ConfiguracionPortafolio | null>(null);
 
@@ -46,8 +48,9 @@ export default function VisibilidadGeneral() {
   };
 
   useEffect(() => {
+    if (!idPortafolio) return
     fetchDatos();
-  }, []);
+  }, [idPortafolio]);
 
   const handleChangeDropdown = (option: Option | null) => {
     if (!option) return;

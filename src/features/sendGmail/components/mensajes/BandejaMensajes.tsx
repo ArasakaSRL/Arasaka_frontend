@@ -24,7 +24,7 @@ export default function BandejaMensajes({ tab, fetcher }: Props) {
     const [loading, setLoading] = useState(false)
     const [detalle, setDetalle] = useState<Mensaje | null>(null)
     const [query, setQuery] = useState('')
-    const correoUsuario = useAuthStore(s => s.user?.correo ?? '')
+    const correoUsuario = useAuthStore(s => s.portafolioSeleccionado?.informacion_basica?.gmail ?? s.user?.correo ?? '')
 
     useEffect(() => {
         setDetalle(null)

@@ -4,9 +4,11 @@ import BandejaMensajes from '@/features/sendGmail/components/mensajes/BandejaMen
 import PageHeader from '@/components/ui/PageHeader'
 import { Star } from 'lucide-react'
 import { useCallback } from 'react'
+import { useAuthStore } from '@/stores/authStore'
 
 export default function MensajesDestacados() {
-    const fetcher = useCallback(() => getMensajesDestacados(), [])
+    const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
+    const fetcher = useCallback(() => getMensajesDestacados(idPortafolio), [idPortafolio])
 
     return (
         <DashboardLayout>

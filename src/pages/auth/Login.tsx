@@ -5,9 +5,8 @@ import { AxiosError } from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
-import { getPortafolio } from '@/features/auth/api/update-perfilPersonal';
 import { loginRequest, getUsuario, sendPasswordResetEmail, firebaseAuthRequest } from '@/features/auth/api/auth';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, resolverPortafolioDesdeArray } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { googleProvider, githubProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
@@ -81,8 +80,10 @@ export default function Login() {
             const { id_token, correo, provider: providerName } = await signInWithProvider(provider);
             await firebaseAuthRequest(id_token, correo, providerName);
             const user = await getUsuario();
-            if (user) setUser(user);
-            getPortafolio().then(setPortafolio).catch(() => setPortafolio(null))
+            if (user) {
+                setUser(user);
+                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
+            }
             navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const axiosError = err as AxiosError<{ message?: string }>;
@@ -172,7 +173,10 @@ export default function Login() {
                 : { username, password }
             await loginRequest(payload);
             const user = await getUsuario();
-            if (user) setUser(user)
+            if (user) {
+                setUser(user);
+                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
+            }
             navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;

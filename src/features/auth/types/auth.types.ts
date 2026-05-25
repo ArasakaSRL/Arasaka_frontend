@@ -14,6 +14,7 @@ export interface RegisterPayload {
   url_foto?: string
   estado?: boolean
   verificacion_email?: boolean
+  pais?: string
   crear_portafolio?: boolean
   portafolio?: PortafolioPayload
 }
