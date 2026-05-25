@@ -151,10 +151,10 @@ export type CreatePortafolio = {
     nombre: string;
     descripcion: string;
     visibilidad: boolean;
-    nombre_completo: string;
-    gmail: string;
-    contrasena: string;
-    pais: string;
+    nombre_completo?: string;
+    gmail?: string;
+    contrasena?: string;
+    pais?: string;
     redesProfesionales: RedesProfesionales[];
 }
 

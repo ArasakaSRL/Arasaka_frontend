@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Share2, Eye, Menu, X, ExternalLink, FolderOpen } from 'lucide-react';
+import { Share2, Eye, Menu, X, ExternalLink } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import ShareModal from '@/features/portafolio/components/ShareModal';
@@ -33,6 +33,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
         try {
             const portafolio = await getPortafolioPrivate(portafolioSeleccionado.slug);
             const infoBasica = portafolioSeleccionado.informacion_basica;
+            const config = portafolio.configuracion;
 
             await generateCV({
                 usuario: {
@@ -43,11 +44,11 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                     foto_perfil: infoBasica?.foto_perfil ?? portafolio.usuario.foto_perfil,
                     pais: infoBasica?.pais ?? portafolio.usuario.pais,
                 },
-                proyectos: portafolio.proyectos,
-                tecnicas: portafolio.habilidades.tecnicas,
-                blandas: portafolio.habilidades.blandas,
-                experiencias: portafolio.experiencias,
-                certificaciones: portafolio.certificaciones,
+                proyectos: config.mostrar_proyectos ? portafolio.proyectos : [],
+                tecnicas: config.mostrar_habilidades ? portafolio.habilidades.tecnicas : [],
+                blandas: config.mostrar_habilidades ? portafolio.habilidades.blandas : [],
+                experiencias: config.mostrar_experiencias ? portafolio.experiencias : [],
+                certificaciones: config.mostrar_certificaciones ? portafolio.certificaciones : [],
             });
             toast.success("pdf generado con éxito");
         } catch (err) {
@@ -70,7 +71,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                     {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
                     <img
                         src="https://res.cloudinary.com/dcyx3nqj5/image/upload/v1775541507/WhatsApp_Image_2026-04-07_at_1.53.52_AM-removebg-preview_dxvzgv.png"
                         alt="Arasaka logo"
@@ -79,14 +80,6 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                 </div>
             </div>
 
-            {portafolioSeleccionado && (
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
-                    <FolderOpen size={14} className="text-blue-600 shrink-0" />
-                    <span className="text-xs font-semibold text-blue-700 max-w-40 truncate">
-                        {portafolioSeleccionado.nombre}
-                    </span>
-                </div>
-            )}
 
             <div className="flex items-center gap-2 md:gap-3">
                 <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"

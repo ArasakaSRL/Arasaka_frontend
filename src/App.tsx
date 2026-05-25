@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { MainLayout } from './layout/MainLayout'
 import Home from './pages/Home'
+import Explorar from './pages/Explorar'
 import About from './pages/About'
 import Login from './pages/auth/Login'
 import Register from '@/pages/auth/Register'
@@ -34,6 +35,7 @@ export default function App() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/explorar" element={<Explorar />} />
         <Route path="/about" element={<About />} />
         <Route path="/Dashboard/mensajes/Principal" element={<MensajesPrincipal />} />
         <Route path="/Dashboard/mensajes/Recibidos" element={<MensajesRecibidos />} />

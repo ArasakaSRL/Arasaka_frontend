@@ -22,11 +22,63 @@ export async function sendGmail(emailData: EmailRequest): Promise<EmailResponse>
     return data
 }
 
-// GET /api/portafolios
-// Devuelve todos los portafolios públicos
+// GET /api/public/portafolios (sin filtros, compatibilidad hacia atrás)
 export async function getPortafolios(): Promise<Portafolio[]> {
     const { data } = await apiClient.get<{ data: Portafolio[] }>('/public/portafolios')
     return data.data
+}
+
+export type SortKey = 'nombre_asc' | 'nombre_desc' | 'proyectos' | 'habilidades'
+
+export type FiltrosPortafolio = {
+    busqueda?: string
+    profesion?: string
+    pais?: string
+    tecnologia?: string
+    idioma?: string
+    orden?: SortKey
+    por_pagina?: number
+    page?: number
+}
+
+export type PaginatedPortafolios = {
+    data: Portafolio[]
+    meta: {
+        current_page: number
+        last_page: number
+        per_page: number
+        total: number
+    }
+}
+
+export type CatalogosPublicos = {
+    profesiones: { id_profesion: string; nombre: string }[]
+    tecnologias: string[]
+    idiomas: { id_idioma: string; nombre: string }[]
+    paises: string[]
+}
+
+// GET /api/public/portafolios?busqueda=...&profesion=...&pais=...&tecnologia=...&idioma=...&orden=...&page=...
+export async function getPortafoliosFiltrados(filtros: FiltrosPortafolio): Promise<PaginatedPortafolios> {
+    const params: Record<string, string | number> = {}
+    if (filtros.busqueda)   params.busqueda   = filtros.busqueda
+    if (filtros.profesion)  params.profesion  = filtros.profesion
+    if (filtros.pais)       params.pais       = filtros.pais
+    if (filtros.tecnologia) params.tecnologia = filtros.tecnologia
+    if (filtros.idioma)     params.idioma     = filtros.idioma
+    if (filtros.orden)      params.orden      = filtros.orden
+    if (filtros.por_pagina) params.por_pagina = filtros.por_pagina
+    if (filtros.page)       params.page       = filtros.page
+
+    const { data } = await apiClient.get<PaginatedPortafolios>('/public/portafolios', { params })
+    return data
+}
+
+// GET /api/public/catalogos
+// Devuelve todas las profesiones, tecnologías, idiomas y países desde la BD
+export async function getCatalogosPublicos(): Promise<CatalogosPublicos> {
+    const { data } = await apiClient.get<CatalogosPublicos>('/public/catalogos')
+    return data
 }
 
 // GET /api/mensajes/recibidos (requiere sesión activa)
