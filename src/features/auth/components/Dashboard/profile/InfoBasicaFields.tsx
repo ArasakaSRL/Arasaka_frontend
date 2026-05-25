@@ -1,4 +1,4 @@
-import { User, Mail, Briefcase } from 'lucide-react';
+import { User, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import PaisSelect from '@/components/ui/PaisSelect';
 

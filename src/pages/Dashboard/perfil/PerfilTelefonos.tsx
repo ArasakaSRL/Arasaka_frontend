@@ -15,7 +15,7 @@ export default function PerfilTelefonos() {
     const user = useAuthStore(s => s.user)
     const setUser = useAuthStore(s => s.setUser)
     const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio ?? '')
-    const [telefonos, setTelefonos] = useState<Telefono[]>(user?.telefonos || [])
+    const [telefonos, setTelefonos] = useState<Telefono[]>([])
     const [editandoId, setEditandoId] = useState<string | null>(null)
     const [telefonoEditado, setTelefonoEditado] = useState('')
     const [apiError, setApiError] = useState<string | null>(null)
@@ -47,7 +47,6 @@ export default function PerfilTelefonos() {
             const res = await agregarTelefono(idPortafolio, { telefono: numero })
             const updated = [...telefonos, res.data]
             setTelefonos(updated)
-            if (user) setUser({ ...user, telefonos: updated })
             showSuccess('Teléfono agregado correctamente')
         } catch (err) {
             const error = err as AxiosError<{ message?: string }>
@@ -64,7 +63,6 @@ export default function PerfilTelefonos() {
             await Promise.all(seleccionados.map(id => eliminarTelefono(idPortafolio, id)))
             const updated = telefonos.filter(t => !seleccionados.includes(t.id_telefono ?? ''))
             setTelefonos(updated)
-            if (user) setUser({ ...user, telefonos: updated })
             showSuccess(`${seleccionados.length} teléfono${seleccionados.length > 1 ? 's eliminados' : ' eliminado'} correctamente`)
             cancelarModoEliminar()
         } catch (err) {
@@ -82,7 +80,6 @@ export default function PerfilTelefonos() {
             const res = await actualizarTelefono(idPortafolio, id, { telefono: telefonoEditado })
             const updated = telefonos.map(t => t.id_telefono === id ? res.data : t)
             setTelefonos(updated)
-            if (user) setUser({ ...user, telefonos: updated })
             setEditandoId(null)
             showSuccess('Teléfono actualizado correctamente')
         } catch (err) {

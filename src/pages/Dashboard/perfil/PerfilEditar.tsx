@@ -59,7 +59,7 @@ export default function PerfilEditar() {
             pais: infoBasica.pais || '',
             biografia: infoBasica.biografia || '',
         }
-    }, [portafolioSeleccionado?.id])
+    }, [portafolioSeleccionado?.id_portafolio])
 
     const [asignadas, setAsignadas] = useState<Profesion[]>([])
     const initialAsignadas = useRef<Profesion[]>([])
@@ -248,7 +248,7 @@ export default function PerfilEditar() {
                     <div className="bg-[#1e2a5e] rounded-2xl p-4 shadow-2xl flex flex-col gap-4 overflow-hidden">
                         <AvatarPerfil
                             user={user}
-                            formData={{ nombre: formData.nombre_completo, apellido: '', biografia: formData.biografia, correo: formData.gmail, pais: formData.pais }}
+                            formData={{ nombre: formData.nombre_completo, apellido: '', biografia: formData.biografia, correo: formData.gmail }}
                             profesiones={asignadas}
                         />
                         <PortafolioContenido portafolio={portafolioStore} loadingPortafolio={loadingPortafolio} />
