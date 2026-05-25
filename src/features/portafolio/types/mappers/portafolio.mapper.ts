@@ -16,6 +16,16 @@ export const mapPortafolio = (api: any): Portafolio => {
 
         usuario: mapUsuario(data.usuario),
 
+        informacion_basica: data.informacion_basica ? {
+            id_informacion_basica: data.informacion_basica.id_informacion_basica,
+            nombre_completo: data.informacion_basica.nombre_completo,
+            gmail: data.informacion_basica.gmail,
+            pais: data.informacion_basica.pais,
+            foto_perfil: data.informacion_basica.foto_perfil ?? null,
+            foto_perfil_public_id: data.informacion_basica.foto_perfil_public_id ?? null,
+            biografia: data.informacion_basica.biografia ?? null,
+        } : null,
+
         proyectos: safeArray(data.proyectos).map(mapProyecto),
         
         habilidades: {

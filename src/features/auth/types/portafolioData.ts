@@ -73,4 +73,6 @@ export interface PortafolioCompleto {
     habilidades: Habilidad[]
     experiencias: Experiencia[]
     servicios: Servicio[]
+    telefonos?: { id_telefono?: string; telefono: string }[]
+    profesiones?: { id_profesion: string; nombre: string }[]
 }
