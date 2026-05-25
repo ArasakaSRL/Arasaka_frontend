@@ -89,8 +89,10 @@ export async function actualizarTelefono(idPortafolio: string, id: string, paylo
 }
 
 // GET /api/usuario/Miportafolio
-export async function getPortafolio(): Promise<PortafolioCompleto> {
-    const { data } = await apiClient.get<PortafolioCompleto>('/usuario/Miportafolio')
+export async function getPortafolio(idPortafolio?: string): Promise<PortafolioCompleto> {
+    const { data } = await apiClient.get<PortafolioCompleto>('/usuario/Miportafolio', {
+        params: idPortafolio ? { id_portafolio: idPortafolio } : undefined,
+    })
     return data
 }
 

@@ -1,14 +1,28 @@
+import { useEffect, useState } from 'react'
 import DashboardLayout from '@/layout/DashboardLayout'
 import PageHeader from '@/components/ui/PageHeader'
 import { useAuthStore } from '@/stores/authStore'
 import AvatarPerfil from '@/features/auth/components/Dashboard/profile/preview/AvatarPerfil'
 import PortafolioContenido from '@/features/auth/components/Dashboard/profile/preview/PortafolioContenido'
 import { User, Mail, MapPin, Phone, Briefcase, LayoutDashboard } from 'lucide-react'
+import { getPortafolio } from '@/features/auth/api/update-perfilPersonal'
+import type { PortafolioCompleto } from '@/features/auth/types/portafolioData'
 
 export default function PerfilGeneral() {
     const user = useAuthStore(s => s.user)
     const portafolio = useAuthStore(s => s.portafolioSeleccionado)
     const info = portafolio?.informacion_basica
+    const [portafolioCompleto, setPortafolioCompleto] = useState<PortafolioCompleto | null>(null)
+    const [loadingCompleto, setLoadingCompleto] = useState(true)
+
+    useEffect(() => {
+        if (!portafolio?.id_portafolio) return
+        setLoadingCompleto(true)
+        getPortafolio(portafolio.id_portafolio)
+            .then(setPortafolioCompleto)
+            .catch(() => setPortafolioCompleto(null))
+            .finally(() => setLoadingCompleto(false))
+    }, [portafolio?.id_portafolio])
 
     if (!user) return null
 
@@ -53,7 +67,7 @@ export default function PerfilGeneral() {
                             formData={{ nombre: info?.nombre_completo?.split(' ')[0] ?? user.nombre, apellido: info?.nombre_completo?.split(' ').slice(1).join(' ') ?? user.apellido, biografia: info?.biografia ?? '', correo: info?.gmail ?? user.correo }}
                             profesiones={portafolio?.profesiones?.map((p: { id_profesion: string; nombre: string }) => ({ id_profesion: p.id_profesion, nombre: p.nombre })) ?? []}
                         />
-                        <PortafolioContenido portafolio={portafolio} loadingPortafolio={false} />
+                        <PortafolioContenido portafolio={portafolioCompleto} loadingPortafolio={loadingCompleto} />
                     </div>
                 </div>
 
