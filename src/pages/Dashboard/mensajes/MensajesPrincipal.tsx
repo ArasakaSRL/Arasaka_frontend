@@ -6,6 +6,7 @@ import PageHeader from '@/components/ui/PageHeader'
 import MensajesStats from '@/features/sendGmail/components/principal/MensajesStats'
 import MensajesRecientesCard from '@/features/sendGmail/components/principal/MensajesRecientesCard'
 import { Inbox, Send, Mail, MessageSquare, Star, Loader2 } from 'lucide-react'
+import { useAuthStore } from '@/stores/authStore'
 
 function normalizeArray(res: unknown): Mensaje[] {
     if (Array.isArray(res)) return res
@@ -15,21 +16,26 @@ function normalizeArray(res: unknown): Mensaje[] {
 }
 
 export default function MensajesPrincipal() {
+    const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
     const [recibidos, setRecibidos] = useState<Mensaje[]>([])
     const [enviados, setEnviados] = useState<Mensaje[]>([])
     const [destacados, setDestacados] = useState<Mensaje[]>([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        Promise.all([getMensajesRecibidos(), getMensajesEnviados(), getMensajesDestacados()])
+        setLoading(true)
+        Promise.allSettled([
+            getMensajesRecibidos(idPortafolio),
+            getMensajesEnviados(idPortafolio),
+            getMensajesDestacados(idPortafolio),
+        ])
             .then(([r, e, d]) => {
-                setRecibidos(normalizeArray(r))
-                setEnviados(normalizeArray(e))
-                setDestacados(normalizeArray(d))
+                setRecibidos(r.status === 'fulfilled' ? normalizeArray(r.value) : [])
+                setEnviados(e.status === 'fulfilled' ? normalizeArray(e.value) : [])
+                setDestacados(d.status === 'fulfilled' ? normalizeArray(d.value) : [])
             })
-            .catch(() => {})
             .finally(() => setLoading(false))
-    }, [])
+    }, [idPortafolio])
 
     const stats = [
         { label: 'No leídos',  value: recibidos.filter(m => !m.leido).length, icon: Mail,  color: 'text-[#1e2a5e]',   bg: 'bg-blue-50',    border: 'border-blue-100' },

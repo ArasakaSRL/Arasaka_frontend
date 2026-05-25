@@ -3,6 +3,7 @@ import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { CardHitos } from "../components/cardHitos";
 import { getExperiencias, crearExperiencia, eliminarMultiplesExperiencias } from "../apis/experienciasApi";
+import { useAuthStore } from "@/stores/authStore";
 
 // Importamos date-fns para las fechas y el idioma español
 import { parseISO, isAfter, format } from 'date-fns';
@@ -49,6 +50,7 @@ const obtenerDatosDeFecha = (fechaString: string) => {
 };
 
 export default function Hitos() {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   // 1. TODOS LOS ESTADOS VAN ARRIBA
   const [openModal, setOpenModal] = useState(false);
 
@@ -80,8 +82,9 @@ export default function Hitos() {
   };
 
   useEffect(() => {
+    if (!idPortafolio) return
     cargarExperiencias();
-  }, []);
+  }, [idPortafolio]);
 
   useEffect(() => {
   if (openModal) {

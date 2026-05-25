@@ -2,25 +2,27 @@ import { useState, useRef, useEffect } from 'react'
 import DashboardLayout from '@/layout/DashboardLayout'
 import PageHeader from '@/components/ui/PageHeader'
 import { useAuthStore } from '@/stores/authStore'
-import { actualizarInformacion, actualizarPais, getPortafolio, asignarProfesion, desasignarProfesion } from '@/features/auth/api/update-perfilPersonal'
+import { actualizarInformacionBasica, getPortafolio, asignarProfesion, desasignarProfesion } from '@/features/auth/api/update-perfilPersonal'
+import type { Profesion } from '@/features/auth/types/update-perfilPersonal'
 import InfoBasicaFields from '@/features/auth/components/Dashboard/profile/InfoBasicaFields'
+import type { InfoBasicaFormData } from '@/features/auth/components/Dashboard/profile/InfoBasicaFields'
 import ProfesionesSection from '@/features/auth/components/Dashboard/profile/ProfesionesSection'
+import { Input } from '@/components/ui/input'
+import { Briefcase } from 'lucide-react'
 import AvatarPerfil from '@/features/auth/components/Dashboard/profile/preview/AvatarPerfil'
 import PortafolioContenido from '@/features/auth/components/Dashboard/profile/preview/PortafolioContenido'
 import { perfilSchema } from '@/features/auth/utils/perfilSchema'
 import { useDirtyStore } from '@/stores/dirtyStore'
-import type { Profesion } from '@/features/auth/types/update-perfilPersonal'
-import type { PerfilFormData } from '@/features/auth/components/Dashboard/profile/PerfilFrom'
 import { AxiosError } from 'axios'
-import { UserPen, Briefcase } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { UserPen } from 'lucide-react'
 
-type FormErrors = Partial<Record<keyof PerfilFormData, string>>
+type FormErrors = Partial<Record<keyof InfoBasicaFormData, string>>
 
 export default function PerfilEditar() {
     const user = useAuthStore(s => s.user)
-    const setUser = useAuthStore(s => s.setUser)
     const portafolioStore = useAuthStore(s => s.portafolio)
+    const portafolioSeleccionado = useAuthStore(s => s.portafolioSeleccionado)
+    const setPortafolioSeleccionado = useAuthStore(s => s.setPortafolioSeleccionado)
     const setPortafolio = useAuthStore(s => s.setPortafolio)
     const { setDirty } = useDirtyStore()
     const [loadingPortafolio, setLoadingPortafolio] = useState(!portafolioStore)
@@ -31,47 +33,64 @@ export default function PerfilEditar() {
             .then(setPortafolio)
             .catch(() => setPortafolio(null))
             .finally(() => setLoadingPortafolio(false))
-            //eslint-disable-next-line react-hooks/exhaustive-deps
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const [formData, setFormData] = useState<PerfilFormData>({
-        nombre: user?.nombre || '',
-        apellido: user?.apellido || '',
-        biografia: user?.biografia || '',
-        correo: user?.correo || '',
-        pais: user?.pais?.nombre || '',
+    const infoBasica = portafolioSeleccionado?.informacion_basica
+
+    const [formData, setFormData] = useState<InfoBasicaFormData>({
+        nombre_completo: infoBasica?.nombre_completo || '',
+        gmail: infoBasica?.gmail || '',
+        pais: infoBasica?.pais || '',
+        biografia: infoBasica?.biografia || '',
     })
+
+    useEffect(() => {
+        if (!infoBasica) return
+        setFormData({
+            nombre_completo: infoBasica.nombre_completo || '',
+            gmail: infoBasica.gmail || '',
+            pais: infoBasica.pais || '',
+            biografia: infoBasica.biografia || '',
+        })
+        initialData.current = {
+            nombre_completo: infoBasica.nombre_completo || '',
+            gmail: infoBasica.gmail || '',
+            pais: infoBasica.pais || '',
+            biografia: infoBasica.biografia || '',
+        }
+    }, [portafolioSeleccionado?.id])
+
     const [asignadas, setAsignadas] = useState<Profesion[]>([])
-    const [profesionesIniciales, setProfesionesIniciales] = useState<Profesion[]>([])
+    const initialAsignadas = useRef<Profesion[]>([])
+    const [profesionesAgregadas, setProfesionesAgregadas] = useState<Profesion[]>([])
+    const [profesionesQuitadas, setProfesionesQuitadas] = useState<Profesion[]>([])
     const [errors, setErrors] = useState<FormErrors>({})
     const [loading, setLoading] = useState(false)
     const [apiError, setApiError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
 
-    const initialData = useRef({ ...formData })
+    const initialData = useRef<InfoBasicaFormData>({ ...formData })
     const nombreRef = useRef<HTMLInputElement>(null)
-    const apellidoRef = useRef<HTMLInputElement>(null)
-    const correoRef = useRef<HTMLInputElement>(null)
-    const biografiaRef = useRef<HTMLInputElement>(null)
+    const gmailRef = useRef<HTMLInputElement>(null)
 
-    const profesionesModificadas =
-        asignadas.length !== profesionesIniciales.length ||
-        asignadas.some(a => !profesionesIniciales.find(p => p.id_profesion === a.id_profesion))
+    const hasProfesionesChanges = profesionesAgregadas.length > 0 || profesionesQuitadas.length > 0
 
     const hasChanges =
-        formData.nombre !== initialData.current.nombre ||
-        formData.apellido !== initialData.current.apellido ||
+        formData.nombre_completo !== initialData.current.nombre_completo ||
+        formData.gmail !== initialData.current.gmail ||
         formData.pais !== initialData.current.pais ||
         formData.biografia !== initialData.current.biografia ||
-        profesionesModificadas
+        hasProfesionesChanges
 
-    function handleChange(field: keyof PerfilFormData, val: string) {
+    function handleChange(field: keyof InfoBasicaFormData, val: string) {
         setFormData(prev => ({ ...prev, [field]: val }))
         setDirty(true)
         if (success) setSuccess(false)
-        const result = perfilSchema.shape[field as keyof typeof perfilSchema.shape]?.safeParse(val)
+        const shape = perfilSchema.shape as Record<string, { safeParse: (v: unknown) => { success: boolean; error?: { issues: { message: string }[] } } }>
+        const result = shape[field]?.safeParse(val)
         if (result && !result.success) {
-            setErrors(prev => ({ ...prev, [field]: result.error.issues[0]?.message }))
+            setErrors(prev => ({ ...prev, [field]: result.error?.issues[0]?.message }))
         } else {
             setErrors(prev => ({ ...prev, [field]: undefined }))
         }
@@ -79,47 +98,60 @@ export default function PerfilEditar() {
 
     function validate(): boolean {
         const result = perfilSchema.safeParse({
-            ...formData,
-            nombre: formData.nombre.trim(),
-            apellido: formData.apellido.trim(),
-            correo: formData.correo.trim(),
+            nombre_completo: formData.nombre_completo.trim(),
+            gmail: formData.gmail.trim(),
+            pais: formData.pais,
+            biografia: formData.biografia,
         })
         if (result.success) { setErrors({}); return true }
         const fieldErrors: FormErrors = {}
         result.error.issues.forEach(e => {
-            const field = e.path[0] as keyof PerfilFormData
+            const field = e.path[0] as keyof InfoBasicaFormData
             if (!fieldErrors[field]) fieldErrors[field] = e.message
         })
         setErrors(fieldErrors)
-        if (fieldErrors.nombre) nombreRef.current?.focus()
-        else if (fieldErrors.apellido) apellidoRef.current?.focus()
-        else if (fieldErrors.correo) correoRef.current?.focus()
+        if (fieldErrors.nombre_completo) nombreRef.current?.focus()
+        else if (fieldErrors.gmail) gmailRef.current?.focus()
         return false
     }
 
     async function handleSave() {
-        if (!validate()) return
+        if (!validate() || !portafolioSeleccionado) return
         setApiError(null)
         setLoading(true)
         try {
-            const res = await actualizarInformacion({
-                nombre: formData.nombre.trim(),
-                apellido: formData.apellido.trim(),
-                correo: formData.correo.trim(),
-                ...(formData.biografia && { biografia: formData.biografia }),
+            await actualizarInformacionBasica(portafolioSeleccionado.id_portafolio, {
+                nombre_completo: formData.nombre_completo.trim(),
+                gmail: formData.gmail.trim(),
+                pais: formData.pais || undefined,
+                biografia: formData.biografia || undefined,
             })
-            if (formData.pais.trim()) await actualizarPais({ nombre: formData.pais.trim() })
-            if (user) setUser({ ...user, ...res.data, pais: { nombre: formData.pais } })
 
-            // Guardar profesiones pendientes
-            if (profesionesModificadas) {
-                const agregar = asignadas.filter(a => !profesionesIniciales.find(p => p.id_profesion === a.id_profesion))
-                const quitar = profesionesIniciales.filter(p => !asignadas.find(a => a.id_profesion === p.id_profesion))
-                await Promise.all([
-                    ...agregar.map(p => asignarProfesion({ id_profesion: p.id_profesion })),
-                    ...quitar.map(p => desasignarProfesion(p.id_profesion)),
-                ])
-                setProfesionesIniciales(asignadas)
+            // Guardar cambios de profesiones
+            const idPortafolio = portafolioSeleccionado.id_portafolio
+            await Promise.all([
+                ...profesionesAgregadas.map(p => asignarProfesion(idPortafolio, { id_profesion: p.id_profesion })),
+                ...profesionesQuitadas.map(p => desasignarProfesion(idPortafolio, p.id_profesion)),
+            ])
+            setProfesionesAgregadas([])
+            setProfesionesQuitadas([])
+            initialAsignadas.current = [...asignadas]
+
+            // Reflejar cambios en el store inmediatamente
+            const current = useAuthStore.getState().portafolioSeleccionado
+            if (current) {
+                setPortafolioSeleccionado({
+                    ...current,
+                    informacion_basica: current.informacion_basica
+                        ? {
+                            ...current.informacion_basica,
+                            nombre_completo: formData.nombre_completo.trim(),
+                            gmail: formData.gmail.trim(),
+                            pais: formData.pais || current.informacion_basica.pais,
+                            biografia: formData.biografia || null,
+                        }
+                        : current.informacion_basica,
+                })
             }
 
             setSuccess(true)
@@ -140,46 +172,58 @@ export default function PerfilEditar() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
                 <div className="lg:col-span-12">
-                    <PageHeader icon={UserPen} title="Actualizar Perfil" description="Actualiza tu información personal y profesional" />
+                    <PageHeader icon={UserPen} title="Perfil Personal" description="Administra la información básica de tu portafolio" />
                 </div>
 
                 {/* Formulario */}
                 <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                    
                     <div className="p-6 flex flex-col gap-4">
+                        <div>
+                            <p className="text-lg font-semibold text-black">Información Básica</p>
+                            <p className="text-sm text-gray-500">Esta información será visible en tu portafolio público</p>
+                        </div>
+
                         <InfoBasicaFields
                             formData={formData}
                             errors={errors}
                             onChange={handleChange}
                             nombreRef={nombreRef}
-                            apellidoRef={apellidoRef}
-                            correoRef={correoRef}
-                            biografiaRef={biografiaRef}
+                            gmailRef={gmailRef}
                         />
+
                         <ProfesionesSection
                             asignadas={asignadas}
                             setAsignadas={(val) => {
-                                const resolved = typeof val === 'function' ? val(asignadas) : val
-                                setAsignadas(resolved)
-                                if (profesionesIniciales.length === 0 && resolved.length > 0) {
-                                    setProfesionesIniciales(resolved)
+                                // primera carga desde la API — guarda el estado inicial
+                                if (initialAsignadas.current.length === 0 && typeof val !== 'function') {
+                                    initialAsignadas.current = val as Profesion[]
                                 }
+                                setAsignadas(val as Profesion[])
                             }}
-                            onAgregar={p => { setAsignadas(prev => [...prev, p]); setDirty(true) }}
-                            onQuitar={p => { setAsignadas(prev => prev.filter(a => a.id_profesion !== p.id_profesion)); setDirty(true) }}
-                            onChange={() => setDirty(true)}
+                            onAgregar={(p) => {
+                                setAsignadas(prev => [...prev, p])
+                                setProfesionesAgregadas(prev => [...prev, p])
+                                setProfesionesQuitadas(prev => prev.filter(q => q.id_profesion !== p.id_profesion))
+                                setDirty(true)
+                            }}
+                            onQuitar={(p) => {
+                                setAsignadas(prev => prev.filter(a => a.id_profesion !== p.id_profesion))
+                                setProfesionesQuitadas(prev => [...prev, p])
+                                setProfesionesAgregadas(prev => prev.filter(a => a.id_profesion !== p.id_profesion))
+                                setDirty(true)
+                            }}
                         />
+
                         <Input
-                            ref={biografiaRef}
-                            label="Descripción Profesional"
+                            label="Descripción"
                             icon={Briefcase}
                             type="textarea"
-                            placeholder="Ej: Desarrollador Fullstack"
+                            placeholder="Cuéntanos sobre ti, tu experiencia y habilidades..."
                             value={formData.biografia}
-                            onChange={val => handleChange('biografia', val)}
+                            onChange={(val) => handleChange('biografia', val)}
                             error={errors.biografia}
-                            maxLength={270}
-                            showCounter
+                            maxLength={180}
+                            showCounter={true}
                         />
 
                         <div className="flex items-center justify-between pt-2">
@@ -201,10 +245,10 @@ export default function PerfilEditar() {
 
                 {/* Preview */}
                 <div className="lg:col-span-5 flex flex-col gap-4">
-                    <div className="bg-[#1e2a5e] rounded-2xl p-4 shadow-2xl flex flex-col gap-4">
+                    <div className="bg-[#1e2a5e] rounded-2xl p-4 shadow-2xl flex flex-col gap-4 overflow-hidden">
                         <AvatarPerfil
                             user={user}
-                            formData={formData}
+                            formData={{ nombre: formData.nombre_completo, apellido: '', biografia: formData.biografia, correo: formData.gmail, pais: formData.pais }}
                             profesiones={asignadas}
                         />
                         <PortafolioContenido portafolio={portafolioStore} loadingPortafolio={loadingPortafolio} />

@@ -6,7 +6,7 @@ import { ArrowLeft, Mail } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import { registerRequest, getUsuario, resendVerificationEmail, firebaseAuthRequest } from '@/features/auth/api/auth';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, resolverPortafolioDesdeArray } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { googleProvider, githubProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
@@ -34,6 +34,7 @@ export default function Register() {
 
     const navigate = useNavigate();
     const setUser = useAuthStore(s => s.setUser);
+    const setPortafolio = useAuthStore(s => s.setPortafolio);
 
     const [isRegistered, setIsRegistered] = useState(false); // Nuevo estado
     const [resendLoading, setResendLoading] = useState(false);
@@ -65,8 +66,11 @@ export default function Register() {
             const { id_token, correo, provider: providerName } = await signInWithProvider(provider);
             await firebaseAuthRequest(id_token, correo, providerName);
             const user = await getUsuario();
-            if (user) setUser(user);
-            navigate('/Dashboard/perfilPersonal/PerfilPersonal');
+            if (user) {
+                setUser(user);
+                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
+            }
+            navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const axiosError = err as AxiosError<{ message?: string }>;
             const firebaseError = err as { code?: string; message?: string };
@@ -128,7 +132,10 @@ export default function Register() {
             });
 
             const user = await getUsuario();
-            if (user) setUser(user)
+            if (user) {
+                setUser(user);
+                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
+            }
             setIsRegistered(true); // Marca como registrado para mostrar mensaje de verificación
 
         } catch (err: unknown) {

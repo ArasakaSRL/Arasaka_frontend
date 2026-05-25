@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MessageCircle, MapPin, Mail, Sparkles, ExternalLink } from "lucide-react";
 import type {
   Usuario,
+  InformacionBasica,
   Proyectos,
   HabilidadTecnica,
   HabilidadBlanda,
@@ -14,6 +15,7 @@ import { toast } from "@/components/Alerta";
 
 type Props = {
   usuario: Usuario;
+  informacion_basica?: InformacionBasica | null;
   proyectos?: Proyectos[];
   tecnicas?: HabilidadTecnica[];
   blandas?: HabilidadBlanda[];
@@ -27,6 +29,7 @@ type Props = {
 
 const PortfolioHeader: React.FC<Props> = ({
   usuario,
+  informacion_basica,
   proyectos = [],
   tecnicas = [],
   blandas = [],
@@ -187,7 +190,7 @@ const PortfolioHeader: React.FC<Props> = ({
               <ContactarModal
                 open={contactarOpen}
                 onClose={() => setContactarOpen(false)}
-                correoDestinatario={usuario.correo}
+                correoDestinatario={informacion_basica?.gmail ?? usuario.correo}
                 nombreDestinatario={fullName}
                 whatsappNumber={whatsappNumber}
               />
