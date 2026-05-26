@@ -37,7 +37,8 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
   }, [open]);
 
   if (!open) return null;
-
+  const isFormValid = form.nombre.trim() !== "";
+  
   const handleSubmit = async () => {
     try {
       setIsSaving(true);
@@ -51,17 +52,21 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
         );
       }
       
-      await createTecnologia({
+      const data =await createTecnologia({
         ...form,
         logo: imageUrl,
       });
-
+      if (!data.success) {
+        toast.warning(`nombre de tecnología : ${form.nombre} ya existe `);
+        setIsSaving(false);
+        return;
+      }else {
+        toast.success("Tecnología creada exitosamente");
+      }
       onClose();
       onSuccess && onSuccess();
-      toast.success("Tecnología creada exitosamente");
     } catch (error) {
       toast.error("Error al crear tecnología");
-      
       setIsSaving(false);
     }
   };
@@ -102,9 +107,9 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
 
         <div className="space-y-4">
           <div className="flex flex-col items-start gap-1.5 w-full">
-            <label className="text-sm font-semibold text-gray-700">
-              Nombre
-            </label>
+          <label className="text-sm font-semibold text-gray-700">
+              Nombre <span className="text-red-500">*</span>
+          </label>
 
             <input
               type="text"
@@ -231,8 +236,8 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
           </button>
 
           <button
-            disabled={isSaving}
-            className="order-1 sm:order-2 bg-[#1d2b53] hover:bg-[#2a3b6e] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2 shadow-lg shadow-blue-900/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSaving || !isFormValid}
+           className="order-1 sm:order-2 bg-[#1d2b53] hover:bg-[#2a3b6e] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2 shadow-lg shadow-blue-900/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1d2b53]"
             onClick={handleSubmit}
           >
             <Save size={15} />
