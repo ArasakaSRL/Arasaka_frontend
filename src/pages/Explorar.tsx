@@ -375,7 +375,7 @@ export default function Explorar() {
                 type="text"
                 value={busqueda}
                 onChange={e => setBusqueda(e.target.value)}
-                placeholder="Buscar por nombre, profesión, servicio…"
+                placeholder="Buscar por nombre.........."
                 className="w-full pl-11 pr-10 py-3 rounded-2xl border border-gray-200 bg-white text-sm text-slate-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#1e2a5e]/25 focus:border-[#1e2a5e] transition-all shadow-sm"
               />
               {busqueda && (
