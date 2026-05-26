@@ -53,20 +53,6 @@ function FilterSection({
   )
 }
 
-function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
-        active
-          ? 'bg-[#1e2a5e] text-white border-[#1e2a5e] shadow-sm'
-          : 'bg-white text-slate-600 border-gray-200 hover:border-[#1e2a5e] hover:text-[#1e2a5e]'
-      }`}
-    >
-      {label}
-    </button>
-  )
-}
 
 // ── sidebar ───────────────────────────────────────────────────────────────────
 
@@ -79,10 +65,6 @@ type SidebarProps = {
   filtroIdioma: string | null
   ordenar: SortKey
   activeFiltersCount: number
-  mostrarMasTec: boolean
-  mostrarMasProf: boolean
-  setMostrarMasTec: (v: boolean | ((p: boolean) => boolean)) => void
-  setMostrarMasProf: (v: boolean | ((p: boolean) => boolean)) => void
   onSetPais: (v: string | null) => void
   onSetProfesion: (v: string | null) => void
   onSetTecnologia: (v: string | null) => void
@@ -94,17 +76,13 @@ type SidebarProps = {
 function SidebarContent({
   catalogos, loadingCatalogos,
   filtroPais, filtroProfesion, filtroTecnologia, filtroIdioma, ordenar,
-  activeFiltersCount, mostrarMasTec, mostrarMasProf,
-  setMostrarMasTec, setMostrarMasProf,
+  activeFiltersCount,
   onSetPais, onSetProfesion, onSetTecnologia, onSetIdioma, onSetOrdenar, onClearAll,
 }: SidebarProps) {
   const tecnologias = catalogos?.tecnologias ?? []
   const profesiones = catalogos?.profesiones ?? []
   const paises = catalogos?.paises ?? []
   const idiomas = catalogos?.idiomas ?? []
-
-  const tecVisible = mostrarMasTec ? tecnologias : tecnologias.slice(0, 12)
-  const profVisible = mostrarMasProf ? profesiones : profesiones.slice(0, 8)
 
   if (loadingCatalogos) {
     return (
@@ -127,7 +105,7 @@ function SidebarContent({
         )}
       </div>
 
-      {/* Ordenar */}
+  
       <FilterSection label="Ordenar por" icon={<ArrowUpDown size={14} />}>
         <div className="flex flex-col gap-1.5">
           {([
@@ -152,7 +130,6 @@ function SidebarContent({
         </div>
       </FilterSection>
 
-      {/* País */}
       {paises.length > 0 && (
         <FilterSection label="País" icon={<MapPin size={14} />}>
           <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1">
@@ -180,63 +157,82 @@ function SidebarContent({
         </FilterSection>
       )}
 
-      {/* Profesión */}
       {profesiones.length > 0 && (
         <FilterSection label="Profesión" icon={<Briefcase size={14} />}>
-          <div className="flex flex-wrap gap-1.5">
-            <FilterChip label="Todas" active={filtroProfesion === null} onClick={() => onSetProfesion(null)} />
-            {profVisible.map(prof => (
-              <FilterChip
-                key={prof.id_profesion}
-                label={prof.nombre}
-                active={filtroProfesion === prof.nombre}
-                onClick={() => onSetProfesion(prof.nombre)}
-              />
-            ))}
-            {profesiones.length > 8 && (
+          <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1">
+            <button
+              onClick={() => onSetProfesion(null)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                filtroProfesion === null ? 'bg-[#1e2a5e] text-white font-medium' : 'text-slate-600 hover:bg-gray-50'
+              }`}
+            >
+              {filtroProfesion === null && <Star size={12} />} Todas las profesiones
+            </button>
+            {profesiones.map(prof => (
               <button
-                onClick={() => setMostrarMasProf(v => !v)}
-                className="text-xs text-[#1e2a5e] font-medium hover:underline mt-1"
+                key={prof.id_profesion}
+                onClick={() => onSetProfesion(prof.nombre)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                  filtroProfesion === prof.nombre ? 'bg-[#1e2a5e] text-white font-medium' : 'text-slate-600 hover:bg-gray-50'
+                }`}
               >
-                {mostrarMasProf ? 'Ver menos' : `+${profesiones.length - 8} más`}
+                <Briefcase size={12} className="shrink-0" />
+                {prof.nombre}
               </button>
-            )}
+            ))}
           </div>
         </FilterSection>
       )}
 
-      {/* Tecnologías */}
       {tecnologias.length > 0 && (
         <FilterSection label="Tecnologías" icon={<Code2 size={14} />}>
-          <div className="flex flex-wrap gap-1.5">
-            <FilterChip label="Todas" active={filtroTecnologia === null} onClick={() => onSetTecnologia(null)} />
-            {tecVisible.map(tec => (
-              <FilterChip key={tec} label={tec} active={filtroTecnologia === tec} onClick={() => onSetTecnologia(tec)} />
-            ))}
-            {tecnologias.length > 12 && (
+          <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1">
+            <button
+              onClick={() => onSetTecnologia(null)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                filtroTecnologia === null ? 'bg-[#1e2a5e] text-white font-medium' : 'text-slate-600 hover:bg-gray-50'
+              }`}
+            >
+              {filtroTecnologia === null && <Star size={12} />} Todas las tecnologías
+            </button>
+            {tecnologias.map(tec => (
               <button
-                onClick={() => setMostrarMasTec(v => !v)}
-                className="text-xs text-[#1e2a5e] font-medium hover:underline mt-1"
+                key={tec}
+                onClick={() => onSetTecnologia(tec)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                  filtroTecnologia === tec ? 'bg-[#1e2a5e] text-white font-medium' : 'text-slate-600 hover:bg-gray-50'
+                }`}
               >
-                {mostrarMasTec ? 'Ver menos' : `+${tecnologias.length - 12} más`}
+                <Code2 size={12} className="shrink-0" />
+                {tec}
               </button>
-            )}
+            ))}
           </div>
         </FilterSection>
       )}
 
-      {/* Idiomas */}
       {idiomas.length > 0 && (
         <FilterSection label="Idiomas" icon={<Languages size={14} />}>
-          <div className="flex flex-wrap gap-1.5">
-            <FilterChip label="Todos" active={filtroIdioma === null} onClick={() => onSetIdioma(null)} />
+          <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1">
+            <button
+              onClick={() => onSetIdioma(null)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                filtroIdioma === null ? 'bg-[#1e2a5e] text-white font-medium' : 'text-slate-600 hover:bg-gray-50'
+              }`}
+            >
+              {filtroIdioma === null && <Star size={12} />} Todos los idiomas
+            </button>
             {idiomas.map(idioma => (
-              <FilterChip
+              <button
                 key={idioma.id_idioma}
-                label={idioma.nombre}
-                active={filtroIdioma === idioma.nombre}
                 onClick={() => onSetIdioma(idioma.nombre)}
-              />
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                  filtroIdioma === idioma.nombre ? 'bg-[#1e2a5e] text-white font-medium' : 'text-slate-600 hover:bg-gray-50'
+                }`}
+              >
+                <Languages size={12} className="shrink-0" />
+                {idioma.nombre}
+              </button>
             ))}
           </div>
         </FilterSection>
@@ -264,8 +260,6 @@ export default function Explorar() {
   const [pagina, setPagina] = useState(1)
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [mostrarMasTec, setMostrarMasTec] = useState(false)
-  const [mostrarMasProf, setMostrarMasProf] = useState(false)
   const gridRef = useRef<HTMLDivElement>(null)
 
   // carga catálogos una sola vez al montar
@@ -342,8 +336,6 @@ export default function Explorar() {
     catalogos, loadingCatalogos,
     filtroPais, filtroProfesion, filtroTecnologia, filtroIdioma, ordenar,
     activeFiltersCount: activeFilters.length,
-    mostrarMasTec, mostrarMasProf,
-    setMostrarMasTec, setMostrarMasProf,
     onSetPais:       v => handleSetFiltro('pais', v),
     onSetProfesion:  v => handleSetFiltro('profesion', v),
     onSetTecnologia: v => handleSetFiltro('tecnologia', v),
