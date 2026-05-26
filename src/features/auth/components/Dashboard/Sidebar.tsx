@@ -71,6 +71,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const portafolioSeleccionado = useAuthStore(s => s.portafolioSeleccionado);
+    const clearUser = useAuthStore(s => s.clearUser);
     const [isLoading, setIsLoading] = useState(false);
     const { isDirty, setDirty } = useDirtyStore();
     const [pendingPath, setPendingPath] = useState<string | null>(null);
@@ -106,7 +107,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         try {
             setIsLoading(true);
             await logoutRequest();
-            navigate('/auth/Login');
+            clearUser();
+            navigate('/');
         } catch (error) {
             console.error('Error al cerrar sesión:', error);
         } finally {
