@@ -22,7 +22,7 @@ const POR_PAGINA = 9
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function FilterSection({
-  label, icon, children, defaultOpen = true,
+  label, icon, children, defaultOpen = false,
 }: { label: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
@@ -111,8 +111,8 @@ function SidebarContent({
           {([
             { value: 'nombre_asc', label: 'Nombre A–Z' },
             { value: 'nombre_desc', label: 'Nombre Z–A' },
-            { value: 'proyectos', label: 'Más proyectos' },
-            { value: 'habilidades', label: 'Más habilidades' },
+            { value: 'proyectos', label: 'Cantidad de proyectos' },
+            { value: 'habilidades', label: 'Cantidad de habilidades' },
           ] as { value: SortKey; label: string }[]).map(opt => (
             <button
               key={opt.value}
@@ -498,7 +498,7 @@ export default function Explorar() {
                         <div className="h-1 bg-linear-to-r from-[#1e2a5e] to-[#4a7fc1] w-full" />
 
                         <div className="p-5 flex flex-col gap-3 flex-1">
-                          {/* Header */}
+                          
                           <div className="flex items-start gap-3">
                             {foto ? (
                               <img
