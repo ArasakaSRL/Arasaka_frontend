@@ -9,22 +9,23 @@ import {
 interface ShareModalProps {
     open: boolean;
     onClose: () => void;
+    portafolioSlug: string;
 }
 
 type Estado = "idle" | "cargando" | "exito" | "error";
 
-export default function ShareModal({ open, onClose }: ShareModalProps) {
+export default function ShareModal({ open, onClose, portafolioSlug }: ShareModalProps) {
     const [link, setLink] = useState<LinkPortafolio | null>(null);
     const [estado, setEstado] = useState<Estado>("idle");
     const [copiado, setCopiado] = useState(false);
 
     useEffect(() => {
-        if (!open) return;
+        if (!open || !portafolioSlug) return;
 
         let activo = true;
         setEstado("cargando");
 
-        obtenerLinkPortafolio()
+        obtenerLinkPortafolio(portafolioSlug)
             .then((data) => {
                 if (!activo) return;
                 setLink(data);
@@ -44,7 +45,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
         return () => {
             activo = false;
         };
-    }, [open]);
+    }, [open, portafolioSlug]);
 
     useEffect(() => {
         if (!open) {
@@ -55,7 +56,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
     const handleGenerar = async () => {
         setEstado("cargando");
         try {
-            const data = await generarLinkPortafolio();
+            const data = await generarLinkPortafolio(portafolioSlug);
             setLink(data);
             setEstado("exito");
         } catch {

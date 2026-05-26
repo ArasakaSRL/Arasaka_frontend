@@ -82,8 +82,11 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
 
 
             <div className="flex items-center gap-2 md:gap-3">
-                <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
-                    onClick={() => setShareOpen(true)}>
+                <button
+                    className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => setShareOpen(true)}
+                    disabled={!portafolioSeleccionado?.slug}
+                >
                     <Share2 size={16} />
                     <span className="hidden sm:inline">Compartir</span>
                 </button>
@@ -114,7 +117,7 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
                 </div>
             </div>
 
-            <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} />
+            <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} portafolioSlug={portafolioSeleccionado?.slug ?? ''} />
         </header>
     );
 }
