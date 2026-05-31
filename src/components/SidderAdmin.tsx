@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen, Blocks,
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen, Blocks, Users
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -36,6 +36,7 @@ const menuItems: MenuItem[] = [
     },
     { icon: Blocks, label: 'Tecnologías',   path: '/Dashboard/tecnologias' },
     { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
+    { icon: Users, label: 'Usuarios', path: '/Dashboard/admin/Perfiles' },
 ];
 
 
