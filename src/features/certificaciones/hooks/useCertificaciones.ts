@@ -1,11 +1,11 @@
 // src/features/certificaciones/hooks/useCertificaciones.ts
 import { useState, useEffect } from 'react';
-
-// Ya no importamos 'Certificado', solo la API
 import type { CertificacionAPI } from '../types';
 import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
+import { useAuthStore } from '@/stores/authStore';
 
 export function useCertificaciones( idCategoriaFiltro: string | null) {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   // 1. 👇 El estado ahora guarda la interfaz completa de la API
   const [certificados, setCertificados] = useState<CertificacionAPI[]>([]);
   const [isLoadingCerts, setIsLoadingCerts] = useState<boolean>(true);
@@ -38,8 +38,8 @@ export function useCertificaciones( idCategoriaFiltro: string | null) {
       }
     };
 
-    fetchCerts();
-  }, [idCategoriaFiltro]);
+    if (idPortafolio) fetchCerts();
+  }, [idCategoriaFiltro, idPortafolio]);
 
   return { certificados, isLoadingCerts, isUsingFallbackCerts };
 }

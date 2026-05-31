@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MessageCircle, MapPin, Mail, Sparkles, ExternalLink } from "lucide-react";
 import type {
   Usuario,
+  InformacionBasica,
   Proyectos,
   HabilidadTecnica,
   HabilidadBlanda,
@@ -14,21 +15,29 @@ import { toast } from "@/components/Alerta";
 
 type Props = {
   usuario: Usuario;
+  informacion_basica?: InformacionBasica | null;
   proyectos?: Proyectos[];
   tecnicas?: HabilidadTecnica[];
   blandas?: HabilidadBlanda[];
   experiencias?: Experiencia[];
   certificaciones?: Certificacion[];
+  mostrarCV?: boolean;
+  mostrarContacto?: boolean;
+  mostrarRedes?: boolean;
   onUploadCover?: () => void;
 };
 
 const PortfolioHeader: React.FC<Props> = ({
   usuario,
+  informacion_basica,
   proyectos = [],
   tecnicas = [],
   blandas = [],
   experiencias = [],
   certificaciones = [],
+  mostrarCV = true,
+  mostrarContacto = true,
+  mostrarRedes = true,
 }) => {
   const fullName = `${usuario.nombre} ${usuario.apellido}`;
   const mainProfession = usuario.profesiones?.length > 0 ? usuario.profesiones[0].nombre : "Professional";
@@ -134,71 +143,79 @@ const PortfolioHeader: React.FC<Props> = ({
               </span>
             </div>
 
-            {/* Contenedor de logos estáticos */}
-            <div className="flex items-center gap-4">
-              <div 
-                data-track="clic_linkedin"
-                className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
-                <img 
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg" 
-                  alt="LinkedIn" 
-                  className="w-6 h-6"
-                />
+            {/* Redes profesionales */}
+            {mostrarRedes && (
+              <div className="flex items-center gap-4">
+                <div
+                  data-track="clic_linkedin"
+                  className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg"
+                    alt="LinkedIn"
+                    className="w-6 h-6"
+                  />
+                </div>
+                <div
+                  data-track="clic_github"
+                  className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+                    alt="GitHub"
+                    className="w-6 h-6 invert brightness-[2]"
+                  />
+                </div>
               </div>
-              <div 
-                data-track="clic_github"
-                className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
-                <img 
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" 
-                  alt="GitHub" 
-                  className="w-6 h-6 invert brightness-[2]" 
-                />
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
         <div className="flex flex-wrap gap-3 mt-8">
-          <button
-              data-track="clic_contactar"
-              onClick={() => setContactarOpen(true)}
+          {mostrarContacto && (
+            <>
+              <button
+                data-track="clic_contactar"
+                onClick={() => setContactarOpen(true)}
+                className="
+                  group flex items-center gap-2
+                  bg-white text-[#0a1120]
+                  px-7 py-3 rounded-xl
+                  font-bold text-xs transition-all
+                  hover:bg-blue-50 hover:scale-[1.02]
+                  active:scale-95 shadow-lg shadow-white/5
+                "
+              >
+                <MessageCircle size={18} className="transition-transform group-hover:rotate-12" />
+                CONTACTAR
+              </button>
+              <ContactarModal
+                open={contactarOpen}
+                onClose={() => setContactarOpen(false)}
+                correoDestinatario={informacion_basica?.gmail ?? usuario.correo}
+                nombreDestinatario={fullName}
+                whatsappNumber={whatsappNumber}
+              />
+            </>
+          )}
+
+          {mostrarCV && (
+            <button
+              onClick={handleDescargarCV}
+              disabled={descargandoCV}
+              data-track="clic_descargar_cv"
               className="
-                group flex items-center gap-2
-                bg-white text-[#0a1120] 
-                px-7 py-3 rounded-xl
-                font-bold text-xs transition-all 
-                hover:bg-blue-50 hover:scale-[1.02]
-                active:scale-95 shadow-lg shadow-white/5
+                flex items-center gap-2
+                bg-white/5 hover:bg-white/10
+                backdrop-blur-xl border border-white/10
+                text-white/90 px-7 py-3 rounded-xl
+                text-xs font-semibold transition-all
+                hover:border-white/20
+                disabled:opacity-60 disabled:cursor-not-allowed
               "
             >
-              <MessageCircle size={18} className="transition-transform group-hover:rotate-12" />
-              CONTACTAR
+              <span>{descargandoCV ? "Generando..." : "Descargar CV"}</span>
+              <ExternalLink size={14} />
             </button>
-          <ContactarModal
-            open={contactarOpen}
-            onClose={() => setContactarOpen(false)}
-            correoDestinatario={usuario.correo}
-            nombreDestinatario={fullName}
-            whatsappNumber={whatsappNumber}
-          />
-          
-          <button
-            onClick={handleDescargarCV}
-            disabled={descargandoCV}
-            data-track="clic_descargar_cv"
-            className="
-              flex items-center gap-2
-              bg-white/5 hover:bg-white/10
-              backdrop-blur-xl border border-white/10
-              text-white/90 px-7 py-3 rounded-xl
-              text-xs font-semibold transition-all
-              hover:border-white/20
-              disabled:opacity-60 disabled:cursor-not-allowed
-            "
-          >
-            <span>{descargandoCV ? "Generando..." : "Descargar CV"}</span>
-            <ExternalLink size={14} />
-          </button>
+          )}
         </div>
       </div>
 

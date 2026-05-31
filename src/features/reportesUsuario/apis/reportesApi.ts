@@ -1,45 +1,13 @@
 import apiClient from '@/api/api';
 import type { EstadisticasData, EstadisticasResponse } from '../types/reportes';
 import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/stores/authStore';
 
 interface Visitantes {
     total_visitantes:       number
     visitantes_nuevos:      number
     visitantes_recurrentes: number
     ultima_visita:          string
-}
-
-export function useVisitantes() {
-    const [data, setData]       = useState<Visitantes | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError]     = useState<string | null>(null)
-
-    useEffect(() => {
-        apiClient.get<Visitantes>('/reportesUsr/heatmap/visitantes')
-            .then(res => setData(res.data))
-            .catch(err => {
-                console.error('Error al obtener visitantes:', err)
-                setError('No se pudo cargar')
-            })
-            .finally(() => setLoading(false))
-    }, [])
-
-    return { data, loading, error }
-}
-
-export const getEstadisticasPortafolio = async (): Promise<EstadisticasData> => {
-  try {
-    const response = await apiClient.get<EstadisticasResponse>('/mi-portafolio/estadisticas');
-    return response.data.data;
-  } catch (error) {
-    console.error('Error al obtener las estadísticas del portafolio:', error);
-    throw error;
-  }
-};
-
-export const getVisitantes = async () => {
-    const response = await apiClient.get('/reportesUsr/heatmap/visitantes')
-    return response.data
 }
 
 interface InteraccionesPerfil {
@@ -55,57 +23,100 @@ interface InteraccionesPerfil {
     clic_descargar_cv:  number | null
 }
 
+const getIdPortafolio = () => useAuthStore.getState().portafolioSeleccionado?.id_portafolio
+const params = () => {
+    const id = getIdPortafolio()
+    return id ? { params: { id_portafolio: id } } : {}
+}
+
+export function useVisitantes() {
+    const [data, setData]       = useState<Visitantes | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError]     = useState<string | null>(null)
+    const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
+
+    useEffect(() => {
+        setLoading(true)
+        apiClient.get<Visitantes>('/reportesUsr/heatmap/visitantes', { params: { id_portafolio: idPortafolio } })
+            .then(res => setData(res.data))
+            .catch(err => {
+                console.error('Error al obtener visitantes:', err)
+                setError('No se pudo cargar')
+            })
+            .finally(() => setLoading(false))
+    }, [idPortafolio])
+
+    return { data, loading, error }
+}
+
+export const getEstadisticasPortafolio = async (): Promise<EstadisticasData> => {
+    try {
+        const id = getIdPortafolio()
+        const url = id ? `/portafolios/${id}/estadisticas` : '/mi-portafolio/estadisticas'
+        const response = await apiClient.get<EstadisticasResponse>(url);
+        return response.data.data;
+    } catch (error) {
+        console.error('Error al obtener las estadísticas del portafolio:', error);
+        throw error;
+    }
+};
+
+export const getVisitantes = async () => {
+    const response = await apiClient.get('/reportesUsr/heatmap/visitantes', params())
+    return response.data
+}
+
 export const getInteraccionesPerfil = async (): Promise<InteraccionesPerfil> => {
-    const response = await apiClient.get('/reportesUsr/heatmap/perfil')
+    const response = await apiClient.get('/reportesUsr/heatmap/perfil', params())
     return response.data
 }
 
 export async function getHeatmapPerfil() {
-  const { data } = await apiClient.get('/reportesUsr/heatmap/perfil')
-  return data
+    const { data } = await apiClient.get('/reportesUsr/heatmap/perfil', params())
+    return data
 }
 
 export async function getHeatmapHabilidadesTecnicas() {
-  const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-tecnicas')
-  return data
+    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-tecnicas', params())
+    return data
 }
 
 export const getClicsPerfil = async () => {
-    const response = await apiClient.get('/reportesUsr/heatmap/perfil/clics')
+    const response = await apiClient.get('/reportesUsr/heatmap/perfil/clics', params())
     return response.data
 }
 
 export async function getVisitasPorMes() {
-    const { data } = await apiClient.get('/reportesUsr/visitas-por-mes')
+    const { data } = await apiClient.get('/reportesUsr/visitas-por-mes', params())
     return data as { mes: string; visitas: number }[]
 }
 
 export async function getCrecimientoMensual() {
-    const { data } = await apiClient.get('/reportesUsr/crecimiento-mensual')
+    const { data } = await apiClient.get('/reportesUsr/crecimiento-mensual', params())
     return data as { mes: string; total: number }[]
 }
 
 export async function getClicsTecnicas() {
-    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-tecnicas/clics')
+    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-tecnicas/clics', params())
     return data as { x: number; y: number; intensidad: number }[]
 }
 
 export async function getClicsBlandas() {
-    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-blandas/clics')
+    const { data } = await apiClient.get('/reportesUsr/heatmap/habilidades-blandas/clics', params())
     return data as { x: number; y: number; intensidad: number }[]
 }
 
 export async function getClicsExperiencia() {
-    const { data } = await apiClient.get('/reportesUsr/heatmap/experiencia/clics')
+    const { data } = await apiClient.get('/reportesUsr/heatmap/experiencia/clics', params())
     return data as { x: number; y: number; intensidad: number }[]
 }
 
 export async function getClicsProyectos() {
-    const { data } = await apiClient.get('/reportesUsr/heatmap/proyecto/clics')
+    const { data } = await apiClient.get('/reportesUsr/heatmap/proyecto/clics', params())
     return data as { x: number; y: number; intensidad: number }[]
 }
 
 export async function getClicsCertificaciones() {
-    const { data } = await apiClient.get('/reportesUsr/heatmap/certificacion/clics')
+    const { data } = await apiClient.get('/reportesUsr/heatmap/certificacion/clics', params())
     return data as { x: number; y: number; intensidad: number }[]
 }

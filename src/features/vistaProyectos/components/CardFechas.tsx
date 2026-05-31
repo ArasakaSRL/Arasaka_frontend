@@ -43,7 +43,7 @@ export const CardFechas = ({
       <div className="flex gap-3 items-start">
         <CalendarDays size={20} />
         <div>
-          <p className="text-xs uppercase font-semibold">
+          <p className="text-xs uppercase font-semibold text-left">
             Inicio
           </p>
           <p>
@@ -54,7 +54,7 @@ export const CardFechas = ({
       <div className="flex gap-3 items-start">
         <CalendarDays size={20} />
         <div>
-          <p className="text-xs uppercase font-semibold">
+          <p className="text-xs uppercase font-semibold text-left">
             Fin
           </p>
 

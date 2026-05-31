@@ -2,15 +2,14 @@ import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { AxiosError } from 'axios';
-import { ArrowLeft, Mail } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
-import { registerRequest, getUsuario, resendVerificationEmail, firebaseAuthRequest } from '@/features/auth/api/auth';
-import { useAuthStore } from '@/stores/authStore';
+import { registerRequest, getUsuario, firebaseAuthRequest } from '@/features/auth/api/auth';
+import { useAuthStore, resolverPortafolioDesdeArray } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { googleProvider, githubProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
-import LoginBackground from '@/components/LoginBackground';
 
 const registerSchema = z.object({
     nombre: z.string().trim().min(3, 'El nombre es requerido').max(40, 'Máximo 40 caracteres').regex(/^[A-Za-z\s]+$/, 'Solo letras y espacios'),
@@ -34,10 +33,7 @@ export default function Register() {
 
     const navigate = useNavigate();
     const setUser = useAuthStore(s => s.setUser);
-
-    const [isRegistered, setIsRegistered] = useState(false); // Nuevo estado
-    const [resendLoading, setResendLoading] = useState(false);
-    const [resendStatus, setResendStatus] = useState<string | null>(null);
+    const setPortafolio = useAuthStore(s => s.setPortafolio);
 
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
@@ -65,8 +61,11 @@ export default function Register() {
             const { id_token, correo, provider: providerName } = await signInWithProvider(provider);
             await firebaseAuthRequest(id_token, correo, providerName);
             const user = await getUsuario();
-            if (user) setUser(user);
-            navigate('/Dashboard/perfilPersonal/PerfilPersonal');
+            if (user) {
+                setUser(user);
+                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
+            }
+            navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const axiosError = err as AxiosError<{ message?: string }>;
             const firebaseError = err as { code?: string; message?: string };
@@ -128,8 +127,11 @@ export default function Register() {
             });
 
             const user = await getUsuario();
-            if (user) setUser(user)
-            setIsRegistered(true); // Marca como registrado para mostrar mensaje de verificación
+            if (user) {
+                setUser(user);
+                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
+            }
+            navigate('/Dashboard/perfil/General');
 
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
@@ -139,70 +141,15 @@ export default function Register() {
         }
     }
 
-    // Función para el botón de "Reenviar correo"
-    async function handleResendEmail() {
-        setResendLoading(true);
-        setResendStatus(null);
-        try {
-            await resendVerificationEmail();
-            setResendStatus('¡Enlace enviado! Revisa tu bandeja de entrada.');
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            setResendStatus(error?.response?.data?.message ?? 'Error al reenviar. Intenta más tarde.');
-        } finally {
-            setResendLoading(false);
-        }
-    }
-
     // Manejadores de cambio para validar en tiempo real
     const handleNombreChange = (val: string) => { setNombre(val.replace(/[^A-Za-z\s]/g, '').slice(0, 40)); setErrors(prev => ({ ...prev, nombre: undefined })); };
     const handleApellidoChange = (val: string) => { setApellido(val.replace(/[^A-Za-z\s]/g, '').slice(0, 40)); setErrors(prev => ({ ...prev, apellido: undefined })); };
     const handleCorreoChange = (val: string) => { setCorreo(val.trimStart().slice(0, 50)); setErrors(prev => ({ ...prev, correo: undefined })); };
     const handlePasswordChange = (val: string) => { if (val.length <= 12) { setPassword(val); setErrors(prev => ({ ...prev, password: undefined })); } };
 
-    // VISTA DE VERIFICACIÓN (Se muestra solo tras el registro exitoso)
-    if (isRegistered) {
-        return (
-            <div className="flex flex-col items-center bg-gray-50 min-h-screen pt-10 sm:pt-0 sm:justify-center px-1 sm:px-6 lg:px-8">
-
-                <div className="mb-6! bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
-                    <Mail className="w-10 h-10 text-blue-600 animate-bounce" />
-                </div>
-
-                <div className="w-full max-w-full md:max-w-md items-start bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-300 relative">
-
-                    <div className="absolute z-0 inset-0 bg-linear-to-r from-blue-400/40 to-transparent pointer-events-none" />
-
-                    <div className="relative z-20 p-6 flex flex-col">
-
-                        <h2 className="text-2xl font-bold text-black mb-2!">¡Casi listo, {nombre}!</h2>
-                        <p className="text-gray-600 mb-4!">
-                            Hemos enviado un enlace de verificación a <span className="font-bold text-black">{correo}</span>.
-                            Es necesario verificar tu cuenta para acceder a todas las funciones.
-                        </p>
-
-                        <AuthButton
-                            text={resendLoading ? 'Enviando...' : 'Reenviar correo de verificación'}
-                            onClick={handleResendEmail}
-                            disabled={resendLoading}
-                        />
-                        {resendStatus && <p className="text-sm! text-blue-600 pt-2 font-medium">{resendStatus}</p>}
-
-                        <button
-                            onClick={() => navigate('/auth/Login')}
-                            className="text-sm text-gray-500 pt-4 hover:text-black transition-colors underline"
-                        >
-                            Redirigir al inicio de sesión
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1 py-12 md:py-8">
-            <LoginBackground />
+            
             <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline">
                 <ArrowLeft size={16} /> Volver al inicio
             </Link>

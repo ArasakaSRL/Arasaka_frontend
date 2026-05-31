@@ -42,7 +42,7 @@ export function PerfilReplica({
 
   const maxIntensidad = calcMax(clicsPerfil)
 
-  const slug = useAuthStore((state) => state.user?.portafolio?.slug);
+  const slug = useAuthStore((state) => state.portafolioSeleccionado?.slug);
   const { data, loading, noDisponible } = usePortfolioData(slug);
 
   if (!slug)        return <div>No tienes un portafolio asignado.</div>;

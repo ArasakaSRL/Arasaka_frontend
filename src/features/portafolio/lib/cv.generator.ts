@@ -556,8 +556,8 @@ export async function generateCV(data: CVData): Promise<void> {
     doc.text(pageLabel, pageW - MAIN_PAD_X - plw, pageH - 16);
   }
 
-  const sanitize = (s: string) =>
-    s
+  const sanitize = (s: string | null | undefined) =>
+    (s ?? "")
       .normalize("NFD")
       .replace(/[̀-ͯ]/g, "")
       .replace(/[^a-zA-Z0-9]/g, "");

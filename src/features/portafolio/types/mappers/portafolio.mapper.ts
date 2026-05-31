@@ -16,6 +16,16 @@ export const mapPortafolio = (api: any): Portafolio => {
 
         usuario: mapUsuario(data.usuario),
 
+        informacion_basica: data.informacion_basica ? {
+            id_informacion_basica: data.informacion_basica.id_informacion_basica,
+            nombre_completo: data.informacion_basica.nombre_completo,
+            gmail: data.informacion_basica.gmail,
+            pais: data.informacion_basica.pais,
+            foto_perfil: data.informacion_basica.foto_perfil ?? null,
+            foto_perfil_public_id: data.informacion_basica.foto_perfil_public_id ?? null,
+            biografia: data.informacion_basica.biografia ?? null,
+        } : null,
+
         proyectos: safeArray(data.proyectos).map(mapProyecto),
         
         habilidades: {
@@ -45,8 +55,9 @@ export const mapPortafolio = (api: any): Portafolio => {
             mostrar_experiencias: data.configuracion?.mostrar_experiencias ?? false,
             mostrar_servicios: data.configuracion?.mostrar_servicios ?? false,
             mostrar_certificaciones: data.configuracion?.mostrar_certificaciones ?? false,
-            mostrar_redes_profesionales:
-                data.configuracion?.mostrar_redes_profesionales ?? false,
+            mostrar_redes_profesionales: data.configuracion?.mostrar_redes_profesionales ?? true,
+            mostrar_cv: data.configuracion?.mostrar_cv ?? true,
+            mostrar_contacto: data.configuracion?.mostrar_contacto ?? true,
             paleta_colores: data.configuracion?.paleta_colores ?? "default",
         },
     };

@@ -1,6 +1,6 @@
 import apiClient from '@/api/api'
 import axios from 'axios'
-import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload } from '../types/auth.types'
+import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload, CambiarContrasenaPayload, CambiarContrasenaResponse, VerificarCorreoPayload, VerificarCorreoResponse, ConfirmarCorreoPayload, ConfirmarCorreoResponse } from '../types/auth.types'
 import type { AuthUser } from '@/stores/authStore'
 
 interface AuthenticateResponse {
@@ -69,6 +69,24 @@ export async function resetPasswordRequest(payload: ResetPasswordPayload) {
 // correo/notificacion-verificacion (requiere sesión activa)
 export async function resendVerificationEmail() {
   const { data } = await apiClient.post('/correo/notificacion-verificacion')
+  return data
+}
+
+// PATCH /usuario/contrasena — cambia la contraseña del usuario autenticado
+export async function cambiarContrasena(payload: CambiarContrasenaPayload): Promise<CambiarContrasenaResponse> {
+  const { data } = await apiClient.patch<CambiarContrasenaResponse>('/usuario/contrasena', payload)
+  return data
+}
+
+// POST /usuario/correo/verificar — verifica que el nuevo correo no exista y envía código
+export async function verificarCorreo(payload: VerificarCorreoPayload): Promise<VerificarCorreoResponse> {
+  const { data } = await apiClient.post<VerificarCorreoResponse>('/usuario/correo/verificar', payload)
+  return data
+}
+
+// POST /usuario/correo/confirmar — valida el código y actualiza el correo
+export async function confirmarCorreo(payload: ConfirmarCorreoPayload): Promise<ConfirmarCorreoResponse> {
+  const { data } = await apiClient.post<ConfirmarCorreoResponse>('/usuario/correo/confirmar', payload)
   return data
 }
 

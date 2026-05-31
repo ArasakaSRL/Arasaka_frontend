@@ -4,9 +4,11 @@ import BandejaMensajes from '@/features/sendGmail/components/mensajes/BandejaMen
 import PageHeader from '@/components/ui/PageHeader'
 import { Inbox } from 'lucide-react'
 import { useCallback } from 'react'
+import { useAuthStore } from '@/stores/authStore'
 
 export default function MensajesRecibidos() {
-    const fetcher = useCallback(() => getMensajesRecibidos(), [])
+    const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
+    const fetcher = useCallback(() => getMensajesRecibidos(idPortafolio), [idPortafolio])
 
     return (
         <DashboardLayout>

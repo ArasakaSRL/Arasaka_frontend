@@ -1,3 +1,5 @@
+import type { S } from "node_modules/framer-motion/dist/types.d-DOCC-kZB";
+
 export type Telefono = {
     numero: string;
 };
@@ -102,8 +104,20 @@ export type configuracion = {
     mostrar_experiencias: boolean;
     mostrar_servicios: boolean;
     mostrar_certificaciones: boolean;
-    mostrar_redes_profesionales: boolean | null;
+    mostrar_redes_profesionales: boolean;
+    mostrar_cv: boolean;
+    mostrar_contacto: boolean;
     paleta_colores: string;
+};
+
+export type InformacionBasica = {
+    id_informacion_basica: string;
+    nombre_completo: string;
+    gmail: string;
+    pais: string;
+    foto_perfil: string | null;
+    foto_perfil_public_id: string | null;
+    biografia: string | null;
 };
 
 export type Portafolio = {
@@ -113,6 +127,7 @@ export type Portafolio = {
     descripcion: string | null;
     visibilidad: boolean;
     usuario: Usuario;
+    informacion_basica: InformacionBasica | null;
     proyectos: Proyectos[];
     habilidades: habilidades;
     experiencias: experiencias[];
@@ -132,10 +147,14 @@ export interface Portfolio {
   createdAt: string; 
 }
 
-export type CreatePortafolio ={
+export type CreatePortafolio = {
     nombre: string;
     descripcion: string;
     visibilidad: boolean;
+    nombre_completo?: string;
+    gmail?: string;
+    contrasena?: string;
+    pais?: string;
     redesProfesionales: RedesProfesionales[];
 }
 
@@ -157,8 +176,20 @@ export type DataPortafolio = {
     slug: string;
     visibilidad: boolean;
     fecha_creacion: string;
-    fecha_actualizacion: boolean;
+    fecha_actualizacion: string;
     link_activo: boolean;
-    fecha_expiracion_link: boolean;
-    duracion_link: boolean;
+    fecha_expiracion_link: string | null;
+    duracion_link: string | null;
+    informacion_basica?: {
+        id_informacion_basica: string;
+        nombre_completo: string;
+        gmail: string;
+        pais: string | null;
+        foto_perfil: string | null;
+        foto_perfil_public_id: string | null;
+        biografia: string | null;
+    } | null;
+    telefonos?: { id_telefono: string; telefono: string }[];
+    profesiones?: { id_profesion: string; nombre: string }[];
+    idiomas?: { id_idioma: string; nombre: string }[];
 }
