@@ -65,6 +65,7 @@ export default function Register() {
                 setUser(user);
                 setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
             }
+            sessionStorage.removeItem('tour_iniciado');
             navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const axiosError = err as AxiosError<{ message?: string }>;
@@ -131,6 +132,7 @@ export default function Register() {
                 setUser(user);
                 setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
             }
+            sessionStorage.removeItem('tour_iniciado');
             navigate('/Dashboard/perfil/General');
 
         } catch (err: unknown) {

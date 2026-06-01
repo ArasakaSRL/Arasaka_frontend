@@ -41,7 +41,7 @@ const menuItems: MenuItem[] = [
     { icon: Trophy,        label: 'Experiencias',    path: '/Dashboard/hitos/Hitos',                    tourId: 'tour-experiencias' },
     { icon: ShieldCheck,   label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones', tourId: 'tour-certificaciones' },
     {
-        icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Principal',
+        icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Principal', tourId: 'tour-mensajes',
         submenu: [
             { icon: LayoutDashboard, label: 'Principal',  path: '/Dashboard/mensajes/Principal' },
             { icon: Inbox,           label: 'Recibidos',  path: '/Dashboard/mensajes/Recibidos' },
@@ -49,11 +49,11 @@ const menuItems: MenuItem[] = [
             { icon: Star,            label: 'Destacados', path: '/Dashboard/mensajes/Destacados' },
         ]
     },
-    { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' },
    //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
    //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
     { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios', tourId: 'tour-portafolios' },
-    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
+    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion', tourId: 'tour-configuracion',
         submenu: [
             { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
             { icon: HatGlasses ,           label: 'Visibilidad General',  path: '/Dashboard/configuracion/General' },
@@ -109,6 +109,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             setIsLoading(true);
             await logoutRequest();
             clearUser();
+            sessionStorage.removeItem('tour_iniciado');
             navigate('/');
         } catch (error) {
             console.error('Error al cerrar sesión:', error);
@@ -169,7 +170,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
                     {menuItems.map((item) => (
                         item.submenu ? (
-                            <div key={item.label}>
+                            <div key={item.label} id={item.tourId}>
                                 {/* Desktop hover submenu */}
                                 <div
                                     ref={el => { itemRefs.current[item.label] = el }}
