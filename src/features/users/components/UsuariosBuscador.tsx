@@ -16,12 +16,8 @@ export const UserSearch = ({
         className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
       />
 
-      <input
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        placeholder="Buscar talento o username..."
-        className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-blue-500
-        "
+      <input value={value} onChange={e => onChange(e.target.value)} placeholder="Buscar talento o username..."
+        className="w-full rounded-xl border text-sm border-gray-200 bg-white py-2 pl-11 pr-4 outline-none focus:border-blue-500"
       />
     </div>
   )
