@@ -1,17 +1,34 @@
-import { useMemo, useState } from 'react'
-import { usersMock } from '../utils/users.mocks'
-import { filterUsers } from '../utils/filtroUsuarios'
+import { useEffect, useState } from "react";
+import { obtenerUsuarios, type Usuario } from "../lib/UserApi";
 
-export const useUsers = () => {
-  const [search, setSearch] = useState('')
+export const useUsuarios = () => {
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const filteredUsers = useMemo(() => {
-    return filterUsers(usersMock, search)
-  }, [search])
+  const cargarUsuarios = async () => {
+    try {
+      setLoading(true);
+
+      const data = await obtenerUsuarios();
+
+      setUsuarios(data);
+    } catch (err) {
+      console.error(err);
+      setError("Error al obtener usuarios");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarUsuarios();
+  }, []);
 
   return {
-    users: filteredUsers,
-    search,
-    setSearch,
-  }
-}
+    usuarios,
+    loading,
+    error,
+    recargarUsuarios: cargarUsuarios,
+  };
+};
