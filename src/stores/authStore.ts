@@ -22,13 +22,15 @@ export interface AuthUser {
   id: string
   nombre: string
   apellido: string
-  username: string
+  username: string | null
   correo: string
-  biografia?: string
   estado?: boolean
   url_foto?: string
   roles?: Rol[]
   portafolios?: PortafolioCompleto[]
+  tour_completado?: boolean
+  tiene_password: boolean
+  perfil_completo: boolean
 }
 
 interface AuthState {

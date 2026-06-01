@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { z } from 'zod'
 import { useAuthStore } from '@/stores/authStore'
 import { actualizarInformacion } from '@/features/auth/api/update-perfilPersonal'
+import { getUsuario } from '@/features/auth/api/auth'
 
 const usernameSchema = z.string().trim()
     .min(3, 'Mínimo 3 caracteres')
@@ -43,7 +44,8 @@ export default function UsernameField() {
         setLoading(true)
         try {
             await actualizarInformacion({ username: value })
-            if (user) setUser({ ...user, username: value })
+            const updatedUser = await getUsuario()
+            if (updatedUser) setUser(updatedUser)
             setSuccess(true)
             setEditing(false)
             setTimeout(() => setSuccess(false), 3000)
