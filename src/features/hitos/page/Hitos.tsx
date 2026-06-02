@@ -405,14 +405,14 @@ const handleEliminarSeleccionados = async () => {
           })
         )}
 
-        <BotonEliminar
+        {/*<BotonEliminar
           count={hitosEliminar.length}
           onDeleteAll={handleEliminar}
           onDeselectAll={() => {
           setHitosEliminar([]);
           setModoAccion(null);
           }}
-          />
+          />*/}
       </div>
 
       <EliminarModal
