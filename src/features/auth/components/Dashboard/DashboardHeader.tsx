@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Share2, Eye, Menu, X, ExternalLink } from 'lucide-react';
+import { Share2, Eye, Menu, X, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import ShareModal from '@/features/portafolio/components/ShareModal';
 import { generateCV } from '@/features/portafolio/lib/cv.generator';
 import { getPortafolioPrivate } from '@/features/portafolio/lib/portafolio.service';
 import { toast } from '@/components/Alerta';
+import type { Portafolio } from '@/features/portafolio/types/portafolioType';
 
 interface DashboardHeaderProps {
     onMenuClick: () => void
