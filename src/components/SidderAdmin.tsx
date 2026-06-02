@@ -83,6 +83,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         try {
             setIsLoading(true);
             await logoutRequest();
+            sessionStorage.removeItem('tour_iniciado');
             navigate('/auth/Login');
         } catch (error) {
             console.error('Error al cerrar sesión:', error);

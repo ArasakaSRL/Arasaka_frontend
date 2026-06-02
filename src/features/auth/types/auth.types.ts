@@ -10,7 +10,6 @@ export interface RegisterPayload {
   correo: string
   password: string
   password_confirmation: string
-  biografia?: string
   url_foto?: string
   estado?: boolean
   verificacion_email?: boolean
@@ -39,6 +38,15 @@ export interface CambiarContrasenaPayload {
   contrasena_actual: string
   contrasena_nueva: string
   contrasena_nueva_confirmation: string
+}
+
+export interface CompletarPerfilPayload {
+  password: string
+  password_confirmation: string
+}
+
+export interface CompletarPerfilResponse {
+  message: string
 }
 
 export interface CambiarContrasenaResponse {

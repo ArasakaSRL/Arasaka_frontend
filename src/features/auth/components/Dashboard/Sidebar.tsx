@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, Phone, FolderOpen,
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -23,11 +23,12 @@ interface MenuItem {
     label: string
     path: string
     submenu?: SubmenuItem[]
+    tourId?: string
 }
 
 const menuItems: MenuItem[] = [
     {
-        icon: User, label: 'Perfil Personal', path: '/Dashboard/perfil/General',
+        icon: User, label: 'Perfil Personal', path: '/Dashboard/perfil/General', tourId: 'tour-perfil',
         submenu: [
             { icon: User,       label: 'Vista General', path: '/Dashboard/perfil/General' },
             { icon: UserPen,     label: 'Actualizar Perfil', path: '/Dashboard/perfil/Editar' },
@@ -35,12 +36,12 @@ const menuItems: MenuItem[] = [
             //{ icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
         ]
     },
-    { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos' },
-    { icon: Award,         label: 'Habilidades',     path: '/Dashboard/habilidades/Habilidades' },
-    { icon: Trophy,        label: 'Experiencias',           path: '/Dashboard/hitos/Hitos' },
-    { icon: ShieldCheck,   label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones' },
+    { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos',            tourId: 'tour-proyectos' },
+    { icon: Award,         label: 'Habilidades',     path: '/Dashboard/habilidades/Habilidades',        tourId: 'tour-habilidades' },
+    { icon: Trophy,        label: 'Experiencias',    path: '/Dashboard/hitos/Hitos',                    tourId: 'tour-experiencias' },
+    { icon: ShieldCheck,   label: 'Certificaciones', path: '/Dashboard/certificaciones/Certificaciones', tourId: 'tour-certificaciones' },
     {
-        icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Principal',
+        icon: MessageSquare, label: 'Mensajes', path: '/Dashboard/mensajes/Principal', tourId: 'tour-mensajes',
         submenu: [
             { icon: LayoutDashboard, label: 'Principal',  path: '/Dashboard/mensajes/Principal' },
             { icon: Inbox,           label: 'Recibidos',  path: '/Dashboard/mensajes/Recibidos' },
@@ -48,11 +49,11 @@ const menuItems: MenuItem[] = [
             { icon: Star,            label: 'Destacados', path: '/Dashboard/mensajes/Destacados' },
         ]
     },
-    { icon: BarChart3, label: 'Estadísticas',  path: '/Dashboard/estadisticas/Reportes' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' },
    //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
    //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
-    { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios' },
-    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion',
+    { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios', tourId: 'tour-portafolios' },
+    { icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion', tourId: 'tour-configuracion',
         submenu: [
             { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
             { icon: HatGlasses ,           label: 'Visibilidad General',  path: '/Dashboard/configuracion/General' },
@@ -108,6 +109,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             setIsLoading(true);
             await logoutRequest();
             clearUser();
+            sessionStorage.removeItem('tour_iniciado');
             navigate('/');
         } catch (error) {
             console.error('Error al cerrar sesión:', error);
@@ -151,7 +153,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <div className="md:hidden fixed inset-0 bg-black/40 z-30" onClick={onClose} />
             )}
 
-            <aside className={`w-54 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 z-30 flex flex-col transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside id="sidebar" className={`w-54 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 z-30 flex flex-col transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
                 {portafolioSeleccionado && (
                     <div className="px-3 pt-3">
@@ -168,7 +170,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
                     {menuItems.map((item) => (
                         item.submenu ? (
-                            <div key={item.label}>
+                            <div key={item.label} id={item.tourId}>
                                 {/* Desktop hover submenu */}
                                 <div
                                     ref={el => { itemRefs.current[item.label] = el }}
@@ -243,6 +245,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         ) : (
                             <button
                                 key={item.label}
+                                id={item.tourId}
                                 onClick={() => handleNavigation(item.path)}
                                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
                                     ${isActivePath(item.path)

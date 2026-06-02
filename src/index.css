@@ -1,6 +1,72 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+/* Driver.js custom theme */
+.driverjs-theme .driver-popover {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  max-width: 320px;
+  font-family: 'Poppins', sans-serif;
+}
+.driverjs-theme .driver-popover-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e2a5e;
+  margin-bottom: 8px;
+}
+.driverjs-theme .driver-popover-description {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.6;
+}
+.driverjs-theme .driver-popover-progress-text {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.driverjs-theme .driver-popover-footer {
+  margin-top: 16px;
+  gap: 8px;
+}
+.driverjs-theme .driver-popover-next-btn {
+  background: #1e2a5e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.driverjs-theme .driver-popover-next-btn:hover {
+  background: #27496e;
+}
+.driverjs-theme .driver-popover-prev-btn {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.driverjs-theme .driver-popover-prev-btn:hover {
+  background: #f1f5f9;
+}
+.driverjs-theme .driver-popover-close-btn {
+  color: #94a3b8;
+  font-size: 18px;
+}
+.driverjs-theme .driver-popover-close-btn:hover {
+  color: #475569;
+}
+
 
 @theme {
   /*Color desing*/
