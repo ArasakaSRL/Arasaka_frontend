@@ -28,6 +28,7 @@ import PerfilPortafolio from './pages/Dashboard/perfil/PerfilPortafolio'
 import PagePortafolio from './features/portafolio/pages/PagePortafolio'
 import TegnologiaPage from './features/tegnologias/page/TegnologiaPage'
 import PageVistaProyecto from './features/vistaProyectos/pages/PageVistaProyecto'
+import PageUsuarios from './features/users/pages/PageUsuarios'
 import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 
 export default function App() {
@@ -60,7 +61,9 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verificar-correo/:id/:hash" element={<VerifyEmail />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
+        
         <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />
+        <Route path="/Dashboard/admin/Perfiles" element={<PageUsuarios />} />
       </Route>
       <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
