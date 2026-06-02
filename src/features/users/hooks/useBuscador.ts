@@ -7,16 +7,17 @@ export const useBuscarUsuarios = (
   const [search, setSearch] = useState("");
 
   const usuariosFiltrados = useMemo(() => {
+    if (!usuarios) return [];
     if (!search.trim()) return usuarios;
 
     const term = search.toLowerCase();
 
     return usuarios.filter(
       usuario =>
-        usuario.nombre.toLowerCase().includes(term) ||
-        usuario.apellido.toLowerCase().includes(term) ||
-        usuario.username.toLowerCase().includes(term) ||
-        usuario.correo.toLowerCase().includes(term)
+        (usuario.nombre?.toLowerCase() ?? "").includes(term) ||
+        (usuario.apellido?.toLowerCase() ?? "").includes(term) ||
+        (usuario.username?.toLowerCase() ?? "").includes(term) ||
+        (usuario.correo?.toLowerCase() ?? "").includes(term)
     );
   }, [usuarios, search]);
 
