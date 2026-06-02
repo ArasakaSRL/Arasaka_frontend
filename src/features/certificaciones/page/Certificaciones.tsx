@@ -347,7 +347,7 @@ export default function Certificaciones() {
               Categorías
               {isUsingFallback && (
                 <span className="text-xs text-orange-500 font-normal">
-                  (Modo de prueba)
+                  (No se tienen categorias registradas)
                 </span>
               )}
             </h3>
@@ -403,25 +403,24 @@ export default function Certificaciones() {
             modoAccion={modoAccion}
             certificadosEliminar={certificadosEliminar}
             onEliminar={(cert) => {
-              // 👇 CAMBIO AQUÍ: Usamos el nuevo ID de la API
               toggleEliminar(cert.id_certificacion); 
             }}
           />
         )}
-        <BotonEliminar
+        {/*<BotonEliminar
           count={certificadosEliminar.length}
           onDeleteAll={handleEliminar}
           onDeselectAll={() => {
             setCertificadosEliminar([]);
             setModoAccion(null);
           }}
-        />
+        />*/}
       </div>
 
       <EliminarModal
         isOpen={isConfirmDeleteOpen}
         onClose={() => setIsConfirmDeleteOpen(false)}
-        onConfirm={handleEliminarSeleccionados} // 🔥 ESTA ES LA QUE REALMENTE BORRA
+        onConfirm={handleEliminarSeleccionados} 
         titulo="Eliminar certificaciones"
         nombre={`${certificadosEliminar.length} certificación(es) seleccionada(s)`}
       />

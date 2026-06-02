@@ -153,7 +153,6 @@ export type CreatePortafolio = {
     visibilidad: boolean;
     nombre_completo?: string;
     gmail?: string;
-    contrasena?: string;
     pais?: string;
     redesProfesionales: RedesProfesionales[];
 }

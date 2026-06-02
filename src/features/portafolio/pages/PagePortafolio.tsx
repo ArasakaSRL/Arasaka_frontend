@@ -60,7 +60,7 @@ export default function PagePortafolio() {
     newPortfolio: Omit<Portfolio, 'id' | 'createdAt'>
   ) => {
     try {
-      await createPortafolio({
+       await createPortafolio({
         nombre: newPortfolio.name,
         descripcion: newPortfolio.description,
         visibilidad: newPortfolio.visibility === 'public',
@@ -75,16 +75,15 @@ export default function PagePortafolio() {
             : []),
         ],
       });
-      toast.success('Portafolio creado exitosamente');
+      toast.success('Portafolio creado exitosamente' );
       await getPortafolios();
 
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Error creating portfolio:', error);
-      toast.error('Error al crear el portafolio');
+      toast.error('Error al crear el portafolio nombre repetido o datos invalidos');
     }
   };
-
+  
   const handleManagePortfolio = (id: string) => {
     const completo = portafoliosCompletos.find(p => p.id_portafolio === id);
     if (completo) {

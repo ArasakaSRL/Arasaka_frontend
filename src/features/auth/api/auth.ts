@@ -1,6 +1,6 @@
 import apiClient from '@/api/api'
 import axios from 'axios'
-import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload, CambiarContrasenaPayload, CambiarContrasenaResponse, VerificarCorreoPayload, VerificarCorreoResponse, ConfirmarCorreoPayload, ConfirmarCorreoResponse } from '../types/auth.types'
+import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload, CambiarContrasenaPayload, CambiarContrasenaResponse, VerificarCorreoPayload, VerificarCorreoResponse, ConfirmarCorreoPayload, ConfirmarCorreoResponse, CompletarPerfilPayload, CompletarPerfilResponse } from '../types/auth.types'
 import type { AuthUser } from '@/stores/authStore'
 
 interface AuthenticateResponse {
@@ -75,6 +75,12 @@ export async function resendVerificationEmail() {
 // PATCH /usuario/contrasena — cambia la contraseña del usuario autenticado
 export async function cambiarContrasena(payload: CambiarContrasenaPayload): Promise<CambiarContrasenaResponse> {
   const { data } = await apiClient.patch<CambiarContrasenaResponse>('/usuario/contrasena', payload)
+  return data
+}
+
+// POST /usuario/completar-perfil — agrega username y password para usuarios OAuth
+export async function completarPerfil(payload: CompletarPerfilPayload): Promise<CompletarPerfilResponse> {
+  const { data } = await apiClient.post<CompletarPerfilResponse>('/usuario/completar-perfil', payload)
   return data
 }
 

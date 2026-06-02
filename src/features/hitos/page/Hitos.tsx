@@ -405,21 +405,21 @@ const handleEliminarSeleccionados = async () => {
           })
         )}
 
-        <BotonEliminar
+        {/*<BotonEliminar
           count={hitosEliminar.length}
           onDeleteAll={handleEliminar}
           onDeselectAll={() => {
           setHitosEliminar([]);
           setModoAccion(null);
           }}
-          />
+          />*/}
       </div>
 
       <EliminarModal
         isOpen={isEliminarModalOpen}
         onClose={() => setIsEliminarModalOpen(false)}
         onConfirm={handleEliminarSeleccionados} // 🔥 ESTA ES LA QUE REALMENTE BORRA
-        titulo="Eliminar hitos"
+        titulo="Eliminar experiencias"
         nombre={`${hitosEliminar.length} experiencia(s) seleccionada(s)`}
       />
     </DashboardLayout>
