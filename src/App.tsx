@@ -30,6 +30,7 @@ import TegnologiaPage from './features/tegnologias/page/TegnologiaPage'
 import PageVistaProyecto from './features/vistaProyectos/pages/PageVistaProyecto'
 import PageUsuarios from './features/users/pages/PageUsuarios'
 import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
+import CambiarPlantilla from './pages/Dashboard/configuraciones/CambiarPlantilla'
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="/Dashboard/cuenta/Cuenta" element={<Cuenta />} />
         <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
+        <Route path="/Dashboard/configuracion/Plantillas" element={<CambiarPlantilla/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
         <Route path="/Dashboard/tecnologias" element={<TegnologiaPage />} />
         <Route path="/dashboard" element={<Dashboard />} />

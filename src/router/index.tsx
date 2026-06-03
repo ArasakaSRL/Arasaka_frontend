@@ -6,6 +6,7 @@ import Hitos from '@/features/hitos/page/Hitos'
 import Configuracion from '@/features/configuracion/page/Configuracion'
 import ReportesUsr from '@/features/reportesUsuario/page/ReportesUsr'
 import VisibilidadGeneral from '@/pages/Dashboard/configuraciones/VisibilidadGeneral'
+import CambiarPlantilla from '@/pages/Dashboard/configuraciones/CambiarPlantilla'
 
 
 export const router = createBrowserRouter([
@@ -132,6 +133,11 @@ export const router = createBrowserRouter([
       {
         path: '/Dashboard/configuracion/General',
         element: (<SuspenseWrapper><VisibilidadGeneral /></SuspenseWrapper>)
+      },
+
+      {
+        path: '/Dashboard/configuracion/Plantillas',
+        element: (<SuspenseWrapper><CambiarPlantilla /></SuspenseWrapper>)
       },
 
       {
