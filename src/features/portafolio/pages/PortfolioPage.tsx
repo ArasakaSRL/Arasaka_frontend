@@ -100,10 +100,7 @@ export default function PortfolioPage() {
             </div>
             {configuracion?.mostrar_habilidades && (
                 <section id="habilidades">
-                    <HabilidadesBlandasTracker portfolioSlug={slug!}>
-                         <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={trackExpandir} onCerrar={trackCerrar} />
-                    </HabilidadesBlandasTracker>
-                   
+                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={trackExpandir} onCerrar={trackCerrar} />
                     <HabilidadesBlandasTracker portfolioSlug={slug!}>
                         <HabilidadesBlandas blandas={habilidadesBlandas}/>
                     </HabilidadesBlandasTracker>
