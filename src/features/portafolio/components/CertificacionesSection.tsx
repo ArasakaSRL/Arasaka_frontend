@@ -7,9 +7,10 @@ import type { certificaciones } from '../types/portafolioType';
 
 interface Props {
   certificaciones: certificaciones[];
+  mostrarTitulo?: boolean;
 }
 
-export const CertificacionesSection = ({ certificaciones }: Props) => {
+export const CertificacionesSection = ({ certificaciones,mostrarTitulo = true, }: Props) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   
@@ -26,33 +27,49 @@ export const CertificacionesSection = ({ certificaciones }: Props) => {
   return (
     <div data-track="clic_general" className="w-full max-w-5xl mx-auto p-4 md:p-12 font-sans bg-transparent">
 
+      {mostrarTitulo && (
       <div className="flex flex-col mb-16 px-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-              <GraduationCap size={28} className="text-blue-600" strokeWidth={2.5} />
+              <GraduationCap
+                size={28}
+                className="text-blue-600"
+                strokeWidth={2.5}
+              />
             </div>
+
             <div>
               <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
                 Certificaciones
               </h2>
-              <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1"></div>
+
+              <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1" />
             </div>
           </div>
 
           {certificaciones.length > 3 && (
             <div className="hidden md:flex items-center gap-4 text-sm font-bold text-[#0a1120]/40 uppercase tracking-widest">
-              <button onClick={() => scroll('left')} className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-                <ChevronLeft size={18} /> 
+              <button
+                onClick={() => scroll("left")}
+                className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+              >
+                <ChevronLeft size={18} />
               </button>
+
               <span className="text-slate-200">|</span>
-              <button onClick={() => scroll('right')} className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-                 <ChevronRight size={18} />
+
+              <button
+                onClick={() => scroll("right")}
+                className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+              >
+                <ChevronRight size={18} />
               </button>
             </div>
           )}
         </div>
       </div>
+    )}
 
 
       <div className="relative group/container">

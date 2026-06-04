@@ -2,26 +2,34 @@ import React from 'react';
 import { ExternalLink, Code2, ArrowUpRight ,LayoutPanelLeft} from 'lucide-react';
 import type { Proyectos as Proyecto } from '../types/portafolioType';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
+const SeccionProyectos = ({ proyectos, mostrarTitulo = true, }: { proyectos: Proyecto[], mostrarTitulo?: boolean, }) => {
   const { slug } = useParams();
   return (
     <div className="w-full  max-w-5xl mx-auto p-4 md:p-12 font-sans bg-white">
 
-      <div className="flex flex-col mb-16 px-2">
-        <div className="flex items-center gap-2 mb-3 ">
-         <div className="flex items-center gap-4 mb-10">
+     {mostrarTitulo && (
+    <div className="flex flex-col mb-16 px-2">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-4 mb-10">
           <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-          <LayoutPanelLeft size={28} className="text-blue-600" strokeWidth={2.5} />
-         </div>
-        <div>
-          <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
-            Proyectos
-          </h2>
-          <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1"></div>
+            <LayoutPanelLeft
+              size={28}
+              className="text-blue-600"
+              strokeWidth={2.5}
+            />
+          </div>
+
+          <div>
+            <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
+              Proyectos
+            </h2>
+
+            <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1" />
+          </div>
         </div>
       </div>
-        </div>
-      </div>
+    </div>
+  )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {proyectos.map((proyecto) => (

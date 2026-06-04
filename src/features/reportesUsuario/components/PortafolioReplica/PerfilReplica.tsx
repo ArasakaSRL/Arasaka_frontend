@@ -12,7 +12,6 @@ type Clics = { x: number; y: number; intensidad: number }[]
 interface Intensidades {
   perfil: number
   tecnicas: number
-  // más adelante: habilidades, experiencia, proyectos, certificaciones
 }
 
 interface PerfilReplicaProps {
@@ -55,13 +54,13 @@ export function PerfilReplica({
     <>
         <HeatmapSeccion puntos={clicsPerfil} maxIntensidad={maxIntensidad}>
            <PortfolioHeader
-                        usuario={usuario}
-                        proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
-                        tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
-                        blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
-                        experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
-                        certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
-                    />
+                usuario={usuario}
+                proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
+                tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
+                blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
+                experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
+                certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
+            />
         </HeatmapSeccion>
 
       {configuracion?.mostrar_habilidades && (
