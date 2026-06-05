@@ -30,7 +30,7 @@ import TegnologiaPage from './features/tegnologias/page/TegnologiaPage'
 import PageVistaProyecto from './features/vistaProyectos/pages/PageVistaProyecto'
 import PageUsuarios from './features/users/pages/PageUsuarios'
 import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
-import {FormacionAcademicaForm} from './features/portafolio/pages/FormacionAcademicaForm'
+import FormacionAcademicaPage from  './features/formacion-academica/pages/FormacionAcademicaPage'
 export default function App() {
   return (
     <Routes>
@@ -70,7 +70,7 @@ export default function App() {
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
       <Route path="/portafolio/:slug/proyectos/:id" element={<PageVistaProyecto />} />
       <Route path="/portafolio/privado/:slug/proyectos/:id" element={<PageVistaProyecto />} />
-      <Route path="/portafolio/formacion-academica" element={<FormacionAcademicaForm />} />
+      <Route path="/portafolio/formacion-academica" element={<FormacionAcademicaPage />} />
     </Routes>
   )
 }
