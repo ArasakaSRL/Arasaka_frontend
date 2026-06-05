@@ -18,14 +18,16 @@ interface CardPerfilProps {
 }
 
 export default function DetallesPerfil({
-  nombre,
-  pais,
-  profesion,
-  correo,
-  foto,
-}: CardPerfilProps) {
+    nombre,
+    pais,
+    profesion,
+    correo,
+    foto,
+  }: CardPerfilProps) {
+
+
   return (
-    <div className="relative bg-white rounded-b-lg pt-16 pb-6 px-6 shadow-sm">
+    <div className="relative bg-white rounded-xl pt-16 pb-6 px-6 shadow-sm">
 
       {/* FOTO */}
       <div className="absolute -top-14 left-6">
@@ -42,23 +44,22 @@ export default function DetallesPerfil({
           {nombre}
         </h2>
 
-        <div className="mt-6 space-y-3 text-gray-700">
-
+        
+        <div className="mt-6 space-y-3 text-gray-700 transition-all duration-300">
           <InfoItem
             icon={<Locate size={18} />}
-            text={pais+""}
+            text={pais}
           />
 
           <InfoItem
             icon={<GraduationCap size={18} />}
-            text={profesion+""}
+            text={profesion}
           />
 
           <InfoItem
             icon={<Mail size={18} />}
-            text={correo+""}
+            text={correo}
           />
-
         </div>
 
         <div className="mt-8 flex flex-col gap-3">
