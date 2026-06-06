@@ -22,11 +22,15 @@ export default function OrbitaImagenes({
   
   const [orbitaRotation, setOrbitaRotation] = useState(0);
 
+  
+
   useAnimationFrame((time, delta) => {
     setOrbitaRotation(
       (prev) => prev + delta * CONFIG.velocidadOrbita
     );
   });
+
+  const rotationStep = Math.floor(orbitaRotation / 60);
 
   return (
     <div
@@ -36,12 +40,15 @@ export default function OrbitaImagenes({
         height: CONFIG.altoOrbita,
       }}
     >
+      
       {ORBITA_ITEMS.map((item, index) => {
-        const angle =
-        (index * 360) / ORBITA_ITEMS.length -
-        90 +
-        orbitaRotation;
+        //borrar es experimento
+        const posicion = (index + rotationStep) % ORBITA_ITEMS.length;
+        
 
+        const angle =  (index * 360) / ORBITA_ITEMS.length - 90 +  orbitaRotation;
+        //borrar es experimento
+        const normalized = ((angle % 360) + 360) % 360;
         const rad = (angle * Math.PI) / 180;
 
         const x = Math.cos(rad) * CONFIG.radio;
@@ -82,8 +89,31 @@ export default function OrbitaImagenes({
                     height: CONFIG.sizeImagen,
                   }}
                   className="object-contain"
+                  
                 />
               )}
+              {/**Experimento */}
+              <div
+                className={`text-xs ${
+                  posicion === 5
+                    ? "text-red-500"
+                    : "text-white"
+                }`}
+              >
+                {posicion}
+                <div className="text-xs text-white">
+                  {item.titulo}
+                </div>
+
+                <div className="text-xs text-red-500">
+                  {index}
+                </div>
+                
+                <div className="text-red-500">
+                  {Math.round(normalized)}
+              </div>
+              </div>
+              {/**hasta aqui  */}
             </div>
           </motion.div>
         );

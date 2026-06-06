@@ -1,4 +1,5 @@
 import HexagonoRotatorio from "@/features/plantillas/components/animations/HexagonoRotatorio";
+import OrbitaImagenes from "../../animations/OrbitaImagenes";
 
 
 type Props = {
@@ -27,7 +28,7 @@ export default function SeccionHexagono({
         />
         
       </div>
-      {/*<div
+      <div
         className="absolute"
         style={{
           left: "-480px",
@@ -35,7 +36,7 @@ export default function SeccionHexagono({
         }}
       >
         <OrbitaImagenes fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"/>
-      </div>*/}
+      </div>
 
       <button
         className="absolute top-10 right-10 z-50 bg-white px-4 py-2 rounded"

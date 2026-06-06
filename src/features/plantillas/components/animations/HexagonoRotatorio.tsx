@@ -9,8 +9,6 @@ type Props = {
 };
 
 
-
-
 export default function HexagonoRotatorio({
   rotation,
   activeIndex,
@@ -37,13 +35,6 @@ export default function HexagonoRotatorio({
 
       >
         <Hexagono variant={ORBITA_ITEMS[activeIndex].color} size={400} />
-            {/** <div
-                style={{
-                width: 20,
-                height: 200,
-                background: "red",
-                }}
-            />*/}
       </motion.div>
       </div>
   );

@@ -1,4 +1,5 @@
 import SeccionHexagono from "@/features/plantillas/components/plantilla2/cards/SeccionHexagono";
+import NavbarHorizontal from "@/features/plantillas/components/plantilla2/NavbarHorizontal";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { useState } from "react";
 
@@ -11,11 +12,27 @@ export default function About() {
     setActiveIndex((prev) => (prev + 1) % ORBITA_ITEMS.length);
   };
 
+  const handleSectionChange = (index: number) => {
+    const total = ORBITA_ITEMS.length;
+
+  const diff =
+    (index - activeIndex + total) % total;
+
+    setRotation((prev) => prev + diff * 60);
+
+    setActiveIndex(index);
+  };
   return (
-    <SeccionHexagono
-      rotation={rotation}
-      activeIndex={activeIndex}
-      onRotate={handleRotate}
-    />
+    <div>
+      <SeccionHexagono
+        rotation={rotation}
+        activeIndex={activeIndex}
+        onRotate={handleRotate}
+      />
+      <NavbarHorizontal
+        activeIndex={activeIndex}
+        onChange={handleSectionChange}
+      />
+    </div>
   );
 }
