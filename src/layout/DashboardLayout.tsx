@@ -236,7 +236,7 @@ export default function DashboardLayout({ children, hideSidebar = false }: Dashb
             )}
 
             <main className={`pt-14 min-h-screen transition-all duration-300 ${hideSidebar ? '' : 'md:ml-54'}`}>
-                <div className="max-w-full sm:p-6 md:p-2">
+                <div className="p-4 sm:p-6">
                     {children}
                 </div>
             </main>

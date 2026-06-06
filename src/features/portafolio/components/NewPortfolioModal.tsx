@@ -22,40 +22,69 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
   const MAX_NAME = 30;
   const MAX_DESCRIPTION = 300;
 
+  // Permite letras, números y espacios simples
+  // No permite símbolos raros ni espacios dobles
+  const TITLE_REGEX = /^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/;
+
   if (!isOpen) return null;
+
+  const resetForm = () => {
+    setName('');
+    setDescription('');
+    setVisibility('public');
+    setGithubUrl('');
+    setLinkedinUrl('');
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim()) return;
+    const trimmedName = name.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedName || !trimmedDescription) return;
+
+    // mínimo 6 caracteres
+    if (trimmedName.length < 6) return;
+
+    // validación de caracteres
+    if (!TITLE_REGEX.test(trimmedName)) return;
 
     if (
-      name.length > MAX_NAME ||
-      description.length > MAX_DESCRIPTION
+      trimmedName.length > MAX_NAME ||
+      trimmedDescription.length > MAX_DESCRIPTION
     ) {
       return;
     }
 
     onCreate({
-      name: name.trim(),
-      description: description.trim(),
+      name: trimmedName,
+      description: trimmedDescription,
       visibility,
       githubUrl,
       linkedinUrl,
       createdAt: new Date().toISOString(),
     });
 
-    setName('');
-    setDescription('');
-    setVisibility('public');
-    setGithubUrl('');
-    setLinkedinUrl('');
+    resetForm();
     onClose();
   };
 
   const isNameLimit = name.length >= MAX_NAME;
+
   const isDescriptionLimit =
     description.length >= MAX_DESCRIPTION;
+
+  const hasInvalidCharacters =
+    name.length > 0 && !TITLE_REGEX.test(name);
+
+  const hasMinLengthError =
+    name.length > 0 && name.trim().length < 6;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3">
@@ -70,7 +99,7 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1 rounded-lg text-gray-400 hover:text-gray-600 transition"
           >
             <X size={18} />
@@ -110,7 +139,7 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
               type="text"
               required
               maxLength={MAX_NAME}
-              placeholder="Mi portafolio"
+              placeholder="Mi Portafolio"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className={`
@@ -118,12 +147,26 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
                 bg-gray-50 border rounded-xl
                 outline-none transition
                 ${
-                  isNameLimit
+                  isNameLimit ||
+                  hasInvalidCharacters ||
+                  hasMinLengthError
                     ? 'border-red-400 focus:border-red-500'
                     : 'border-gray-200 focus:border-blue-900'
                 }
               `}
             />
+
+            {hasMinLengthError && (
+              <p className="text-xs text-left text-red-500 mt-1">
+                El nombre debe tener mínimo 6 caracteres.
+              </p>
+            )}
+
+            {hasInvalidCharacters && (
+              <p className="text-xs text-left text-red-500 mt-1">
+                Solo se permiten letras, números y espacios simples.
+              </p>
+            )}
 
             {isNameLimit && (
               <p className="text-xs text-left text-red-500 mt-1">
@@ -132,6 +175,7 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
             )}
           </div>
 
+          {/* DESCRIPCIÓN */}
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-left text-sm font-semibold text-gray-700">
@@ -240,11 +284,11 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
             />
           </div>
 
-     
+          {/* BOTONES */}
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
             >
               Cancelar
@@ -252,7 +296,11 @@ export const NewPortfolioModal: React.FC<NewPortfolioModalProps> = ({
 
             <button
               type="submit"
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white bg-linear-to-br from-[#0a1a3a] to-[#112e57] hover:opacity-95 transition shadow-md"
+              disabled={
+                hasInvalidCharacters ||
+                hasMinLengthError
+              }
+              className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white bg-linear-to-br from-[#0a1a3a] to-[#112e57] hover:opacity-95 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Crear
             </button>

@@ -10,7 +10,11 @@ type Props = {
   onSuccess?: () => void;
 };
 
-export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
+export const TecnologiaModal = ({
+  open,
+  onClose,
+  onSuccess,
+}: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const MAX_NOMBRE = 50;
@@ -27,9 +31,17 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
 
+  // No permite nombres con solo puntos, comas o espacios
+  const INVALID_NAME_REGEX = /^[.,\s]+$/;
+
   useEffect(() => {
     if (!open) {
-      setForm({ nombre: "", descripcion: "", logo: "" });
+      setForm({
+        nombre: "",
+        descripcion: "",
+        logo: "",
+      });
+
       setImageFile(null);
       setPreview("");
       setIsSaving(false);
@@ -37,10 +49,23 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
   }, [open]);
 
   if (!open) return null;
-  const isFormValid = form.nombre.trim() !== "";
-  
+
+  const isOnlyInvalidCharacters =
+    INVALID_NAME_REGEX.test(form.nombre);
+
+  const isFormValid =
+    form.nombre.trim() !== "" &&
+    !isOnlyInvalidCharacters;
+
   const handleSubmit = async () => {
     try {
+      if (isOnlyInvalidCharacters) {
+        toast.warning(
+          "El nombre no puede contener solo puntos, comas o espacios"
+        );
+        return;
+      }
+
       setIsSaving(true);
 
       let imageUrl = "";
@@ -51,18 +76,24 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
           `tecnologias/${Date.now()}_${imageFile.name}`
         );
       }
-      
-      const data =await createTecnologia({
+
+      const data = await createTecnologia({
         ...form,
+        nombre: form.nombre.trim(),
+        descripcion: form.descripcion.trim(),
         logo: imageUrl,
       });
+
       if (!data.success) {
-        toast.warning(`nombre de tecnología : ${form.nombre} ya existe `);
+        toast.warning(
+          `nombre de tecnología : ${form.nombre} ya existe `
+        );
         setIsSaving(false);
         return;
-      }else {
+      } else {
         toast.success("Tecnología creada exitosamente");
       }
+
       onClose();
       onSuccess && onSuccess();
     } catch (error) {
@@ -71,7 +102,9 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
     }
   };
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
 
     if (file) {
@@ -106,10 +139,11 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
         </h2>
 
         <div className="space-y-4">
+          {/* NOMBRE */}
           <div className="flex flex-col items-start gap-1.5 w-full">
-          <label className="text-sm font-semibold text-gray-700">
+            <label className="text-sm font-semibold text-gray-700">
               Nombre <span className="text-red-500">*</span>
-          </label>
+            </label>
 
             <input
               type="text"
@@ -118,10 +152,25 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
               maxLength={MAX_NOMBRE}
               disabled={isSaving}
               onChange={(e) =>
-                setForm({ ...form, nombre: e.target.value })
+                setForm({
+                  ...form,
+                  nombre: e.target.value,
+                })
               }
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50/50 disabled:opacity-50"
+              className={`w-full border rounded-xl px-3 py-2 text-sm outline-none bg-gray-50/50 disabled:opacity-50
+                ${
+                  isOnlyInvalidCharacters
+                    ? "border-red-400 focus:ring-2 focus:ring-red-400"
+                    : "border-gray-200 focus:ring-2 focus:ring-blue-500"
+                }
+              `}
             />
+
+            {isOnlyInvalidCharacters && (
+              <p className="text-xs text-red-500">
+                El nombre no puede contener solo puntos, comas o espacios.
+              </p>
+            )}
 
             <div className="w-full flex justify-between text-xs">
               <span
@@ -141,6 +190,7 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
             </div>
           </div>
 
+          {/* DESCRIPCIÓN */}
           <div className="flex flex-col items-start gap-1.5 w-full">
             <label className="text-sm font-semibold text-gray-700">
               Descripción
@@ -152,7 +202,10 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
               maxLength={MAX_DESCRIPCION}
               disabled={isSaving}
               onChange={(e) =>
-                setForm({ ...form, descripcion: e.target.value })
+                setForm({
+                  ...form,
+                  descripcion: e.target.value,
+                })
               }
               className="w-full border border-gray-200 rounded-xl px-3 py-2 h-20 resize-none text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50/50 disabled:opacity-50"
             />
@@ -160,21 +213,25 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
             <div className="w-full flex justify-between text-xs">
               <span
                 className={`${
-                  form.descripcion.length >= MAX_DESCRIPCION
+                  form.descripcion.length >=
+                  MAX_DESCRIPCION
                     ? "text-red-500"
                     : "text-gray-400"
                 }`}
               >
-                {form.descripcion.length >= MAX_DESCRIPCION &&
+                {form.descripcion.length >=
+                  MAX_DESCRIPCION &&
                   "Máximo 100 caracteres"}
               </span>
 
               <span className="text-gray-400">
-                {form.descripcion.length}/{MAX_DESCRIPCION}
+                {form.descripcion.length}/
+                {MAX_DESCRIPCION}
               </span>
             </div>
           </div>
 
+          {/* IMAGEN */}
           <div className="flex flex-col items-start gap-1.5">
             <label className="text-sm font-semibold text-gray-700">
               Logo de la tecnología
@@ -190,42 +247,45 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
             />
 
             <div className="relative w-full flex justify-center">
-             <div
-             onClick={() => !isSaving && inputRef.current?.click()}
-              className="w-36 h-36 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all overflow-hidden bg-gray-50/50 shadow-sm"
-           >
-           {preview ? (
-            <img
-            src={preview}
-             alt="preview"
-          className="w-full h-full object-cover"
-             />
-              ) : (
-              <div className="flex flex-col items-center text-center px-4">
-             <UploadCloud
-             size={28}
-            className="text-gray-400 mb-1"
-             />
-          <p className="text-gray-500 text-xs font-medium">
-          Subir imagen
-               </p>
-            </div>
-            )}
-           </div>
+              <div
+                onClick={() =>
+                  !isSaving && inputRef.current?.click()
+                }
+                className="w-36 h-36 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all overflow-hidden bg-gray-50/50 shadow-sm"
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center text-center px-4">
+                    <UploadCloud
+                      size={28}
+                      className="text-gray-400 mb-1"
+                    />
+                    <p className="text-gray-500 text-xs font-medium">
+                      Subir imagen
+                    </p>
+                  </div>
+                )}
+              </div>
 
-            {preview && !isSaving && (
-              <button
-             type="button"
-             onClick={removeImage}
-             className="absolute top-1 right-[calc(50%-72px)] bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg transition-all"
-            >
-      <Trash2 size={14} />
-            </button>
-           )}
-          </div>
+              {preview && !isSaving && (
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-1 right-[calc(50%-72px)] bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg transition-all"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
+        {/* BOTONES */}
         <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
           <button
             onClick={onClose}
@@ -237,7 +297,7 @@ export const TecnologiaModal = ({ open, onClose, onSuccess }: Props) => {
 
           <button
             disabled={isSaving || !isFormValid}
-           className="order-1 sm:order-2 bg-[#1d2b53] hover:bg-[#2a3b6e] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2 shadow-lg shadow-blue-900/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1d2b53]"
+            className="order-1 sm:order-2 bg-[#1d2b53] hover:bg-[#2a3b6e] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2 shadow-lg shadow-blue-900/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1d2b53]"
             onClick={handleSubmit}
           >
             <Save size={15} />
