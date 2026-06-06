@@ -10,6 +10,7 @@ export default function About() {
   const [rotation,     setRotation]     = useState(0);
   const [activeIndex,  setActiveIndex]  = useState(0);
   const [externalStep, setExternalStep] = useState(0);
+  const [targetIndex,  setTargetIndex]  = useState<number>(0); // ← nuevo
   const isAdvancingRef = useRef(false);
 
   const advance = useCallback((steps: number) => {
@@ -18,6 +19,7 @@ export default function About() {
       const newIndex = ((prev + steps) % TOTAL + TOTAL) % TOTAL;
       setRotation((r) => r + steps * STEP_DEG);
       setExternalStep((s) => s + steps);
+      setTargetIndex(newIndex);
       return newIndex;
     });
     setTimeout(() => { isAdvancingRef.current = false; }, 300);
@@ -25,6 +27,7 @@ export default function About() {
 
   const handleRotate = () => advance(1);
 
+  // Navbar: usa targetIndex absoluto en vez de pasos relativos
   const handleSectionChange = (index: number) => {
     setActiveIndex((prev) => {
       if (index === prev) return prev;
@@ -32,20 +35,24 @@ export default function About() {
       const stepsBackward = stepsForward - TOTAL;
       const steps = stepsForward <= TOTAL / 2 ? stepsForward : stepsBackward;
       setRotation((r) => r + steps * STEP_DEG);
-      setExternalStep((s) => s + steps);
-      return ((prev + steps) % TOTAL + TOTAL) % TOTAL;
+      setTargetIndex(index);   // ← absoluto, la órbita calcula sola cómo llegar
+      // externalStep NO se toca: targetIndex maneja el movimiento
+      return index;
     });
   };
 
-  // Órbita llegó a un ítem: setea índice y color DIRECTO, sin calcular pasos
   const handleOrbitaChange = useCallback((id: string) => {
     if (isAdvancingRef.current) return;
     const index = ORBITA_ITEMS.findIndex((item) => item.id === id);
     if (index === -1) return;
-    // Setea directo — el hexágono toma el color del índice que la órbita reporta
-    setActiveIndex(index);
-    // La rotación del hexágono la ignoramos cuando viene de la órbita,
-    // porque la órbita ya está mostrando el ítem correcto
+    setActiveIndex((prev) => {
+      if (index === prev) return prev;
+      const stepsForward  = ((index - prev) + TOTAL) % TOTAL;
+      const stepsBackward = stepsForward - TOTAL;
+      const steps = stepsForward <= TOTAL / 2 ? stepsForward : stepsBackward;
+      setRotation((r) => r + steps * STEP_DEG);
+      return index;
+    });
   }, []);
 
   return (
@@ -54,6 +61,7 @@ export default function About() {
         rotation={rotation}
         activeIndex={activeIndex}
         externalStep={externalStep}
+        targetIndex={targetIndex}
         onRotate={handleRotate}
         onActiveChange={handleOrbitaChange}
       />

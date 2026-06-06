@@ -4,9 +4,10 @@ import { motion, useAnimationFrame } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
 interface Props {
-  fotoPerfil?: string;
-  externalStep?: number;
-  onActiveChange?: (id: string) => void;
+  readonly fotoPerfil?: string;       // ← sonar: props read-only
+  readonly externalStep?: number;
+  readonly targetIndex?: number;
+  readonly onActiveChange?: (id: string) => void;
 }
 
 const CONFIG = {
@@ -16,26 +17,69 @@ const CONFIG = {
   sizePerfil: 220,
   anchoOrbita: 800,
   altoOrbita: 800,
-};
+} as const;
 
 const STEP = 360 / ORBITA_ITEMS.length;
-const ANGULO_ACTIVO = 30; // ← corregido: -90 + 120 (2 pasos de 60°)
+const ANGULO_ACTIVO = 30;
 
-export default function OrbitaImagenes({ fotoPerfil, externalStep = 0, onActiveChange }: Props) {
+export default function OrbitaImagenes({
+  fotoPerfil,
+  externalStep = 0,
+  targetIndex,
+  onActiveChange,
+}: Props) {
   const [orbitaRotation, setOrbitaRotation] = useState(ANGULO_ACTIVO);
   const lastStepRef   = useRef(0);
+  const lastTargetRef = useRef<number | undefined>(undefined);
   const lastActiveRef = useRef<string | null>(null);
   const debounceRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // externalStep: pasos relativos — se guarda el delta en ref y se aplica en el frame
+  const pendingDeltaRef = useRef(0);
 
   useEffect(() => {
     const delta = externalStep - lastStepRef.current;
     if (delta === 0) return;
-    lastStepRef.current = externalStep;
-    setOrbitaRotation((prev) => prev - delta * STEP);
+    lastStepRef.current  = externalStep;
+    pendingDeltaRef.current += delta; // ← acumula, no llama setState
   }, [externalStep]);
 
+  // targetIndex: posición absoluta — igual, guarda en ref
+  const pendingTargetRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (targetIndex === undefined) return;
+    if (lastTargetRef.current === targetIndex) return;
+    lastTargetRef.current  = targetIndex;
+    pendingTargetRef.current = targetIndex; // ← guarda en ref, no llama setState
+  }, [targetIndex]);
+
+  // Un único lugar que mueve la órbita: el animation frame
   useAnimationFrame((_, delta) => {
-    setOrbitaRotation((prev) => prev + delta * CONFIG.velocidadOrbita);
+    setOrbitaRotation((prev) => {
+      let next = prev + delta * CONFIG.velocidadOrbita;
+
+      // Aplicar pasos externos acumulados
+      if (pendingDeltaRef.current !== 0) {
+        next -= pendingDeltaRef.current * STEP;
+        pendingDeltaRef.current = 0;
+      }
+
+      // Aplicar salto a targetIndex absoluto
+      if (pendingTargetRef.current !== undefined) {
+        const idx = pendingTargetRef.current;
+        pendingTargetRef.current = undefined;
+        const currentAngle = -(idx * STEP) + next;
+        const currentNorm  = ((currentAngle % 360) + 360) % 360;
+        const targetNorm   = ((ANGULO_ACTIVO % 360) + 360) % 360;
+        let diff = targetNorm - currentNorm;
+        if (diff > 180)  diff -= 360;
+        if (diff < -180) diff += 360;
+        next += diff;
+      }
+
+      return next;
+    });
   });
 
   const getAngle = (index: number) => -(index * STEP) + orbitaRotation;
@@ -69,14 +113,14 @@ export default function OrbitaImagenes({ fotoPerfil, externalStep = 0, onActiveC
         const angle = getAngle(index);
         const rad = (angle * Math.PI) / 180;
         const x = Math.cos(rad) * CONFIG.radio;
-        const y = Math.sin(rad) * CONFIG.radio;
+        const y = Math.sin(rad) * CONFIG.radio;    // ← sonar: sin 0.0
         const isActive = activeItem?.id === item.id;
 
         return (
           <motion.div
             key={item.id}
             className="absolute top-1/2 left-1/2"
-            animate={{ scale: isActive ? 1.3 : 0.9 }}
+            animate={{ scale: isActive ? 1.5 : 1 }}  // ← sonar: 1.0 → 1
             transition={{ scale: { duration: 1.2, ease: "easeInOut" } }}
             style={{ x, y, translateX: "-50%", translateY: "-50%" }}
           >
