@@ -6,13 +6,16 @@ type Props = {
   rotation: number;
   activeIndex: number;
   onRotate: () => void;
+  onActiveChange: (id: string) => void;
 };
 
 export default function SeccionHexagono({
   rotation,
   activeIndex,
   onRotate,
-}: Props) {
+  onActiveChange,
+}: Props){
+
   return (
     <div className="relative w-screen h-screen overflow-hidden">
       <div
@@ -35,7 +38,9 @@ export default function SeccionHexagono({
           top: "-350px",
         }}
       >
-        <OrbitaImagenes fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"/>
+        <OrbitaImagenes 
+          fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"
+          onActiveChange={onActiveChange}/>
       </div>
 
       <button

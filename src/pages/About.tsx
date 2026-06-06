@@ -14,20 +14,29 @@ export default function About() {
 
   const handleSectionChange = (index: number) => {
     const total = ORBITA_ITEMS.length;
-
-  const diff =
-    (index - activeIndex + total) % total;
-
+    const diff = (index - activeIndex + total) % total;
     setRotation((prev) => prev + diff * 60);
-
     setActiveIndex(index);
   };
+
+  const handleOrbitaChange = (id: string) => {
+    const index = ORBITA_ITEMS.findIndex(item => item.id === id);
+    if (index === -1 || index === activeIndex) {
+      return;
+    }
+    const total = ORBITA_ITEMS.length;
+    const diff =(index - activeIndex + total) % total;
+    setRotation(prev => prev + diff * 60);
+    setActiveIndex(index);
+  };
+
   return (
     <div>
       <SeccionHexagono
         rotation={rotation}
         activeIndex={activeIndex}
         onRotate={handleRotate}
+        onActiveChange={handleOrbitaChange}
       />
       <NavbarHorizontal
         activeIndex={activeIndex}

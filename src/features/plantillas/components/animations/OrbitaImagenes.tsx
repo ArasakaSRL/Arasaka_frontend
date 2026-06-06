@@ -1,10 +1,11 @@
 import FotoPerfil from "@/features/plantillas/components/plantilla1/FotoPerfil";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { motion, useAnimationFrame } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface Props {
   fotoPerfil?: string;
+  onActiveChange?: (id: string) => void;
 }
 
 const CONFIG = {
@@ -17,11 +18,12 @@ const CONFIG = {
 };
 
 export default function OrbitaImagenes({
-    fotoPerfil,
-  }: Props) {
+  fotoPerfil,
+  onActiveChange,
+}: Props) {
   
   const [orbitaRotation, setOrbitaRotation] = useState(0);
-
+  const lastActiveRef = useRef<string | null>(null);
   
 
   useAnimationFrame((time, delta) => {
@@ -30,7 +32,38 @@ export default function OrbitaImagenes({
     );
   });
 
-  const rotationStep = Math.floor(orbitaRotation / 60);
+  const activeItem = ORBITA_ITEMS.find((item, index) => {
+    const angle =
+      (index * 360) / ORBITA_ITEMS.length -
+      90 +
+      orbitaRotation;
+
+    const normalized =
+      ((angle % 360) + 360) % 360;
+
+    return (
+      normalized >= 358 ||
+      normalized <= 2
+    );
+  });
+
+  useEffect(() => {
+    if (!activeItem) return;
+
+    if (
+      lastActiveRef.current !== activeItem.id
+    ) {
+      lastActiveRef.current =
+        activeItem.id;
+
+      console.log(
+        "ACTIVA:",
+        activeItem.titulo
+      );
+
+      onActiveChange?.(activeItem.id);
+    }
+  }, [activeItem, onActiveChange]);
 
   return (
     <div
@@ -42,17 +75,14 @@ export default function OrbitaImagenes({
     >
       
       {ORBITA_ITEMS.map((item, index) => {
-        //borrar es experimento
-        const posicion = (index + rotationStep) % ORBITA_ITEMS.length;
         
-
         const angle =  (index * 360) / ORBITA_ITEMS.length - 90 +  orbitaRotation;
-        //borrar es experimento
-        const normalized = ((angle % 360) + 360) % 360;
+
         const rad = (angle * Math.PI) / 180;
 
         const x = Math.cos(rad) * CONFIG.radio;
         const y = Math.sin(rad) * CONFIG.radio;
+        const isActive =  x < -150 && y < -150;
 
         return (
         <motion.div
@@ -61,9 +91,15 @@ export default function OrbitaImagenes({
           animate={{
             x,
             y,
+            scale: isActive ? 1.5 : 1.0,
           }}
           transition={{
-            duration: 0,
+            x: { duration: 0 },
+            y: { duration: 0 },
+            scale: {
+              duration: 1.2,
+              ease: "easeInOut",
+            },
           }}
           style={{
             x,
@@ -73,7 +109,16 @@ export default function OrbitaImagenes({
             
           }}
         >
-            <div className="flex flex-col items-center gap-2">
+            <div
+              className={`
+                flex
+                flex-col
+                items-center
+                gap-2
+                transition-all
+                duration-300
+              `}
+            >
               {item.tipo === "perfil" ? (
                 <FotoPerfil
                   imagenUrl={"" + fotoPerfil}
@@ -92,28 +137,6 @@ export default function OrbitaImagenes({
                   
                 />
               )}
-              {/**Experimento */}
-              <div
-                className={`text-xs ${
-                  posicion === 5
-                    ? "text-red-500"
-                    : "text-white"
-                }`}
-              >
-                {posicion}
-                <div className="text-xs text-white">
-                  {item.titulo}
-                </div>
-
-                <div className="text-xs text-red-500">
-                  {index}
-                </div>
-                
-                <div className="text-red-500">
-                  {Math.round(normalized)}
-              </div>
-              </div>
-              {/**hasta aqui  */}
             </div>
           </motion.div>
         );
