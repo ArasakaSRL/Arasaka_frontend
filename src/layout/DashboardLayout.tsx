@@ -185,7 +185,9 @@ export default function DashboardLayout({ children, hideSidebar = false }: Dashb
             try {
                 await apiClient.patch('/usuario/tour')
                 if (user) setUser({ ...user, tour_completado: true } as AuthUser)
-            } catch {}
+            } catch (error) {
+                console.error('Error al actualizar el estado del tour:', error)
+            }
         }
     }, [user, setUser])
 
