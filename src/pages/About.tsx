@@ -1,53 +1,59 @@
 import SeccionHexagono from "@/features/plantillas/components/plantilla2/cards/SeccionHexagono";
 import NavbarHorizontal from "@/features/plantillas/components/plantilla2/NavbarHorizontal";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 const TOTAL = ORBITA_ITEMS.length;
-const STEP_DEG = 360 / TOTAL; // 60°
+const STEP_DEG = 360 / TOTAL;
 
 export default function About() {
-  const [rotation, setRotation]     = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [rotation,     setRotation]     = useState(0);
+  const [activeIndex,  setActiveIndex]  = useState(0);
+  const [externalStep, setExternalStep] = useState(0);
+  const isAdvancingRef = useRef(false);
 
-  // Fuente de verdad: avanzar N pasos en sentido horario
-  // +1 paso = siguiente ítem en el array = hexágono gira +60°
   const advance = useCallback((steps: number) => {
-    const newIndex = ((activeIndex + steps) % TOTAL + TOTAL) % TOTAL;
-    setRotation((prev) => prev + steps * STEP_DEG);
-    setActiveIndex(newIndex);
-  }, [activeIndex]);
+    isAdvancingRef.current = true;
+    setActiveIndex((prev) => {
+      const newIndex = ((prev + steps) % TOTAL + TOTAL) % TOTAL;
+      setRotation((r) => r + steps * STEP_DEG);
+      setExternalStep((s) => s + steps);
+      return newIndex;
+    });
+    setTimeout(() => { isAdvancingRef.current = false; }, 300);
+  }, []);
 
-  // Botón rotar: avanza 1 paso horario
   const handleRotate = () => advance(1);
 
-  // Navbar: ir directo a un índice — calcula pasos más cortos
   const handleSectionChange = (index: number) => {
-    if (index === activeIndex) return;
-    // pasos en sentido horario
-    const stepsForward  = ((index - activeIndex) + TOTAL) % TOTAL;
-    // pasos en sentido antihorario (negativo)
-    const stepsBackward = stepsForward - TOTAL;
-    // elige el camino más corto
-    const steps = stepsForward <= TOTAL / 2 ? stepsForward : stepsBackward;
-    advance(steps);
+    setActiveIndex((prev) => {
+      if (index === prev) return prev;
+      const stepsForward  = ((index - prev) + TOTAL) % TOTAL;
+      const stepsBackward = stepsForward - TOTAL;
+      const steps = stepsForward <= TOTAL / 2 ? stepsForward : stepsBackward;
+      setRotation((r) => r + steps * STEP_DEG);
+      setExternalStep((s) => s + steps);
+      return ((prev + steps) % TOTAL + TOTAL) % TOTAL;
+    });
   };
 
-  // Órbita: viene con id, convierte a índice y usa el mismo advance
+  // Órbita llegó a un ítem: setea índice y color DIRECTO, sin calcular pasos
   const handleOrbitaChange = useCallback((id: string) => {
+    if (isAdvancingRef.current) return;
     const index = ORBITA_ITEMS.findIndex((item) => item.id === id);
-    if (index === -1 || index === activeIndex) return;
-    const stepsForward  = ((index - activeIndex) + TOTAL) % TOTAL;
-    const stepsBackward = stepsForward - TOTAL;
-    const steps = stepsForward <= TOTAL / 2 ? stepsForward : stepsBackward;
-    advance(steps);
-  }, [activeIndex, advance]);
+    if (index === -1) return;
+    // Setea directo — el hexágono toma el color del índice que la órbita reporta
+    setActiveIndex(index);
+    // La rotación del hexágono la ignoramos cuando viene de la órbita,
+    // porque la órbita ya está mostrando el ítem correcto
+  }, []);
 
   return (
     <div>
       <SeccionHexagono
         rotation={rotation}
         activeIndex={activeIndex}
+        externalStep={externalStep}
         onRotate={handleRotate}
         onActiveChange={handleOrbitaChange}
       />

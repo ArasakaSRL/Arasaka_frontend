@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 
 interface Props {
   fotoPerfil?: string;
+  externalStep?: number;
   onActiveChange?: (id: string) => void;
 }
 
@@ -17,23 +18,28 @@ const CONFIG = {
   altoOrbita: 800,
 };
 
-const STEP = 360 / ORBITA_ITEMS.length; // 60°
-const ANGULO_ACTIVO = -90;              // ítem activo = posición arriba
+const STEP = 360 / ORBITA_ITEMS.length;
+const ANGULO_ACTIVO = 30; // ← corregido: -90 + 120 (2 pasos de 60°)
 
-export default function OrbitaImagenes({ fotoPerfil, onActiveChange }: Props) {
-  const [orbitaRotation, setOrbitaRotation] = useState(-90);
+export default function OrbitaImagenes({ fotoPerfil, externalStep = 0, onActiveChange }: Props) {
+  const [orbitaRotation, setOrbitaRotation] = useState(ANGULO_ACTIVO);
+  const lastStepRef   = useRef(0);
   const lastActiveRef = useRef<string | null>(null);
+  const debounceRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto-rotación horaria continua
+  useEffect(() => {
+    const delta = externalStep - lastStepRef.current;
+    if (delta === 0) return;
+    lastStepRef.current = externalStep;
+    setOrbitaRotation((prev) => prev - delta * STEP);
+  }, [externalStep]);
+
   useAnimationFrame((_, delta) => {
     setOrbitaRotation((prev) => prev + delta * CONFIG.velocidadOrbita);
   });
 
-  // Ángulo real de cada ítem en pantalla
-  // index * STEP en negativo → orden 1-2-3-4-5-6 horario
   const getAngle = (index: number) => -(index * STEP) + orbitaRotation;
 
-  // Ítem más cercano a ANGULO_ACTIVO (-90° = arriba)
   const activeItem = ORBITA_ITEMS.reduce<{
     item: (typeof ORBITA_ITEMS)[0];
     dist: number;
@@ -48,16 +54,19 @@ export default function OrbitaImagenes({ fotoPerfil, onActiveChange }: Props) {
   useEffect(() => {
     if (!activeItem || lastActiveRef.current === activeItem.id) return;
     lastActiveRef.current = activeItem.id;
-    onActiveChange?.(activeItem.id);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onActiveChange?.(activeItem.id);
+    }, 150);
+
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [activeItem, onActiveChange]);
 
   return (
-    <div
-      className="relative"
-      style={{ width: CONFIG.anchoOrbita, height: CONFIG.altoOrbita }}
-    >
+    <div className="relative" style={{ width: CONFIG.anchoOrbita, height: CONFIG.altoOrbita }}>
       {ORBITA_ITEMS.map((item, index) => {
-        const angle = getAngle(index); // ← mismo cálculo para render y detección
+        const angle = getAngle(index);
         const rad = (angle * Math.PI) / 180;
         const x = Math.cos(rad) * CONFIG.radio;
         const y = Math.sin(rad) * CONFIG.radio;
@@ -67,7 +76,7 @@ export default function OrbitaImagenes({ fotoPerfil, onActiveChange }: Props) {
           <motion.div
             key={item.id}
             className="absolute top-1/2 left-1/2"
-            animate={{ scale: isActive ? 1.5 : 1.0 }}
+            animate={{ scale: isActive ? 1.3 : 0.9 }}
             transition={{ scale: { duration: 1.2, ease: "easeInOut" } }}
             style={{ x, y, translateX: "-50%", translateY: "-50%" }}
           >
@@ -90,10 +99,6 @@ export default function OrbitaImagenes({ fotoPerfil, onActiveChange }: Props) {
           </motion.div>
         );
       })}
-
-      <button onClick={() => setOrbitaRotation((prev) => prev - STEP)}>
-        Rotar órbita
-      </button>
     </div>
   );
 }
