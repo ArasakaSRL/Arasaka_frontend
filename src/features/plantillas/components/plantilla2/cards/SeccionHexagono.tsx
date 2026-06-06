@@ -1,51 +1,37 @@
-import { motion } from "framer-motion";
-import type { LucideIcon } from "lucide-react";
-import Hexagono from "@/features/plantillas/components/plantilla2/Hexagono";
-import type { HexagonoVariant } from "@/features/plantillas/components/plantilla2/Hexagono";
+import HexagonoRotatorio from "@/features/plantillas/components/animations/HexagonoRotatorio";
 
-
-interface SeccionHexagonoProps {
-  title: string;
-  icon?: LucideIcon;
-  variant: HexagonoVariant;
-  size?: number;
-  children?: React.ReactNode;
-}
+type Props = {
+  rotation: number;
+  activeIndex: number;
+  onRotate: () => void;
+};
 
 export default function SeccionHexagono({
-  title,
-  icon: Icon,
-  variant,
-  size = 220,
-  children,
-}: SeccionHexagonoProps) {
+  rotation,
+  activeIndex,
+  onRotate,
+}: Props) {
   return (
-    <motion.div
-      whileHover={{
-        scale: 1.08,
-      }}
-      animate={{
-        y: [0, -8, 0],
-      }}
-      transition={{
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-      className="cursor-pointer"
-    >
-      <Hexagono
-        variant={variant}
-        size={1000}
+    <div className="relative min-h-screen bg-gray-100 overflow-hidden">
+      <div
+        className="absolute"
+        style={{
+          left: "-250px",
+          top: "-150px",
+        }}
       >
-        <div className="flex flex-col items-center gap-4">
-          {Icon && <Icon size={42} />}
+        <HexagonoRotatorio
+          rotation={rotation}
+          activeIndex={activeIndex}
+        />
+      </div>
 
-          <span className="text-center text-lg font-semibold px-6">
-            {title}
-          </span>
-        </div>
-      </Hexagono>
-    </motion.div>
+      <button
+        className="absolute top-10 right-10 z-50 bg-white px-4 py-2 rounded"
+        onClick={onRotate}
+      >
+        Rotar
+      </button>
+    </div>
   );
 }
