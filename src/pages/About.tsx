@@ -1,4 +1,5 @@
 import SeccionHexagono from "@/features/plantillas/components/plantilla2/cards/SeccionHexagono";
+import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { useState } from "react";
 
 export default function About() {
@@ -7,7 +8,7 @@ export default function About() {
 
   const handleRotate = () => {
     setRotation((prev) => prev + 60);
-    setActiveIndex((prev) => (prev + 1) % 6);
+    setActiveIndex((prev) => (prev + 1) % ORBITA_ITEMS.length);
   };
 
   return (

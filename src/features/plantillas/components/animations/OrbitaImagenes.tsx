@@ -8,10 +8,10 @@ interface Props {
 }
 
 const CONFIG = {
-  radio: 300,
-  velocidadOrbita: 0.003,
-  sizeImagen: 164,
-  sizePerfil: 160,
+  radio: 500,
+  velocidadOrbita: 0.002,
+  sizeImagen: 264,
+  sizePerfil: 220,
   anchoOrbita: 800,
   altoOrbita: 800,
 };

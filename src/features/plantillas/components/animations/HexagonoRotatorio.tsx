@@ -1,44 +1,14 @@
 import { motion } from "framer-motion";
-
-import Hexagono, { type HexagonoVariant } from "../plantilla2/Hexagono";
+import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
+import Hexagono from "../plantilla2/Hexagono";
 //import OrbitaImagenes from "./OrbitaImagenes";
-
-type Seccion = {
-  nombre: string;
-  color: HexagonoVariant;
-}
 
 type Props = {
   rotation: number;
   activeIndex: number;
 };
 
-const SECCIONES: Seccion[] =[
-  {
-    nombre: "Perfil",
-    color: "blue",
-  },
-  {
-    nombre: "Habilidades Técnicas",
-    color: "purple",
-  },
-  {
-    nombre: "Habilidades Blandas",
-    color: "green",
-  },
-  {
-    nombre: "Experiencia",
-    color: "orange",
-  },
-  {
-    nombre: "Proyectos",
-    color: "red",
-  },
-  {
-    nombre: "Certificaciones",
-    color: "cyan",
-  },
-];
+
 
 
 export default function HexagonoRotatorio({
@@ -66,7 +36,7 @@ export default function HexagonoRotatorio({
         }}
 
       >
-        <Hexagono variant={SECCIONES[activeIndex].color} size={400}>
+        <Hexagono variant={ORBITA_ITEMS[activeIndex].color} size={400} />
             {/** <div
                 style={{
                 width: 20,
@@ -74,12 +44,7 @@ export default function HexagonoRotatorio({
                 background: "red",
                 }}
             />*/}
-        </Hexagono>
       </motion.div>
-
-      {/** 
-      <OrbitaImagenes fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"/>
-        */}
       </div>
   );
 }

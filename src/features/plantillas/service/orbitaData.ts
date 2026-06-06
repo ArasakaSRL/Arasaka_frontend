@@ -17,17 +17,9 @@ export const ORBITA_ITEMS: OrbitaItem[] = [
     tipo: "perfil",
   },
   {
-    id: "habilidades-tecnicas",
-    titulo: "Habilidades Técnicas",
-    color: "purple",
-    tipo: "imagen",
-    imagen:
-      "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686994/habilidades_tecnicas2_ikmpl5.png",
-  },
-  {
     id: "habilidades-blandas",
     titulo: "Habilidades Blandas",
-    color: "green",
+    color: "purple",
     tipo: "imagen",
     imagen:
       "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686709/Habilidades_blandas_iciagk.png",
@@ -35,7 +27,7 @@ export const ORBITA_ITEMS: OrbitaItem[] = [
   {
     id: "experiencia",
     titulo: "Experiencia",
-    color: "orange",
+    color: "green",
     tipo: "imagen",
     imagen:
       "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686711/Experiencia_c0uge3.png",
@@ -43,7 +35,7 @@ export const ORBITA_ITEMS: OrbitaItem[] = [
   {
     id: "proyectos",
     titulo: "Proyectos",
-    color: "red",
+    color: "orange",
     tipo: "imagen",
     imagen:
       "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686708/proyectos_hf6hpe.png",
@@ -51,9 +43,17 @@ export const ORBITA_ITEMS: OrbitaItem[] = [
   {
     id: "certificaciones",
     titulo: "Certificaciones",
-    color: "cyan",
+    color: "red",
     tipo: "imagen",
     imagen:
       "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686713/Certificaciones_al1j7u.png",
+  },
+  {
+    id: "habilidades-tecnicas",
+    titulo: "Habilidades Técnicas",
+    color: "cyan",
+    tipo: "imagen",
+    imagen:
+      "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686994/habilidades_tecnicas2_ikmpl5.png",
   },
 ];

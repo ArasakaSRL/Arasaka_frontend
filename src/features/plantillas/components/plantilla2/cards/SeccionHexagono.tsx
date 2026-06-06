@@ -1,5 +1,6 @@
 import HexagonoRotatorio from "@/features/plantillas/components/animations/HexagonoRotatorio";
 
+
 type Props = {
   rotation: number;
   activeIndex: number;
@@ -12,7 +13,7 @@ export default function SeccionHexagono({
   onRotate,
 }: Props) {
   return (
-    <div className="relative min-h-screen bg-gray-100 overflow-hidden">
+    <div className="relative w-screen h-screen overflow-hidden">
       <div
         className="absolute"
         style={{
@@ -24,7 +25,17 @@ export default function SeccionHexagono({
           rotation={rotation}
           activeIndex={activeIndex}
         />
+        
       </div>
+      {/*<div
+        className="absolute"
+        style={{
+          left: "-480px",
+          top: "-350px",
+        }}
+      >
+        <OrbitaImagenes fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"/>
+      </div>*/}
 
       <button
         className="absolute top-10 right-10 z-50 bg-white px-4 py-2 rounded"
