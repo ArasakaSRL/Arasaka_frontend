@@ -11,56 +11,64 @@ export default function NavbarHorizontal({
   onChange,
 }: Props) {
   return (
-    <div
+    <nav
       className="
-        flex
-        items-center
-        gap-3
-        p-2
-        rounded-full
-        bg-white/10
-        backdrop-blur-xl
-        border
-        border-white/10
+        flex items-center gap-7 p-1.5
+        rounded-2xl
+        bg-white/5
+        backdrop-blur-2xl
+        border border-white/10
+        shadow-[0_8px_32px_rgba(0,0,0,0.4)]
       "
     >
-      {ORBITA_ITEMS.map((item, index) => (
-        <button
-          key={item.id}
-          onClick={() => onChange(index)}
-          className="
-            relative
-            px-3
-            py-3
-            rounded-full
-            text-sm
-            font-semibold
-            transition-colors
-          "
-        >
-          {activeIndex === index && (
-            <motion.div
-              layoutId="active-section"
-              className="absolute inset-0 rounded-full bg-white"
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-              }}
-            />
-          )}
+      {ORBITA_ITEMS.map((item, index) => {
+        const isActive = activeIndex === index;
+        const Icon = item.icon;
 
-          <span
-            className={`relative z-10 ${
-              activeIndex === index
-                ? "text-slate-900"
-                : "text-slate-400"
-            }`}
+        return (
+          <button
+            key={item.id}
+            onClick={() => onChange(index)}
+            title={item.titulo}
+            className="
+              relative
+              w-12 h-12
+              flex items-center justify-center
+              rounded-xl
+              transition-colors duration-200
+            "
           >
-            {item.titulo}
-          </span>
-        </button>
-      ))}
-    </div>
+            {/* Pill activa */}
+            {isActive && (
+              <motion.div
+                layoutId="active-pill"
+                className="absolute inset-0 rounded-xl"
+                style={{
+                  background:
+                    "linear-gradient(135deg, var(--color-active-from), var(--color-active-to))",
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 35,
+                }}
+              />
+            )}
+
+            {/* Icono */}
+            <span className="relative z-10 flex items-center justify-center">
+              <Icon
+                size={20}
+                className={
+                  isActive
+                    ? "text-black"
+                    : "text-black/60"
+                }
+              />
+            </span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }

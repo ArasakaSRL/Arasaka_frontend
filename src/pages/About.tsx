@@ -1,3 +1,4 @@
+import { CardCatalogo } from "@/features/plantillas/components/plantilla2/cards/CardCatalogo";
 import SeccionHexagono from "@/features/plantillas/components/plantilla2/cards/SeccionHexagono";
 import NavbarHorizontal from "@/features/plantillas/components/plantilla2/NavbarHorizontal";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
@@ -6,11 +7,35 @@ import { useState, useCallback, useRef } from "react";
 const TOTAL = ORBITA_ITEMS.length;
 const STEP_DEG = 360 / TOTAL;
 
+const PRODUCTOS = [
+  {
+    id: 1,
+    titulo: "Worktop",
+    descripcion: "110 x 110",
+    imagen:
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+  },
+  {
+    id: 2,
+    titulo: "Couch capsule",
+    descripcion: "110 x 110",
+    imagen:
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc",
+  },
+  {
+    id: 3,
+    titulo: "Couch cake",
+    descripcion: "110 x 110",
+    imagen:
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+  },
+];
+
 export default function About() {
   const [rotation,     setRotation]     = useState(0);
   const [activeIndex,  setActiveIndex]  = useState(0);
   const [externalStep, setExternalStep] = useState(0);
-  const [targetIndex,  setTargetIndex]  = useState<number>(0); // ← nuevo
+  const [targetIndex,  setTargetIndex]  = useState<number>(0);
   const isAdvancingRef = useRef(false);
 
   const advance = useCallback((steps: number) => {
@@ -27,7 +52,6 @@ export default function About() {
 
   const handleRotate = () => advance(1);
 
-  // Navbar: usa targetIndex absoluto en vez de pasos relativos
   const handleSectionChange = (index: number) => {
     setActiveIndex((prev) => {
       if (index === prev) return prev;
@@ -35,8 +59,7 @@ export default function About() {
       const stepsBackward = stepsForward - TOTAL;
       const steps = stepsForward <= TOTAL / 2 ? stepsForward : stepsBackward;
       setRotation((r) => r + steps * STEP_DEG);
-      setTargetIndex(index);   // ← absoluto, la órbita calcula sola cómo llegar
-      // externalStep NO se toca: targetIndex maneja el movimiento
+      setTargetIndex(index);
       return index;
     });
   };
@@ -56,19 +79,45 @@ export default function About() {
   }, []);
 
   return (
-    <div>
+    <div className="relative w-screen h-screen overflow-hidden bg-[#F0EAD6]">
+
+      {/* Hexágono + órbita — ocupa toda la pantalla */}
       <SeccionHexagono
         rotation={rotation}
         activeIndex={activeIndex}
         externalStep={externalStep}
         targetIndex={targetIndex}
+        titulo={ORBITA_ITEMS[activeIndex].titulo}
         onRotate={handleRotate}
         onActiveChange={handleOrbitaChange}
       />
-      <NavbarHorizontal
-        activeIndex={activeIndex}
-        onChange={handleSectionChange}
-      />
+
+      {/* Navbar flotante — misma fila derecha del hexágono */}
+      <div
+        className="absolute z-50 flex flex-col gap-3 w-[500px]"
+        style={{
+          top: "10%",
+          left: "65%",
+          transform: "translateX(-50%)",
+        }}
+      >
+        <h1 className="text-black">Mi Portafolio</h1>
+        <NavbarHorizontal
+          activeIndex={activeIndex}
+          onChange={handleSectionChange}
+        />
+
+        {PRODUCTOS.map((item) => (
+          <CardCatalogo
+            key={item.id}
+            titulo={item.titulo}
+            descripcion={item.descripcion}
+            imagen={item.imagen}
+            onClick={() => console.log(item.id)}
+          />
+        ))}
+      </div>
+
     </div>
   );
 }

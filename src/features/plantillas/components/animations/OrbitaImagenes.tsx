@@ -14,7 +14,7 @@ const CONFIG = {
   radio: 500,
   velocidadOrbita: 0.002,
   sizeImagen: 264,
-  sizePerfil: 220,
+  sizePerfil: 140,
   anchoOrbita: 800,
   altoOrbita: 800,
 } as const;
