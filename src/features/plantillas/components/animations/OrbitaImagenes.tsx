@@ -1,4 +1,3 @@
-import FotoPerfil from "@/features/plantillas/components/plantilla1/FotoPerfil";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { motion, useAnimationFrame } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -14,7 +13,7 @@ const CONFIG = {
   radio: 500,
   velocidadOrbita: 0.002,
   sizeImagen: 264,
-  sizePerfil: 140,
+  sizePerfil: 180,
   anchoOrbita: 800,
   altoOrbita: 800,
 } as const;
@@ -125,11 +124,12 @@ export default function OrbitaImagenes({
             style={{ x, y, translateX: "-50%", translateY: "-50%" }}
           >
             <div className="flex flex-col items-center gap-2">
-              {item.tipo === "perfil" ? (
-                <FotoPerfil
-                  imagenUrl={"" + fotoPerfil}
-                  ancho={CONFIG.sizePerfil}
-                  alto={CONFIG.sizePerfil}
+             {item.tipo === "perfil" ? (
+                <img
+                  src={fotoPerfil || "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"} 
+                  alt={item.titulo}
+                  style={{ width: CONFIG.sizePerfil, height: CONFIG.sizePerfil }}
+                  className="object-contain drop-shadow-lg" 
                 />
               ) : (
                 <img

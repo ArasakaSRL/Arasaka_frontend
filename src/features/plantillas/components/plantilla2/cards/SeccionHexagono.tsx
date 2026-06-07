@@ -30,7 +30,7 @@ export default function SeccionHexagono({
 
       <div className="absolute z-30" style={{ left: "-480px", top: "-350px" }}>
         <OrbitaImagenes
-          fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"
+          fotoPerfil="https://res.cloudinary.com/dkopjpuqx/image/upload/v1780850818/8380073_phmzhe.png"
           externalStep={externalStep}
           targetIndex={targetIndex}
           onActiveChange={onActiveChange}
