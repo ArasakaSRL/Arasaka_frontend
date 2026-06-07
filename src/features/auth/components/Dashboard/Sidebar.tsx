@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,GraduationCap, 
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -34,6 +34,7 @@ const menuItems: MenuItem[] = [
             { icon: UserPen,     label: 'Actualizar Perfil', path: '/Dashboard/perfil/Editar' },
            // { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
             //{ icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
+            { icon: GraduationCap,    label: 'Formación Académica', path: '/portafolio/formacion-academica' },
         ]
     },
     { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos',            tourId: 'tour-proyectos' },
