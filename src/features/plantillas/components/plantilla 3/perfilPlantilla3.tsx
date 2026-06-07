@@ -24,9 +24,7 @@ export default function PerfilBubble({ usuario }: Props) {
     const apellidoMostrar = partes.slice(-1)[0] || "";
   return (
     <div className=" p-4 md:p-8 rounded-[40px]">
-      <section
-        className=" max-w-362.5 mx-auto bg-[#f8f8f8] border-[5px] border-[#0f172a] rounded-[42px] px-8 py-10 md:px-16 md:py-14 shadow-[18px_18px_0px_0px_#f2b5d4] relative overflow-hidden "
-      >
+      <section className=" max-w-362.5 mx-auto bg-[#f8f8f8] border-[5px] border-[#0f172a] rounded-[42px] px-8 py-10 md:px-16 md:py-14 shadow-[14px_14px_0px_0px_#f2b5d4] relative overflow-hidden ">
         <div className="absolute top-0 right-0 flex gap-2 bg-[#f2b5d4] text-slate-950 font-black text-[10px] uppercase tracking-widest px-8 py-2 border-b-2 border-l-2 border-slate-900">
           <Shell className="w-4 h-4" />
           SOFTWARE CREATOR
@@ -123,27 +121,27 @@ export default function PerfilBubble({ usuario }: Props) {
 
               <a
                 href={`mailto:${usuario.correo}`}
-                className=" bg-[#7bdff2] border-2 border-slate-900 text-slate-900 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2 "
+                className=" bg-[#7bdff2] border-2 border-slate-900 text-slate-900 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2 "
               >
                 <MessageSquare className="w-4 h-4" />
                 Hablar conmigo
               </a>
 
               <button
-                className=" bg-[#f7d6e0] border-2 border-slate-900 text-slate-900 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2 "
+                className=" bg-[#f7d6e0] border-2 border-slate-900 text-slate-900 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2 "
               >
                 <Download className="w-4 h-4" />
                 Obtener mi CV
               </button>
 
-              <div className="hidden sm:block h-8 w-[2px] bg-slate-900 mx-1"></div>
+              <div className="hidden sm:block h-8 w-0.5 bg-slate-900 mx-1"></div>
 
               {/* Redes */}
               <div className="flex items-center gap-2">
 
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+                  className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
                 >
                   <img 
                     src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg" 
@@ -154,7 +152,7 @@ export default function PerfilBubble({ usuario }: Props) {
 
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+                  className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
                 >
                   <img 
                     src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" 
