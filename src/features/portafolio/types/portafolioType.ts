@@ -1,5 +1,3 @@
-import type { S } from "node_modules/framer-motion/dist/types.d-DOCC-kZB";
-
 export type Telefono = {
     numero: string;
 };
