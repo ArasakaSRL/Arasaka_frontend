@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Flag } from 'lucide-react';
 import PortfolioHeader from '../components/PortfolioHeader ';
 import { getPortafolioPublic } from '../lib/portafolio.service';
 import type { Usuario, habilidades, experiencias, HabilidadTecnica, HabilidadBlanda, Proyectos, configuracion, certificaciones } from '../types/portafolioType';
@@ -17,12 +18,15 @@ import { useHabilidadesTecnicasTracker } from '../hooks/useHabilidadesTecnicasTr
 import { ExperienciaTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ExperienciaTracker';
 import { ProyectosTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ProyectosTracker';
 import { CertificacionesTracker } from '@/features/reportesUsuario/components/capturarInteracciones/CertificacionesTracker';
+import DenunciarModal from '@/features/denuncias/components/DenunciarModal';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
     const { iniciarVisita } = useVisitor() 
     const { trackExpandir, trackCerrar }       = useHabilidadesTecnicasTracker(slug!)
     const [usuario, setUsuario] = useState<Usuario | null>(null);
+    const [idPortafolio, setIdPortafolio] = useState<string>('');
+    const [denunciarAbierto, setDenunciarAbierto] = useState(false);
     const [, setHabilidades] = useState<habilidades | null>(null);
     const [loading, setLoading] = useState(true);
     const [noDisponible, setNoDisponible] = useState(false);
@@ -41,6 +45,7 @@ export default function PortfolioPage() {
                 setNoDisponible(false);
                 iniciarVisita(slug)
                 const data = await getPortafolioPublic(slug);
+                setIdPortafolio(data.id);
                 setUsuario(data.usuario);
                 setHabilidades(data.habilidades);
                 setExperiencias(data.experiencias);
@@ -78,7 +83,7 @@ export default function PortfolioPage() {
         );
     }
     return (
-
+        <>
         <div className="p-3 w-full min-h-screen ">
             <NavbarVertical />
             <div className="max-w-350 mx-auto flex flex-col gap-6">
@@ -130,5 +135,20 @@ export default function PortfolioPage() {
             )}
 
         </div>
+
+            <button
+                onClick={() => setDenunciarAbierto(true)}
+                className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 bg-[#0a1120] border border-white/10 hover:border-red-400/50 text-white/60 hover:text-red-400 rounded-full shadow-lg transition-all text-sm"
+            >
+                <Flag size={15} />
+                Denunciar
+            </button>
+
+            <DenunciarModal
+                open={denunciarAbierto}
+                onClose={() => setDenunciarAbierto(false)}
+                idPortafolio={idPortafolio}
+            />
+        </>
     );
 }

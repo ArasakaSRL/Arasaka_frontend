@@ -29,6 +29,9 @@ import PagePortafolio from './features/portafolio/pages/PagePortafolio'
 import TegnologiaPage from './features/tegnologias/page/TegnologiaPage'
 import PageVistaProyecto from './features/vistaProyectos/pages/PageVistaProyecto'
 import PageUsuarios from './features/users/pages/PageUsuarios'
+import AdminDenuncias from './pages/Dashboard/admin/Denuncias'
+import AdminSuspendidos from './pages/Dashboard/admin/Suspendidos'
+import AdminConfiguracion from './pages/Dashboard/admin/Configuracion'
 import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 import FormacionAcademicaPage from  './features/formacion-academica/pages/FormacionAcademicaPage'
 export default function App() {
@@ -65,6 +68,9 @@ export default function App() {
         <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />
 
         <Route path="/Dashboard/admin/Perfiles" element={<PageUsuarios />} />
+        <Route path="/Dashboard/admin/Denuncias" element={<AdminDenuncias />} />
+        <Route path="/Dashboard/admin/Suspendidos" element={<AdminSuspendidos />} />
+        <Route path="/Dashboard/admin/Configuracion" element={<AdminConfiguracion />} />
       </Route>
       <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />

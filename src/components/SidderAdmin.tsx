@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen, Blocks, Users
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen, Blocks, Users, Flag, ShieldOff
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -37,6 +37,14 @@ const menuItems: MenuItem[] = [
     { icon: Blocks, label: 'Tecnologías',   path: '/Dashboard/tecnologias' },
     { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
     { icon: Users, label: 'Usuarios', path: '/Dashboard/admin/Perfiles' },
+    {
+        icon: ShieldCheck, label: 'Moderación', path: '/Dashboard/admin/Denuncias',
+        submenu: [
+            { icon: Flag,      label: 'Denuncias',    path: '/Dashboard/admin/Denuncias' },
+            { icon: ShieldOff, label: 'Suspendidos',  path: '/Dashboard/admin/Suspendidos' },
+            { icon: Settings,  label: 'Configuración', path: '/Dashboard/admin/Configuracion' },
+        ]
+    },
 ];
 
 
