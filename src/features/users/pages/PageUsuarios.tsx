@@ -8,9 +8,14 @@ import { useBuscarUsuarios } from '../hooks/useBuscador'
 import { Users, ChevronLeft, ChevronRight  }from "lucide-react"
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { UserSort } from '../components/UsuarioSort'
+
+
 export default function PageUsuarios() {
   const {
-    usuarios
+    usuarios,
+    setSortBy,
+    setOrder,
   } = useUsuarios();
 
   const {
@@ -20,6 +25,7 @@ export default function PageUsuarios() {
   } = useBuscarUsuarios(usuarios);
 
   const [pagina, setPagina] = useState(1)
+  
 
   const POR_PAGINA = 6
   const totalPaginas = Math.ceil(
@@ -51,12 +57,30 @@ export default function PageUsuarios() {
       descripcion="Gestiona tus usuarios"
       />
       <section className="mt-8 space-y-6">
-        <div className="bg-white text-left rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-           <div className="font-semibold text-sm flex-row flex gap-2">
+        <div className="bg-white rounded-3xl p-5 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+           <div className="font-semibold text-sm flex flex-col md:flex-row items-center gap-4">
            <Users className="text-[#16266B]" size={18} />
            Usuarios encontrados: {usuariosFiltrados.length}
           </div>
           <UserSearch value={search} onChange={setSearch} />
+          <UserSort
+            onSortAlphabetAsc={() => {
+              setSortBy("nombre");
+              setOrder("asc");
+            }}
+            onSortAlphabetDesc={() => {
+              setSortBy("nombre");
+              setOrder("desc");
+            }}
+            onSortNewest={() => {
+              setSortBy("created_at");
+              setOrder("desc");
+            }}
+            onSortOldest={() => {
+              setSortBy("created_at");
+              setOrder("asc");
+            }}
+          />
         </div>
         <AnimatePresence mode="wait">
           <motion.div
