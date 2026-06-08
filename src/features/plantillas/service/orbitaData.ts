@@ -25,7 +25,7 @@ export const ORBITA_ITEMS: OrbitaItem[] = [
     tipo: "imagen",
     icon: Brain,
     imagen:
-      "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780686709/Habilidades_blandas_iciagk.png",
+      "https://res.cloudinary.com/dkopjpuqx/image/upload/v1780783445/main_image_adc6d63b398a0e6123ccd22440a94f2c6bd31bc4_jycii1.png",
   },
   {
     id: "experiencia",

@@ -1,70 +1,44 @@
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 
 type Props = {
-  titulo: string;
-  descripcion: string;
-  imagen: string;
+  izquierda: ReactNode;
+  centro: ReactNode;
+  derecha: ReactNode;
   onClick?: () => void;
 };
 
-export function CardCatalogo({
-  titulo,
-  descripcion,
-  imagen,
-  onClick,
-}: Props) {
+export function CardCatalogo({ izquierda,derecha,centro, onClick }: Props) {
   return (
-    <motion.div
+   <motion.div
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.2 }}
+      onClick={onClick}
       className="
-        flex items-center
+        grid
+        grid-cols-[1fr_2fr_1fr]
+        items-center
+        gap-4
         px-5 py-4
         rounded-2xl
-        bg-white/5
-        backdrop-blur-2xl
-        border border-white/10
-        shadow-[0_8px_32px_rgba(0,0,0,0.2)]
+        bg-white/70
+        backdrop-blur-xl
+        border border-black/8
+        shadow-[0_2px_12px_rgba(0,0,0,0.07)]
+        cursor-pointer
       "
     >
-      {/* Título */}
-      <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-black">
-          {titulo}
-        </h3>
+      <div className="min-w-0 text-left">
+        {izquierda}
       </div>
 
-      {/* Descripción */}
-      <div className="w-32 text-center">
-        <span className="text-sm text-black/60">
-          {descripcion}
-        </span>
+      <div className="min-w-0 text-center">
+        {centro}
       </div>
 
-      {/* Imagen */}
-      <div className="w-24 flex justify-center">
-        <img
-          src={imagen}
-          alt={titulo}
-          className="w-16 h-16 object-contain"
-        />
+      <div className="min-w-0 flex justify-end">
+        {derecha}
       </div>
-
-      {/* Acción 
-      <button
-        onClick={onClick}
-        className="
-          ml-4
-          w-8 h-8
-          rounded-full
-          flex items-center justify-center
-          bg-white/10
-          hover:bg-white/20
-          transition
-        "
-      >
-        +
-      </button>*/}
     </motion.div>
   );
 }

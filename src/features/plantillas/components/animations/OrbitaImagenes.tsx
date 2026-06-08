@@ -1,4 +1,3 @@
-import FotoPerfil from "@/features/plantillas/components/plantilla1/FotoPerfil";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { motion, useAnimationFrame } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -11,10 +10,10 @@ interface Props {
 }
 
 const CONFIG = {
-  radio: 500,
+  radio: 600,
   velocidadOrbita: 0.002,
   sizeImagen: 264,
-  sizePerfil: 140,
+  sizePerfil: 180,
   anchoOrbita: 800,
   altoOrbita: 800,
 } as const;
@@ -41,7 +40,7 @@ export default function OrbitaImagenes({
     const delta = externalStep - lastStepRef.current;
     if (delta === 0) return;
     lastStepRef.current  = externalStep;
-    pendingDeltaRef.current += delta; // ← acumula, no llama setState
+    pendingDeltaRef.current += delta; // ← acumula
   }, [externalStep]);
 
   // targetIndex: posición absoluta — igual, guarda en ref
@@ -120,16 +119,17 @@ export default function OrbitaImagenes({
           <motion.div
             key={item.id}
             className="absolute top-1/2 left-1/2"
-            animate={{ scale: isActive ? 1.5 : 1 }}  // ← sonar: 1.0 → 1
+            animate={{ scale: isActive ? 2.0 : 1 }}  // ← sonar: 1.0 → 1
             transition={{ scale: { duration: 1.2, ease: "easeInOut" } }}
             style={{ x, y, translateX: "-50%", translateY: "-50%" }}
           >
             <div className="flex flex-col items-center gap-2">
-              {item.tipo === "perfil" ? (
-                <FotoPerfil
-                  imagenUrl={"" + fotoPerfil}
-                  ancho={CONFIG.sizePerfil}
-                  alto={CONFIG.sizePerfil}
+             {item.tipo === "perfil" ? (
+                <img
+                  src={fotoPerfil || "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"} 
+                  alt={item.titulo}
+                  style={{ width: CONFIG.sizePerfil, height: CONFIG.sizePerfil }}
+                  className="object-contain drop-shadow-lg" 
                 />
               ) : (
                 <img
