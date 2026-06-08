@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Award, Smile, Layers } from "lucide-react"; 
-import type {
-  HabilidadTecnica,
-  HabilidadBlanda,
-} from "@/features/portafolio/types/portafolioType";
-
+import type { HabilidadTecnica, HabilidadBlanda } from "@/features/portafolio/types/portafolioType";
+import SkillsCarousel from "./Carrusel";
 type Props = {
   tecnicas: HabilidadTecnica[];
   blandas: HabilidadBlanda[];
@@ -86,8 +83,7 @@ export default function HabilidadesJam({
           <button
             onClick={() => setTipo("tech")}
             className={`
-              flex items-center gap-1
-              px-4 py-2 rounded-xl text-xs font-black uppercase transition-all
+              flex items-center gap-1 text-black px-4 py-2 rounded-xl text-xs font-black uppercase transition-all
               ${
                 tipo === "tech"
                   ? "bg-[#7bdff2] border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
@@ -101,8 +97,7 @@ export default function HabilidadesJam({
           <button
             onClick={() => setTipo("soft")}
             className={`
-              flex items-center gap-1
-              px-4 py-2 rounded-xl text-xs font-black uppercase transition-all
+              flex items-center gap-1 text-black px-4 py-2 rounded-xl text-xs font-black uppercase transition-all
               ${
                 tipo === "soft"
                   ? "bg-[#f7d6e0] border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
@@ -117,58 +112,58 @@ export default function HabilidadesJam({
       </div>
 
       {tipo === "tech" ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-4">
-{tecnicas.map((skill) => {
-  const styles = getLevelStyles(skill.nivel);
+         <SkillsCarousel>
+           {tecnicas.map((skill) => {
+            const styles = getLevelStyles(skill.nivel);
 
-  return (
-    <div
-      key={skill.id_habilidad}
-      className=" bg-[#eff7f6] border-2 border-slate-900 rounded-[28px] p-3 hover:bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all duration-300" >
-      <div className="flex flex-col xl:flex-row items-center gap-3">
+            return (
+              <div
+                key={skill.id_habilidad}
+                className=" bg-[#eff7f6] border-2 border-slate-900 rounded-[28px] p-3 hover:bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all duration-300" >
+                <div className="flex flex-col xl:flex-row items-center gap-3">
 
-        {/* Logo */}
-        <div
-          className=" w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#c2e0e6] border-2 border-slate-900 flex items-center justify-center shrink-0 overflow-hidden">
-          {skill.tecnologias?.[0]?.logo ? (
-            <img
-              src={skill.tecnologias[0].logo}
-              alt={skill.nombre ?? ""}
-              className="w-8 h-8 md:w-10 md:h-10 object-contain"
-            />
-          ) : (
-            <span className="font-black text-sm ">
-              {skill.nombre?.charAt(0)}
-            </span>
-          )}
-        </div>
+                  {/* Logo */}
+                  <div
+                    className=" w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#c2e0e6] border-2 border-slate-900 flex items-center justify-center shrink-0 overflow-hidden">
+                    {skill.tecnologias?.[0]?.logo ? (
+                      <img
+                        src={skill.tecnologias[0].logo}
+                        alt={skill.nombre ?? ""}
+                        className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                      />
+                    ) : (
+                      <span className="font-black text-sm ">
+                        {skill.nombre?.charAt(0)}
+                      </span>
+                    )}
+                  </div>
 
-        {/* Información */}
-        <div className="flex-1 w-full">
-          <h4 className="text-black font-black text-xs md:text-sm text-center xl:text-left leading-tight wrap-break-word mb-2">
-            {skill.nombre}
-          </h4>
+                  {/* Información */}
+                  <div className="flex-1 w-full">
+                    <h4 className="text-black font-black text-xs md:text-sm text-center xl:text-left leading-tight wrap-break-word mb-2">
+                      {skill.nombre}
+                    </h4>
 
-          <div className="w-full h-2 bg-slate-200 rounded-full border border-slate-900 overflow-hidden">
-            <div
-              className={`h-full rounded-full ${styles.bg}`}
-              style={{
-                width: getWidth(skill.nivel),
-              }}
-            />
-          </div>
+                    <div className="w-full h-2 bg-slate-200 rounded-full border border-slate-900 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${styles.bg}`}
+                        style={{
+                          width: getWidth(skill.nivel),
+                        }}
+                      />
+                    </div>
 
-          <span className={` text-[9px] md:text-[10px] font-black uppercase mt-1 block text-center xl:text-left ${styles.text}`}>
-            {skill.nivel}
-          </span>
+                    <span className={` text-[9px] md:text-[10px] font-black uppercase mt-1 block text-center xl:text-left ${styles.text}`}>
+                      {skill.nivel}
+                    </span>
 
-        </div>
+                  </div>
 
-      </div>
-    </div>
-  );
-})}
-        </div>
+                </div>
+              </div>
+            );
+          })}
+         </SkillsCarousel>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-3">
           {blandas.map((skill) => {

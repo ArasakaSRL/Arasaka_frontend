@@ -32,6 +32,11 @@ export default function Plantilla3() {
 
       <PerfilBubble
         usuario={data.usuario}
+        proyectos={data.proyectos}
+        tecnicas={data.habilidadesTecnicas}
+        blandas={data.habilidadesBlandas}
+        experiencias={data.experiencias}
+        certificaciones={data.certificaciones}
       />
 
       <HabilidadesJam

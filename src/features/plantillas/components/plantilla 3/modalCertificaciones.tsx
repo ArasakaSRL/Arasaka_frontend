@@ -1,8 +1,6 @@
 import { X, ExternalLink } from "lucide-react";
 
-import type {
-  certificaciones,
-} from "@/features/portafolio/types/portafolioType";
+import type { certificaciones } from "@/features/portafolio/types/portafolioType";
 import { motion } from "framer-motion";
 
 type Props = {
