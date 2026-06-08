@@ -3,6 +3,7 @@ import { Eye, Medal} from "lucide-react";
 
 import type { certificaciones } from "@/features/portafolio/types/portafolioType";
 import ModalCertificacion from "./modalCertificaciones";
+import { AnimatePresence } from "framer-motion";
 
 type Props = {
   certificaciones: certificaciones[];
@@ -54,12 +55,14 @@ export default function CertificacionesPastel({
           ))}
         </div>
       </section>
-      {selectedCert && (
-        <ModalCertificacion
-          certificacion={selectedCert}
-          onClose={() => setSelectedCert(null)}
-        />
-      )}
-    </>
-  );
+      <AnimatePresence>
+        {selectedCert && (
+          <ModalCertificacion
+            certificacion={selectedCert}
+            onClose={() => setSelectedCert(null)}
+          />
+        )}
+      </AnimatePresence>
+          </>
+        );
 }
