@@ -1,5 +1,3 @@
-import type { S } from "node_modules/framer-motion/dist/types.d-DOCC-kZB";
-
 export type Telefono = {
     numero: string;
 };
@@ -108,6 +106,7 @@ export type configuracion = {
     mostrar_cv: boolean;
     mostrar_contacto: boolean;
     paleta_colores: string;
+    plantilla?: 'predeterminado' | 'minimalista' | 'profesional' | 'stiloPastel' | string;
 };
 
 export type InformacionBasica = {

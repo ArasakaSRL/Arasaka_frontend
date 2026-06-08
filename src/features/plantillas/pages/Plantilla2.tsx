@@ -1,25 +1,27 @@
 import { useState, useCallback, useRef, useMemo } from "react";
+import { useParams } from "react-router-dom"; 
 import SeccionHexagono from "@/features/plantillas/components/plantilla2/cards/SeccionHexagono";
 import NavbarHorizontal from "@/features/plantillas/components/plantilla2/NavbarHorizontal";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { usePortfolioData } from "@/features/reportesUsuario/hooks/usePortfolioData";
-import { useAuthStore } from "@/stores/authStore";
 import { ListaCatalogo } from "@/features/plantillas/components/plantilla2/ListaCatalogo";
 import PerfilDetalles from "@/features/plantillas/components/plantilla2/cards/PerfilDetalles";
-
 
 const TOTAL = ORBITA_ITEMS.length;
 const STEP_DEG = 360 / TOTAL;
 
-
 export default function Plantilla2() {
-  const [rotation,     setRotation]     = useState(0);
-  const [activeIndex,  setActiveIndex]  = useState(0);
+  const [rotation, setRotation] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [externalStep, setExternalStep] = useState(0);
-  const [targetIndex,  setTargetIndex]  = useState<number>(0);
+  const [targetIndex, setTargetIndex] = useState<number>(0);
   const isAdvancingRef = useRef(false);
 
-  const slug = useAuthStore((state) => state.portafolioSeleccionado?.slug);
+  //Obtenemos el slug directamente de la URL pública
+  const { slug } = useParams<{ slug: string }>();
+  
+
+  // El hook usará el slug de la URL para traer los datos públicos
   const { data, loading, noDisponible } = usePortfolioData(slug);
 
   const advance = useCallback((steps: number) => {
@@ -65,11 +67,9 @@ export default function Plantilla2() {
   const itemsAdaptados = useMemo(() => {
     if (!data) return [];
 
-    const seccionActual =
-      ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() || "";
+    const seccionActual = ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() || "";
 
     switch (seccionActual) {
-
       // HABILIDADES BLANDAS
       case "habilidades blandas":
       case "habilidades-blandas":
@@ -77,24 +77,9 @@ export default function Plantilla2() {
       case "blandas":
         return (data.habilidadesBlandas || []).map((hab, index) => ({
           id: hab.id_habilidad || `blanda-${index}`,
-
-          izquierda: (
-            <span className="font-semibold text-gray-500">
-              #{index + 1}
-            </span>
-          ),
-
-          centro: (
-            <span className="font-medium">
-              {hab.nombre || "Habilidad"}
-            </span>
-          ),
-
-          derecha: (
-            <span className="text-sm text-gray-500">
-              {hab.nivel || "No especificado"}
-            </span>
-          ),
+          izquierda: <span className="font-semibold text-gray-500">#{index + 1}</span>,
+          centro: <span className="font-medium">{hab.nombre || "Habilidad"}</span>,
+          derecha: <span className="text-sm text-gray-500">{hab.nivel || "No especificado"}</span>,
         }));
 
       // EXPERIENCIA
@@ -102,19 +87,8 @@ export default function Plantilla2() {
       case "experiencias":
         return (data.experiencias || []).map((exp) => ({
           id: exp.id_experiencia,
-
-          izquierda: (
-            <span className="font-medium">
-              {exp.cargo}
-            </span>
-          ),
-
-          centro: (
-            <span>
-              {exp.Nombre_empresa}
-            </span>
-          ),
-
+          izquierda: <span className="font-medium">{exp.cargo}</span>,
+          centro: <span>{exp.Nombre_empresa}</span>,
           derecha: (
             <div className="text-xs text-right">
               <div>{exp.fecha_inicio}</div>
@@ -128,25 +102,12 @@ export default function Plantilla2() {
       case "proyecto":
         return (data.proyectos || []).map((proy) => ({
           id: proy.id_proyecto,
-
-          izquierda: (
-            <span className="font-medium">
-              {proy.nombre}
-            </span>
-          ),
-
-          centro: (
-            <span className="line-clamp-2">
-              {proy.descripcion}
-            </span>
-          ),
-
+          izquierda: <span className="font-medium">{proy.nombre}</span>,
+          centro: <span className="line-clamp-2">{proy.descripcion}</span>,
           derecha: (
             <span className="text-xs text-right">
               {proy.tecnologias?.length
-                ? proy.tecnologias
-                    .map((t) => t.nombre)
-                    .join(", ")
+                ? proy.tecnologias.map((t) => t.nombre).join(", ")
                 : "-"}
             </span>
           ),
@@ -157,25 +118,10 @@ export default function Plantilla2() {
       case "certificacion":
         return (data.certificaciones || []).map((cert) => ({
           id: cert.id_certificacion,
-
-          izquierda: (
-            <span className="font-medium">
-              {cert.titulo}
-            </span>
-          ),
-
-          centro: (
-            <span>
-              {cert.institucion}
-            </span>
-          ),
-
+          izquierda: <span className="font-medium">{cert.titulo}</span>,
+          centro: <span>{cert.institucion}</span>,
           derecha: cert.url_certificado ? (
-            <img
-              src={cert.url_certificado}
-              alt={cert.titulo}
-              className="w-10 h-10 rounded object-cover"
-            />
+            <img src={cert.url_certificado} alt={cert.titulo} className="w-10 h-10 rounded object-cover" />
           ) : (
             <span>-</span>
           ),
@@ -188,25 +134,10 @@ export default function Plantilla2() {
       case "tecnicas":
         return (data.habilidadesTecnicas || []).map((hab) => ({
           id: hab.id_habilidad,
-
-          izquierda: (
-            <span className="font-medium">
-              {hab.nombre || "Habilidad Técnica"}
-            </span>
-          ),
-
-          centro: (
-            <span>
-              {hab.nivel || "No especificado"}
-            </span>
-          ),
-
+          izquierda: <span className="font-medium">{hab.nombre || "Habilidad Técnica"}</span>,
+          centro: <span>{hab.nivel || "No especificado"}</span>,
           derecha: hab.tecnologias?.[0]?.logo ? (
-            <img
-              src={hab.tecnologias[0].logo}
-              alt={""+hab.nombre}
-              className="w-10 h-10 object-contain"
-            />
+            <img src={hab.tecnologias[0].logo} alt={""+hab.nombre} className="w-10 h-10 object-contain" />
           ) : (
             <span>-</span>
           ),
@@ -218,16 +149,14 @@ export default function Plantilla2() {
         return [];
 
       default:
-        console.warn(
-          `⚠️ Sección no reconocida en el switch: "${seccionActual}"`
-        );
+        console.warn(`⚠️ Sección no reconocida en el switch: "${seccionActual}"`);
         return [];
     }
   }, [data, activeIndex]);
   
-  if (!slug)        return <div>No tienes un portafolio asignado.</div>;
-  if (loading)      return <div>Cargando...</div>;
-  if (noDisponible || !data) return <div>Portafolio no disponible.</div>;
+  if (!slug)        return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">URL inválida o portafolio no encontrado.</div>;
+  if (loading)      return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">Cargando portafolio...</div>;
+  if (noDisponible || !data) return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">Este portafolio no está disponible.</div>;
 
   return (
     <div className="relative min-h-screen bg-[#F0EAD6] overflow-x-hidden">
@@ -241,15 +170,13 @@ export default function Plantilla2() {
         onActiveChange={handleOrbitaChange}
       />
 
-      {/* 2. Arreglo de Sombras: Contenedor principal sin overflow */}
-     <div
+      {/* Arreglo de Sombras: Contenedor principal sin overflow */}
+      <div
         className="
           z-50 flex flex-col gap-3
           w-full max-w-[500px]
           mx-auto
-
           bg-transparent
-
           lg:absolute
         "
         style={{
@@ -277,7 +204,6 @@ export default function Plantilla2() {
             z-50 flex flex-col gap-3
             w-full max-w-[500px]
             mx-auto mt-6 
-
             lg:absolute
             lg:left-[50%]
             lg:top-[100%]
@@ -289,18 +215,14 @@ export default function Plantilla2() {
         >
           
           {ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() === "perfil" ? (
-          
             <PerfilDetalles
               nombre={`${data.usuario.nombre} ${data.usuario.apellido}`}
               pais={data.usuario.pais || "No especificado"}
-              // Tomamos la primera profesión de tu array, si no hay, ponemos un default
               profesion={data.usuario.profesiones?.[0]?.nombre || "Profesional"} 
               correo={data.usuario.correo}
               foto={data.usuario.foto_perfil || undefined}
             />
-
           ) : (
-            
             <ListaCatalogo
               items={itemsAdaptados}
               activeIndex={-1} 
@@ -308,7 +230,6 @@ export default function Plantilla2() {
                 console.log("Hiciste clic en item:", index);
               }}
             />
-
           )}
           
         </div>

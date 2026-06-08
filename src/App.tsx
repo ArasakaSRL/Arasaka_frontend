@@ -34,6 +34,9 @@ import AdminSuspendidos from './pages/Dashboard/admin/Suspendidos'
 import AdminConfiguracion from './pages/Dashboard/admin/Configuracion'
 import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 import FormacionAcademicaPage from  './features/formacion-academica/pages/FormacionAcademicaPage'
+import CambiarPlantilla from './pages/Dashboard/configuraciones/CambiarPlantilla'
+import Plantilla3 from './features/plantillas/pages/Plantilla3'
+
 export default function App() {
   return (
     <Routes>
@@ -41,6 +44,9 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/explorar" element={<Explorar />} />
         <Route path="/about" element={<About />} />
+
+        <Route path="/plantilla/3" element={<Plantilla3 />} />
+
         <Route path="/Dashboard/mensajes/Principal" element={<MensajesPrincipal />} />
         <Route path="/Dashboard/mensajes/Recibidos" element={<MensajesRecibidos />} />
         <Route path="/Dashboard/mensajes/Enviados" element={<MensajesEnviados />} />
@@ -59,6 +65,7 @@ export default function App() {
         <Route path="/Dashboard/cuenta/Cuenta" element={<Cuenta />} />
         <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
+        <Route path="/Dashboard/configuracion/Plantillas" element={<CambiarPlantilla/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
         <Route path="/Dashboard/tecnologias" element={<TegnologiaPage />} />
         <Route path="/dashboard" element={<Dashboard />} />

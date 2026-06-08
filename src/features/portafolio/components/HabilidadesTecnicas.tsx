@@ -6,26 +6,35 @@ interface Props {
   tecnicas: HabilidadTecnica[];
   onExpandir?:   (id: string) => void
   onCerrar?:     (id: string) => void
+  mostrarTitulo?: boolean;
 }
 
-const HabilidadesTecnicas: React.FC<Props> = ({ tecnicas, onExpandir, onCerrar }) => {
+const HabilidadesTecnicas: React.FC<Props> = ({ tecnicas, onExpandir, onCerrar ,mostrarTitulo = true,}) => {
   const todasLasTecnologias = tecnicas.flatMap(grupo => 
     grupo.tecnologias.map(tech => ({ ...tech, nivelPadre: grupo.nivel, id_habilidad: grupo.id_habilidad }))
   );
 
   return (
     <div className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans relative">
+      {mostrarTitulo && (
       <div className="flex items-center gap-4 mb-12">
         <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-          <Layers3 size={28} className="text-blue-600" strokeWidth={2.5} />
+          <Layers3
+            size={28}
+            className="text-blue-600"
+            strokeWidth={2.5}
+          />
         </div>
+
         <div>
           <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
             Habilidades Técnicas
           </h2>
-          <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1"></div>
+
+          <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1" />
         </div>
       </div>
+    )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {todasLasTecnologias.map((tech, index) => (

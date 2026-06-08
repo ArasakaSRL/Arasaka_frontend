@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
+import HabilidadesTecnicas from '@/features/portafolio/components/HabilidadesTecnicas';
+import { PortfolioHeaderTracker } from '@/features/reportesUsuario/components/capturarInteracciones/PortfolioHeaderTracker';
+import { HabilidadesBlandasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesBlandasTracker';
+import { ExperienciaTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ExperienciaTracker';
+import { ProyectosTracker } from '@/features/reportesUsuario/components/capturarInteracciones/ProyectosTracker';
+import { CertificacionesTracker } from '@/features/reportesUsuario/components/capturarInteracciones/CertificacionesTracker';
+import { useHabilidadesTecnicasTracker } from '@/features/portafolio/hooks/useHabilidadesTecnicasTracker';
+import { useVisitor } from '@/features/portafolio/hooks/useVisitor';
+import { CertificacionesSection } from '@/features/portafolio/components/CertificacionesSection';
+import { NavbarVertical } from '@/features/portafolio/components/NavbarVertical';
+import SeccionProyectos from '@/features/portafolio/components/SeccionProyectos';
+import HabilidadesBlandas from '@/features/portafolio/components/HabilidadesBlandas';
+import ExperienceTimeline from '@/features/portafolio/components/ExperienceTimeline';
 import { getPortafolioPublic } from '@/features/portafolio/lib/portafolio.service';
+import PortfolioHeader from '@/features/portafolio/components/PortfolioHeader ';
+import type { habilidades, Usuario, experiencias, HabilidadBlanda, HabilidadTecnica, Proyectos, configuracion, certificaciones } from '@/features/portafolio/types/portafolioType';
 
-// Importa tus 4 plantillas (ajusta las rutas según la estructura de tus carpetas)
-import Predeterminada from '@/features/plantillas/pages/Predeterminada'; 
-import Plantilla1 from '@/features/plantillas/pages/Plantilla1';
-import Plantilla2 from '@/features/plantillas/pages/Plantilla2';
-import Plantilla3 from '@/features/plantillas/pages/Plantilla3';
-
-export default function PortfolioPage() {
+export default function Predeterminada() {
     const { slug } = useParams<{ slug: string }>();
     const { iniciarVisita } = useVisitor() 
     const { trackExpandir, trackCerrar }       = useHabilidadesTecnicasTracker(slug!)
@@ -50,16 +61,12 @@ export default function PortfolioPage() {
             }
         };
 
-    fetchConfiguracion();
-  }, [slug]);
+        fetchPortfolioData();
+    }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white">
-        Cargando portafolio...
-      </div>
-    );
-  }
+    if (loading) {
+        return <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white">Cargando...</div>;
+    }
 
     if (noDisponible || !usuario) {
         return (

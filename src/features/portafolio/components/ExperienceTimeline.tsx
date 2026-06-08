@@ -12,9 +12,10 @@ interface Experiencia {
 
 interface Props {
   experiencias: Experiencia[];
+  mostrarTitulo?: boolean;
 }
 
-const ExperienceTimeline: React.FC<Props> = ({ experiencias }) => {
+const ExperienceTimeline: React.FC<Props> = ({ experiencias,mostrarTitulo = true, }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
@@ -23,14 +24,24 @@ const ExperienceTimeline: React.FC<Props> = ({ experiencias }) => {
   return (
     <div className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans">
   
+      {mostrarTitulo && (
       <div className="flex items-center gap-4 mb-16">
         <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-          <GraduationCap size={28} className="text-blue-600" strokeWidth={2.5} />
+          <GraduationCap
+            size={28}
+            className="text-blue-600"
+            strokeWidth={2.5}
+          />
         </div>
-        <h2 className="text-3xl font-bold tracking-tight" style={{ color: '#0F1A45' }}>
+
+        <h2
+          className="text-3xl font-bold tracking-tight"
+          style={{ color: "#0F1A45" }}
+        >
           Experiencia
         </h2>
       </div>
+    )}
 
    
       <div className="relative border-l-2 ml-4 md:ml-6" style={{ borderColor: '#E5E5E5' }}>

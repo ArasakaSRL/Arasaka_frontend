@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,GraduationCap, 
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,GraduationCap,LayoutPanelTop,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -58,6 +58,7 @@ const menuItems: MenuItem[] = [
         submenu: [
             { icon: Eye, label: 'Visibilidad Componentes',  path: '/Dashboard/configuracion/Componentes' },
             { icon: HatGlasses ,           label: 'Visibilidad General',  path: '/Dashboard/configuracion/General' },
+            { icon: LayoutPanelTop, label:'Plantillas Portafolio', path:'/Dashboard/configuracion/Plantillas'},
         ]
 
     },
@@ -201,7 +202,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                                                 transition={{ duration: 0.15 }}
                                                 onMouseEnter={() => openDesktop(item.label)}
                                                 onMouseLeave={closeDesktop}
-                                                className="fixed ml-2 w-40 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-100"
+                                                className="fixed ml-2 min-w-[240px] bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-100"
                                                 style={{
                                                     left: '12.5rem',
                                                     top: (itemRefs.current[item.label]?.getBoundingClientRect().top ?? 0) - 64

@@ -22,3 +22,4 @@ export const Estadisticas = lazy(() => import('../features/reportesUsuario/page/
 export const VistaProyecto = lazy(() => import('../features/vistaProyectos/pages/PageVistaProyecto'))
 export const VisibilidadComponentes = lazy(() => import('../pages/Dashboard/configuraciones/VisibilidadComponentes')) 
 export const VisibilidadGeneral = lazy(() => import('../pages/Dashboard/configuraciones/VisibilidadGeneral'))
+export const CambiarPlantilla = lazy(() => import('../pages/Dashboard/configuraciones/CambiarPlantilla'))

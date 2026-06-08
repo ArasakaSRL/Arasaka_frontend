@@ -6,23 +6,32 @@ import type { HabilidadBlanda } from '../types/portafolioType';
 interface Props {
   blandas: HabilidadBlanda[];
   onVisible?: (id: string) => void;
+  mostrarTitulo?: boolean;
 }
 
-const HabilidadesBlandas: React.FC<Props> = ({ blandas, onVisible  }) => {
+const HabilidadesBlandas: React.FC<Props> = ({ blandas, onVisible ,mostrarTitulo = true, }) => {
   return (
     <div data-track="clic_general"  className="w-full max-w-5xl mx-auto p-6 md:p-10 bg-transparent font-sans">
      
+      {mostrarTitulo && (
       <div className="flex items-center gap-4 mb-10">
         <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-          <Smile size={28} className="text-blue-600" strokeWidth={2.5} />
+          <Smile
+            size={28}
+            className="text-blue-600"
+            strokeWidth={2.5}
+          />
         </div>
+
         <div>
           <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
             Habilidades Blandas
           </h2>
-          <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1"></div>
+
+          <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1" />
         </div>
       </div>
+    )}
 
      
       <div className="flex flex-wrap gap-4 justify-center md:justify-start">
