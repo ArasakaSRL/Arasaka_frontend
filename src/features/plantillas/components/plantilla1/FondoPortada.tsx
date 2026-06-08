@@ -25,9 +25,8 @@ export default function FondoPortada({
             w-full
             h-full
             bg-gradient-to-r
-            from-blue-900
-            via-blue-700
-            to-cyan-500
+            from-[#0a1a3a]
+            to-[#112e57]
           "
         >
           <div className="absolute inset-0 bg-black/10" />
