@@ -77,9 +77,9 @@ export default function HabilidadesJam({
           <div className="w-8 h-8 rounded-full bg-[#f2b5d4] border-2 border-slate-900 flex items-center justify-center font-black">
             <Award size={16} color="#1e293b" />
           </div>
-          <h2 className="font-black text-xl tracking-tight text-slate-900 uppercase">
+          <h3 className="font-black text-xl tracking-tight text-slate-900 uppercase">
             Habilidades
-          </h2>
+          </h3>
         </div>
         
         <div className="bg-[#eff7f6] p-1.5 rounded-2xl border-2 border-slate-900 flex gap-2">
@@ -137,7 +137,7 @@ export default function HabilidadesJam({
               className="w-8 h-8 md:w-10 md:h-10 object-contain"
             />
           ) : (
-            <span className="font-black text-sm">
+            <span className="font-black text-sm ">
               {skill.nombre?.charAt(0)}
             </span>
           )}
@@ -145,7 +145,7 @@ export default function HabilidadesJam({
 
         {/* Información */}
         <div className="flex-1 w-full">
-          <h4 className=" font-black text-xs md:text-sm text-center xl:text-left leading-tight wrap-break-word mb-2">
+          <h4 className="text-black font-black text-xs md:text-sm text-center xl:text-left leading-tight wrap-break-word mb-2">
             {skill.nombre}
           </h4>
 
