@@ -3,6 +3,9 @@ import { usePortfolioData } from "@/features/reportesUsuario/hooks/usePortfolioD
 
 import PerfilBubble from "@/features/plantillas/components/plantilla 3/perfilPlantilla3";
 import HabilidadesJam from "@/features/plantillas/components/plantilla 3/habilidadesPlantilla3";
+import Experiencia from "@/features/plantillas/components/plantilla 3/experienciaPlantilla3";
+import ProyectosPastel from "@/features/plantillas/components/plantilla 3/proyectosPlantilla3";
+import CertificacionesPastel from "@/features/plantillas/components/plantilla 3/certificacionesPlantilla3";
 export default function Plantilla3() {
 
   const slug = useAuthStore(
@@ -34,6 +37,18 @@ export default function Plantilla3() {
       <HabilidadesJam
         tecnicas={data.habilidadesTecnicas}
         blandas={data.habilidadesBlandas}
+      />
+
+      <Experiencia
+        experiencias={data.experiencias}
+      />
+
+      <ProyectosPastel
+        proyectos={data.proyectos}
+      />
+
+      <CertificacionesPastel
+        certificaciones={data.certificaciones}
       />
     </div>
   );
