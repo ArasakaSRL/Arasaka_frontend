@@ -1,5 +1,5 @@
 import type { experiencias } from "@/features/portafolio/types/portafolioType";
-import { CalendarFold, LayoutPanelLeft } from "lucide-react";
+import { CalendarFold, GraduationCap } from "lucide-react";
 type Props = {
   experiencias: experiencias[];
 };
@@ -20,7 +20,7 @@ export default function Experiencia({
     <section className="bg-white border-4 border-slate-900 rounded-[36px] p-6 md:p-8 shadow-[14px_14px_0px_0px_rgba(247,214,224,1)] space-y-6">
       <div className="flex items-center gap-2 border-b-2 border-slate-100 pb-4">
         <div className="w-8 h-8 rounded-full bg-[#7bdff2] border-2 border-slate-900 flex items-center justify-center">
-          <LayoutPanelLeft size={20} color="black"/>
+          <GraduationCap size={20} color="black"/>
         </div>
         <h3 className="font-black text-xl tracking-tight text-slate-900 uppercase">
           Experiencia
