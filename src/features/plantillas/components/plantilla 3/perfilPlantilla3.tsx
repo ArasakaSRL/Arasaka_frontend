@@ -1,6 +1,6 @@
 import { Mail, MapPin, Download, MessageSquare, Compass, Shell } from "lucide-react";
 import { generateCV } from "@/features/portafolio/lib/cv.generator";
-import ContactarModal from "@/features/sendGmail/components/ContactarModal";
+import ContactarModal from "./formContacto";
 import { toast } from "@/components/Alerta";
 import { useState } from "react";
 import type { Usuario, Proyectos, HabilidadTecnica, HabilidadBlanda, experiencias, certificaciones, InformacionBasica } from "@/features/portafolio/types/portafolioType";
