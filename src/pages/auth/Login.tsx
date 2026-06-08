@@ -11,6 +11,7 @@ import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { googleProvider, githubProvider } from '@/firebase/config';
 import type { AuthProvider } from 'firebase/auth';
 import LoginBackground from '@/components/LoginBackground';
+import CuentaSuspendidaModal from '@/components/ui/CuentaSuspendidaModal';
 
 const loginSchema = z.object({
     correo: z
@@ -65,6 +66,7 @@ export default function Login() {
     const [errors, setErrors] = useState<FieldErrors>({});
     const [apiError, setApiError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [suspendidoHasta, setSuspendidoHasta] = useState<string | null>(null);
 
     const isFilled = loginMode === 'correo'
         ? correo.length > 0 && password.length > 0
@@ -87,10 +89,13 @@ export default function Login() {
             sessionStorage.removeItem('tour_iniciado');
             navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
-            const axiosError = err as AxiosError<{ message?: string }>;
+            const axiosError = err as AxiosError<{ message?: string; suspended?: boolean; suspendido_hasta?: string }>;
             const firebaseError = err as { code?: string; message?: string };
 
-            if (axiosError?.response?.data?.message) {
+            if (axiosError?.response?.status === 403 && axiosError.response.data?.suspended) {
+                setSuspendidoHasta(axiosError.response.data.suspendido_hasta ?? null);
+                return;
+            } else if (axiosError?.response?.data?.message) {
                 setApiError(axiosError.response.data.message);
             } else if (firebaseError.code?.startsWith('auth/')) {
                 setApiError('Error al iniciar sesión con el proveedor');
@@ -181,7 +186,11 @@ export default function Login() {
             sessionStorage.removeItem('tour_iniciado');
             navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
+            const error = err as AxiosError<{ message?: string; suspended?: boolean; suspendido_hasta?: string; errors?: Record<string, string[]> }>;
+            if (error?.response?.status === 403 && error.response.data?.suspended) {
+                setSuspendidoHasta(error.response.data.suspendido_hasta ?? null);
+                return;
+            }
             const raw = error?.response?.data?.message
                 ?? Object.values(error?.response?.data?.errors ?? {})?.[0]?.[0]
                 ?? 'Credenciales incorrectas';
@@ -193,6 +202,12 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-1 relative">
+            {suspendidoHasta && (
+                <CuentaSuspendidaModal
+                    suspendidoHasta={suspendidoHasta}
+                    onClose={() => setSuspendidoHasta(null)}
+                />
+            )}
             
             <Link to="/" className="absolute top-10 left-10 text-gray-600 text-sm flex items-center gap-2 hover:text-black no-underline z-10">
                 <ArrowLeft size={16} /> Volver al inicio

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Lock, Calendar, Settings, CheckCircle2 } from 'lucide-react';
+import { Eye, Lock, Calendar, Settings, CheckCircle2, ShieldOff } from 'lucide-react';
 import type  { Portfolio } from '@/features/portafolio/types/portafolioType';
 
 interface PortfolioCardProps {
@@ -19,8 +19,8 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMod
         
         {/* Bloque Izquierdo: Estado + Título + Descripción */}
         <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1 min-w-0">
-          {/* 1. Visibilidad */}
-          <div className="shrink-0 w-24">
+          {/* 1. Visibilidad + Suspendido */}
+          <div className="shrink-0 w-24 flex flex-col gap-1">
             {portfolio.visibility === 'public' ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-full border border-emerald-100">
                 <Eye size={12} /> Público
@@ -28,6 +28,11 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMod
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-gray-500 bg-gray-50 rounded-full border border-gray-200">
                 <Lock size={12} /> Privado
+              </span>
+            )}
+            {portfolio.suspendido && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-red-600 bg-red-50 border border-red-200 rounded-full">
+                <ShieldOff size={10} /> Suspendido
               </span>
             )}
           </div>
@@ -98,17 +103,24 @@ export const PortfolioCard: React.FC<PortfolioCardProps> = ({ portfolio, viewMod
     <div className={`bg-white border rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between h-full w-full max-w-77.5 mx-auto ${isActive ? 'border-blue-400 shadow-[0_0_0_2px_rgba(59,130,246,0.15)]' : 'border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_4px_25px_rgba(0,0,0,0.04)]'}`}>
       <div>
         <div className="mb-3 flex items-center justify-between">
-          {portfolio.visibility === 'public' ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-full border border-emerald-100">
-              <Eye size={12} /> Público
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-gray-500 bg-gray-50 rounded-full border border-gray-200">
-              <Lock size={12} /> Privado
-            </span>
-          )}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {portfolio.visibility === 'public' ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-full border border-emerald-100">
+                <Eye size={12} /> Público
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium text-gray-500 bg-gray-50 rounded-full border border-gray-200">
+                <Lock size={12} /> Privado
+              </span>
+            )}
+            {portfolio.suspendido && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-red-600 bg-red-50 border border-red-200 rounded-full">
+                <ShieldOff size={10} /> Suspendido
+              </span>
+            )}
+          </div>
 
-          <span className="text-[11px] text-gray-400 flex items-center gap-1">
+          <span className="text-[11px] text-gray-400 flex items-center gap-1 shrink-0">
             <Calendar size={10} /> {portfolio.createdAt}
           </span>
         </div>

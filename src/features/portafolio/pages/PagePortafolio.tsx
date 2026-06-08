@@ -40,6 +40,7 @@ export default function PagePortafolio() {
           name: p.nombre,
           description: p.descripcion,
           visibility: p.visibilidad ? 'public' : 'private',
+          suspendido: p.suspendido,
           createdAt: new Date(p.fecha_creacion)
             .toLocaleDateString('es-ES')
             .replace(/\//g, '-'),

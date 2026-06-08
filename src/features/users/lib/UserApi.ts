@@ -26,8 +26,21 @@ export interface Usuario {
   updated_at: string;
 }
 
+export type SortBy = "nombre" | "created_at";
+export type Order = "asc" | "desc";
 
-export const obtenerUsuarios = async (): Promise<Usuario[]> => {
-  const response = await apiClient.get("/admin/users");
+export const obtenerUsuarios = async (
+  sortBy: SortBy = "nombre",
+  order: Order = "asc"
+): Promise<Usuario[]> => {
+  console.log("consultando:", sortBy, order);
+  
+  const response = await apiClient.get("/admin/users", {
+    params: {
+      sortBy,
+      order,
+    },
+  });
+
   return response.data.data;
 };

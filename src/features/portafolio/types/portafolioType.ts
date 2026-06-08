@@ -143,7 +143,8 @@ export interface Portfolio {
   visibility: 'public' | 'private';
   githubUrl?: string;
   linkedinUrl?: string;
-  createdAt: string; 
+  createdAt: string;
+  suspendido?: boolean;
 }
 
 export type CreatePortafolio = {
@@ -175,6 +176,7 @@ export type DataPortafolio = {
     visibilidad: boolean;
     fecha_creacion: string;
     fecha_actualizacion: string;
+    suspendido: boolean;
     link_activo: boolean;
     fecha_expiracion_link: string | null;
     duracion_link: string | null;

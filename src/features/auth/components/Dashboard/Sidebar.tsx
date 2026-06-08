@@ -1,7 +1,7 @@
 import {
     User, Briefcase, Award,
     Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,LayoutPanelTop,
+    Inbox, Send, LayoutDashboard, ChevronRight, Star, UserPen, FolderOpen,GraduationCap,LayoutPanelTop,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -34,6 +34,7 @@ const menuItems: MenuItem[] = [
             { icon: UserPen,     label: 'Actualizar Perfil', path: '/Dashboard/perfil/Editar' },
            // { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
             //{ icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
+            { icon: GraduationCap,    label: 'Formación Académica', path: '/portafolio/formacion-academica' },
         ]
     },
     { icon: Briefcase,     label: 'Proyectos',       path: '/Dashboard/proyectos/Proyectos',            tourId: 'tour-proyectos' },
@@ -49,7 +50,12 @@ const menuItems: MenuItem[] = [
             { icon: Star,            label: 'Destacados', path: '/Dashboard/mensajes/Destacados' },
         ]
     },
-    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' 
+        ,submenu: [
+            { icon: BarChart3, label: 'Reportes Mensuales', path: '/reportes-mensuales' },
+        ]
+    },
+
    //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
    //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
     { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios', tourId: 'tour-portafolios' },
