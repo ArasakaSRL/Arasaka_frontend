@@ -1,39 +1,16 @@
-import { useState, useCallback, useRef } from "react";
-
-import { CardCatalogo } from "@/features/plantillas/components/plantilla2/cards/CardCatalogo";
+import { useState, useCallback, useRef, useMemo } from "react";
 import SeccionHexagono from "@/features/plantillas/components/plantilla2/cards/SeccionHexagono";
 import NavbarHorizontal from "@/features/plantillas/components/plantilla2/NavbarHorizontal";
 import { ORBITA_ITEMS } from "@/features/plantillas/service/orbitaData";
 import { usePortfolioData } from "@/features/reportesUsuario/hooks/usePortfolioData";
 import { useAuthStore } from "@/stores/authStore";
+import { ListaCatalogo } from "@/features/plantillas/components/plantilla2/ListaCatalogo";
+import PerfilDetalles from "@/features/plantillas/components/plantilla2/cards/PerfilDetalles";
 
 
 const TOTAL = ORBITA_ITEMS.length;
 const STEP_DEG = 360 / TOTAL;
 
-const PRODUCTOS = [
-  {
-    id: 1,
-    titulo: "Worktop",
-    descripcion: "110 x 110",
-    imagen:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-  },
-  {
-    id: 2,
-    titulo: "Couch capsule",
-    descripcion: "110 x 110",
-    imagen:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc",
-  },
-  {
-    id: 3,
-    titulo: "Couch cake",
-    descripcion: "110 x 110",
-    imagen:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-  },
-];
 
 export default function Plantilla2() {
   const [rotation,     setRotation]     = useState(0);
@@ -85,52 +62,257 @@ export default function Plantilla2() {
     });
   }, []);
 
+  const itemsAdaptados = useMemo(() => {
+    if (!data) return [];
+
+    const seccionActual =
+      ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() || "";
+
+    switch (seccionActual) {
+
+      // HABILIDADES BLANDAS
+      case "habilidades blandas":
+      case "habilidades-blandas":
+      case "habilidadesblandas":
+      case "blandas":
+        return (data.habilidadesBlandas || []).map((hab, index) => ({
+          id: hab.id_habilidad || `blanda-${index}`,
+
+          izquierda: (
+            <span className="font-semibold text-gray-500">
+              #{index + 1}
+            </span>
+          ),
+
+          centro: (
+            <span className="font-medium">
+              {hab.nombre || "Habilidad"}
+            </span>
+          ),
+
+          derecha: (
+            <span className="text-sm text-gray-500">
+              {hab.nivel || "No especificado"}
+            </span>
+          ),
+        }));
+
+      // EXPERIENCIA
+      case "experiencia":
+      case "experiencias":
+        return (data.experiencias || []).map((exp) => ({
+          id: exp.id_experiencia,
+
+          izquierda: (
+            <span className="font-medium">
+              {exp.cargo}
+            </span>
+          ),
+
+          centro: (
+            <span>
+              {exp.Nombre_empresa}
+            </span>
+          ),
+
+          derecha: (
+            <div className="text-xs text-right">
+              <div>{exp.fecha_inicio}</div>
+              <div>{exp.fecha_fin || "Actualidad"}</div>
+            </div>
+          ),
+        }));
+
+      // PROYECTOS
+      case "proyectos":
+      case "proyecto":
+        return (data.proyectos || []).map((proy) => ({
+          id: proy.id_proyecto,
+
+          izquierda: (
+            <span className="font-medium">
+              {proy.nombre}
+            </span>
+          ),
+
+          centro: (
+            <span className="line-clamp-2">
+              {proy.descripcion}
+            </span>
+          ),
+
+          derecha: (
+            <span className="text-xs text-right">
+              {proy.tecnologias?.length
+                ? proy.tecnologias
+                    .map((t) => t.nombre)
+                    .join(", ")
+                : "-"}
+            </span>
+          ),
+        }));
+
+      // CERTIFICACIONES
+      case "certificaciones":
+      case "certificacion":
+        return (data.certificaciones || []).map((cert) => ({
+          id: cert.id_certificacion,
+
+          izquierda: (
+            <span className="font-medium">
+              {cert.titulo}
+            </span>
+          ),
+
+          centro: (
+            <span>
+              {cert.institucion}
+            </span>
+          ),
+
+          derecha: cert.url_certificado ? (
+            <img
+              src={cert.url_certificado}
+              alt={cert.titulo}
+              className="w-10 h-10 rounded object-cover"
+            />
+          ) : (
+            <span>-</span>
+          ),
+        }));
+
+      // HABILIDADES TÉCNICAS
+      case "habilidades tecnicas":
+      case "habilidades-tecnicas":
+      case "habilidadestecnicas":
+      case "tecnicas":
+        return (data.habilidadesTecnicas || []).map((hab) => ({
+          id: hab.id_habilidad,
+
+          izquierda: (
+            <span className="font-medium">
+              {hab.nombre || "Habilidad Técnica"}
+            </span>
+          ),
+
+          centro: (
+            <span>
+              {hab.nivel || "No especificado"}
+            </span>
+          ),
+
+          derecha: hab.tecnologias?.[0]?.logo ? (
+            <img
+              src={hab.tecnologias[0].logo}
+              alt={""+hab.nombre}
+              className="w-10 h-10 object-contain"
+            />
+          ) : (
+            <span>-</span>
+          ),
+        }));
+
+      case "perfil":
+      case "sobre mi":
+      case "sobre-mi":
+        return [];
+
+      default:
+        console.warn(
+          `⚠️ Sección no reconocida en el switch: "${seccionActual}"`
+        );
+        return [];
+    }
+  }, [data, activeIndex]);
+  
   if (!slug)        return <div>No tienes un portafolio asignado.</div>;
   if (loading)      return <div>Cargando...</div>;
   if (noDisponible || !data) return <div>Portafolio no disponible.</div>;
 
-  const { usuario, habilidadesTecnicas, habilidadesBlandas, experiencias, proyectos, configuracion, certificaciones } = data;
-
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#F0EAD6]">
-
-      {/* Hexágono + órbita — ocupa toda la pantalla */}
+    <div className="relative min-h-screen bg-[#F0EAD6] overflow-x-hidden">
       <SeccionHexagono
         rotation={rotation}
         activeIndex={activeIndex}
         externalStep={externalStep}
         targetIndex={targetIndex}
-        titulo={ORBITA_ITEMS[activeIndex].titulo}
+        titulo={ORBITA_ITEMS[activeIndex]?.titulo}
         onRotate={handleRotate}
         onActiveChange={handleOrbitaChange}
       />
 
-      {/* Navbar flotante — misma fila derecha del hexágono */}
-      <div
-        className="absolute z-50 flex flex-col gap-3 w-[500px]"
+      {/* 2. Arreglo de Sombras: Contenedor principal sin overflow */}
+     <div
+        className="
+          z-50 flex flex-col gap-3
+          w-full max-w-[500px]
+          mx-auto
+
+          bg-transparent
+
+          lg:absolute
+        "
         style={{
-          top: "10%",
-          left: "65%",
-          transform: "translateX(-50%)",
+          ...(window.innerWidth >= 1024 && {
+            top: "2%",
+            left: "65%",
+            transform: "translateX(-50%)",
+            maxHeight: "80vh",
+          }),
         }}
       >
-        <h1 className="text-black">Mi Portafolio</h1>
-        <NavbarHorizontal
-          activeIndex={activeIndex}
-          onChange={handleSectionChange}
-        />
-
-        {PRODUCTOS.map((item) => (
-          <CardCatalogo
-            key={item.id}
-            titulo={item.titulo}
-            descripcion={item.descripcion}
-            imagen={item.imagen}
-            onClick={() => console.log(item.id)}
+        <div className="flex flex-col gap-3 shrink-0">
+          <h1 className="inline-block bg-transparent text-black text-2xl font-black">
+            Mi Portafolio
+          </h1>
+          <NavbarHorizontal
+            activeIndex={activeIndex}
+            onChange={handleSectionChange}
           />
-        ))}
-      </div>
+        </div>
 
+        {/* Contenedor dinámico con scroll invisible */}
+        <div
+          className="
+            z-50 flex flex-col gap-3
+            w-full max-w-[500px]
+            mx-auto mt-6 
+
+            lg:absolute
+            lg:left-[50%]
+            lg:top-[100%]
+            lg:-translate-x-1/2
+          "
+          style={{
+            maxHeight: "80vh",
+          }}
+        >
+          
+          {ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() === "perfil" ? (
+          
+            <PerfilDetalles
+              nombre={`${data.usuario.nombre} ${data.usuario.apellido}`}
+              pais={data.usuario.pais || "No especificado"}
+              // Tomamos la primera profesión de tu array, si no hay, ponemos un default
+              profesion={data.usuario.profesiones?.[0]?.nombre || "Profesional"} 
+              correo={data.usuario.correo}
+              foto={data.usuario.foto_perfil || undefined}
+            />
+
+          ) : (
+            
+            <ListaCatalogo
+              items={itemsAdaptados}
+              activeIndex={-1} 
+              onItemClick={(index) => {
+                console.log("Hiciste clic en item:", index);
+              }}
+            />
+
+          )}
+          
+        </div>
+      </div>
     </div>
   );
 }

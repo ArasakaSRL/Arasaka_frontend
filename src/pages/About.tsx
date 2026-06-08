@@ -64,21 +64,37 @@ export default function Plantilla2() {
 
   const itemsAdaptados = useMemo(() => {
     if (!data) return [];
-    
-    const seccionActual = ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() || "";
+
+    const seccionActual =
+      ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() || "";
 
     switch (seccionActual) {
-      
+
       // HABILIDADES BLANDAS
       case "habilidades blandas":
       case "habilidades-blandas":
       case "habilidadesblandas":
       case "blandas":
-        return (data.habilidadesBlandas || []).map((hab, index: number) => ({
+        return (data.habilidadesBlandas || []).map((hab, index) => ({
           id: hab.id_habilidad || `blanda-${index}`,
-          indexLabel: `#${index + 1}`,
-          titulo: hab.nombre || "Habilidad",
-          descripcion: `Nivel: ${hab.nivel || "No especificado"}`,
+
+          izquierda: (
+            <span className="font-semibold text-gray-500">
+              #{index + 1}
+            </span>
+          ),
+
+          centro: (
+            <span className="font-medium">
+              {hab.nombre || "Habilidad"}
+            </span>
+          ),
+
+          derecha: (
+            <span className="text-sm text-gray-500">
+              {hab.nivel || "No especificado"}
+            </span>
+          ),
         }));
 
       // EXPERIENCIA
@@ -86,10 +102,25 @@ export default function Plantilla2() {
       case "experiencias":
         return (data.experiencias || []).map((exp) => ({
           id: exp.id_experiencia,
-          titulo: exp.cargo,
-          descripcion: exp.Nombre_empresa,
-          detalle: `De: ${exp.fecha_inicio} a: ${exp.fecha_fin || "Actualidad"}`,
-          imagen: null, // Tu tipo "experiencias" no tiene logo de empresa actualmente
+
+          izquierda: (
+            <span className="font-medium">
+              {exp.cargo}
+            </span>
+          ),
+
+          centro: (
+            <span>
+              {exp.Nombre_empresa}
+            </span>
+          ),
+
+          derecha: (
+            <div className="text-xs text-right">
+              <div>{exp.fecha_inicio}</div>
+              <div>{exp.fecha_fin || "Actualidad"}</div>
+            </div>
+          ),
         }));
 
       // PROYECTOS
@@ -97,14 +128,28 @@ export default function Plantilla2() {
       case "proyecto":
         return (data.proyectos || []).map((proy) => ({
           id: proy.id_proyecto,
-          titulo: proy.nombre,
-          descripcion: proy.descripcion,
-          // Extraemos los nombres de las tecnologías usadas para mostrarlas como detalle
-          detalle: proy.tecnologias?.length 
-            ? `Tech: ${proy.tecnologias.map(t => t.nombre).join(", ")}` 
-            : "",
-          // Tomamos la primera imagen del array de imagenes
-          imagen: proy.imagenes?.[0]?.url || null,
+
+          izquierda: (
+            <span className="font-medium">
+              {proy.nombre}
+            </span>
+          ),
+
+          centro: (
+            <span className="line-clamp-2">
+              {proy.descripcion}
+            </span>
+          ),
+
+          derecha: (
+            <span className="text-xs text-right">
+              {proy.tecnologias?.length
+                ? proy.tecnologias
+                    .map((t) => t.nombre)
+                    .join(", ")
+                : "-"}
+            </span>
+          ),
         }));
 
       // CERTIFICACIONES
@@ -112,22 +157,59 @@ export default function Plantilla2() {
       case "certificacion":
         return (data.certificaciones || []).map((cert) => ({
           id: cert.id_certificacion,
-          titulo: cert.titulo,
-          descripcion: cert.institucion,
-          imagen: cert.url_certificado || null,
+
+          izquierda: (
+            <span className="font-medium">
+              {cert.titulo}
+            </span>
+          ),
+
+          centro: (
+            <span>
+              {cert.institucion}
+            </span>
+          ),
+
+          derecha: cert.url_certificado ? (
+            <img
+              src={cert.url_certificado}
+              alt={cert.titulo}
+              className="w-10 h-10 rounded object-cover"
+            />
+          ) : (
+            <span>-</span>
+          ),
         }));
 
       // HABILIDADES TÉCNICAS
-      case "habilidades tecnicas": 
+      case "habilidades tecnicas":
       case "habilidades-tecnicas":
       case "habilidadestecnicas":
       case "tecnicas":
         return (data.habilidadesTecnicas || []).map((hab) => ({
           id: hab.id_habilidad,
-          titulo: hab.nombre || "Habilidad Técnica",
-          descripcion: `Nivel: ${hab.nivel || "No especificado"}`,
-          // Tomamos el logo de la primera tecnología asociada a esta habilidad
-          imagen: hab.tecnologias?.[0]?.logo || null,
+
+          izquierda: (
+            <span className="font-medium">
+              {hab.nombre || "Habilidad Técnica"}
+            </span>
+          ),
+
+          centro: (
+            <span>
+              {hab.nivel || "No especificado"}
+            </span>
+          ),
+
+          derecha: hab.tecnologias?.[0]?.logo ? (
+            <img
+              src={hab.tecnologias[0].logo}
+              alt={""+hab.nombre}
+              className="w-10 h-10 object-contain"
+            />
+          ) : (
+            <span>-</span>
+          ),
         }));
 
       case "perfil":
@@ -136,7 +218,9 @@ export default function Plantilla2() {
         return [];
 
       default:
-        console.warn(`⚠️ Sección no reconocida en el switch: "${seccionActual}"`);
+        console.warn(
+          `⚠️ Sección no reconocida en el switch: "${seccionActual}"`
+        );
         return [];
     }
   }, [data, activeIndex]);
@@ -178,7 +262,7 @@ export default function Plantilla2() {
         }}
       >
         <div className="flex flex-col gap-3 shrink-0">
-          <h1 className="inline-block bg-transparent text-black text-2xl font-bold">
+          <h1 className="inline-block bg-transparent text-black text-2xl font-black">
             Mi Portafolio
           </h1>
           <NavbarHorizontal
@@ -221,7 +305,7 @@ export default function Plantilla2() {
               items={itemsAdaptados}
               activeIndex={-1} 
               onItemClick={(index) => {
-                console.log("Hiciste clic en:", itemsAdaptados[index].titulo);
+                console.log("Hiciste clic en item:", index);
               }}
             />
 

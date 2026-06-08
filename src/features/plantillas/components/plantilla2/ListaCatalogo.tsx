@@ -3,11 +3,9 @@ import type { ReactNode } from "react";
 
 export interface CatalogoItem {
   id: string | number;
-  titulo: string;
-  descripcion: string;
-  detalle?: string;
-  imagen?: ReactNode | string;
-  indexLabel?: string;
+  izquierda: ReactNode;
+  centro: ReactNode;
+  derecha: ReactNode;
 }
 
 interface ListaCatalogoProps {
@@ -21,8 +19,8 @@ export function ListaCatalogo({ items, activeIndex, onItemClick }: ListaCatalogo
     <div
       className="flex flex-col gap-3 w-full overflow-y-auto pr-1"
       style={{
-        scrollbarWidth: "none",          // Firefox
-        msOverflowStyle: "none",         // IE/Edge
+        scrollbarWidth: "none",          
+        msOverflowStyle: "none",         
       }}
     >
       <style>{`div::-webkit-scrollbar { display: none; }`}</style>
@@ -38,11 +36,9 @@ export function ListaCatalogo({ items, activeIndex, onItemClick }: ListaCatalogo
             }`}
           >
             <CardCatalogo
-              titulo={item.titulo}
-              descripcion={item.descripcion}
-              detalle={item.detalle}
-              imagen={item.imagen}
-              indexLabel={item.indexLabel}
+              izquierda={item.izquierda}
+              centro={item.centro}
+              derecha={item.derecha}
               onClick={() => onItemClick(index)}
             />
           </div>
