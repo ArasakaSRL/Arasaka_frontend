@@ -18,17 +18,23 @@ interface ListaCatalogoProps {
 
 export function ListaCatalogo({ items, activeIndex, onItemClick }: ListaCatalogoProps) {
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div
+      className="flex flex-col gap-3 w-full overflow-y-auto pr-1"
+      style={{
+        scrollbarWidth: "none",          // Firefox
+        msOverflowStyle: "none",         // IE/Edge
+      }}
+    >
+      <style>{`div::-webkit-scrollbar { display: none; }`}</style>
       {items.map((item, index) => {
         const isActive = activeIndex === index;
-
         return (
           <div
             key={item.id}
-            className={`transition-all duration-300 cursor-pointer rounded-xl relative ${
-              isActive 
-                ? "z-10 opacity-100 scale-[1.02] drop-shadow-xl" 
-                : "z-0 opacity-60 hover:opacity-85 hover:scale-[1.01] hover:drop-shadow-md hover:z-10"
+            className={`transition-all duration-300 cursor-pointer rounded-xl ${
+              isActive
+                ? "opacity-100 scale-[1.02]"
+                : "opacity-70 hover:opacity-90 hover:scale-[1.01]"
             }`}
           >
             <CardCatalogo

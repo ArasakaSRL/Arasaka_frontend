@@ -146,7 +146,7 @@ export default function Plantilla2() {
   if (noDisponible || !data) return <div>Portafolio no disponible.</div>;
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#F0EAD6]">
+    <div className="relative min-h-screen bg-[#F0EAD6] overflow-x-hidden">
       <SeccionHexagono
         rotation={rotation}
         activeIndex={activeIndex}
@@ -158,25 +158,51 @@ export default function Plantilla2() {
       />
 
       {/* 2. Arreglo de Sombras: Contenedor principal sin overflow */}
-      <div
-        className="absolute z-50 flex flex-col gap-3 w-[500px]"
+     <div
+        className="
+          z-50 flex flex-col gap-3
+          w-full max-w-[500px]
+          mx-auto
+
+          bg-transparent
+
+          lg:absolute
+        "
         style={{
-          top: "10%",
-          left: "65%",
-          transform: "translateX(-50%)",
-          maxHeight: "80vh", 
+          ...(window.innerWidth >= 1024 && {
+            top: "2%",
+            left: "65%",
+            transform: "translateX(-50%)",
+            maxHeight: "80vh",
+          }),
         }}
       >
         <div className="flex flex-col gap-3 shrink-0">
-          <h1 className="text-black text-2xl font-bold">Mi Portafolio</h1>
+          <h1 className="inline-block bg-transparent text-black text-2xl font-bold">
+            Mi Portafolio
+          </h1>
           <NavbarHorizontal
             activeIndex={activeIndex}
             onChange={handleSectionChange}
           />
         </div>
 
-        {/* Contenedor dinámico (Scroll y Padding) */}
-        <div className="overflow-y-auto flex-1 px-4 py-4 -mx-4">
+        {/* Contenedor dinámico con scroll invisible */}
+        <div
+          className="
+            z-50 flex flex-col gap-3
+            w-full max-w-[500px]
+            mx-auto mt-6 
+
+            lg:absolute
+            lg:left-[50%]
+            lg:top-[100%]
+            lg:-translate-x-1/2
+          "
+          style={{
+            maxHeight: "80vh",
+          }}
+        >
           
           {ORBITA_ITEMS[activeIndex]?.id?.toLowerCase() === "perfil" ? (
           

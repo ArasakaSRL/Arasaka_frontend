@@ -11,16 +11,16 @@ export default function NavbarHorizontal({
   onChange,
 }: Props) {
   return (
-    <nav
-      className="
-        flex items-center gap-7 p-1.5
-        rounded-2xl
-        bg-white/5
-        backdrop-blur-2xl
-        border border-white/10
-        shadow-[0_8px_32px_rgba(0,0,0,0.4)]
-      "
-    >
+   <nav
+    className="
+      flex items-center gap-7 p-1.5
+      rounded-2xl
+      bg-white/70
+      backdrop-blur-xl
+      border border-black/8
+      shadow-[0_2px_12px_rgba(0,0,0,0.07)]
+    "
+  >
       {ORBITA_ITEMS.map((item, index) => {
         const isActive = activeIndex === index;
         const Icon = item.icon;

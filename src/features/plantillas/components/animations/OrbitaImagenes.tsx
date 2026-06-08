@@ -10,7 +10,7 @@ interface Props {
 }
 
 const CONFIG = {
-  radio: 500,
+  radio: 600,
   velocidadOrbita: 0.002,
   sizeImagen: 264,
   sizePerfil: 180,
@@ -40,7 +40,7 @@ export default function OrbitaImagenes({
     const delta = externalStep - lastStepRef.current;
     if (delta === 0) return;
     lastStepRef.current  = externalStep;
-    pendingDeltaRef.current += delta; // ← acumula, no llama setState
+    pendingDeltaRef.current += delta; // ← acumula
   }, [externalStep]);
 
   // targetIndex: posición absoluta — igual, guarda en ref
@@ -119,7 +119,7 @@ export default function OrbitaImagenes({
           <motion.div
             key={item.id}
             className="absolute top-1/2 left-1/2"
-            animate={{ scale: isActive ? 1.5 : 1 }}  // ← sonar: 1.0 → 1
+            animate={{ scale: isActive ? 2.0 : 1 }}  // ← sonar: 1.0 → 1
             transition={{ scale: { duration: 1.2, ease: "easeInOut" } }}
             style={{ x, y, translateX: "-50%", translateY: "-50%" }}
           >
