@@ -140,11 +140,11 @@ export default function HabilidadesJam({
 
                   {/* Información */}
                   <div className="flex-1 w-full">
-                    <h4 className="text-black font-black text-xs md:text-sm text-center xl:text-left leading-tight wrap-break-word mb-2">
+                    <h4 className="text-black font-black text-xs md:text-sm text-center xl:text-left leading-tight wrap-break-word mb-2 hidden md:block">
                       {skill.nombre}
                     </h4>
 
-                    <div className="w-full h-2 bg-slate-200 rounded-full border border-slate-900 overflow-hidden">
+                    <div className="w-full h-2 bg-slate-200 rounded-full border border-slate-900 overflow-hidden hidden md:block">
                       <div
                         className={`h-full rounded-full ${styles.bg}`}
                         style={{
@@ -182,7 +182,7 @@ export default function HabilidadesJam({
                   </span>
                 </div>
                 <span
-                  className={` px-3 py-1 rounded-full border border-slate-900 text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(15,23,42,1)]
+                  className={` px-3 py-1 rounded-full border border-slate-900 text-[10px] font-black text-black uppercase shadow-[1.5px_1.5px_0px_0px_rgba(15,23,42,1)]
                     ${styles.bg}
                   `}
                 >

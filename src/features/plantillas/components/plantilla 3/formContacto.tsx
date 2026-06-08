@@ -200,7 +200,7 @@ export default function ContactarModal({
             transition={{
               duration: 0.2,
             }}
-            className=" bg-white rounded-[32px] border-4 border-slate-900 text-slate-900 w-full max-w-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(123,223,242,1)] relative flex flex-col p-6 space-y-4 "
+            className=" bg-white rounded-4xl border-4 border-slate-900 text-slate-900 w-full max-w-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(123,223,242,1)] relative flex flex-col p-6 space-y-4 "
           >
             <div
               className=" flex items-center justify-between border-b-2 border-slate-100 pb-3 "

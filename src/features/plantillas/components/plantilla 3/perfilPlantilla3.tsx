@@ -13,9 +13,12 @@ type Props = {
   experiencias: experiencias[];
   certificaciones: certificaciones[];
   informacion_basica?: InformacionBasica | null;
+  mostrarCV?: boolean;
+  mostrarContacto?: boolean;
+  mostrarRedes?: boolean;
 };
 
-export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, experiencias, certificaciones, informacion_basica }: Props) {
+export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, experiencias, certificaciones, informacion_basica, mostrarCV, mostrarContacto, mostrarRedes }: Props) {
   const [descargandoCV, setDescargandoCV] = useState(false);
   const [contactarOpen, setContactarOpen] = useState(false);
   const profesion = usuario.profesiones?.map((p) => p.nombre).join(" • ") || "Profesional";
@@ -126,13 +129,16 @@ export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, ex
             </div>
             {/* BOTONES */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-3">
-              <a
+            {mostrarContacto && (
+              <button
                 onClick={() => setContactarOpen(true)}
                 className=" bg-[#7bdff2] border-2 border-slate-900 text-slate-900 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2 "
               >
                 <MessageSquare className="w-4 h-4" />
                 Hablar conmigo
-              </a>
+              </button>
+            )}
+            {mostrarCV && (
               <button
                 onClick={handleDescargarCV}
                 disabled={descargandoCV}
@@ -143,30 +149,29 @@ export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, ex
                   ? "Generando..."
                   : "Obtener mi CV"}
               </button>
-              <div className="hidden sm:block h-8 w-0.5 bg-slate-900 mx-1"></div>
-              {/* Redes */}
-              <div className="flex items-center gap-2">
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
-                >
-                  <img 
-                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg" 
-                    className="w-6 h-6" 
-                    alt="LinkedIn" 
-                  />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
-                >
-                  <img 
-                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" 
-                    className="w-6 h-6" 
-                    alt="GitHub" 
-                  />
-                </a>
-              </div>
+            )}
+            {mostrarRedes && (
+              <><div className="hidden sm:block h-8 w-0.5 bg-slate-900 mx-1"></div><div className="flex items-center gap-2">
+                  <a
+                    href="#"
+                    className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
+                  >
+                    <img
+                      src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg"
+                      className="w-6 h-6"
+                      alt="LinkedIn" />
+                  </a>
+                  <a
+                    href="#"
+                    className="w-10 h-10 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
+                  >
+                    <img
+                      src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+                      className="w-6 h-6"
+                      alt="GitHub" />
+                  </a>
+                </div></>
+            )}
             </div>
           </div>
         </div>

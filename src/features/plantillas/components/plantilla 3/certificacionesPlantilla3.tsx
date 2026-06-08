@@ -17,7 +17,7 @@ export default function CertificacionesPastel({
 
   return (
     <>
-      <section className="bg-white border-4 border-slate-900 rounded-[36px] p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(123,223,242,1)] space-y-6">
+      <section className="bg-white border-4 border-slate-900 rounded-[36px] p-6 md:p-8 shadow-[14px_14px_0px_0px_rgba(123,223,242,1)] space-y-6">
         <div className="flex items-center gap-2 border-b-2 border-slate-100 pb-4">
           <div className="w-8 h-8 rounded-full bg-[#f7d6e0] border-2 border-slate-900 flex items-center justify-center">
             <Medal size={20} color="black" />

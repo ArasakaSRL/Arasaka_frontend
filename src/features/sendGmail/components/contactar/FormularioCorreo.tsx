@@ -152,7 +152,7 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                     onDrop={e => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files) }}
                     className={`flex flex-col items-center justify-center gap-1.5 border-2 border-dashed rounded-xl py-5 transition-colors
                         ${files.length >= MAX_FILES
-                            ? 'border-white/5 bg-white/[0.02] cursor-not-allowed opacity-50'
+                            ? 'border-white/5 bg-white/2 cursor-not-allowed opacity-50'
                             : dragging
                                 ? 'border-blue-500/60 bg-blue-500/10 cursor-pointer'
                                 : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/[0.07] cursor-pointer'
@@ -193,7 +193,7 @@ export default function FormularioCorreo({ form, files, loading, error, onChange
                             <li key={i} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-lg px-3 py-2">
                                 <span className="flex items-center gap-2 text-xs text-white/70 truncate">
                                     <span>{fileIcon(f.name)}</span>
-                                    <span className="truncate max-w-[200px]">{f.name}</span>
+                                    <span className="truncate max-w-50">{f.name}</span>
                                     <span className="text-white/30 shrink-0">{(f.size / 1024).toFixed(0)} KB</span>
                                 </span>
                                 <button type="button" onClick={() => removeFile(i)} className="text-white/30 hover:text-red-400 transition-colors ml-2">

@@ -27,34 +27,51 @@ export default function Plantilla3() {
     return <div>Portafolio no disponible</div>;
   }
 
+  const config = data.configuracion;
+console.log("Configuración:", data.configuracion);
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-10">
 
       <PerfilBubble
         usuario={data.usuario}
-        proyectos={data.proyectos}
-        tecnicas={data.habilidadesTecnicas}
-        blandas={data.habilidadesBlandas}
-        experiencias={data.experiencias}
-        certificaciones={data.certificaciones}
+        proyectos={ data.configuracion?.mostrar_proyectos ? data.proyectos : [] }
+        tecnicas={ data.configuracion?.mostrar_habilidades ? data.habilidadesTecnicas : []}
+        blandas={
+          data.configuracion?.mostrar_habilidades
+            ? data.habilidadesBlandas
+            : []
+        }
+        experiencias={ data.configuracion?.mostrar_experiencias ? data.experiencias : [] }
+        certificaciones={ data.configuracion?.mostrar_certificaciones ? data.certificaciones : [] }
+        mostrarCV={ data.configuracion?.mostrar_cv ?? true }
+        mostrarContacto={ data.configuracion?.mostrar_contacto ?? true }
+        mostrarRedes={ data.configuracion?.mostrar_redes_profesionales ?? true }
       />
 
-      <HabilidadesJam
-        tecnicas={data.habilidadesTecnicas}
-        blandas={data.habilidadesBlandas}
-      />
+      {config?.mostrar_habilidades && (
+        <HabilidadesJam
+          tecnicas={data.habilidadesTecnicas}
+          blandas={data.habilidadesBlandas}
+        />
+      )}
 
-      <Experiencia
-        experiencias={data.experiencias}
-      />
+      {config?.mostrar_experiencias && (
+        <Experiencia
+          experiencias={data.experiencias}
+        />
+      )}
 
-      <ProyectosPastel
-        proyectos={data.proyectos}
-      />
+      {config?.mostrar_proyectos && (
+        <ProyectosPastel
+          proyectos={data.proyectos}
+        />
+      )}
 
-      <CertificacionesPastel
-        certificaciones={data.certificaciones}
-      />
+      {config?.mostrar_certificaciones && (
+        <CertificacionesPastel
+          certificaciones={data.certificaciones}
+        />
+      )}
     </div>
   );
 }
