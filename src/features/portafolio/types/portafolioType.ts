@@ -106,6 +106,7 @@ export type configuracion = {
     mostrar_cv: boolean;
     mostrar_contacto: boolean;
     paleta_colores: string;
+    plantilla?: 'predeterminado' | 'minimalista' | 'profesional' | 'stiloPastel' | string;
 };
 
 export type InformacionBasica = {

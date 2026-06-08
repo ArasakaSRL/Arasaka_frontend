@@ -59,6 +59,7 @@ export const mapPortafolio = (api: any): Portafolio => {
             mostrar_cv: data.configuracion?.mostrar_cv ?? true,
             mostrar_contacto: data.configuracion?.mostrar_contacto ?? true,
             paleta_colores: data.configuracion?.paleta_colores ?? "default",
+            plantilla: data.configuracion?.plantilla ?? "predeterminado",
         },
     };
 };

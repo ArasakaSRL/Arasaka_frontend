@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import CardsSecciones from "@/features/plantillas/components/plantilla1/cards/CardsSecciones";
-import DetallesPerfil from "@/features/plantillas/components/plantilla1/cards/DetallesPerfil";
 import FondoPortada from "@/features/plantillas/components/plantilla1/FondoPortada";
+import { useParams } from 'react-router-dom';
+import { usePortfolioData } from '@/features/reportesUsuario/hooks/usePortfolioData';
+import DetallesPerfil from '../components/plantilla1/cards/DetallesPerfil';
 
 
 
@@ -9,6 +11,10 @@ export default function Plantilla1() {
 
   const [bannerVisible, setBannerVisible] = useState(true);
   const [isDesktop, setIsDesktop] = useState(false);
+
+  const { slug } = useParams<{ slug: string }>();
+
+  const { data, loading, noDisponible } = usePortfolioData(slug);
 
   useEffect(() => {
     const checkScreen = () => {
@@ -38,6 +44,13 @@ export default function Plantilla1() {
 
     return () => observer.disconnect();
   }, []);
+
+  if (!slug)        return <div>No tienes un portafolio asignado.</div>;
+  if (loading)      return <div>Cargando...</div>;
+  if (noDisponible || !data) return <div>Portafolio no disponible.</div>;
+
+  const { usuario} = data;
+
 
   return (
     <div className="w-full mx-auto">
@@ -74,12 +87,12 @@ export default function Plantilla1() {
             }
           >
             <DetallesPerfil
-            nombre="Katherine Michelle Pérez Taipe"
-            pais="Quito, Ecuador"
-            profesion="Comunicación Social y Producción Multimedia"
-            correo="katherine@email.com"
-            foto="https://res.cloudinary.com/dkopjpuqx/image/upload/v1775345490/look-my-medal_apeb4v.jpg"
-          />
+              nombre={`${usuario.nombre} ${usuario.apellido}`}
+              pais={usuario.pais || "No especificado"}
+              profesion={usuario.profesiones?.[0]?.nombre || "Profesional"} 
+              correo={usuario.correo}
+              foto={usuario.foto_perfil || undefined}
+            />
           </div>
         </div>
 
