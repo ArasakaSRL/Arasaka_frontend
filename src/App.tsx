@@ -36,7 +36,7 @@ import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 import FormacionAcademicaPage from  './features/formacion-academica/pages/FormacionAcademicaPage'
 import CambiarPlantilla from './pages/Dashboard/configuraciones/CambiarPlantilla'
 import Plantilla3 from './features/plantillas/pages/Plantilla3'
-
+import ReporteMensualPage from '@/features/formacion-academica/pages/ReporteMensualPage'
 export default function App() {
   return (
     <Routes>
@@ -84,6 +84,7 @@ export default function App() {
       <Route path="/portafolio/:slug/proyectos/:id" element={<PageVistaProyecto />} />
       <Route path="/portafolio/privado/:slug/proyectos/:id" element={<PageVistaProyecto />} />
       <Route path="/portafolio/formacion-academica" element={<FormacionAcademicaPage />} />
+      <Route path="/reportes-mensuales" element={<ReporteMensualPage />} />
     </Routes>
   )
 }

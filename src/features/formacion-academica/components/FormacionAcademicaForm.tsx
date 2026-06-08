@@ -51,6 +51,7 @@ export default function FormacionAcademicaForm({
                     type="text"
                     name="institucion"
                     required
+                    minLength={5}
                     maxLength={80}
                     value={formData.institucion}
                     onChange={handleChange}

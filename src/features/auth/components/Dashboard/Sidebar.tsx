@@ -50,7 +50,12 @@ const menuItems: MenuItem[] = [
             { icon: Star,            label: 'Destacados', path: '/Dashboard/mensajes/Destacados' },
         ]
     },
-    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' 
+        ,submenu: [
+            { icon: BarChart3, label: 'Reportes Mensuales', path: '/reportes-mensuales' },
+        ]
+    },
+
    //{ icon: Settings,  label: 'Configuración', path: '/Dashboard/configuracion/Configuracion' },
    //{ icon: FolderOpen, label: 'Tegnologías',   path: '/Dashboard/tegnologias' },
     { icon: FolderOpen, label: 'Portafolios', path: '/Dashboard/admin/Usuarios', tourId: 'tour-portafolios' },
