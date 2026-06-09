@@ -86,6 +86,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         tecnologias: tecnologias,
         projectUrl: formularioData.projectUrl,
         githubUrl: formularioData.githubUrl,
+        imagenes,
       });
 
       if (!result.success) {
@@ -108,9 +109,48 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
       }
       setErrors({});
       setLoading(true);
+
       try {
-        let proyectoGuardado;
-        const basePayload = {
+        let url_imagen: string[] = [];
+
+        if (!proyectoEditar) {
+          const files: File[] = imagenes
+            .filter((img) => img.file)
+            .map((img) => img.file as File);
+
+          url_imagen =
+            files.length > 0
+              ? await uploadMultipleImages(files)
+              : [];
+        } else {
+          const nuevas = imagenes.filter(
+            (img) => img.isNew && img.file
+          );
+
+          const existentes = imagenes.filter(
+            (img) => !img.isNew
+          );
+
+          const files: File[] = nuevas.map(
+            (img) => img.file as File
+          );
+
+          const urlsNuevas =
+            files.length > 0
+              ? await uploadMultipleImages(files)
+              : [];
+
+          const urlsExistentes = existentes.map(
+            (img) => img.url as string
+          );
+
+          url_imagen = [
+            ...urlsExistentes,
+            ...urlsNuevas,
+          ];
+        }
+
+        const payload = {
           nombre: formularioData.title,
           descripcion: formularioData.descripcion || undefined,
           fecha_inicio: formularioData.startDate,
@@ -118,37 +158,24 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           tecnologias,
           url_demo: formularioData.projectUrl,
           url_github: formularioData.githubUrl,
+          url_imagen,
         };
 
+        let proyectoGuardado;
+
         if (proyectoEditar) {
-          const nuevas = imagenes.filter((img) => img.isNew && img.file);
-          const existentes = imagenes.filter((img) => !img.isNew);
-
-          const files: File[] = nuevas.map((img) => img.file as File);
-
-          const urlsNuevas =
-            files.length > 0 ? await uploadMultipleImages(files) : [];
-
-          const urlsExistentes = existentes.map(
-            (img) => img.url as string
-          );
-
-          const payload = {
-            ...basePayload,
-            url_imagen: [...urlsExistentes, ...urlsNuevas],
-          };
-
           proyectoGuardado = await editarProyecto(
             proyectoEditar.id_proyecto,
             payload
           );
 
-          toast.success("Proyecto editado exitosamente", 3000);
+          toast.success( "Proyecto editado exitosamente", 3000 );
         } else {
-          proyectoGuardado = await crearProyecto(basePayload);
+          proyectoGuardado = await crearProyecto(payload);
 
-          toast.success("Proyecto creado exitosamente", 3000);
+          toast.success( "Proyecto creado exitosamente", 3000);
         }
+
         onCreated(proyectoGuardado);
         resetForm();
         closeModal();
@@ -172,11 +199,8 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           </button>
       </div>
 
-      <div className={`px-6 pb-6 gap-6 flex flex-col ${
-          proyectoEditar ? "md:flex-row" : ""
-        }`}
-      >
-        <div className={proyectoEditar ? "flex-1" : "w-full"}>
+      <div className="flex flex-col md:flex-row gap-6 px-6 pb-6">
+        <div className="flex-1">
           <form className="w-full space-y-3 text-left" id="proyecto-form" onSubmit={handleSubmit}>
             <Input 
               label="Título del Proyecto"
@@ -299,16 +323,14 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
           </form>
         </div>
 
-        {proyectoEditar && (
-          <div className="flex-1 flex flex-col">
-            <UploaderImagenes
-              imagenes={imagenes}
-              setImagenes={setImagenes}
-              errors={errors}
-              setErrors={setErrors}
-            />
-          </div>
-        )}
+        <div className="flex-1 flex flex-col">
+          <UploaderImagenes
+            imagenes={imagenes}
+            setImagenes={setImagenes}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        </div>
       </div>
       <div className="flex justify-end gap-2 px-6 pb-4">
         <button
