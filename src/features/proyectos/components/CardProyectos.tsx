@@ -14,6 +14,8 @@ export default function CardProyectos ({proyecto, editable, eliminando, onSelect
 
   const [openGaleria, setOpenGaleria] = useState(false);
 
+  console.log( "proyectos:", proyecto.nombre, proyecto.url_imagen);
+
     return(
     <>
       <div   
