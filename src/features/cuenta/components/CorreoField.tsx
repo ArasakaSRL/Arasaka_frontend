@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Mail, Pencil, X, Loader2, CheckCircle, AlertCircle, ArrowRight, KeyRound } from 'lucide-react'
+import { Mail, Loader2, CheckCircle, AlertCircle, ArrowRight, KeyRound } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { z } from 'zod'
 import { useAuthStore } from '@/stores/authStore'
 import { verificarCorreo, confirmarCorreo } from '@/features/auth/api/auth'
+import EditableField from './EditableField'
 
 const correoSchema = z.string().trim()
     .min(5, 'Correo inválido')
@@ -32,46 +33,42 @@ export default function CorreoField() {
 
     const correoChanged = correoVal !== (user?.correo ?? '')
 
-    function handleEdit() {
-        setCorreoVal(user?.correo ?? '')
+    function resetEditState() {
         setCorreoError(undefined)
         setCodigoEnviado(false)
         setCodigo('')
         setCodigoError(undefined)
         setVerificado(false)
         setApiError(null)
+    }
+
+    function handleEdit() {
+        setCorreoVal(user?.correo ?? '')
+        resetEditState()
         setSuccess(false)
         setEditing(true)
     }
 
     function handleCancel() {
+        if (loadingEnviar || loadingVerificar) return
         setEditing(false)
-        setCorreoError(undefined)
-        setCodigoEnviado(false)
-        setCodigo('')
-        setCodigoError(undefined)
-        setVerificado(false)
-        setApiError(null)
+        resetEditState()
     }
 
     function handleCorreoChange(val: string) {
-        setCorreoVal(val)
-        setCorreoError(undefined)
-        setCodigoEnviado(false)
-        setCodigo('')
-        setCodigoError(undefined)
-        setVerificado(false)
-        setApiError(null)
+        setCorreoVal(val.toLowerCase())
+        resetEditState()
     }
 
     async function handleEnviarCodigo() {
         setApiError(null)
-        const r = correoSchema.safeParse(correoVal)
+        const normalized = correoVal.trim().toLowerCase()
+        const r = correoSchema.safeParse(normalized)
         if (!r.success) { setCorreoError(r.error.issues[0].message); return }
-        if (correoVal === user?.correo) { setCorreoError('El correo es igual al actual'); return }
+        if (normalized === user?.correo) { setCorreoError('El correo es igual al actual'); return }
         setLoadingEnviar(true)
         try {
-            await verificarCorreo({ correo_nuevo: correoVal })
+            await verificarCorreo({ correo_nuevo: normalized })
             setCodigoEnviado(true)
         } catch (err: unknown) {
             const e = err as { response?: { data?: { message?: string } } }
@@ -101,144 +98,113 @@ export default function CorreoField() {
     }
 
     return (
-        <div className="flex flex-col gap-2">
-            <AnimatePresence mode="wait">
-                {!editing ? (
-                    <motion.div key="view"
-                        initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}
-                        className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl px-1 md:px-4 py-3"
+        <EditableField
+            icon={Mail}
+            label="Correo"
+            value={user?.correo}
+            editing={editing}
+            onStartEdit={handleEdit}
+            onCancel={handleCancel}
+            success={success}
+            successText="Correo actualizado"
+            editClassName="flex flex-col border border-slate-200 rounded-xl overflow-hidden bg-white"
+        >
+            <div className="px-4 py-3 bg-white flex flex-col gap-2">
+                <div className="relative">
+                    <input
+                        type="email"
+                        value={correoVal}
+                        maxLength={50}
+                        autoFocus
+                        disabled={codigoEnviado}
+                        placeholder="nuevo@correo.com"
+                        aria-invalid={!!correoError}
+                        onKeyDown={e => { if (e.key === 'Enter' && !codigoEnviado) handleEnviarCodigo(); if (e.key === 'Escape') handleCancel() }}
+                        onChange={e => handleCorreoChange(e.target.value)}
+                        className={`w-full px-3 py-2 text-sm rounded-lg border outline-none transition-all text-slate-700
+                            ${codigoEnviado ? 'bg-slate-50 text-slate-400 cursor-not-allowed border-slate-100' :
+                            correoError ? 'border-red-300 focus:ring-1 focus:ring-red-300 bg-red-50/30' :
+                            verificado ? 'border-emerald-300 bg-emerald-50/20 pr-8' :
+                            'border-slate-200 focus:ring-1 focus:ring-[#1e2a5e]/30 focus:border-[#1e2a5e]/40 bg-white'}`}
+                    />
+                    {verificado && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <CheckCircle size={15} className="text-emerald-500" />
+                        </div>
+                    )}
+                </div>
+                {correoError && (
+                    <p className="text-red-500 text-[11px] flex items-center gap-1" role="alert">
+                        <AlertCircle size={11} /> {correoError}
+                    </p>
+                )}
+                {correoChanged && !codigoEnviado && !verificado && (
+                    <button
+                        type="button"
+                        onClick={handleEnviarCodigo}
+                        disabled={loadingEnviar}
+                        className="flex items-center gap-1.5 text-[#1e2a5e] font-semibold text-xs py-1 hover:underline transition-all disabled:opacity-40 self-start"
                     >
-                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm">
-                            <Mail size={20} className="text-black" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Correo</p>
-                            <p className="text-sm text-slate-700 font-medium break-all">{user?.correo || '—'}</p>
-                        </div>
-                        <button
-                            onClick={handleEdit}
-                            className="w-7 h-7 flex items-center justify-center rounded-lg border border-[#1e2a5e]/20 bg-[#1e2a5e]/5 text-[#1e2a5e] hover:bg-[#1e2a5e]/10 transition-colors shrink-0"
-                        >
-                            <Pencil size={16} className='text-slate-400' />
-                        </button>
-                    </motion.div>
-                ) : (
-                    <motion.div key="edit"
-                        initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}
-                        className="flex flex-col gap-0 border border-slate-200 rounded-xl overflow-hidden"
-                    >
-                        <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-100">
-                            <span className="text-[12px]! font-semibold text-slate-500 flex items-center gap-1.5">
-                                <Mail size={16} className="text-slate-400" /> Correo
-                            </span>
-                            <button onClick={handleCancel} className="text-slate-400 hover:text-slate-600 transition-colors">
-                                <X size={18} />
-                            </button>
-                        </div>
+                        {loadingEnviar ? <Loader2 size={12} className="animate-spin" /> : <ArrowRight size={12} />}
+                        {loadingEnviar ? 'Enviando...' : 'Enviar código de verificación'}
+                    </button>
+                )}
+            </div>
 
-                        <div className="px-4 py-3 bg-white flex flex-col gap-2">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={correoVal}
-                                    maxLength={50}
-                                    autoFocus
-                                    disabled={codigoEnviado}
-                                    placeholder="nuevo@correo.com"
-                                    onChange={e => handleCorreoChange(e.target.value)}
-                                    className={`w-full px-3 py-2 text-sm rounded-lg border outline-none transition-all text-slate-700
-                                        ${codigoEnviado ? 'bg-slate-50 text-slate-400 cursor-not-allowed border-slate-100' :
-                                        correoError ? 'border-red-300 focus:ring-1 focus:ring-red-300 bg-red-50/30' :
-                                        verificado ? 'border-emerald-300 bg-emerald-50/20 pr-8' :
-                                        'border-slate-200 focus:ring-1 focus:ring-[#1e2a5e]/30 focus:border-[#1e2a5e]/40 bg-white'}`}
-                                />
-                                {verificado && (
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                        <CheckCircle size={15} className="text-emerald-500" />
-                                    </div>
-                                )}
-                            </div>
-                            {correoError && (
-                                <p className="text-red-500 text-[11px] flex items-center gap-1">
-                                    <AlertCircle size={11} /> {correoError}
+            <AnimatePresence>
+                {codigoEnviado && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="border-t border-slate-100 px-4 py-3 bg-slate-50/60 flex flex-col gap-2">
+                            <p className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                                <KeyRound size={11} className="text-[#1e2a5e]" />
+                                Código enviado a <span className="font-semibold text-slate-600 break-all">{correoVal}</span>
+                            </p>
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                value={codigo}
+                                maxLength={6}
+                                autoFocus
+                                placeholder="000000"
+                                aria-invalid={!!codigoError}
+                                onKeyDown={e => { if (e.key === 'Enter') handleVerificarCodigo() }}
+                                onChange={e => { setCodigo(e.target.value.replace(/\D/g, '')); setCodigoError(undefined) }}
+                                className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none focus:ring-1 focus:ring-[#1e2a5e]/30 tracking-[0.3em] font-mono text-slate-700 bg-white"
+                            />
+                            {codigoError && (
+                                <p className="text-red-500 text-[11px] flex items-center gap-1" role="alert">
+                                    <AlertCircle size={11} /> {codigoError}
                                 </p>
                             )}
-                            {correoChanged && !codigoEnviado && !verificado && (
-                                <button
-                                    onClick={handleEnviarCodigo}
-                                    disabled={loadingEnviar}
-                                    className="flex items-center gap-1.5 text-[#1e2a5e] font-semibold text-xs py-1 hover:underline transition-all disabled:opacity-40 self-start"
-                                >
-                                    {loadingEnviar ? <Loader2 size={12} className="animate-spin" /> : <ArrowRight size={12} />}
-                                    {loadingEnviar ? 'Enviando...' : 'Enviar código de verificación'}
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                onClick={handleVerificarCodigo}
+                                disabled={loadingVerificar || codigo.length !== 6}
+                                className="flex items-center justify-center gap-1.5 bg-[#1e2a5e] hover:bg-[#27496e] text-white font-semibold py-2 rounded-lg text-xs transition-colors disabled:opacity-40"
+                            >
+                                {loadingVerificar ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle size={12} />}
+                                {loadingVerificar ? 'Verificando...' : 'Confirmar código'}
+                            </button>
                         </div>
-
-                        <AnimatePresence>
-                            {codigoEnviado && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="border-t border-slate-100 px-4 py-3 bg-slate-50/60 flex flex-col gap-2">
-                                        <p className="text-[11px] text-slate-400 flex items-center gap-1.5">
-                                            <KeyRound size={11} className="text-[#1e2a5e]" />
-                                            Código enviado a <span className="font-semibold text-slate-600 break-all">{correoVal}</span>
-                                        </p>
-                                        <input
-                                            type="text"
-                                            value={codigo}
-                                            maxLength={6}
-                                            autoFocus
-                                            placeholder="000000"
-                                            onChange={e => { setCodigo(e.target.value.replace(/\D/g, '')); setCodigoError(undefined) }}
-                                            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none focus:ring-1 focus:ring-[#1e2a5e]/30 tracking-[0.3em] font-mono text-slate-700 bg-white"
-                                        />
-                                        {codigoError && (
-                                            <p className="text-red-500 text-[11px] flex items-center gap-1">
-                                                <AlertCircle size={11} /> {codigoError}
-                                            </p>
-                                        )}
-                                        <button
-                                            onClick={handleVerificarCodigo}
-                                            disabled={loadingVerificar || codigo.length !== 6}
-                                            className="flex items-center justify-center gap-1.5 bg-[#1e2a5e] hover:bg-[#27496e] text-white font-semibold py-2 rounded-lg text-xs transition-colors disabled:opacity-40"
-                                        >
-                                            {loadingVerificar ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle size={12} />}
-                                            {loadingVerificar ? 'Verificando...' : 'Confirmar código'}
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <AnimatePresence>
-                            {apiError && (
-                                <motion.div
-                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                    className="border-t border-red-100 px-4 py-2.5 bg-red-50 flex items-center gap-2"
-                                >
-                                    <AlertCircle size={12} className="text-red-400 shrink-0" />
-                                    <p className="text-[11px] text-red-600">{apiError}</p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </motion.div>
                 )}
             </AnimatePresence>
 
             <AnimatePresence>
-                {success && (
+                {apiError && (
                     <motion.div
-                        initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                        className="flex items-center gap-2 text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5"
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        role="alert"
+                        className="border-t border-red-100 px-4 py-2.5 bg-red-50 flex items-center gap-2"
                     >
-                        <CheckCircle size={13} />
-                        <p className="text-xs font-medium">Correo actualizado</p>
+                        <AlertCircle size={12} className="text-red-400 shrink-0" />
+                        <p className="text-[11px] text-red-600">{apiError}</p>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </EditableField>
     )
 }

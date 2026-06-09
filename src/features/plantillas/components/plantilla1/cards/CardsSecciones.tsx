@@ -8,13 +8,11 @@ import { CertificacionesSection } from "@/features/portafolio/components/Certifi
 
 import BotonMultiple from "../botones/BotonMultiple";
 
-import { useAuthStore } from "@/stores/authStore";
+import { useParams } from "react-router-dom";
 import { usePortfolioData } from "@/features/reportesUsuario/hooks/usePortfolioData";
 
 export default function CardsSecciones() {
-  const slug = useAuthStore(
-    (state) => state.portafolioSeleccionado?.slug
-  );
+  const { slug } = useParams<{ slug: string }>();
 
   const { data, loading, noDisponible } =
     usePortfolioData(slug);

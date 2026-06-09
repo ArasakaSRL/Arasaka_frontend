@@ -31,6 +31,8 @@ export interface AuthUser {
   tour_completado?: boolean
   tiene_password: boolean
   perfil_completo: boolean
+  provider?: string | null
+  verificacion_email?: string | null
 }
 
 interface AuthState {
