@@ -4,6 +4,7 @@ import type {ReportDataPayload} from "../types/ReporteGmail.type";
 export const enviarReporteGmail = async (data : ReportDataPayload)=>{
     try{
         const response = await apiClient.post(`reportes/enviar-pdf`,data);
+        
         return response.data;
     }catch(error){
         console.error('Error al enviar reporte por Gmail:', error);
