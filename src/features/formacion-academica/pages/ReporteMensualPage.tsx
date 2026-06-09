@@ -9,13 +9,12 @@ import { useAuthStore } from "@/stores/authStore";
 
 export default function ReporteMensualPage() {
   const { user } = useAuthStore();
-  
-  // 1. Estados de Inputs y Modos
+  const { portafolio } = useAuthStore();
+
+  const fechaCreacionPortafolio = portafolio?.fecha_creacion;
   const [email, setEmail] = useState(user?.correo || '');
   const [esEditable, setEsEditable] = useState(false); 
   const [enviando, setEnviando] = useState(false); 
-
-  // Obtener Año y Mes actual en formato 'YYYY-MM' para el estado inicial y el límite máximo
   const obtenerMesActualFormato = (): string => {
     const hoy = new Date();
     const anio = hoy.getFullYear();
@@ -23,11 +22,23 @@ export default function ReporteMensualPage() {
     return `${anio}-${mes}`;
   };
 
+
+  const obtenerMesMinimoFormato = (): string => {
+    if (!fechaCreacionPortafolio) return ''; 
+    const fecha = new Date(fechaCreacionPortafolio);
+
+    if (isNaN(fecha.getTime())) return '';
+    
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    return `${anio}-${mes}`;
+  };
+
   const maxMesPermitido = obtenerMesActualFormato();
-  // Estado que maneja el valor del input tipo mes ('YYYY-MM')
+  const minMesPermitido = obtenerMesMinimoFormato();
+
   const [mesSeleccionado, setMesSeleccionado] = useState(maxMesPermitido); 
 
-  // 2. Switches de estadísticas a incluir
   const [incluirVistas, setIncluirVistas] = useState(true);
   const [incluirPerfil, setIncluirPerfil] = useState(true); 
   const [incluirProyectos, setIncluirProyectos] = useState(true);
@@ -45,7 +56,6 @@ export default function ReporteMensualPage() {
   const obtenerFechaCorteActual = (): string => {
     const hoy = new Date();
     const dia = String(hoy.getDate()).padStart(2, '0');
-    // mesSeleccionado viene como "YYYY-MM", separamos el mes
     const [_, mes] = mesSeleccionado.split('-');
     const anio = hoy.getFullYear();
 
@@ -107,7 +117,6 @@ export default function ReporteMensualPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              {/* Dirección de Correo Destino */}
               <div className="flex flex-col items-start justify-start w-full">
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 block w-full text-left">
                   Dirección de Correo Destino
@@ -156,7 +165,6 @@ export default function ReporteMensualPage() {
                 )}
               </div>
 
-              {/* Calendario de solo Meses */}
               <div className="flex flex-col items-start justify-start w-full">
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 block w-full text-left">
                   Seleccionar Mes del Reporte
@@ -166,19 +174,19 @@ export default function ReporteMensualPage() {
                   <input
                     type="month"
                     value={mesSeleccionado}
+                    min={minMesPermitido}
                     max={maxMesPermitido}
                     onChange={(e) => setMesSeleccionado(e.target.value)}
                     className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-700 uppercase"
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-2 leading-relaxed text-left">
-                  Elige el mes específico del cual deseas compilar las métricas en el archivo PDF.
+                  Elige el mes específico. Solo se permiten meses desde la creación de tu portafolio hasta el mes actual.
                 </p>
               </div>
 
             </div>
 
-            {/* Sección de Estadísticas */}
             <div className="w-full flex flex-col items-start justify-start">
               <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-4 block w-full text-left">
                 Estadísticas que deseas incluir en el PDF
@@ -186,7 +194,6 @@ export default function ReporteMensualPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
 
-                {/* Vistas */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirVistas ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirVistas ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
@@ -212,7 +219,6 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Perfil */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirPerfil ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirPerfil ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
@@ -238,7 +244,6 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Proyectos */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirProyectos ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirProyectos ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
@@ -264,7 +269,6 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Mensajes */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirMensajes ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirMensajes ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
@@ -290,7 +294,6 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Currículum */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirCv ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirCv ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
@@ -319,7 +322,6 @@ export default function ReporteMensualPage() {
               </div>
             </div>
 
-            {/* Alerta de Todo Desmarcado */}
             {todoDesmarcado && (
               <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 animate-pulse text-left w-full">
                 <AlertTriangle className="w-5 h-5 shrink-0" />
@@ -329,7 +331,6 @@ export default function ReporteMensualPage() {
               </div>
             )}
 
-            {/* Footer de Acción */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100 w-full">
               <div className="flex items-start gap-3 max-w-xl text-left">
                 <AlertCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
