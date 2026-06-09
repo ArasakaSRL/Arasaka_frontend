@@ -167,11 +167,28 @@ export default function DashboardLayout({ children, hideSidebar = false }: Dashb
         if (!user || user.perfil_completo) return
         if (tourRun) return
 
-        toast.warning('⚠️ Seguridad: completa tu perfil agregando un usuario y contraseña.', 8000)
-        const intervalo = setInterval(() => {
+        const INTERVALO_MS = 600000
+        const CLAVE = 'perfil_advertencia_ts'
+
+        const mostrarToast = () => {
             toast.warning('⚠️ Seguridad: completa tu perfil agregando un usuario y contraseña.', 8000)
-        }, 10000)
-        return () => clearInterval(intervalo)
+            sessionStorage.setItem(CLAVE, String(Date.now()))
+        }
+
+        const ultimo = Number(sessionStorage.getItem(CLAVE) ?? 0)
+        const msPasados = Date.now() - ultimo
+        if (msPasados >= INTERVALO_MS) {
+            mostrarToast()
+        }
+
+        const tiempoRestante = Math.max(INTERVALO_MS - msPasados, INTERVALO_MS)
+        const timeout = setTimeout(() => {
+            mostrarToast()
+            const intervalo = setInterval(mostrarToast, INTERVALO_MS)
+            return () => clearInterval(intervalo)
+        }, tiempoRestante)
+
+        return () => clearTimeout(timeout)
     }, [user, tourRun])
 
     const handleTourEvent = useCallback(async (data: EventData) => {

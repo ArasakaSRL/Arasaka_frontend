@@ -95,19 +95,3 @@ export async function confirmarCorreo(payload: ConfirmarCorreoPayload): Promise<
   const { data } = await apiClient.post<ConfirmarCorreoResponse>('/usuario/correo/confirmar', payload)
   return data
 }
-
-/**
- * GET /verificar-correo/{id}/{hash}?expires=...&signature=...
- * Se dispara cuando el usuario hace clic en el enlace de su email.
- * Los query params expires y signature son requeridos por Laravel para validar la firma.
- */
-export async function verifyEmailRequest(id: string, hash: string) {
-  const params = new URLSearchParams(window.location.search)
-  const { data } = await apiClient.get(`/verificar-correo/${id}/${hash}`, {
-    params: {
-      expires: params.get('expires'),
-      signature: params.get('signature'),
-    }
-  })
-  return data
-}
