@@ -53,6 +53,18 @@ export default function FormacionAcademicaForm({
                     required
                     minLength={5}
                     maxLength={80}
+                    pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+                    onInvalid={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        if (target.validity.valueMissing) {
+                            target.setCustomValidity('Por favor, rellena este campo.');
+                        } else if (target.validity.tooShort) {
+                            target.setCustomValidity('Debe tener al menos 5 caracteres.');
+                        } else if (target.validity.patternMismatch) {
+                            target.setCustomValidity('No se permiten signos de puntuación ni caracteres especiales.');
+                        }
+                    }}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                     value={formData.institucion}
                     onChange={handleChange}
                     placeholder="Universidad Mayor de San Simón"
@@ -72,6 +84,16 @@ export default function FormacionAcademicaForm({
                     name="titulo"
                     required
                     maxLength={50}
+                    pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+                    onInvalid={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        if (target.validity.valueMissing) {
+                            target.setCustomValidity('Por favor, rellena este campo.');
+                        } else if (target.validity.patternMismatch) {
+                            target.setCustomValidity('No se permiten signos de puntuación ni caracteres especiales.');
+                        }
+                    }}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                     value={formData.titulo}
                     onChange={handleChange}
                     placeholder="Ingeniería de Sistemas"
@@ -93,6 +115,13 @@ export default function FormacionAcademicaForm({
                     disabled={tieneFormacion}
                     name="nivel"
                     required
+                    onInvalid={(e) => {
+                        const target = e.target as HTMLSelectElement;
+                        if (target.validity.valueMissing) {
+                            target.setCustomValidity('Por favor, selecciona una opción de la lista.');
+                        }
+                    }}
+                    onInput={(e) => (e.target as HTMLSelectElement).setCustomValidity('')}
                     value={formData.nivel}
                     onChange={handleChange}
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm bg-white outline-none focus:ring-2 focus:ring-[#1e2a5e]"
@@ -118,8 +147,15 @@ export default function FormacionAcademicaForm({
                         disabled={tieneFormacion}
                         type="date"
                         name="fecha_inicio"
-                        max={formData.fecha_fin || undefined} // Evita que el inicio sea superior al fin
+                        max={formData.fecha_fin || undefined}
                         required
+                        onInvalid={(e) => {
+                            const target = e.target as HTMLInputElement;
+                            if (target.validity.valueMissing) {
+                                target.setCustomValidity('Por favor, introduce una fecha válida.');
+                            }
+                        }}
+                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                         value={formData.fecha_inicio}
                         onChange={handleChange}
                         className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#1e2a5e]"
@@ -136,8 +172,15 @@ export default function FormacionAcademicaForm({
                         disabled={tieneFormacion}
                         type="date"
                         name="fecha_fin"
-                        min={formData.fecha_inicio || undefined} // Evita que el fin sea inferior al inicio
+                        min={formData.fecha_inicio || undefined}
                         required
+                        onInvalid={(e) => {
+                            const target = e.target as HTMLInputElement;
+                            if (target.validity.valueMissing) {
+                                target.setCustomValidity('Por favor, introduce una fecha válida.');
+                            }
+                        }}
+                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                         value={formData.fecha_fin}
                         onChange={handleChange}
                         className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#1e2a5e]"
@@ -148,18 +191,17 @@ export default function FormacionAcademicaForm({
             <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-[#1e2a5e] mb-2">
                     <FileText size={16} />
-                    Descripción *
+                    Descripción
                 </label>
 
                 <textarea
                     disabled={tieneFormacion}
                     name="descripcion"
-                    required
                     rows={4}
                     maxLength={550}
                     value={formData.descripcion}
                     onChange={handleChange}
-                    placeholder="Describe tu formación académica..."
+                    placeholder="Describe tu formación académica... (Opcional)"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm resize-none outline-none focus:ring-2 focus:ring-[#1e2a5e]"
                 />
 

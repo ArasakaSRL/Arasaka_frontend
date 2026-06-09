@@ -104,10 +104,10 @@ export const useFormacionAcademica = () => {
             )
             setTieneFormacion(true)
 
-        } finally {
+        } catch (error) {
             toast.error("Error al guardar la formación académica")
+        } finally {
             setLoading(false)
-           
         }
     }
 
