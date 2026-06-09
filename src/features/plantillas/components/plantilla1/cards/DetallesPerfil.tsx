@@ -8,7 +8,9 @@ import {
 import FotoPerfil from "../FotoPerfil";
 import { InfoItem } from "../botones/InfoItem";
 import BotonPerfil from "../botones/BotonPerfil";
-
+import ContactarModal from "@/features/sendGmail/components/ContactarModal";
+import type { InformacionBasica } from "@/features/portafolio/types/portafolioType";
+import { useState } from "react";
 interface CardPerfilProps {
   nombre: string;
   pais: string;
@@ -17,6 +19,7 @@ interface CardPerfilProps {
   foto?: string;
   mostrarContacto?: boolean;
   mostrarCV?: boolean;
+  informacion_basica?: InformacionBasica | null;
 }
 
 export default function DetallesPerfil({
@@ -27,8 +30,11 @@ export default function DetallesPerfil({
     foto,
     mostrarContacto,
     mostrarCV,
+    informacion_basica
   }: CardPerfilProps) {
 
+    const [contactarOpen, setContactarOpen] = useState(false);
+    
 
   return (
     <div className="relative bg-white rounded-xl pt-16 pb-6 px-6 shadow-sm">
@@ -69,6 +75,7 @@ export default function DetallesPerfil({
         <div className="mt-8 flex flex-col gap-3">
         {mostrarContacto && (
           <BotonPerfil
+            onClick={() => setContactarOpen(true)}
             label="CONTACTAR"
             icon={MessageCircle}
             variant="primary"
@@ -84,6 +91,12 @@ export default function DetallesPerfil({
         )}
         </div>
       </div>
+      <ContactarModal
+        open={contactarOpen}
+        onClose={() => setContactarOpen(false)} 
+        correoDestinatario={informacion_basica?.gmail ?? correo}
+        nombreDestinatario={nombre}
+      />
     </div>
   );
 }

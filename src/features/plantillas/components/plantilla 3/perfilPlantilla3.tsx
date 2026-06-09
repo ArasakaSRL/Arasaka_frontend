@@ -51,8 +51,6 @@ export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, ex
         setDescargandoCV(false);
       }
     };
-
-    console.log("Usuario en PerfilBubble:", usuario.telefonos);
   return (
     <div className=" p-4 md:p-8 rounded-[40px]">
       <section className=" max-w-362.5 mx-auto bg-[#f8f8f8] border-[5px] border-[#0f172a] rounded-[42px] px-8 py-10 md:px-16 md:py-14 shadow-[14px_14px_0px_0px_#f2b5d4] relative overflow-hidden ">
