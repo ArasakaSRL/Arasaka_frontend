@@ -15,9 +15,17 @@ export default function ReporteMensualPage() {
   const [esEditable, setEsEditable] = useState(false); 
   const [enviando, setEnviando] = useState(false); 
 
-  // Obtener el mes actual de forma dinámica (0 = Enero, 5 = Junio, etc.)
-  const mesActualIndex = new Date().getMonth();
-  const [mesEnvio, setMesEnvio] = useState(String(mesActualIndex + 1).padStart(2, '0')); 
+  // Obtener Año y Mes actual en formato 'YYYY-MM' para el estado inicial y el límite máximo
+  const obtenerMesActualFormato = (): string => {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    return `${anio}-${mes}`;
+  };
+
+  const maxMesPermitido = obtenerMesActualFormato();
+  // Estado que maneja el valor del input tipo mes ('YYYY-MM')
+  const [mesSeleccionado, setMesSeleccionado] = useState(maxMesPermitido); 
 
   // 2. Switches de estadísticas a incluir
   const [incluirVistas, setIncluirVistas] = useState(true);
@@ -34,25 +42,14 @@ export default function ReporteMensualPage() {
   const todoDesmarcado = !incluirVistas && !incluirPerfil && !incluirProyectos && !incluirMensajes && !incluirCv;
   const correoInvalido = email.trim() !== "" && !esCorreoValido(email);
 
-  // Generar lista de meses disponibles hasta el mes actual
-  const nombresMeses = [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-  ];
-  
-  const mesesDisponibles = nombresMeses
-    .map((nombre, index) => ({
-      valor: String(index + 1).padStart(2, '0'),
-      nombre: nombre
-    }))
-    .slice(0, mesActualIndex + 1); // Filtra estrictamente hasta el mes actual
-
   const obtenerFechaCorteActual = (): string => {
     const hoy = new Date();
     const dia = String(hoy.getDate()).padStart(2, '0');
+    // mesSeleccionado viene como "YYYY-MM", separamos el mes
+    const [_, mes] = mesSeleccionado.split('-');
     const anio = hoy.getFullYear();
 
-    return `${dia}-${mesEnvio}-${anio}`;
+    return `${dia}-${mes}-${anio}`;
   };
 
   const handleEnviarReportePrueba = async () => {
@@ -71,7 +68,7 @@ export default function ReporteMensualPage() {
     setEnviando(true);
     
     const payload: ReportDataPayload = {
-      enviar_email: "true", 
+      enviar_email: "false", 
       email: email,
       fecha_corte: obtenerFechaCorteActual(), 
       incluir_vistas: incluirVistas,
@@ -108,10 +105,9 @@ export default function ReporteMensualPage() {
         <div className="w-full bg-white rounded-2xl border border-slate-100 shadow-sm font-sans text-slate-700">
           <div className="p-8 space-y-8">
 
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-
+              {/* Dirección de Correo Destino */}
               <div className="flex flex-col items-start justify-start w-full">
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 block w-full text-left">
                   Dirección de Correo Destino
@@ -160,32 +156,23 @@ export default function ReporteMensualPage() {
                 )}
               </div>
 
-              {/* Mes de Envío */}
+              {/* Calendario de solo Meses */}
               <div className="flex flex-col items-start justify-start w-full">
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 block w-full text-left">
-                  Mes de Corte para Envío
+                  Seleccionar Mes del Reporte
                 </label>
                 <div className="relative flex items-center w-full">
-                  <Calendar className="absolute left-4 text-slate-400 w-4 h-4" />
-                  <select
-                    value={mesEnvio}
-                    onChange={(e) => setMesEnvio(e.target.value)}
-                    className="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-blue-500 transition-colors text-slate-700"
-                  >
-                    {mesesDisponibles.map((mes) => (
-                      <option key={mes.valor} value={mes.valor}>
-                        {mes.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute right-4 flex items-center text-slate-400">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
+                  <Calendar className="absolute left-4 text-slate-400 w-4 h-4 pointer-events-none z-10" />
+                  <input
+                    type="month"
+                    value={mesSeleccionado}
+                    max={maxMesPermitido}
+                    onChange={(e) => setMesSeleccionado(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-700 uppercase"
+                  />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-2 leading-relaxed text-left">
-                  El reporte consolidará la información correspondiente al mes seleccionado del presente año.
+                  Elige el mes específico del cual deseas compilar las métricas en el archivo PDF.
                 </p>
               </div>
 
@@ -206,7 +193,7 @@ export default function ReporteMensualPage() {
                       <Eye className="w-4 h-4" />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-sm font-semibold text-slate-700">Vistas del Portafolio Resumen general  </h3>
+                      <h3 className="text-sm font-semibold text-slate-700">Vistas del Portafolio Resumen general</h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirVistas ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirVistas ? 'Cantidad de visitas recibidas en tu página.' : '⚠️ No se mostrará esta información en el PDF.'}
                       </p>
@@ -232,7 +219,7 @@ export default function ReporteMensualPage() {
                       <UserCheck className="w-4 h-4" />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-sm font-semibold text-slate-700">Interacciones Detallada  del Perfil</h3>
+                      <h3 className="text-sm font-semibold text-slate-700">Interacciones Detallada del Perfil</h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirPerfil ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirPerfil ? 'Clics en redes, correo, foto y retención (hovers).' : '⚠️ No se mostrará esta información en el PDF.'}
                       </p>
@@ -362,7 +349,7 @@ export default function ReporteMensualPage() {
                 }`}
               >
                 <Send className={`w-4 h-4 transform rotate-45 -translate-y-0.5 ${enviando ? 'animate-pulse' : ''}`} />
-                {enviando ? 'Enviando reporte...' : 'Enviar reporte '}
+                {enviando ? 'Enviando reporte...' : 'Enviar reporte'}
               </button>
             </div>
 
