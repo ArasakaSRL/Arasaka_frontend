@@ -2,135 +2,254 @@ import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { Banner } from "@/components/Banner";
 import { ConfiguracionGeneral } from "@/features/configuracion/components/ConfiguracionGeneral";
-import Dropdown from "@/components/MenuDesplegable";
+import { ClassicPreview } from "@/features/configuracion/components/ClassicPreview";
+import { MinimalistaPreview } from "@/features/configuracion/components/MinimalistaPreview";
+import { PastelPreview } from "@/features/configuracion/components/PastelPreview";
+import { ProfesionalPreview } from "@/features/configuracion/components/ProfesionalPreview";
+import {
+  Sparkles,
+  Palette,
+  LayoutTemplate,
+  Crown,
+  BadgeCheck
+} from "lucide-react";
 
-// APIs y Tipos
-import { getConfiguracionPortafolio, actualizarConfiguracion } from "@/features/plantillas/api/configuracionApi";
+import {
+  getConfiguracionPortafolio,
+  actualizarConfiguracion,
+} from "@/features/plantillas/api/configuracionApi";
+
 import type { TipoPlantilla } from "@/features/plantillas/types";
 
 export default function CambiarPlantilla() {
-  const [plantillaActual, setPlantillaActual] = useState<TipoPlantilla | "">("");
+  const [plantillaActual, setPlantillaActual] =
+    useState<TipoPlantilla>("predeterminado");
+
   const [cargando, setCargando] = useState(true);
-  const [guardando, setGuardando] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  
-  // NUEVO: Estados para manejar el feedback visual del usuario
+  const [guardandoPlantilla, setGuardandoPlantilla] = useState<TipoPlantilla | null>(null);
+
   const [error, setError] = useState<string | null>(null);
-  const [mensajeExito, setMensajeExito] = useState(false);
 
-  const opcionesPlantillas: { label: string; value: string }[] = [
-    { label: "Clásica / Predeterminada", value: "predeterminado" },
-    { label: "Minimalista (Plantilla 1)", value: "minimalista" },
-    { label: "Profesional (Plantilla 2)", value: "profesional" },
-    { label: "Estilo Pastel (Plantilla 3)", value: "stiloPastel" },
-  ];
-
-  // 1. OBTENER DATOS (GET)
   useEffect(() => {
-    const fetchConfig = async () => {
+    const cargarConfiguracion = async () => {
       try {
         setCargando(true);
-        setError(null);
-        
-        // Aquí se ejecuta tu API (getConfiguracionPortafolio)
+
         const config = await getConfiguracionPortafolio();
-        
-        // Asignamos la plantilla que viene de Laravel. Si por alguna razón es null, usamos predeterminado.
-        setPlantillaActual(config?.plantilla || "predeterminado");
-        
+
+        setPlantillaActual(
+          config?.plantilla || "predeterminado"
+        );
       } catch (err: any) {
-        console.error("Error al cargar la configuración", err);
-        setError(err.message || "No se pudo cargar la configuración actual.");
+        console.error(err);
+
+        setError(
+          err?.message ||
+            "No se pudo cargar la configuración."
+        );
       } finally {
         setCargando(false);
       }
     };
 
-    fetchConfig();
+    cargarConfiguracion();
   }, []);
 
-  // 2. ACTUALIZAR DATOS (PUT/PATCH)
-  const handleChangePlantilla = async (valor: string) => {
-    const nuevaPlantilla = valor as TipoPlantilla;
-    if (nuevaPlantilla === plantillaActual) return;
+  const seleccionarPlantilla = async (
+    plantilla: TipoPlantilla
+  ) => {
+    if (plantilla === plantillaActual) return;
 
     try {
-      setGuardando(true);
+      setGuardandoPlantilla(plantilla);
       setError(null);
-      setMensajeExito(false);
 
-      // Aquí se ejecuta tu API (actualizarConfiguracion)
-      await actualizarConfiguracion({ plantilla: nuevaPlantilla });
-      
-      // Si todo sale bien, actualizamos el estado y mostramos mensaje de éxito
-      setPlantillaActual(nuevaPlantilla);
-      setMensajeExito(true);
-      
-      // Ocultamos el mensaje de éxito después de 3 segundos
-      setTimeout(() => setMensajeExito(false), 3000);
+      await actualizarConfiguracion({
+        plantilla,
+      });
 
+      setPlantillaActual(plantilla);
     } catch (err: any) {
-      console.error("Error al guardar la plantilla", err);
-      setError(err.message || "Hubo un problema al guardar los cambios.");
+      console.error(err);
+
+      setError(
+        err?.message ||
+          "No se pudo actualizar la plantilla."
+      );
     } finally {
-      setGuardando(false);
+      setGuardandoPlantilla(null);
     }
   };
 
+  const PLANTILLAS = [
+    {
+      id: "predeterminado" as TipoPlantilla,
+      nombre: "Clásica",
+      badge: "PREDETERMINADA",
+      icono: LayoutTemplate,
+      premium: true,
+      preview: <ClassicPreview />,
+    },
+
+    {
+      id: "minimalista" as TipoPlantilla,
+      nombre: "Minimalista",
+      badge: "NUEVO",
+      icono: Sparkles,
+      premium: true,
+      preview: <MinimalistaPreview />,
+    },
+
+    {
+      id: "profesional" as TipoPlantilla,
+      nombre: "Profesional",
+      badge: "NUEVO",
+      icono: Crown,
+      premium: true,
+      preview: <ProfesionalPreview />,
+    },
+
+    {
+      id: "stiloPastel" as TipoPlantilla,
+      nombre: "Estilo Pastel",
+      badge: "NUEVO",
+      icono: Palette,
+      premium: true,
+      preview: <PastelPreview />,
+    },
+  ];
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <Banner 
-          titulo="Cambiar Plantilla del Portafolio" 
-          descripcion="Selecciona el diseño visual que prefieras para tu portafolio público."
+      <div className="space-y-8">
+
+        <Banner
+          titulo="Plantillas"
+          descripcion="Personaliza la estructura y el impacto visual de tu marca personal. Cambia el diseño de tu portafolio con un solo clic."
         />
-        
+
         <ConfiguracionGeneral titulo="Plantillas">
-          <div className="max-w-md">
-            <p className="text-sm text-gray-500 mb-4">
-              Elige cómo quieres que los visitantes vean tu información.
-            </p>
 
-            {/* Manejo de errores globales (ej: no hay portafolio seleccionado en Zustand) */}
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+              {error}
+            </div>
+          )}
 
-            {cargando ? (
-              <div className="text-sm text-gray-400 animate-pulse">
-                Cargando tu configuración...
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <Dropdown
-                  mode="single"
-                  options={opcionesPlantillas}
-                  value={plantillaActual}
-                  onChange={handleChangePlantilla}
-                  isOpen={isOpen}
-                  onToggle={() => setIsOpen(!isOpen)}
-                  disabled={guardando}
-                  placeholder="Selecciona una plantilla"
+          {cargando ? (
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className="h-85 rounded-4xl bg-white animate-pulse border"
                 />
-                
-                {/* Feedback dinámico: Guardando vs Éxito */}
-                <div className="h-5 ml-1 mt-1">
-                  {guardando && (
-                    <p className="text-xs text-blue-600 animate-pulse">
-                      Guardando cambios...
-                    </p>
-                  )}
-                  {!guardando && mensajeExito && (
-                    <p className="text-xs text-green-600 font-medium transition-opacity">
-                      ¡Plantilla actualizada con éxito!
-                    </p>
-                  )}
-                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="flex items-end mb-6">
+
+                <span className="text-xs font-bold text-left text-gray-400">
+                  {PLANTILLAS.length} plantillas
+                </span>
               </div>
-            )}
-          </div>
+
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+
+                {PLANTILLAS.map((plantilla) => {
+                  const activa =
+                    plantillaActual === plantilla.id;
+
+                  const Icono = plantilla.icono;
+
+                  return (
+                    <div
+                      key={plantilla.id}
+                      className={` bg-white rounded-4xl border shadow-sm p-6 transition-all duration-300 hover:shadow-lg relative overflow-hidden
+                        ${
+                          activa
+                            ? "border-primary-500 ring-2 ring-blue-100"
+                            : "border-gray-200"
+                        }
+                      `}
+                    >
+                      <div className="absolute top-5 right-5">
+
+                        <span
+                          className={`
+                            px-3
+                            py-1
+                            rounded-full
+                            text-[10px]
+                            font-black
+                            tracking-wider
+                            ${
+                              plantilla.premium
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-blue-50 text-primary-500"
+                            }
+                          `}
+                        >
+                          {plantilla.badge}
+                        </span>
+
+                      </div>
+
+                      <div className="mb-6">
+                        {plantilla.preview}
+                      </div>
+
+                      <div className="space-y-3">
+
+                        <div className="flex items-center gap-2">
+
+                          <Icono
+                            size={18}
+                            className="text-primary-500"
+                          />
+
+                          <h4 className="text-lg font-black text-gray-800">
+                            {plantilla.nombre}
+                          </h4>
+
+                          {activa && (
+                            <BadgeCheck
+                              size={16}
+                              className="text-green-500"
+                            />
+                          )}
+                        </div>
+
+                        <div className="pt-4">
+
+                          {activa ? (
+                            <div
+                              className=" w-full py-3 rounded-2xl bg-green-50 border border-green-200 text-green-600 font-black text-center items-center justify-center flex gap-2 " >
+                              <BadgeCheck size={20} />
+                               Plantilla Activa
+                            </div>
+                          ) : (
+                            <button
+                              disabled={guardandoPlantilla !== null}
+                              onClick={() =>
+                                seleccionarPlantilla(
+                                  plantilla.id
+                                )
+                              }
+                              className=" w-full py-3 rounded-2xl bg-primary-500 text-white font-black transition-all hover:bg-[#243a86]">
+                              {guardandoPlantilla === plantilla.id
+                                ? "Guardando..."
+                                : "Seleccionar"}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </ConfiguracionGeneral>
       </div>
     </DashboardLayout>

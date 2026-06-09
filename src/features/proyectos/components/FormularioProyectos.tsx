@@ -171,6 +171,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
           toast.success( "Proyecto editado exitosamente", 3000 );
         } else {
+          console.log(JSON.stringify(payload, null, 2));
           proyectoGuardado = await crearProyecto(payload);
           console.log(
             "Respuesta crear proyecto:",

@@ -43,4 +43,5 @@ export const ProyectoSchema = z
       .array(z.any())
       .min(1, "Debe subir al menos una imagen")
       .max(5, "No puedes subir más de 5 imágenes")
+      .optional()
   });
