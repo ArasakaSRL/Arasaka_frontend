@@ -239,7 +239,7 @@ export default function DashboardLayout({ children, hideSidebar = false }: Dashb
             />
 
             {!hideSidebar && (
-                user?.correo === 'jhonvergara437@gmail.com' ? (
+                user?.rol === 'admin' ? (
                     <SidderAdmin
                         isOpen={sidebarOpen}
                         onClose={() => setSidebarOpen(false)}

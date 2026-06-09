@@ -17,11 +17,12 @@ export default function PerfilGeneral() {
 
     useEffect(() => {
         if (!portafolio?.id_portafolio) return
-        setLoadingCompleto(true)
+        let activo = true
         getPortafolio(portafolio.id_portafolio)
-            .then(setPortafolioCompleto)
-            .catch(() => setPortafolioCompleto(null))
-            .finally(() => setLoadingCompleto(false))
+            .then(data => { if (activo) setPortafolioCompleto(data) })
+            .catch(() => { if (activo) setPortafolioCompleto(null) })
+            .finally(() => { if (activo) setLoadingCompleto(false) })
+        return () => { activo = false }
     }, [portafolio?.id_portafolio])
 
     if (!user) return null
@@ -32,7 +33,6 @@ export default function PerfilGeneral() {
         { icon: User,      label: 'Nombre completo', value: info?.nombre_completo || '—' },
         { icon: Mail,      label: 'Gmail',            value: info?.gmail || '—' },
         { icon: MapPin,    label: 'País',              value: info?.pais || '—' },
-        { icon: Phone,     label: 'Teléfonos',         value: telefonos },
         { icon: Briefcase, label: 'Descripción',       value: info?.biografia || '—' },
     ]
 

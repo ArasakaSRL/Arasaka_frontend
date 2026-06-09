@@ -13,10 +13,7 @@ export function resolverPortafolioDesdeArray(portafolios: PortafolioCompleto[]):
   return portafolios[0]
 }
 
-export interface Rol {
-  id: string
-  name: string
-}
+export type UserRol = 'user' | 'admin'
 
 export interface AuthUser {
   id: string
@@ -26,7 +23,7 @@ export interface AuthUser {
   correo: string
   estado?: boolean
   url_foto?: string
-  roles?: Rol[]
+  rol: UserRol
   portafolios?: PortafolioCompleto[]
   tour_completado?: boolean
   tiene_password: boolean

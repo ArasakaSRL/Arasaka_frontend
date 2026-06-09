@@ -16,7 +16,7 @@ interface AuthenticateResponse {
 // Sin esto, Laravel rechaza la petición con error 419 (CSRF token mismatch).
 const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 
-// GET /autenticar — obtiene el usuario con todas sus relaciones (roles, profesiones, pais, telefonos, portafolio)
+// GET /autenticar — obtiene el usuario con todas sus relaciones (portafolios y subrelaciones)
 export async function getUsuario(): Promise<AuthUser | null> {
   try {
     const { data } = await apiClient.get<AuthenticateResponse>('/autenticar')
