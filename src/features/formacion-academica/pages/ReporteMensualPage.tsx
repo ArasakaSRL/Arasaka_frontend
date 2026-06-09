@@ -13,15 +13,18 @@ export default function ReporteMensualPage() {
   // 1. Estados de Inputs y Modos
   const [email, setEmail] = useState(user?.correo || '');
   const [esEditable, setEsEditable] = useState(false); 
-  const [diaEnvio, setDiaEnvio] = useState('28'); 
   const [enviando, setEnviando] = useState(false); 
+
+  // Obtener el mes actual de forma dinámica (0 = Enero, 5 = Junio, etc.)
+  const mesActualIndex = new Date().getMonth();
+  const [mesEnvio, setMesEnvio] = useState(String(mesActualIndex + 1).padStart(2, '0')); 
 
   // 2. Switches de estadísticas a incluir
   const [incluirVistas, setIncluirVistas] = useState(true);
   const [incluirPerfil, setIncluirPerfil] = useState(true); 
   const [incluirProyectos, setIncluirProyectos] = useState(true);
   const [incluirMensajes, setIncluirMensajes] = useState(true);
-  const [incluirCv, setIncluirCv] = useState(false); 
+  const [incluirCv, setIncluirCv] = useState(true); 
 
   const esCorreoValido = (correo: string): boolean => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -31,13 +34,27 @@ export default function ReporteMensualPage() {
   const todoDesmarcado = !incluirVistas && !incluirPerfil && !incluirProyectos && !incluirMensajes && !incluirCv;
   const correoInvalido = email.trim() !== "" && !esCorreoValido(email);
 
+  // Generar lista de meses disponibles hasta el mes actual
+  const nombresMeses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+  
+  const mesesDisponibles = nombresMeses
+    .map((nombre, index) => ({
+      valor: String(index + 1).padStart(2, '0'),
+      nombre: nombre
+    }))
+    .slice(0, mesActualIndex + 1); // Filtra estrictamente hasta el mes actual
+
   const obtenerFechaCorteActual = (): string => {
     const hoy = new Date();
     const dia = String(hoy.getDate()).padStart(2, '0');
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); 
     const anio = hoy.getFullYear();
-    return `${dia}-${mes}-${anio}`;
+
+    return `${dia}-${mesEnvio}-${anio}`;
   };
+
   const handleEnviarReportePrueba = async () => {
     if (enviando) return;
 
@@ -88,16 +105,18 @@ export default function ReporteMensualPage() {
           description="Administra la recepción automatizada de métricas de rendimiento en formato PDF"
         />
 
-        <div className="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-8 font-sans text-slate-700">
-          <div className="space-y-8">
+        <div className="w-full bg-white rounded-2xl border border-slate-100 shadow-sm font-sans text-slate-700">
+          <div className="p-8 space-y-8">
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              <div className="flex flex-col">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+
+              <div className="flex flex-col items-start justify-start w-full">
+                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 block w-full text-left">
                   Dirección de Correo Destino
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full">
                   <div className="relative flex items-center flex-1">
                     <span className={`absolute left-4 text-base ${correoInvalido ? 'text-red-600' : 'text-slate-400'}`}>@</span>
                     <input
@@ -119,7 +138,7 @@ export default function ReporteMensualPage() {
                   <button
                     type="button"
                     onClick={() => setEsEditable(!esEditable)}
-                    className={`flex items-center justify-center px-4 rounded-xl border text-xs font-medium transition-colors ${
+                    className={`flex items-center justify-center px-4 rounded-xl border text-xs font-medium transition-colors shrink-0 ${
                       esEditable 
                         ? 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100' 
                         : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
@@ -131,30 +150,33 @@ export default function ReporteMensualPage() {
                 </div>
 
                 {correoInvalido ? (
-                  <p className="text-[11px] text-red-600 mt-2 font-medium">
+                  <p className="text-[11px] text-red-600 mt-2 font-medium text-left">
                     ⚠️ Por favor, escribe un formato de correo válido (ejemplo: nombre@dominio.com).
                   </p>
                 ) : (
-                  <p className="text-[11px] text-slate-400 mt-2">
+                  <p className="text-[11px] text-slate-400 mt-2 text-left">
                     Puedes configurar el correo principal donde deseas recibir el reporte PDF.
                   </p>
                 )}
               </div>
 
-              <div className="flex flex-col">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  Día del Mes Para Envío
+              {/* Mes de Envío */}
+              <div className="flex flex-col items-start justify-start w-full">
+                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 block w-full text-left">
+                  Mes de Corte para Envío
                 </label>
-                <div className="relative flex items-center">
+                <div className="relative flex items-center w-full">
                   <Calendar className="absolute left-4 text-slate-400 w-4 h-4" />
                   <select
-                    value={diaEnvio}
-                    onChange={(e) => setDiaEnvio(e.target.value)}
+                    value={mesEnvio}
+                    onChange={(e) => setMesEnvio(e.target.value)}
                     className="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-blue-500 transition-colors text-slate-700"
                   >
-                    <option value="01">Día 1 de cada mes</option>
-                    <option value="15">Día 15 de cada mes</option>
-                    <option value="28">Día 28 de cada mes</option>
+                    {mesesDisponibles.map((mes) => (
+                      <option key={mes.valor} value={mes.valor}>
+                        {mes.nombre}
+                      </option>
+                    ))}
                   </select>
                   <div className="pointer-events-none absolute right-4 flex items-center text-slate-400">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -162,29 +184,29 @@ export default function ReporteMensualPage() {
                     </svg>
                   </div>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
-                  El reporte consolidará la información correspondiente al mes anterior inmediato.
+                <p className="text-[11px] text-slate-400 mt-2 leading-relaxed text-left">
+                  El reporte consolidará la información correspondiente al mes seleccionado del presente año.
                 </p>
               </div>
 
             </div>
 
-            {/* Listado de Toggles */}
-            <div>
-              <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-4">
+            {/* Sección de Estadísticas */}
+            <div className="w-full flex flex-col items-start justify-start">
+              <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-4 block w-full text-left">
                 Estadísticas que deseas incluir en el PDF
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                {/* Switch: Vistas del Portafolio */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+
+                {/* Vistas */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirVistas ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirVistas ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
                       <Eye className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-700">Vistas del Portafolio</h3>
+                    <div className="text-left">
+                      <h3 className="text-sm font-semibold text-slate-700">Vistas del Portafolio Resumen general  </h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirVistas ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirVistas ? 'Cantidad de visitas recibidas en tu página.' : '⚠️ No se mostrará esta información en el PDF.'}
                       </p>
@@ -203,14 +225,14 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Switch: Interacciones del Perfil */}
+                {/* Perfil */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirPerfil ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirPerfil ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
                       <UserCheck className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-700">Interacciones del Perfil</h3>
+                    <div className="text-left">
+                      <h3 className="text-sm font-semibold text-slate-700">Interacciones Detallada  del Perfil</h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirPerfil ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirPerfil ? 'Clics en redes, correo, foto y retención (hovers).' : '⚠️ No se mostrará esta información en el PDF.'}
                       </p>
@@ -229,14 +251,14 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Switch: Interacciones en Proyectos */}
+                {/* Proyectos */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirProyectos ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirProyectos ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
                       <BarChart3 className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-700">Interacciones en Proyectos</h3>
+                    <div className="text-left">
+                      <h3 className="text-sm font-semibold text-slate-700">Interacciones en Proyectos Analisis de Zonas de calor</h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirProyectos ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirProyectos ? 'Clics y visitas detalladas por proyecto.' : '⚠️ No se mostrará esta información en el PDF.'}
                       </p>
@@ -255,13 +277,13 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Switch: Formularios de Mensajes */}
+                {/* Mensajes */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirMensajes ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirMensajes ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
                       <MessageSquare className="w-4 h-4" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="text-sm font-semibold text-slate-700">Formularios de Mensajes</h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirMensajes ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirMensajes ? 'Resumen de correos de contacto nuevos.' : '⚠️ No se mostrará esta información en el PDF.'}
@@ -281,13 +303,13 @@ export default function ReporteMensualPage() {
                   </button>
                 </div>
 
-                {/* Switch: Descargas de Currículum */}
+                {/* Currículum */}
                 <div className={`flex items-center justify-between p-4 bg-white border rounded-xl transition-all shadow-sm/50 ${incluirCv ? 'border-slate-100' : 'border-amber-100 bg-amber-50/10'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg mt-0.5 ${incluirCv ? 'bg-slate-50 text-slate-500' : 'bg-amber-50 text-amber-600'}`}>
                       <Download className="w-4 h-4" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="text-sm font-semibold text-slate-700">Descargas de Currículum</h3>
                       <p className={`text-[11px] mt-0.5 transition-colors ${incluirCv ? 'text-slate-400' : 'text-amber-600 font-medium'}`}>
                         {incluirCv ? 'Número de veces que bajaron tu PDF.' : '⚠️ No se mostrará esta información en el PDF.'}
@@ -310,17 +332,19 @@ export default function ReporteMensualPage() {
               </div>
             </div>
 
+            {/* Alerta de Todo Desmarcado */}
             {todoDesmarcado && (
-              <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 animate-pulse">
+              <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 animate-pulse text-left w-full">
                 <AlertTriangle className="w-5 h-5 shrink-0" />
                 <div className="text-xs">
-                  <span className="font-bold">¡Atención!</span> Has desmarcado todas las opciones. El reporte PDF se generará completamente <span className="font-bold underline">vacío</span> y sin informacion.
+                  <span className="font-bold">¡Atención!</span> Has desmarcado todas las opciones. El reporte PDF se generará completamente <span className="font-bold underline">vacío</span> y sin información.
                 </div>
               </div>
             )}
 
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-              <div className="flex items-start gap-3 max-w-xl">
+            {/* Footer de Acción */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100 w-full">
+              <div className="flex items-start gap-3 max-w-xl text-left">
                 <AlertCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Esta acción se ejecutará inmediatamente para enviarte un PDF actual de los reportes hasta la fecha mencionada y con la información que deseas ver.
@@ -338,7 +362,7 @@ export default function ReporteMensualPage() {
                 }`}
               >
                 <Send className={`w-4 h-4 transform rotate-45 -translate-y-0.5 ${enviando ? 'animate-pulse' : ''}`} />
-                {enviando ? 'Enviando reporte...' : 'Enviar reporte de prueba'}
+                {enviando ? 'Enviando reporte...' : 'Enviar reporte '}
               </button>
             </div>
 
