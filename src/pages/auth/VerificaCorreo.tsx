@@ -32,19 +32,36 @@ export default function VerificaCorreo() {
     }, [cooldown])
 
     useEffect(() => {
-        if (verificado) return
+        console.log('[VerificaCorreo] polling effect run. verificado=', verificado)
+        if (verificado) {
+            console.log('[VerificaCorreo] ya verificado, NO se inicia polling')
+            return
+        }
+        console.log('[VerificaCorreo] iniciando interval cada', POLL_INTERVAL_MS, 'ms')
         const id = window.setInterval(async () => {
+            console.log('[VerificaCorreo] tick — llamando getUsuario()')
             try {
                 const updated = await getUsuario()
+                console.log('[VerificaCorreo] respuesta getUsuario:', updated)
+                console.log('[VerificaCorreo] verificacion_email =', updated?.verificacion_email)
                 if (updated) setUser(updated)
-            } catch { /* silencioso, reintentamos en el próximo tick */ }
+            } catch (err) {
+                console.warn('[VerificaCorreo] error en getUsuario:', err)
+            }
         }, POLL_INTERVAL_MS)
-        return () => window.clearInterval(id)
+        return () => {
+            console.log('[VerificaCorreo] limpiando interval', id)
+            window.clearInterval(id)
+        }
     }, [verificado, setUser])
 
     useEffect(() => {
         if (!verificado) return
-        const id = window.setTimeout(() => window.close(), 600)
+        console.log('[VerificaCorreo] verificado=true → intentando window.close() en 600ms')
+        const id = window.setTimeout(() => {
+            console.log('[VerificaCorreo] ejecutando window.close()')
+            window.close()
+        }, 600)
         return () => window.clearTimeout(id)
     }, [verificado])
 
