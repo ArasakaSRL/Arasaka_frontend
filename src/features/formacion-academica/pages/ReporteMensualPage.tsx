@@ -68,7 +68,7 @@ export default function ReporteMensualPage() {
     setEnviando(true);
     
     const payload: ReportDataPayload = {
-      enviar_email: "false", 
+      enviar_email: "true", 
       email: email,
       fecha_corte: obtenerFechaCorteActual(), 
       incluir_vistas: incluirVistas,
