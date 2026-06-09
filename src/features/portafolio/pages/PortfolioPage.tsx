@@ -23,10 +23,6 @@ export default function PortfolioPage() {
         // Llamamos a tu servicio público que ya trae los datos del portafolio,
         // incluyendo la configuración.
         const data = await getPortafolioPublic(slug);
-        
-        console.log("Datos completos del backend:", data);
-        console.log("Plantilla recibida:", data.configuracion?.plantilla);
-
         // Si no hay plantilla definida, usamos la predeterminada
         setPlantilla(data.configuracion?.plantilla || 'predeterminado');
       } catch (err) {
