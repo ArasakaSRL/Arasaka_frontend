@@ -15,6 +15,8 @@ interface CardPerfilProps {
   profesion: string;
   correo: string;
   foto?: string;
+  mostrarContacto?: boolean;
+  mostrarCV?: boolean;
 }
 
 export default function DetallesPerfil({
@@ -23,6 +25,8 @@ export default function DetallesPerfil({
     profesion,
     correo,
     foto,
+    mostrarContacto,
+    mostrarCV,
   }: CardPerfilProps) {
 
 
@@ -63,17 +67,21 @@ export default function DetallesPerfil({
         </div>
 
         <div className="mt-8 flex flex-col gap-3">
+        {mostrarContacto && (
           <BotonPerfil
             label="CONTACTAR"
             icon={MessageCircle}
             variant="primary"
           />
+        )}
 
+        {mostrarCV && (
           <BotonPerfil
             label="DESCARGAR CV"
             icon={ExternalLink}
             variant="secondary"
           />
+        )}
         </div>
       </div>
     </div>

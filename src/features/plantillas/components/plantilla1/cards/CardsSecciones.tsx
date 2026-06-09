@@ -17,8 +17,10 @@ export default function CardsSecciones() {
   const { data, loading, noDisponible } =
     usePortfolioData(slug);
 
+const config = data?.configuracion;
+
   const [tabActiva, setTabActiva] = useState(
-    "habilidades-tecnicas"
+    ""
   );
 
   if (!slug)
@@ -38,68 +40,89 @@ export default function CardsSecciones() {
     certificaciones,
   } = data;
 
+  const tabs = [];
+
+    if (config?.mostrar_habilidades) {
+      tabs.push(
+        {
+          id: "habilidades-tecnicas",
+          label: "Habilidades Técnicas",
+        },
+        {
+          id: "habilidades-blandas",
+          label: "Habilidades Blandas",
+        }
+      );
+    }
+
+    if (config?.mostrar_experiencias) {
+      tabs.push({
+        id: "experiencia",
+        label: "Experiencia",
+      });
+    }
+
+    if (config?.mostrar_proyectos) {
+      tabs.push({
+        id: "proyectos",
+        label: "Proyectos",
+      });
+    }
+
+    if (config?.mostrar_certificaciones) {
+      tabs.push({
+        id: "certificaciones",
+        label: "Certificaciones",
+      });
+    }
+
   return (
     <div className="bg-white rounded-lg p-4">
 
       <BotonMultiple
-        defaultTab={tabActiva}
-        tabs={[
-          {
-            id: "habilidades-tecnicas",
-            label: "Habilidades Técnicas",
-          },
-          {
-            id: "habilidades-blandas",
-            label: "Habilidades Blandas",
-          },
-          {
-            id: "experiencia",
-            label: "Experiencia",
-          },
-          {
-            id: "proyectos",
-            label: "Proyectos",
-          },
-          {
-            id: "certificaciones",
-            label: "Certificaciones",
-          },
-        ]}
+        defaultTab={tabs[0]?.id}
+        tabs={tabs}
         onChange={(tab) => setTabActiva(tab)}
       />
 
       <div className="mt-6">
-        {tabActiva === "habilidades-tecnicas" && (
-          <HabilidadesTecnicas
-            tecnicas={habilidadesTecnicas}
-            onExpandir={() => {}}
-            onCerrar={() => {}}
-            mostrarTitulo={false}
-          />
+        {config?.mostrar_habilidades &&
+          tabActiva === "habilidades-tecnicas" && (
+            <HabilidadesTecnicas
+              tecnicas={habilidadesTecnicas}
+              onExpandir={() => {}}
+              onCerrar={() => {}}
+              mostrarTitulo={false}
+            />
         )}
 
-        {tabActiva === "habilidades-blandas" && (
-          <HabilidadesBlandas
-            blandas={habilidadesBlandas}
-            mostrarTitulo={false}
-          />
-        )}
-
-        {tabActiva === "experiencia" && (
+        {config?.mostrar_habilidades && 
+          tabActiva === "habilidades-blandas" && (
+            <HabilidadesBlandas
+              blandas={habilidadesBlandas}
+              mostrarTitulo={false}
+            />
+          )}
+          
+        { config?.mostrar_experiencias &&
+        tabActiva === "experiencia" && (
           <ExperienceTimeline
             experiencias={experiencias}
             mostrarTitulo={false}
           />
         )}
 
-        {tabActiva === "proyectos" && (
+
+        { config?.mostrar_proyectos &&
+        tabActiva === "proyectos" && (
           <SeccionProyectos
             proyectos={proyectos}
             mostrarTitulo={false}
           />
         )}
 
-        {tabActiva === "certificaciones" && (
+        {config?.mostrar_certificaciones &&
+        tabActiva === "certificaciones" && (
           <CertificacionesSection
             certificaciones={certificaciones}
             mostrarTitulo={false}

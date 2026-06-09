@@ -92,6 +92,12 @@ export default function Plantilla1() {
               profesion={usuario.profesiones?.[0]?.nombre || "Profesional"} 
               correo={usuario.correo}
               foto={usuario.foto_perfil || undefined}
+              mostrarContacto={
+                data.configuracion?.mostrar_contacto ?? true
+              }
+              mostrarCV={
+                data.configuracion?.mostrar_cv ?? true
+              }
             />
           </div>
         </div>
