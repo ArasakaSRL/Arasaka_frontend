@@ -4,19 +4,11 @@ import { z } from 'zod'
 import { cambiarContrasena, completarPerfil } from '@/features/auth/api/auth'
 import { AuthInput } from '@/features/auth/components/auth/AuthInput'
 import { useAuthStore } from '@/stores/authStore'
-
-const passwordRules = z
-    .string()
-    .min(12, 'Mínimo 12 caracteres')
-    .max(12, 'Máximo 12 caracteres')
-    .regex(/[A-Z]/, 'Debe contener una mayúscula')
-    .regex(/[a-z]/, 'Debe contener una minúscula')
-    .regex(/[0-9]/, 'Debe contener un número')
-    .regex(/[^A-Za-z0-9]/, 'Debe contener un carácter especial')
+import { passwordSchema, getPasswordError, PASSWORD_MAX } from '@/features/auth/utils/passwordRules'
 
 const schemaCambiar = z.object({
     contrasena_actual: z.string().min(1, 'Campo obligatorio'),
-    contrasena_nueva: passwordRules,
+    contrasena_nueva: passwordSchema,
     contrasena_nueva_confirmation: z.string().min(1, 'Campo obligatorio'),
 }).refine(d => d.contrasena_nueva === d.contrasena_nueva_confirmation, {
     message: 'Las contraseñas no coinciden',
@@ -24,7 +16,7 @@ const schemaCambiar = z.object({
 })
 
 const schemaCompletar = z.object({
-    password: passwordRules,
+    password: passwordSchema,
     password_confirmation: z.string().min(1, 'Campo obligatorio'),
 }).refine(d => d.password === d.password_confirmation, {
     message: 'Las contraseñas no coinciden',
@@ -33,16 +25,6 @@ const schemaCompletar = z.object({
 
 type ErrorsCambiar = Partial<Record<'contrasena_actual' | 'contrasena_nueva' | 'contrasena_nueva_confirmation', string>>
 type ErrorsCompletar = Partial<Record<'password' | 'password_confirmation', string>>
-
-function getPasswordError(pwd: string): string | undefined {
-    if (pwd.length < 12) return 'Debe tener exactamente 12 caracteres'
-    if (pwd.length > 12) return 'Máximo 12 caracteres'
-    if (!/[A-Z]/.test(pwd)) return 'Debe contener al menos una mayúscula'
-    if (!/[a-z]/.test(pwd)) return 'Debe contener al menos una minúscula'
-    if (!/[0-9]/.test(pwd)) return 'Debe contener al menos un número'
-    if (!/[^A-Za-z0-9]/.test(pwd)) return 'Debe contener un carácter especial'
-    return undefined
-}
 
 function FormCompletarPerfil() {
     const setUser = useAuthStore(s => s.setUser)
@@ -105,9 +87,9 @@ function FormCompletarPerfil() {
                     placeholder="Nueva contraseña"
                     type="password"
                     value={form.password}
-                    onChange={v => set('password', v.slice(0, 12))}
+                    onChange={v => set('password', v.slice(0, PASSWORD_MAX))}
                     error={form.password.length > 0 ? getPasswordError(form.password) ?? errors.password : errors.password}
-                    maxLength={12}
+                    maxLength={PASSWORD_MAX}
                     required
                 />
 
@@ -116,9 +98,9 @@ function FormCompletarPerfil() {
                     placeholder="Repite la contraseña"
                     type="password"
                     value={form.password_confirmation}
-                    onChange={v => set('password_confirmation', v.slice(0, 12))}
+                    onChange={v => set('password_confirmation', v.slice(0, PASSWORD_MAX))}
                     error={errors.password_confirmation}
-                    maxLength={12}
+                    maxLength={PASSWORD_MAX}
                     required
                 />
 
@@ -211,9 +193,9 @@ function FormCambiarContrasena() {
                     placeholder="Nueva contraseña"
                     type="password"
                     value={form.contrasena_nueva}
-                    onChange={v => set('contrasena_nueva', v.slice(0, 12))}
+                    onChange={v => set('contrasena_nueva', v.slice(0, PASSWORD_MAX))}
                     error={errors.contrasena_nueva}
-                    maxLength={12}
+                    maxLength={PASSWORD_MAX}
                     required
                 />
                 <AuthInput
@@ -221,9 +203,9 @@ function FormCambiarContrasena() {
                     placeholder="Repite la nueva contraseña"
                     type="password"
                     value={form.contrasena_nueva_confirmation}
-                    onChange={v => set('contrasena_nueva_confirmation', v.slice(0, 12))}
+                    onChange={v => set('contrasena_nueva_confirmation', v.slice(0, PASSWORD_MAX))}
                     error={errors.contrasena_nueva_confirmation}
-                    maxLength={12}
+                    maxLength={PASSWORD_MAX}
                     required
                 />
 

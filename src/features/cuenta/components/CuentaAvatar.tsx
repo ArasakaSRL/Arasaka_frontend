@@ -59,7 +59,7 @@ export default function CuentaAvatar() {
             </div>
 
             <div className="text-center">
-                <p className="text-base font-bold text-slate-800">{user?.username}</p>
+                <p className="text-base font-bold text-slate-800">{user?.nombre} {user?.apellido}</p>
                 <p className="text-sm text-slate-400 mt-0.5">{user?.correo}</p>
             </div>
         </div>
