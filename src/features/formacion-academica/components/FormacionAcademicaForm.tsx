@@ -1,7 +1,7 @@
 import {
     GraduationCap,
     Building2,
-    CalendarDays,
+    Calendar, // Cambiado por un icono con mayor visibilidad en modo oscuro
     FileText,
 } from 'lucide-react'
 
@@ -110,7 +110,7 @@ export default function FormacionAcademicaForm({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-[#1e2a5e] mb-2">
-                        <CalendarDays size={16} />
+                        <Calendar size={16} />
                         Fecha Inicio *
                     </label>
 
@@ -118,6 +118,7 @@ export default function FormacionAcademicaForm({
                         disabled={tieneFormacion}
                         type="date"
                         name="fecha_inicio"
+                        max={formData.fecha_fin || undefined} // Evita que el inicio sea superior al fin
                         required
                         value={formData.fecha_inicio}
                         onChange={handleChange}
@@ -127,7 +128,7 @@ export default function FormacionAcademicaForm({
 
                 <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-[#1e2a5e] mb-2">
-                        <CalendarDays size={16} />
+                        <Calendar size={16} />
                         Fecha Fin *
                     </label>
 
@@ -135,6 +136,7 @@ export default function FormacionAcademicaForm({
                         disabled={tieneFormacion}
                         type="date"
                         name="fecha_fin"
+                        min={formData.fecha_inicio || undefined} // Evita que el fin sea inferior al inicio
                         required
                         value={formData.fecha_fin}
                         onChange={handleChange}
