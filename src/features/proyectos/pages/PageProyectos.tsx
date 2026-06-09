@@ -9,6 +9,8 @@ import { eliminarProyecto } from "../lib/ProyectosApi";
 import ListaProyectos from "../components/ListaProyectos";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import { toast } from "../../../components/Alerta";
+import Paginacion from "@/components/Paginacion";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function PageProyectos() {
   const [ModalAbierto, setModalAbierto] = useState(false);
@@ -24,6 +26,20 @@ export default function PageProyectos() {
   const proyectosPaginados = proyectos.slice(indexPrimero, indexUltimo);
   const totalPaginas = Math.ceil(proyectos.length / paginacion);
 
+  const cambioPagina = (nuevaPagina: number) => {
+    if (
+      nuevaPagina < 1 ||
+      nuevaPagina > totalPaginas
+    )
+      return;
+
+    setPaginaActual(nuevaPagina);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   const closeModal = () => {
     setModalAbierto(false);
     setProyectoEditar(null);
@@ -72,50 +88,34 @@ export default function PageProyectos() {
             setProyectoEliminar(null);
           }}>
         </Banner>
-        <div className="py-4 w-full">
-          <ListaProyectos
-            proyectos={proyectosPaginados}
-            loading={loading}
-            modoAccion={modoAccion}
-            onEditar={(proyecto) => {
-              handleEditar(proyecto);
-              setModoAccion(null);
-            }}
-            onEliminar={(proyecto) => {
-              setProyectoEliminar(proyecto);
-            }}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={paginaActual}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="py-4"
+          >
+            <ListaProyectos
+              proyectos={proyectosPaginados}
+              loading={loading}
+              modoAccion={modoAccion}
+              onEditar={(proyecto) => {
+                handleEditar(proyecto);
+                setModoAccion(null);
+              }}
+              onEliminar={(proyecto) => {
+                setProyectoEliminar(proyecto);
+              }}
+            />
+
+          <Paginacion
+            currentPage={paginaActual}
+            totalPages={totalPaginas}
+            onPageChange={cambioPagina}
           />
-          {totalPaginas > 1 && (
-            <div className="flex justify-center items-center gap-4 mt-6">
-              <button
-                disabled={paginaActual === 1}
-                onClick={() => setPaginaActual(paginaActual - 1)}
-                className="
-                  px-3 py-1
-                  bg-gray-200
-                  rounded
-                  disabled:opacity-50
-                "
-              >
-                Anterior
-              </button>
-              <span className="font-medium">
-                Página {paginaActual} de {totalPaginas}
-              </span>
-              <button
-                disabled={paginaActual === totalPaginas}
-                onClick={() => setPaginaActual(paginaActual + 1)}
-                className="
-                  px-3 py-1
-                  bg-gray-200
-                  rounded
-                  disabled:opacity-50
-                "
-              >
-                Siguiente
-              </button>
-            </div>
-          )}
+
 
             <Modal isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-3xl">
               <FormularioProyecto
@@ -152,7 +152,8 @@ export default function PageProyectos() {
                 setModoAccion(null);
               }}
             />
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </DashboardLayout>
     )
 }

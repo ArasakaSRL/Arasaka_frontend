@@ -1,5 +1,6 @@
 import type { Proyecto } from "../lib/ProyectosApi";
 import CardProyectos from "./CardProyectos";
+import { motion } from "framer-motion";
 
 interface Props {
   proyectos: Proyecto[];
@@ -20,7 +21,13 @@ export default function ListaProyectos({
 }: Props) {
 
   if (loading) {
-    return <p>Cargando...</p>;
+    return (
+      <div className="w-full py-10 text-center">
+        <p className="text-gray-500">
+          Cargando Proyectos.
+        </p>
+      </div>
+    );
   }
 
   if (proyectos.length === 0) {
@@ -33,26 +40,56 @@ export default function ListaProyectos({
     )
   }
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.08,
+      },
+    },
+  };
 
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+  };
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
       {proyectos.map((proyecto) => (
-        <CardProyectos
+        <motion.div
           key={proyecto.id_proyecto}
-          proyecto={proyecto}
-          editable={modoAccion === "editar"}
-          eliminando={modoAccion === "eliminar"}
-          onSelect={() => {
-            if (modoAccion === "editar") {
-              onEditar(proyecto);
-              return;
-            }
-            if (modoAccion === "eliminar") {
-              onEliminar(proyecto);
-            }
-          }}
-        />
+          variants={cardVariants}
+          transition={{ duration: 0.3 }}
+        >
+          <CardProyectos
+            proyecto={proyecto}
+            editable={modoAccion === "editar"}
+            eliminando={modoAccion === "eliminar"}
+            onSelect={() => {
+              if (modoAccion === "editar") {
+                onEditar(proyecto);
+                return;
+              }
+
+              if (modoAccion === "eliminar") {
+                onEliminar(proyecto);
+              }
+            }}
+          />
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
