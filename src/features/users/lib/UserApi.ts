@@ -24,6 +24,7 @@ export interface Usuario {
   portafolios: Portafolio[];
   created_at: string;
   updated_at: string;
+  rol:string;
 }
 
 export type SortBy = "nombre" | "created_at";
