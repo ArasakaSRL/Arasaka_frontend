@@ -1,111 +1,85 @@
 import { useEffect, useState } from "react"
 import { useAuthStore } from "@/stores/authStore"
-import { toast } from "../../../components/Alerta";
+import { toast } from "../../../components/Alerta"
 import {
     crearFormacionProfesional,
     obtenerFormacionAcademica
 } from "../lib/formacionAcademica.service"
 
-export const useFormacionAcademica = () => {
+export type FormacionType = {
+    id_formacion?: number
+    institucion: string
+    titulo: string
+    nivel: string
+    fecha_inicio: string
+    fecha_fin: string
+    descripcion: string
+}
 
-    const portafolioSeleccionado = useAuthStore(
-        state => state.portafolioSeleccionado
-    )
+const initialFormState: FormacionType = {
+    institucion: '',
+    titulo: '',
+    nivel: '',
+    fecha_inicio: '',
+    fecha_fin: '',
+    descripcion: '',
+}
+
+export const useFormacionAcademica = () => {
+    const portafolioSeleccionado = useAuthStore(state => state.portafolioSeleccionado)
 
     const [loading, setLoading] = useState(false)
-    const [tieneFormacion, setTieneFormacion] = useState(false)
-
-    const [formData, setFormData] = useState({
-        institucion: '',
-        titulo: '',
-        nivel: '',
-        fecha_inicio: '',
-        fecha_fin: '',
-        descripcion: '',
-    })
+    const [formaciones, setFormaciones] = useState<FormacionType[]>([])
+    const [formData, setFormData] = useState<FormacionType>(initialFormState)
 
     const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement |
-            HTMLTextAreaElement |
-            HTMLSelectElement
-        >
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-
         setFormData(prev => ({
             ...prev,
             [e.target.name]: e.target.value
         }))
     }
 
-    useEffect(() => {
+    const resetForm = () => setFormData(initialFormState)
 
-        const fetchData = async () => {
-
-            if (!portafolioSeleccionado?.id_portafolio) return
-
-            try {
-
-                setLoading(true)
-
-                const response =
-                    await obtenerFormacionAcademica(
-                        portafolioSeleccionado.id_portafolio
-                    )
-
-                if (response.data.length > 0) {
-
-                    const formacion = response.data[0]
-
-                    setFormData({
-                        institucion: formacion.institucion,
-                        titulo: formacion.titulo,
-                        nivel: formacion.nivel,
-                        fecha_inicio: formacion.fecha_inicio,
-                        fecha_fin: formacion.fecha_fin,
-                        descripcion: formacion.descripcion,
-                    })
-
-                    setTieneFormacion(true)
-                }
-
-            } finally {
-                setLoading(false)
-            }
+    const fetchData = async () => {
+        if (!portafolioSeleccionado?.id_portafolio) return
+        try {
+            setLoading(true)
+            const response = await obtenerFormacionAcademica(portafolioSeleccionado.id_portafolio)
+           
+            setFormaciones(response.data || [])
+        } catch (error) {
+            console.error("Error al cargar formaciones", error)
+        } finally {
+            setLoading(false)
         }
+    }
 
+    useEffect(() => {
         fetchData()
-
     }, [portafolioSeleccionado])
 
-    const handleSubmit = async (
-        e: React.FormEvent
-    ) => {
-
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
         if (!portafolioSeleccionado?.id_portafolio) return
 
         try {
-
             setLoading(true)
-
             const payload = {
                 ...formData,
-                id_portafolio:
-                    portafolioSeleccionado.id_portafolio,
+                id_portafolio: portafolioSeleccionado.id_portafolio,
             }
 
             await crearFormacionProfesional(payload)
-            toast.success(
-                tieneFormacion
-                    ? "Formación académica actualizada"
-                    : "Formación académica creada"
-            )
-            setTieneFormacion(true)
-
+            toast.success("Formación académica agregada con éxito")
+            resetForm()
+            await fetchData() 
+            return true 
         } catch (error) {
             toast.error("Error al guardar la formación académica")
+            return false
         } finally {
             setLoading(false)
         }
@@ -113,9 +87,10 @@ export const useFormacionAcademica = () => {
 
     return {
         loading,
-        tieneFormacion,
+        formaciones,
         formData,
         handleChange,
         handleSubmit,
+        resetForm
     }
 }
