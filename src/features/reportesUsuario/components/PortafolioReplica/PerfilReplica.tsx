@@ -49,6 +49,14 @@ export function PerfilReplica({
   if (noDisponible || !data) return <div>Portafolio no disponible.</div>;
 
   const { usuario, habilidadesTecnicas, habilidadesBlandas, experiencias, proyectos, configuracion, certificaciones } = data;
+  console.log({
+  perfil: clicsPerfil.length,
+  tecnicas: clicsTecnicas.length,
+  blandas: clicsBlandas.length,
+  experiencia: clicsExperiencia.length,
+  proyectos: clicsProyectos.length,
+  certificaciones: clicsCertificaciones.length,
+})
 
   return (
     <>
