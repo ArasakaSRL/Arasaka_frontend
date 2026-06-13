@@ -46,11 +46,12 @@ export default function Certificaciones() {
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   
   //error
-  const { 
-    certificados, 
-    isLoadingCerts, 
-    isUsingFallbackCerts 
-  } = useCertificaciones( filtroCategoriaId); // <-- Aquí pasamos el filtro de categoría
+  const {
+  certificados,
+  isLoadingCerts,
+  isUsingFallbackCerts,
+  refetchCertificaciones
+} = useCertificaciones(filtroCategoriaId); // <-- Aquí pasamos el filtro de categoría
 
   const isBusy = isCreating || isUploadingToFirebase || isDeleting;
 
@@ -77,14 +78,19 @@ export default function Certificaciones() {
 
   const handleEliminarSeleccionados = async () => {
     try {
-      await eliminarCertificaciones(certificadosEliminar); // string[]
-      toast.success(`${certificadosEliminar.length} certificación(es) eliminada(s)`);
+      await eliminarCertificaciones(certificadosEliminar);
+
       setCertificadosEliminar([]);
       setModoAccion(null);
-      setIsConfirmDeleteOpen(false); 
+      setIsConfirmDeleteOpen(false);
+
+      await refetchCertificaciones();
+
+      toast.success(`${certificadosEliminar.length} certificación(es) eliminada(s)`);
+
     } catch {
       toast.error("Error al eliminar");
-      setIsConfirmDeleteOpen(false); 
+      setIsConfirmDeleteOpen(false);
     }
   };
 
@@ -105,7 +111,6 @@ export default function Certificaciones() {
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
   const handleSubmit = async () => {
-    
     //  Agregamos institucionForm a la validación
     const nuevosErrores = {
       categoria: !categoriaSeleccionada,
@@ -149,11 +154,9 @@ export default function Certificaciones() {
       };
 
       await registrarCertificacion(datosDelFormulario);
+      cerrarModal();
+      await refetchCertificaciones();
       toast.success("Certificación creada exitosamente!");
-      
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
 
       setOpenModal(false);
       setTituloForm("");
@@ -423,6 +426,7 @@ export default function Certificaciones() {
         onConfirm={handleEliminarSeleccionados} 
         titulo="Eliminar certificaciones"
         nombre={`${certificadosEliminar.length} certificación(es) seleccionada(s)`}
+        isLoading={isDeleting}
       />
       
     </DashboardLayout>
