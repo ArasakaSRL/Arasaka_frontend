@@ -11,7 +11,7 @@ import { uploadImage } from "@/firebase/firebaseStorage";
 import { Carousel } from "../components/carruselCards/Carrusel";
 import { CategoriaCard } from "../components/carruselCards/CategoriaCard";
 import { toast } from "@/components/Alerta";
-import ModalForm from "@/components/Modal";
+import Modal from "@/features/certificaciones/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SeccionCertificados } from "../components/SeccionCertificados";
@@ -211,7 +211,7 @@ export default function Certificaciones() {
           }}
         />
 
-        <ModalForm isOpen={openModal} closeModal={cerrarModal} maxWidth="max-w-5xl">
+        <Modal isOpen={openModal} closeModal={cerrarModal} maxWidth="max-w-5xl">
           <div className="p-6 space-y-4">
 
           {/* HEADER */}
@@ -338,7 +338,7 @@ export default function Certificaciones() {
           </div>
 
         </div>
-        </ModalForm>
+        </Modal> 
 
          {/* CATEGORÍAS (responsivo corregido anteriormente) */}
         <div>

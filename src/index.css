@@ -66,7 +66,9 @@
 .driverjs-theme .driver-popover-close-btn:hover {
   color: #475569;
 }
-
+.modal-scroll {
+  overscroll-behavior: contain;
+}
 
 @theme {
   /*Color desing*/
