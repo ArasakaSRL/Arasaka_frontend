@@ -67,6 +67,7 @@ export default function Hitos() {
   const [hitosEliminar, setHitosEliminar]= useState<string[]>([]);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
   const [isEliminarModalOpen, setIsEliminarModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 2. FUNCIONES DE CARGA Y EFECTOS
   const cargarExperiencias = async () => {
@@ -118,23 +119,27 @@ const handleEliminar = async () => {
   };
 
 const handleEliminarSeleccionados = async () => {
-    try {
-      await eliminarMultiplesExperiencias(hitosEliminar);
-      toast.success(`${hitosEliminar.length} experiencias eliminados correctamente`);
-      
-      setHitosEliminar([]);
-      setModoAccion(null);
-      // 👇 CERRAMOS EL MODAL TRAS EL ÉXITO
-      setIsEliminarModalOpen(false); 
-      
-      cargarExperiencias();
-    } catch (error) {
-      toast.error("Ocurrió un error al intentar eliminar las experiencias");
-      console.error(error);
-      // 👇 CERRAMOS EL MODAL SI FALLA
-      setIsEliminarModalOpen(false); 
-    }
-  };
+  try {
+    setIsDeleting(true);
+
+    await eliminarMultiplesExperiencias(hitosEliminar);
+
+    toast.success(
+      `${hitosEliminar.length} experiencias eliminadas correctamente`
+    );
+
+    setHitosEliminar([]);
+    setModoAccion(null);
+    setIsEliminarModalOpen(false);
+
+    await cargarExperiencias();
+  } catch (error) {
+    toast.error("Ocurrió un error al intentar eliminar las experiencias");
+    console.error(error);
+  } finally {
+    setIsDeleting(false);
+  }
+};
 
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
@@ -421,6 +426,7 @@ const handleEliminarSeleccionados = async () => {
         onConfirm={handleEliminarSeleccionados} // 🔥 ESTA ES LA QUE REALMENTE BORRA
         titulo="Eliminar experiencias"
         nombre={`${hitosEliminar.length} experiencia(s) seleccionada(s)`}
+        isLoading={isDeleting}
       />
     </DashboardLayout>
   );

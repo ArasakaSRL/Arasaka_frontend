@@ -4,12 +4,14 @@ export default function EliminarModal({
   onConfirm,
   titulo = "Eliminar elemento", 
   nombre = "este elemento",
+  isLoading = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void | Promise<void>; 
   titulo?: string; 
   nombre?: string;
+  isLoading?: boolean;
 }) {
   if (!isOpen) return null;
 
@@ -37,9 +39,23 @@ export default function EliminarModal({
 
           <button
             onClick={onConfirm}
-            className="flex-1 py-2 rounded-md bg-red-500 text-white hover:bg-red-600"
+            disabled={isLoading}
+            className={`
+              flex-1 py-2 rounded-md text-white
+              flex items-center justify-center gap-2
+              transition-all
+              ${
+                isLoading
+                  ? "bg-red-300 cursor-not-allowed"
+                  : "bg-red-500 hover:bg-red-600"
+              }
+            `}
           >
-            Eliminar
+            {isLoading && (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            )}
+
+            {isLoading ? "Eliminando..." : "Eliminar"}
           </button>
         </div>
       </div>

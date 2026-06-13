@@ -55,8 +55,11 @@ export function ImagenUploader({ onImageReady, onOrientationDetected }: Props) {
   };
 
   // La orientación ya está siendo manejada por el Efecto 2, no necesitamos detectarla aquí
-  const handleFinalImageChange = (base64Str: string) => {
-    const newFile = dataURLtoFile(base64Str, "certificado_procesado.jpg");
+  const handleFinalImageChange = (imageSrc: string) => {
+    if (!imageSrc.startsWith("data:image")) {
+      return;
+    }
+    const newFile = dataURLtoFile(imageSrc,"certificado_procesado.jpg");
     onImageReady(newFile);
   };
 
