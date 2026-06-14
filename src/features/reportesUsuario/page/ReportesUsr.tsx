@@ -122,11 +122,11 @@ export default function ReportesUsr() {
 
   const skillsChartData: SkillItem[] = Object.entries(
     data.habilidades.tecnica || {}
-).map(([nivel, cantidad]) => ({
-    label: nivel,
-    value: cantidad as number,
-    color: COLOR_MAP[nivel] || "#CCCCCC",
-})).filter(item => item.value > 0)
+  ).map(([nivel, cantidad]) => ({
+      label: nivel,
+      value: cantidad as number,
+      color: COLOR_MAP[nivel] || "#CCCCCC",
+  })).filter(item => item.value > 0)
 
 console.log('skillsChartData:', skillsChartData)  
 

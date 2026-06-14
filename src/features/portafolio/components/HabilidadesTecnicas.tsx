@@ -51,12 +51,15 @@ const TarjetaInteractiva = ({ tech, onExpandir, onCerrar }: { tech: any; onExpan
   const domRef = useRef<HTMLDivElement>(null);
 
   function handleClic() {
+    console.log('CLICK TECNICA', tech.id_habilidad)
     const nuevoEstado = !isExpanded
     setIsExpanded(nuevoEstado)
 
     if (nuevoEstado) {
+      console.log('EXPANDIR')
       onExpandir?.(tech.id_habilidad)  
     } else {
+      console.log('CERRAR')
       onCerrar?.(tech.id_habilidad)   
     }
   }
@@ -80,6 +83,7 @@ const TarjetaInteractiva = ({ tech, onExpandir, onCerrar }: { tech: any; onExpan
   return (
     <div
       ref={domRef}
+      data-habilidad-id={tech.id_habilidad}
       data-track="clic_general"
       onClick={handleClic}
       className={`group relative h-48 cursor-pointer transition-all duration-700 transform ${

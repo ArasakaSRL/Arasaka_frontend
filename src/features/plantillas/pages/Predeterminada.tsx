@@ -18,6 +18,7 @@ import ExperienceTimeline from '@/features/portafolio/components/ExperienceTimel
 import { getPortafolioPublic } from '@/features/portafolio/lib/portafolio.service';
 import PortfolioHeader from '@/features/portafolio/components/PortfolioHeader ';
 import type { habilidades, Usuario, experiencias, HabilidadBlanda, HabilidadTecnica, Proyectos, configuracion, certificaciones } from '@/features/portafolio/types/portafolioType';
+import { HabilidadesTecnicasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesTecnicasTracker';
 
 export default function Predeterminada() {
     const { slug } = useParams<{ slug: string }>();
@@ -101,7 +102,9 @@ export default function Predeterminada() {
             </div>
             {configuracion?.mostrar_habilidades && (
                 <section id="habilidades">
-                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={trackExpandir} onCerrar={trackCerrar} />
+                    <HabilidadesTecnicasTracker portfolioSlug={slug!}>
+                        <HabilidadesTecnicas tecnicas={habilidadesTecnicas} onExpandir={trackExpandir} onCerrar={trackCerrar} />
+                    </HabilidadesTecnicasTracker>
                     <HabilidadesBlandasTracker portfolioSlug={slug!}>
                         <HabilidadesBlandas blandas={habilidadesBlandas}/>
                     </HabilidadesBlandasTracker>

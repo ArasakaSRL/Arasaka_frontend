@@ -40,6 +40,7 @@ export function useHabilidadesTecnicasTracker(portfolioSlug: string) {
     }
 
     function trackExpandir(idHabilidad: string, e?: MouseEvent, container?: HTMLElement) {
+    console.log('TRACK EXPANDIR', idHabilidad)
         enviar(idHabilidad, 'clic_expandir', 1)
         if (e && container) {
             const coords = getHeatmapCoords(e, container)
