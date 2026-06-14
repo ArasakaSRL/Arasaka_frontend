@@ -27,7 +27,7 @@ import PerfilTelefonos from './pages/Dashboard/perfil/PerfilTelefonos'
 import PerfilPortafolio from './pages/Dashboard/perfil/PerfilPortafolio'
 import PagePortafolio from './features/portafolio/pages/PagePortafolio'
 import TegnologiaPage from './features/tegnologias/page/TegnologiaPage'
-import PageVistaProyecto from './features/vistaProyectos/pages/PageVistaProyecto'
+import ProyectoRouter from './features/vistaProyectos/components/ProyectoRouter'
 import PageUsuarios from './features/users/pages/PageUsuarios'
 import AdminDenuncias from './pages/Dashboard/admin/Denuncias'
 import AdminSuspendidos from './pages/Dashboard/admin/Suspendidos'
@@ -77,8 +77,8 @@ export default function App() {
       </Route>
       <Route path="/portafolio/:slug" element={<PortafolioPage />} />
       <Route path="/portafolio/privado/:slug" element={<PortfolioPagePrivate />} />
-      <Route path="/portafolio/:slug/proyectos/:id" element={<PageVistaProyecto />} />
-      <Route path="/portafolio/privado/:slug/proyectos/:id" element={<PageVistaProyecto />} />
+      <Route path="/portafolio/:slug/proyectos/:id" element={<ProyectoRouter />} />
+      <Route path="/portafolio/privado/:slug/proyectos/:id" element={<ProyectoRouter />} />
       <Route path="/portafolio/formacion-academica" element={<FormacionAcademicaPage />} />
       <Route path="/reportes-mensuales" element={<ReporteMensualPage />} />
     </Routes>
