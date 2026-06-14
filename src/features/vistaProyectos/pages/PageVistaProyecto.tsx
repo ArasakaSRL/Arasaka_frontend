@@ -27,7 +27,7 @@ export default function PageVistaProyecto() {
   }>();
 
   const { proyecto } = useVistaProyecto(id ?? "");
-
+  console.log("PROYECTO", proyecto);
   return (
     <main className="min-h-screen bg-[#f5f5f5]">
       <motion.div

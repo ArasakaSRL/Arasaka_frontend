@@ -73,27 +73,27 @@ export default function PageVistaProyectoPlantilla3() {
           <div className="grid lg:grid-cols-[1.4fr_0.9fr] gap-6 mt-6">
 
             {/* izquierda */}
-            <section className="space-y-3">
+            <section className="space-y-3 text-left">
 
               <div className="mb-5">
-                <p className="flex items-center gap-2 text-[#f2b5d4] text-[11px] uppercase font-black tracking-[0.2em]">
+                <p className="flex items-center gap-2 text-[#f2b5d4] text-[11px] uppercase font-black tracking-[0.2em] text-left">
                   <Info size={14} />
                   Detalles del proyecto
                 </p>
 
-                <h1 className="mt-2 text-5xl lg:text-7xl font-black uppercase tracking-tight text-[#0b1f4d] leading-none">
+                <h1 className=" md:text-5xl  leading-none text-left font-bold text-xl tracking-tight text-slate-900 uppercase">
                   {proyecto.nombre}
                 </h1>
               </div>
 
               <div className="mb-8">
 
-                <h2 className="font-black text-xl text-[#98a1b3] uppercase tracking-tight text-center">
+                <h2 className="font-black text-3xl text-[#98a1b3] uppercase tracking-tight text-left">
                   Sobre el proyecto
                 </h2>
 
                 <div className="bg-[#eff7f6] border-[3px] border-[#1f2a44] rounded-3xl p-6 shadow-[5px_5px_0px_0px_#1f2a44]">
-                  <p className="text-sm leading-relaxed">
+                  <p className="text-sm leading-relaxed text-black">
                     {proyecto.descripcion}
                   </p>
                 </div>
@@ -103,7 +103,7 @@ export default function PageVistaProyectoPlantilla3() {
               {/* tecnologías */}
               <div>
 
-                <p className=" text-xs uppercase font-black text-slate-400 mb-3">
+                <p className=" text-xs uppercase font-black text-slate-400 mb-3 pb-4">
                   {"</>"} Tecnologías utilizadas
                 </p>
 
@@ -127,6 +127,7 @@ export default function PageVistaProyectoPlantilla3() {
                       <span className="
                         text-[10px]
                         font-black
+                        text-black
                         uppercase
                       ">
                         {tech.nombre}
@@ -179,19 +180,11 @@ export default function PageVistaProyectoPlantilla3() {
                 <div className="w-full h-60 bg-slate-950 rounded-[18px] overflow-hidden border-[3px] border-[#1f2a44] relative">
 
                   {imagenes.length > 0 ? (
-                    <img
-                      src={
-                        imagenes[indexActual].logo
-                      }
-                      alt={
-                        imagenes[indexActual].nombre
-                      }
-                      className="
-                        w-full
-                        h-full
-                        object-cover
-                      "
-                    />
+                  <img
+                    src={imagenes[indexActual].url_imagen}
+                    alt={`Imagen ${indexActual + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                   ) : (
                     <div className="
                       w-full h-full
@@ -234,7 +227,7 @@ export default function PageVistaProyectoPlantilla3() {
 
                 {imagenes.length > 1 && (
                   <div className="
-                    grid grid-cols-3 gap-2 mt-3
+                    grid grid-cols-5 gap-2 mt-3
                   ">
                     {imagenes.map(
                       (img, index) => (
@@ -246,7 +239,7 @@ export default function PageVistaProyectoPlantilla3() {
                           className={`aspect-16/10 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${indexActual === index ? "border-[#f2b5d4] shadow-inner scale-95" : "border-[#1f2a44]"}`}
                         >
                           <img
-                            src={img.logo}
+                            src={img.url_imagen}
                             alt={img.nombre}
                             className="
                               w-full

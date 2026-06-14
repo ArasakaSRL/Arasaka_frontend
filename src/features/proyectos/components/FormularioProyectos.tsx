@@ -48,8 +48,8 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
     useEffect(() => {
     if (proyectoEditar) {
       const existentes = proyectoEditar.url_imagen.map((img) => ({
-        url: img.logo,
-        preview: img.logo,
+        url: img.url_imagen,
+        preview: img.url_imagen,
         isNew: false,
       }));
 
