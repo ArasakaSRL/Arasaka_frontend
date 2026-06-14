@@ -2,6 +2,8 @@ import { Locate, GraduationCap, Mail, MessageCircle, ExternalLink } from "lucide
 import FotoPerfil from "../../plantilla1/FotoPerfil";
 import { InfoItem } from "../../plantilla1/botones/InfoItem";
 import BotonPerfil from "../../plantilla1/botones/BotonPerfil";
+import ContactarModal from "@/features/sendGmail/components/ContactarModal";
+import { useState } from "react";
 
 interface CardPerfilProps {
   nombre: string;
@@ -9,9 +11,19 @@ interface CardPerfilProps {
   profesion: string;
   correo: string;
   foto?: string;
+
+  onDescargarCV?: () => void;
+  descargandoCV?: boolean;
 }
 
-export default function PerfilDetalles({ nombre, pais, profesion, correo, foto }: CardPerfilProps) {
+export default function PerfilDetalles({ 
+  nombre, pais, profesion, correo, foto,
+  onDescargarCV,
+  descargandoCV,
+}: CardPerfilProps) {
+
+  const [contactarOpen, setContactarOpen] = useState(false);
+
   return (
     <div className="
       p-6 rounded-2xl
@@ -37,9 +49,17 @@ export default function PerfilDetalles({ nombre, pais, profesion, correo, foto }
       </div>
 
       <div className="mt-6 flex flex-col gap-2.5">
-        <BotonPerfil label="CONTACTAR"    icon={MessageCircle} variant="primary" />
-        <BotonPerfil label="DESCARGAR CV" icon={ExternalLink}  variant="secondary" />
+        <BotonPerfil label="CONTACTAR"    icon={MessageCircle} variant="primary" onClick={() => setContactarOpen(true)}/>
+        <BotonPerfil  label={descargandoCV ? "GENERANDO..." : "DESCARGAR CV"} icon={ExternalLink}  variant="secondary" onClick={onDescargarCV} />
       </div>
+
+      <ContactarModal
+        open={contactarOpen}
+        onClose={() => setContactarOpen(false)}
+        correoDestinatario={correo}
+        nombreDestinatario={nombre}
+      />
+
     </div>
   );
 }

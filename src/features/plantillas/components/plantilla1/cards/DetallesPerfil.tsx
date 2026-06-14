@@ -20,6 +20,8 @@ interface CardPerfilProps {
   mostrarContacto?: boolean;
   mostrarCV?: boolean;
   informacion_basica?: InformacionBasica | null;
+  onDescargarCV?: () => void;
+  descargandoCV?: boolean;
 }
 
 export default function DetallesPerfil({
@@ -30,7 +32,9 @@ export default function DetallesPerfil({
     foto,
     mostrarContacto,
     mostrarCV,
-    informacion_basica
+    informacion_basica,
+    onDescargarCV,
+    descargandoCV,
   }: CardPerfilProps) {
 
     const [contactarOpen, setContactarOpen] = useState(false);
@@ -84,7 +88,8 @@ export default function DetallesPerfil({
 
         {mostrarCV && (
           <BotonPerfil
-            label="DESCARGAR CV"
+            onClick={onDescargarCV}
+            label={descargandoCV ? "GENERANDO..." : "DESCARGAR CV"}
             icon={ExternalLink}
             variant="secondary"
           />

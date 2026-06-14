@@ -7,6 +7,9 @@ import { usePortfolioData } from "@/features/reportesUsuario/hooks/usePortfolioD
 import { ListaCatalogo } from "@/features/plantillas/components/plantilla2/ListaCatalogo";
 import PerfilDetalles from "@/features/plantillas/components/plantilla2/cards/PerfilDetalles";
 
+import { generateCV } from "@/features/portafolio/lib/cv.generator";
+import { toast } from "@/components/Alerta";
+
 const TOTAL = ORBITA_ITEMS.length;
 const STEP_DEG = 360 / TOTAL;
 
@@ -16,6 +19,7 @@ export default function Plantilla2() {
   const [externalStep, setExternalStep] = useState(0);
   const [targetIndex, setTargetIndex] = useState<number>(0);
   const isAdvancingRef = useRef(false);
+  const [descargandoCV, setDescargandoCV] = useState(false);
 
   //Obtenemos el slug directamente de la URL pública
   const { slug } = useParams<{ slug: string }>();
@@ -158,6 +162,30 @@ export default function Plantilla2() {
   if (loading)      return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">Cargando portafolio...</div>;
   if (noDisponible || !data) return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">Este portafolio no está disponible.</div>;
 
+  const handleDescargarCV = async () => {
+    if (descargandoCV) return;
+
+    setDescargandoCV(true);
+
+    try {
+      await generateCV({
+        usuario: data.usuario,
+        proyectos: data.proyectos ?? [],
+        tecnicas: data.habilidadesTecnicas ?? [],
+        blandas: data.habilidadesBlandas ?? [],
+        experiencias: data.experiencias ?? [],
+        certificaciones: data.certificaciones ?? [],
+      });
+
+      toast.success("PDF generado con éxito");
+    } catch (err) {
+      console.error(err);
+      toast.error("Ocurrió un error al generar el PDF");
+    } finally {
+      setDescargandoCV(false);
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-[#F0EAD6] overflow-x-hidden">
       <SeccionHexagono
@@ -218,9 +246,11 @@ export default function Plantilla2() {
             <PerfilDetalles
               nombre={`${data.usuario.nombre} ${data.usuario.apellido}`}
               pais={data.usuario.pais || "No especificado"}
-              profesion={data.usuario.profesiones?.[0]?.nombre || "Profesional"} 
+              profesion={data.usuario.profesiones?.[0]?.nombre || "Profesional"}
               correo={data.usuario.correo}
               foto={data.usuario.foto_perfil || undefined}
+              onDescargarCV={handleDescargarCV}
+              descargandoCV={descargandoCV}
             />
           ) : (
             <ListaCatalogo

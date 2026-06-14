@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import { usePortfolioData } from '@/features/reportesUsuario/hooks/usePortfolioData';
 import DetallesPerfil from '../components/plantilla1/cards/DetallesPerfil';
 
+import { generateCV } from "@/features/portafolio/lib/cv.generator";
+import { toast } from "@/components/Alerta";
 
 
 export default function Plantilla1() {
@@ -15,6 +17,8 @@ export default function Plantilla1() {
   const { slug } = useParams<{ slug: string }>();
 
   const { data, loading, noDisponible } = usePortfolioData(slug);
+
+  const [descargandoCV, setDescargandoCV] = useState(false);
 
   useEffect(() => {
     const checkScreen = () => {
@@ -51,6 +55,29 @@ export default function Plantilla1() {
 
   const { usuario} = data;
 
+  const handleDescargarCV = async () => {
+    if (descargandoCV) return;
+
+    setDescargandoCV(true);
+
+    try {
+      await generateCV({
+        usuario,
+        proyectos: data.proyectos ?? [],
+        tecnicas: data.habilidadesTecnicas ?? [],
+        blandas: data.habilidadesBlandas ?? [],
+        experiencias: data.experiencias ?? [],
+        certificaciones: data.certificaciones ?? [],
+      });
+
+      toast.success("PDF generado con éxito");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al generar PDF");
+    } finally {
+      setDescargandoCV(false);
+    }
+  };
 
   return (
     <div className="w-full mx-auto">
@@ -89,7 +116,7 @@ export default function Plantilla1() {
             <DetallesPerfil
               nombre={`${usuario.nombre} ${usuario.apellido}`}
               pais={usuario.pais || "No especificado"}
-              profesion={usuario.profesiones?.[0]?.nombre || "Profesional"} 
+              profesion={usuario.profesiones?.[0]?.nombre || "Profesional"}
               correo={usuario.correo}
               foto={usuario.foto_perfil || undefined}
               mostrarContacto={
@@ -98,6 +125,8 @@ export default function Plantilla1() {
               mostrarCV={
                 data.configuracion?.mostrar_cv ?? true
               }
+              onDescargarCV={handleDescargarCV}
+              descargandoCV={descargandoCV}
             />
           </div>
         </div>
