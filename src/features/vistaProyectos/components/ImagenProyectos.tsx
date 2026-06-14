@@ -8,9 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { useState } from "react";
 
-interface Imagen {
-  logo: string;
-}
+import type { Imagen } from "@/features/proyectos/lib/ProyectosApi";
 
 interface Props {
   imagenes: Imagen[];
@@ -61,8 +59,8 @@ export const ImagenProyecto = ({
         <AnimatePresence mode="wait">
 
           <motion.img
-            key={imagenes[indexActual].logo}
-            src={imagenes[indexActual].logo}
+            key={imagenes[indexActual].url_imagen}
+            src={imagenes[indexActual].url_imagen}
             alt="Proyecto"
             className=" w-full h-70 object-cover rounded-3xl
             "
@@ -144,7 +142,7 @@ export const ImagenProyecto = ({
               `}
             >
               <img
-                src={img.logo}
+                src={img.url_imagen}
                 alt={`Preview ${i}`}
                 className=" w-full h-full object-cover
                 "

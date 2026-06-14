@@ -2,7 +2,7 @@
 import DashboardLayout from '@/layout/DashboardLayout'
 import { Banner } from '@/components/Banner'
 import { UserSearch } from '../components/UsuariosBuscador'
-import { UserList } from '../components/UsuarioList'
+import { UserList } from '../components/UsuarioLista'
 import { useUsuarios } from '../hooks/useUsers'
 import { useBuscarUsuarios } from '../hooks/useBuscador'
 import { Users, ChevronLeft, ChevronRight  }from "lucide-react"

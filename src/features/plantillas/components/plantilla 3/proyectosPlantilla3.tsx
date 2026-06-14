@@ -1,13 +1,29 @@
 import { ArrowUpRight, Laptop, ExternalLink, LayoutPanelLeft } from "lucide-react";
 import type { Proyectos } from "@/features/portafolio/types/portafolioType";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 type Props = {
   proyectos: Proyectos[];
 };
 
-export default function ProyectosPastel({
-  proyectos,
-}: Props) {
-  console.log(proyectos);
+export default function ProyectosPastel({ proyectos }: Props) {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { slug } = useParams();
+  const esPrivado =
+    location.pathname.includes("/privado/");
+  const navegarProyecto = (
+    idProyecto: string
+  ) => {
+
+    const rutaBase = esPrivado
+      ? `/portafolio/privado/${slug}`
+      : `/portafolio/${slug}`;
+
+    navigate(
+      `${rutaBase}/proyectos/${idProyecto}`
+    );
+  };
   return (
     <section className="bg-white border-4 border-slate-900 rounded-[36px] p-6 md:p-8 shadow-[14px_14px_0px_0px_rgba(242,181,212,1)] space-y-6">
       <div className="flex items-center justify-between border-b-2 border-slate-100 pb-4">
@@ -100,6 +116,11 @@ export default function ProyectosPastel({
                 )}
 
                 <button
+                  onClick={() =>
+                    navegarProyecto(
+                      proyecto.id_proyecto
+                    )
+                  }
                   className="bg-[#f2b5d4] hover:bg-[#f2b5d4]/90 text-slate-900 border-2 border-slate-900 font-black px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-wider flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
                 >
                   Ver Ficha

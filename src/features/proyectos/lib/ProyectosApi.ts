@@ -26,9 +26,10 @@ export interface Proyecto {
 }
 
 export interface Imagen {
-    id_tecnologia: string;
-    nombre: string;
-    logo: string;
+    [x: string]: string | undefined;
+    id_proyecto: string;
+    id_url_imagen: string;
+    url_imagen: string;
 }
 
 export interface Tecnologias {

@@ -103,7 +103,7 @@ export default function CardProyectos ({proyecto, editable, eliminando, onSelect
               {proyecto.url_imagen.map((img, i) => (
                 <div key={i} className="relative">
                   <img
-                    src={img.logo}
+                    src={img.url_imagen}
                     className="w-full h-40 object-cover rounded"
                   />
 
