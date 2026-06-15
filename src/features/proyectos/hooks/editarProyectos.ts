@@ -28,7 +28,9 @@ export const useEditarProyecto = (proyectoEditar: Proyecto | null) => {
 
   useEffect(() => {
     if (proyectoEditar) {
-      const urls = proyectoEditar.url_imagen.map(img => img.logo);
+      const urls = proyectoEditar.url_imagen
+        .map(img => img.logo)
+        .filter((logo): logo is string => logo !== undefined);
       setImagenesIniciales(urls);
       setImagenesActuales(urls);
 
