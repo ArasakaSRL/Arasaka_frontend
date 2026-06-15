@@ -2,6 +2,8 @@ import {
   type HabilidadUI
 } from "../lib/HabilidadesApi";
 import HabilidadItem from "./CardHabilidad";
+import Paginacion from "@/components/Paginacion";
+import { useState } from "react";
 
 interface Props {
   habilidad: HabilidadUI[];
@@ -18,22 +20,44 @@ export default function HabilidadesList({
   onEliminar, 
   modoAccion
 }: Props) {
+  const [paginaTecnicas, setPaginaTecnicas] = useState(1);
+  const [paginaBlandas, setPaginaBlandas] = useState(1);
+
   if (load) return <p>Cargando habilidades...</p>;
 
-const tecnicas = habilidad.filter(
-  (h) => h.categoria === "tecnica"
-);
+  const tecnicas = habilidad.filter(
+    (h) => h.categoria === "tecnica"
+  );
 
-const blandas = habilidad.filter(
-  (h) => h.categoria === "blanda"
-);
+  const blandas = habilidad.filter(
+    (h) => h.categoria === "blanda"
+  );
 
+  const itemsPorPagina = 5;
+
+  const totalPaginasTecnicas = Math.ceil(
+    tecnicas.length / itemsPorPagina
+  );
+
+  const tecnicasPaginadas = tecnicas.slice(
+    (paginaTecnicas - 1) * itemsPorPagina,
+    paginaTecnicas * itemsPorPagina
+  );
+
+  const totalPaginasBlandas = Math.ceil(
+    blandas.length / itemsPorPagina
+  );
+
+  const blandasPaginadas = blandas.slice(
+    (paginaBlandas - 1) * itemsPorPagina,
+    paginaBlandas * itemsPorPagina
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       
       {/* técnicas */}
-      <div className="border rounded-xl p-4 bg-white">
+      <div className=" border rounded-xl p-4 bg-white flex flex-col h-140">
         <h3 className="font-semibold text-black mb-2 text-left">
           Habilidades Técnicas
         </h3>
@@ -45,7 +69,7 @@ const blandas = habilidad.filter(
           {tecnicas.length === 0 ? (
             <p className="text-gray-400 text-sm">No hay habilidades técnicas</p>
           ) : (
-            tecnicas.map((hab) => (
+            tecnicasPaginadas.map((hab) => (
               <HabilidadItem
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
@@ -66,10 +90,15 @@ const blandas = habilidad.filter(
             ))
           )}
         </div>
+        <Paginacion
+          currentPage={paginaTecnicas}
+          totalPages={totalPaginasTecnicas}
+          onPageChange={setPaginaTecnicas}
+        />
       </div>
 
       {/* blandas */}
-      <div className="border rounded-xl p-4 bg-white">
+      <div className=" border rounded-xl p-4 bg-white flex flex-col h-140">
         <h3 className="font-semibold text-black mb-2 text-left">
           Habilidades Blandas
         </h3>
@@ -81,7 +110,7 @@ const blandas = habilidad.filter(
           {blandas.length === 0 ? (
             <p className="text-gray-400 text-sm">No hay habilidades blandas</p>
           ) : (
-            blandas.map((hab) => (
+            blandasPaginadas.map((hab) => (
               <HabilidadItem
                 key={hab.id_habilidad}
                 nombre={hab.nombre}
@@ -102,6 +131,11 @@ const blandas = habilidad.filter(
             ))
           )}
         </div>
+        <Paginacion
+          currentPage={paginaBlandas}
+          totalPages={totalPaginasBlandas}
+          onPageChange={setPaginaBlandas}
+        />
       </div>
     </div>
   );

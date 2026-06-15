@@ -190,83 +190,40 @@ export const Banner = ({
             {/* ELIMINAR */}
 
             {onEliminar && (
-              !eliminando ? (
-                <Boton2
-                  onClick={onEliminar}
-                  className="
-                    mt-1
-                    px-3 py-2
-                    sm:px-4 sm:py-1.5
-                    bg-red-600
-                    hover:bg-red-700
-                    text-xs sm:text-sm
-                    flex items-center
-                    justify-center
-                    gap-2
-                    min-w-11
-                  "
-                >
-                  <Trash2 size={16} />
-
-                  <span className="hidden sm:inline">
-                    Eliminar
-                  </span>
-                </Boton2>
-              ) : (
-                <div className="flex gap-3">
-
-                  {/* CANCELAR */}
-
-                  <Boton2
-                    onClick={onCancelar}
-                    className="
-                      mt-1
-                      px-3 py-2
-                      sm:px-4 sm:py-1.5
-                      bg-gray-500
-                      hover:bg-gray-600
-                      text-xs sm:text-sm
-                      flex items-center
-                      justify-center
-                      gap-2
-                      min-w-11
-                    "
-                  >
+              <Boton2
+                onClick={eliminando ? onCancelar : onEliminar}
+                className={`
+                  mt-1
+                  px-3 py-2
+                  sm:px-4 sm:py-1.5
+                  text-xs sm:text-sm
+                  flex items-center
+                  justify-center
+                  gap-2
+                  min-w-11
+                  ${
+                    eliminando
+                      ? "bg-gray-500 hover:bg-gray-600"
+                      : "bg-red-600 hover:bg-red-700"
+                  }
+                `}
+              >
+                {eliminando ? (
+                  <>
                     <BookmarkX size={16} />
-
                     <span className="hidden sm:inline">
                       Cancelar
                     </span>
-                  </Boton2>
-
-                  {/* CONFIRMAR ELIMINACIÓN */}
-
-                  <Boton2
-                    onClick={onEliminar}
-                    className="
-                      mt-1
-                      px-3 py-2
-                      sm:px-4 sm:py-1.5
-                      bg-red-600
-                      hover:bg-red-700
-                      text-xs sm:text-sm
-                      flex items-center
-                      justify-center
-                      gap-2
-                      min-w-11
-                    "
-                  >
+                  </>
+                ) : (
+                  <>
                     <Trash2 size={16} />
-
                     <span className="hidden sm:inline">
-                      {cantidadSeleccionados > 0
-                        ? `Eliminar (${cantidadSeleccionados})`
-                        : "Eliminar"}
+                      Eliminar
                     </span>
-                  </Boton2>
-
-                </div>
-              )
+                  </>
+                )}
+              </Boton2>
             )}
           </>
         )}
