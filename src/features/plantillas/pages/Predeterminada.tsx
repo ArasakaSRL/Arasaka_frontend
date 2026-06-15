@@ -82,7 +82,7 @@ export default function Predeterminada() {
     return (
 
         <div className="p-3 w-full min-h-screen ">
-            <NavbarVertical />
+            <NavbarVertical config={configuracion} />
             <div className="max-w-350 mx-auto flex flex-col gap-6">
                 <section id="inicio">
                     <PortfolioHeaderTracker portfolioSlug={slug!}>
