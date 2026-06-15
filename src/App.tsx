@@ -9,7 +9,7 @@ import Proyectos from '@/features/proyectos/pages/PageProyectos'
 import Habilidades from '@/features/habilidades/pages/PageHabilidades'
 import Certificaciones from '@/features/certificaciones/page/Certificaciones'
 import Hitos from './features/hitos/page/Hitos'
-import VerificaCorreo from './pages/auth/VerificaCorreo'
+import VerificarCodigo from './pages/auth/VerificarCodigo'
 import Dashboard from './pages/Dashboard/index'
 import ResetPassword from './pages/auth/ResetPassword'
 import PortafolioPage from './features/portafolio/pages/PortfolioPage'
@@ -66,7 +66,7 @@ export default function App() {
         <Route path="/Dashboard/estadisticas/ReportesPersonales" element={<ReportesPersonales/>} />
         <Route path="/Dashboard/tecnologias" element={<TegnologiaPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/auth/VerificaCorreo" element={<VerificaCorreo />} />
+        <Route path="/auth/VerificarCodigo" element={<VerificarCodigo />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
         
         <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />

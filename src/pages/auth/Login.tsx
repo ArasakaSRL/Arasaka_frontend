@@ -12,7 +12,6 @@ import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { PASSWORD_MAX } from '@/features/auth/utils/passwordRules';
 import { ARASAKA_LOGO_URL } from '@/features/auth/utils/authBranding';
 import type { AuthProvider } from 'firebase/auth';
-import LoginBackground from '@/components/LoginBackground';
 import CuentaSuspendidaModal from '@/components/ui/CuentaSuspendidaModal';
 
 const passwordField = z.string().min(1, 'La contraseña es requerida').max(PASSWORD_MAX, `Máximo ${PASSWORD_MAX} caracteres`)
@@ -168,8 +167,7 @@ export default function Login() {
                 setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
             }
             sessionStorage.removeItem('tour_iniciado');
-            const debeVerificar = user && !user.provider && !user.verificacion_email;
-            navigate(debeVerificar ? '/auth/VerificaCorreo' : '/Dashboard/perfil/General');
+            navigate('/Dashboard/perfil/General');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; suspended?: boolean; suspendido_hasta?: string; errors?: Record<string, string[]> }>;
             if (error?.response?.status === 403 && error.response.data?.suspended) {

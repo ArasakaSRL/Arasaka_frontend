@@ -35,6 +35,18 @@ export async function registerRequest(payload: RegisterPayload) {
   return data
 }
 
+// POST /registrar/verificar
+export async function verificarCodigoRegistro(correo: string, codigo: string) {
+  const { data } = await apiClient.post('/registrar/verificar', { correo, codigo })
+  return data
+}
+
+// POST /registrar/reenviar
+export async function reenviarCodigoRegistro(correo: string) {
+  const { data } = await apiClient.post('/registrar/reenviar', { correo })
+  return data
+}
+
 // iniciar-sesion
 export async function loginRequest(payload: LoginPayload): Promise<LoginResponse> {
   const { data } = await apiClient.post<LoginResponse>('/iniciar-sesion', payload)
@@ -63,12 +75,6 @@ export async function sendPasswordResetEmail(correo: string) {
 // restablecer-contrasena
 export async function resetPasswordRequest(payload: ResetPasswordPayload) {
   const { data } = await apiClient.post('/restablecer-contrasena', payload)
-  return data
-}
-
-// correo/notificacion-verificacion (requiere sesión activa)
-export async function resendVerificationEmail() {
-  const { data } = await apiClient.post('/correo/notificacion-verificacion')
   return data
 }
 
