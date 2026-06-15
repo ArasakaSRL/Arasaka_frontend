@@ -5,8 +5,7 @@ import {getTimelineCertificaciones,getTimelineExperiencias,} from "@/features/re
 import { Timeline } from "@/features/reportesPersonales/components/Timeline";
 import { SeccionScrollHorizontal } from "@/features/reportesUsuario/components/visibilidad/SeccionScrollHorizontal";
 import { BoxCantidad } from "@/features/reportesUsuario/components/BoxCantidad";
-import { TotalVisitas } from "@/features/reportesUsuario/components/TotalVisitas";
-import {getEstadisticasPortafolio,getVisitantes,} from "@/features/reportesUsuario/apis/reportesApi";
+import {getEstadisticasPortafolio,} from "@/features/reportesUsuario/apis/reportesApi";
 import type { CertificacionTimeline, ExperienciaTimeline } from "@/features/reportesPersonales/types";
 import SkillsChart, { type SkillItem } from "@/features/reportesUsuario/components/Skillschart";
 
@@ -21,29 +20,37 @@ const COLOR_MAP: Record<string, string> = {
 export default function ReportesPersonales() {
   const [experiencias, setExperiencias] = useState<ExperienciaTimeline[]>([]);
   const [certificaciones, setCertificaciones] = useState<CertificacionTimeline[]>([]);
+  const [loading, setIsLoading] = useState(true);
 
-  const [visitantes, setVisitantes] = useState(0);
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    getTimelineExperiencias()
-      .then(setExperiencias)
-      .catch(console.error);
+    const cargarDatos = async () => {
+      try {
+        setIsLoading(true);
 
-    getTimelineCertificaciones()
-      .then(setCertificaciones)
-      .catch(console.error);
+        const [
+          experienciasData,
+          certificacionesData,
+          estadisticasData,
+        ] = await Promise.all([
+          getTimelineExperiencias(),
+          getTimelineCertificaciones(),
+          getEstadisticasPortafolio(),
+        ]);
 
+        setExperiencias(experienciasData);
+        setCertificaciones(certificacionesData);
+        setData(estadisticasData);
 
-    getVisitantes()
-      .then((data) =>
-        setVisitantes(data.total_visitantes ?? 0)
-      )
-      .catch(console.error);
+      } catch (error) {
+        console.error("Error al cargar reportes", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    getEstadisticasPortafolio()
-      .then(setData)
-      .catch(console.error);
+    cargarDatos();
   }, []);
 
   const timelineExperiencias = experiencias
@@ -97,6 +104,15 @@ export default function ReportesPersonales() {
     }))
     .filter((item) => item.value > 0);
 
+    if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex justify-center items-center h-64 text-gray-500">
+          Cargando reportes...
+        </div>
+      </DashboardLayout>
+    );
+  }
   return (
     <DashboardLayout>
       <div className="space-y-6">

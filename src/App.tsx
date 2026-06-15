@@ -12,7 +12,6 @@ import Hitos from './features/hitos/page/Hitos'
 import VerificaCorreo from './pages/auth/VerificaCorreo'
 import Dashboard from './pages/Dashboard/index'
 import ResetPassword from './pages/auth/ResetPassword'
-import Configuracion from './features/configuracion/page/Configuracion'
 import PortafolioPage from './features/portafolio/pages/PortfolioPage'
 import PortfolioPagePrivate from './features/portafolio/pages/PortfolioPagePrivate'
 import MensajesPrincipal from './pages/Dashboard/mensajes/MensajesPrincipal'
@@ -58,7 +57,7 @@ export default function App() {
         <Route path="/Dashboard/habilidades/Habilidades" element={<Habilidades />} />
         <Route path="/Dashboard/certificaciones/Certificaciones" element={< Certificaciones/>} />
         <Route path="/Dashboard/hitos/Hitos" element={< Hitos/>} />
-        <Route path="/Dashboard/configuracion/Configuracion" element={<Configuracion/>} />
+        <Route path="/Dashboard/configuracion/Configuracion" element={<VisibilidadGeneral/>} />
         <Route path="/Dashboard/cuenta/Cuenta" element={<Cuenta />} />
         <Route path="/Dashboard/configuracion/Componentes" element={<VisibilidadComponentes/>} />
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
