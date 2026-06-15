@@ -70,7 +70,7 @@ export default function Login() {
                 setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
             }
             sessionStorage.removeItem('tour_iniciado');
-            navigate('/Dashboard/perfil/General');
+            navigate(user?.rol === 'admin' ? '/Dashboard/admin/Perfiles' : '/Dashboard/perfil/General');
         } catch (err: unknown) {
             const axiosError = err as AxiosError<{ message?: string; suspended?: boolean; suspendido_hasta?: string }>;
             const firebaseError = err as { code?: string; message?: string };
@@ -167,7 +167,7 @@ export default function Login() {
                 setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
             }
             sessionStorage.removeItem('tour_iniciado');
-            navigate('/Dashboard/perfil/General');
+            navigate(user?.rol === 'admin' ? '/Dashboard/admin/Perfiles' : '/Dashboard/perfil/General');
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string; suspended?: boolean; suspendido_hasta?: string; errors?: Record<string, string[]> }>;
             if (error?.response?.status === 403 && error.response.data?.suspended) {

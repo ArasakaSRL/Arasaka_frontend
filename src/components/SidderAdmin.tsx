@@ -1,7 +1,5 @@
-import {
-    User, Briefcase, Award,
-    Trophy, BarChart3, Settings,HatGlasses,Eye, LogOut, ShieldCheck, MessageSquare,
-    Inbox, Send, LayoutDashboard, ChevronRight, Star, Pencil, Phone, FolderOpen, Blocks, Users, Flag, ShieldOff
+import { Settings, LogOut, ShieldCheck, 
+    LayoutDashboard, ChevronRight, Blocks, Users, Flag, ShieldOff
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logoutRequest } from '@/features/auth/api/auth';
@@ -10,7 +8,7 @@ import { useDirtyStore } from '@/stores/dirtyStore';
 import ConfirmNavModal from '@/components/ui/ConfirmNavModal';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
-
+import { useAuthStore } from '@/stores/authStore';
 interface SubmenuItem {
     icon: LucideIcon
     label: string
@@ -25,17 +23,9 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-    {
-        icon: User, label: 'Perfil Personal', path: '/Dashboard/perfil/General',
-        submenu: [
-            { icon: User,       label: 'Vista General', path: '/Dashboard/perfil/General' },
-            { icon: Pencil,     label: 'Editar Perfil', path: '/Dashboard/perfil/Editar' },
-            { icon: Phone,      label: 'Teléfonos',     path: '/Dashboard/perfil/Telefonos' },
-            { icon: FolderOpen, label: 'Portafolio',    path: '/Dashboard/perfil/Portafolio' },
-        ]
-    },
+
     { icon: Blocks, label: 'Tecnologías',   path: '/Dashboard/tecnologias' },
-    { icon: LayoutDashboard, label: 'Admin Panel', path: '/Dashboard/admin/Usuarios' },
+
     { icon: Users, label: 'Usuarios', path: '/Dashboard/admin/Perfiles' },
     {
         icon: ShieldCheck, label: 'Moderación', path: '/Dashboard/admin/Denuncias',
@@ -56,6 +46,7 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const location = useLocation();
+    const clearUser = useAuthStore(s => s.clearUser);
     const [isLoading, setIsLoading] = useState(false);
     const { isDirty, setDirty } = useDirtyStore();
     const [pendingPath, setPendingPath] = useState<string | null>(null);
@@ -86,13 +77,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         }
     };
 
-    const handleLogout = async () => {
+       const handleLogout = async () => {
         if (isLoading) return;
         try {
             setIsLoading(true);
             await logoutRequest();
+            clearUser();
             sessionStorage.removeItem('tour_iniciado');
-            navigate('/auth/Login');
+            navigate('/');
         } catch (error) {
             console.error('Error al cerrar sesión:', error);
         } finally {
