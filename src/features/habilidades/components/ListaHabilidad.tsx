@@ -18,7 +18,7 @@ export default function HabilidadesList({
   onEliminar, 
   modoAccion
 }: Props) {
-  if (load) return <p>Cargando...</p>;
+  if (load) return <p>Cargando habilidades...</p>;
 
 const tecnicas = habilidad.filter(
   (h) => h.categoria === "tecnica"

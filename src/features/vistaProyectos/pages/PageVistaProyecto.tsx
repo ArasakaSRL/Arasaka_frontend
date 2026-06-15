@@ -6,6 +6,7 @@ import { CardFechas } from "../components/CardFechas";
 import { ImagenProyecto } from "../components/ImagenProyectos";
 import { ProyectoLinks } from "../components/LinksProyecto";
 import { motion } from "framer-motion";
+import { usePortfolioData } from "@/features/reportesUsuario/hooks/usePortfolioData";
 
 const fadeUp = {
   hidden: {
@@ -25,9 +26,20 @@ export default function PageVistaProyecto() {
     slug: string;
     id: string;
   }>();
-
+  
+  const { data, loading, noDisponible } = usePortfolioData(slug);
   const { proyecto } = useVistaProyecto(id ?? "");
-  console.log("PROYECTO", proyecto);
+  
+  if (!slug)        return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">URL inválida o portafolio no encontrado.</div>;
+  if (loading)      return <div className="min-h-screen bg-[#F0EAD6] flex items-center justify-center text-black">Cargando portafolio...</div>;
+  if (noDisponible || !data) return       
+  <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white px-4">
+    <div className="text-center">
+      <h1 className="text-2xl font-semibold mb-2">Portafolio no disponible</h1>
+      <p className="text-slate-300 text-sm">El enlace puede haber expirado o es incorrecto.</p>
+    </div>
+  </div>;
+  
   return (
     <main className="min-h-screen bg-[#f5f5f5]">
       <motion.div
