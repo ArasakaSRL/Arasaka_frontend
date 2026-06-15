@@ -195,16 +195,12 @@ export default function DashboardLayout({ children, hideSidebar = false }: Dashb
         const { status } = data
 
         if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-            navigateRef.current('/Dashboard/perfil/General')
+            if (user) setUser({ ...user, tour_completado: true } as AuthUser)
+            sessionStorage.setItem('tour_iniciado', 'done')
             setTourRun(false)
-            sessionStorage.removeItem('tour_iniciado')
             setSidebarOpen(false)
-            try {
-                await apiClient.patch('/usuario/tour')
-                if (user) setUser({ ...user, tour_completado: true } as AuthUser)
-            } catch (error) {
-                console.error('Error al actualizar el estado del tour:', error)
-            }
+            navigateRef.current('/Dashboard/perfil/General')
+            apiClient.patch('/usuario/tour').catch(console.error)
         }
     }, [user, setUser])
 

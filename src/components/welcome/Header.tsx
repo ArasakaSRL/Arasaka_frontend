@@ -15,14 +15,15 @@ function useScrollLink() {
     }
   }
 }
-
+ 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const isLoggedIn = !!useAuthStore(s => s.user)
   const scrollTo = useScrollLink()
-
+  const user = useAuthStore(s => s.user)
   const closeMenu = () => setMenuOpen(false)
 
+  const esAdmin = user?.rol === 'admin'
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,7 +70,7 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-2">
             {isLoggedIn ? (
               <Link
-                to="/Dashboard/perfil/General"
+                to={esAdmin ? "/Dashboard/admin/Perfiles" : "/Dashboard/perfil/General"}
                 className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white rounded-xl bg-[#1e2a5e] hover:bg-[#151d45] shadow-md shadow-indigo-900/20 transition-all active:scale-95 no-underline"
               >
                 <LayoutDashboard size={15} />
@@ -133,7 +134,7 @@ export default function Header() {
             <div className="border-t border-slate-100 mt-2 pt-3 flex flex-col gap-1">
               {isLoggedIn ? (
                 <Link
-                  to="/Dashboard/perfil/General"
+                  to={esAdmin ? "/Dashboard/admin/Perfiles" : "/Dashboard/perfil/General"}
                   onClick={closeMenu}
                   className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white justify-center rounded-xl bg-[#1e2a5e] hover:bg-[#151d45] transition-colors no-underline"
                 >

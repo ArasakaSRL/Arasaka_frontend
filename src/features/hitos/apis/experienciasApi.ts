@@ -30,6 +30,18 @@ export const crearExperiencia = async (datos: any) => {
   }
 };
 
+export const eliminarExperiencia = async (idExperiencia: string) => {
+  try {
+    const id = getIdPortafolio()
+    const response = await apiClient.delete(`/portafolios/${id}/experiencias/${idExperiencia}`);
+    useAuthStore.getState().refreshPortafolio()
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar experiencia:', error);
+    throw error;
+  }
+};
+
 export const eliminarMultiplesExperiencias = async (ids: string[]) => {
   try {
     const id = getIdPortafolio()

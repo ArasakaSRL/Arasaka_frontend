@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import type { EstadisticasData, HeatmapHabilidadesTecnicas, HeatmapPerfil, NivelesHabilidad } from "../types/reportes";
 import { getClicsBlandas, getClicsCertificaciones, getClicsExperiencia, getClicsPerfil, getClicsProyectos, getClicsTecnicas, getCrecimientoMensual, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes, getVisitasPorMes } from "../apis/reportesApi";
 import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
+import { ReporteVisitas } from "../components/ReporteVisitas";
 
 const COLOR_MAP: Record<string, string> = {
   Principiante: "#D85A30",
@@ -171,33 +172,30 @@ console.log('skillsChartData:', skillsChartData)
                 </div>
             )}
         </div>
+        
+        <ReporteVisitas
+          visitasPorMes={mergearVisitas(
+            generarUltimosMeses(6),
+            visitasPorMes
+          )}
+          crecimientoMensual={mergearVisitas(
+            generarUltimosMeses(7),
+            crecimientoMensual
+          )}
+        />
 
-
-        <SeccionScrollHorizontal titulo="Estadísticas de Visitas">
-          <BarChartVisitas
-            data={mergearVisitas(generarUltimosMeses(6), visitasPorMes)}
-          />
-        </SeccionScrollHorizontal>
-
-
+        {/** 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <BoxCantidad nombre="Habilidades Blandas" total={totalBlandas} />
           <BoxCantidad nombre="Habilidades Técnicas" total={totalTecnicas} />
           <BoxCantidad nombre="Proyectos realizados" total={data.proyectos} />
         </div>
-
-        <SeccionScrollHorizontal titulo="Crecimiento Mensual">
-          <LineChart
-              data={mergearVisitas(generarUltimosMeses(7), crecimientoMensual).map(d => ({
-                  x: d.mes,
-                  y: d.visitas,
-              }))}
-          />
-        </SeccionScrollHorizontal>
+          */}
+        
       </div>
-      <h2 className="text-base md:text-5xl font-semibold text-black">
-          Mapa de Calor
-        </h2>
+      <h3 className="w-full text-left mt-12 mb-2 text-base md:text-3xl font-semibold text-black ">
+        Mapa de Calor
+      </h3>
       <PerfilReplica 
         intensidades={{ perfil: intensidadPerfil, tecnicas: intensidadTecnicas, }}  
         clicsPerfil={clicsPerfil}

@@ -54,6 +54,17 @@ export const eliminarMultiplesCertificaciones = async (ids: string[]): Promise<E
   }
 }
 
+export const eliminarCertificacion = async (idCertificacion: string): Promise<EliminarMultiplesResponse> => {
+  try {
+    const id = getIdPortafolio()
+    const response = await apiClient.delete<EliminarMultiplesResponse>(`/portafolios/${id}/certificaciones/${idCertificacion}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar certificación:', error);
+    throw error;
+  }
+}
+
 export const getCertificacionPorId = async (idCertificacion: string): Promise<CertificacionAPI> => {
   try {
     const id = getIdPortafolio()

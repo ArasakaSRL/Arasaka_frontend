@@ -15,15 +15,15 @@ import Modal from "@/features/certificaciones/components/Modal";
 import { CircleX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SeccionCertificados } from "../components/SeccionCertificados";
-import { BotonEliminar } from "../components/BotonEliminar";
 import { useEliminarCertificaciones } from "../hooks/useEliminarCertificaciones";
 import EliminarModal from "../components/EliminarModal";
+import type { CertificacionAPI } from "../types";
 
 export default function Certificaciones() {
   const [openModal, setOpenModal] = useState(false);
   const [filtroCategoriaId, setFiltroCategoriaId] = useState<string | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
-  const [certificadosEliminar, setCertificadosEliminar]= useState<string[]>([]);
+  const [certificadoEliminar, setCertificadoEliminar] = useState<CertificacionAPI | null>(null);
 
   // ESTADOS DEL FORMULARIO
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<{label: string, value: string} | null>(null);
@@ -41,7 +41,7 @@ export default function Certificaciones() {
 
   const { categorias, isLoading, isUsingFallback } = useCategorias();
   const { registrarCertificacion, isCreating} = useCrearCertificacion();
-  const { eliminarCertificaciones, isDeleting } = useEliminarCertificaciones();
+  const { eliminarUna, isDeleting } = useEliminarCertificaciones();
 
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   
@@ -68,25 +68,19 @@ export default function Certificaciones() {
     fecha: false,
   });
 
-  const toggleEliminar = (id: string) => {
-    setCertificadosEliminar((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id]
-    );
-  };
+  const handleEliminarSeleccionado = async () => {
+    if (!certificadoEliminar) return;
 
-  const handleEliminarSeleccionados = async () => {
     try {
-      await eliminarCertificaciones(certificadosEliminar);
+      await eliminarUna(certificadoEliminar.id_certificacion);
 
-      setCertificadosEliminar([]);
+      setCertificadoEliminar(null);
       setModoAccion(null);
       setIsConfirmDeleteOpen(false);
 
       await refetchCertificaciones();
 
-      toast.success(`${certificadosEliminar.length} certificación(es) eliminada(s)`);
+      toast.success("Certificación eliminada correctamente");
 
     } catch {
       toast.error("Error al eliminar");
@@ -94,19 +88,10 @@ export default function Certificaciones() {
     }
   };
 
-  const handleEliminar = async () => {
-    if (modoAccion !== "eliminar") {
-      toast.warning("Selecciona una certificación");
-      setModoAccion("eliminar");
-      return;
-    }
-
-    if (certificadosEliminar.length === 0) {
-      toast.warning("No seleccionaste certificados");
-      return;
-    }
-    
-    setIsConfirmDeleteOpen(true);
+  const handleEliminar = () => {
+    // Activamos el modo eliminar; la selección se hace certificado por certificado
+    toast.warning("Selecciona una certificación para eliminar");
+    setModoAccion("eliminar");
   };
 
   // FUNCIÓN PARA ENVIAR A FIREBASE Y LUEGO AL BACKEND
@@ -210,7 +195,7 @@ export default function Certificaciones() {
           onEliminar={handleEliminar}
           onCancelar={() => {
             setModoAccion(null);
-            setCertificadosEliminar([]);
+            setCertificadoEliminar(null);
           }}
         />
 
@@ -404,28 +389,24 @@ export default function Certificaciones() {
           <SeccionCertificados
             certificados={certificados}
             modoAccion={modoAccion}
-            certificadosEliminar={certificadosEliminar}
+            certificadosEliminar={certificadoEliminar ? [certificadoEliminar.id_certificacion] : []}
             onEliminar={(cert) => {
-              toggleEliminar(cert.id_certificacion); 
+              setCertificadoEliminar(cert);
+              setIsConfirmDeleteOpen(true);
             }}
           />
         )}
-        {/*<BotonEliminar
-          count={certificadosEliminar.length}
-          onDeleteAll={handleEliminar}
-          onDeselectAll={() => {
-            setCertificadosEliminar([]);
-            setModoAccion(null);
-          }}
-        />*/}
       </div>
 
       <EliminarModal
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
-        onConfirm={handleEliminarSeleccionados} 
-        titulo="Eliminar certificaciones"
-        nombre={`${certificadosEliminar.length} certificación(es) seleccionada(s)`}
+        onClose={() => {
+          setIsConfirmDeleteOpen(false);
+          setCertificadoEliminar(null);
+        }}
+        onConfirm={handleEliminarSeleccionado}
+        titulo="¿Eliminar certificación?"
+        nombre={certificadoEliminar?.titulo ?? ""}
         isLoading={isDeleting}
       />
       

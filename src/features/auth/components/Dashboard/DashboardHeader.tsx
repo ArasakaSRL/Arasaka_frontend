@@ -32,6 +32,8 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
     const [modalAdvertencia, setModalAdvertencia] = useState(false);
     const [portafolioPendiente, setPortafolioPendiente] = useState<Portafolio | null>(null);
 
+    const esAdmin = user?.rol === 'admin'
+
     const initials = user
         ? `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`.toUpperCase()
         : '?'
@@ -125,29 +127,33 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
 
 
             <div className="flex items-center gap-2 md:gap-3">
-                <button
-                    className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => setShareOpen(true)}
-                    disabled={!portafolioSeleccionado?.slug}
-                >
-                    <Share2 size={16} />
-                    <span className="hidden sm:inline">Compartir</span>
-                </button>
+                {!esAdmin && (
+                    <>
+                        <button
+                            className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => setShareOpen(true)}
+                            disabled={!portafolioSeleccionado?.slug}
+                        >
+                            <Share2 size={16} />
+                            <span className="hidden sm:inline">Compartir</span>
+                        </button>
 
-                <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
-                    onClick={handlevistapreviaPrivate}>
-                    <Eye size={16} />
-                    <span className="hidden sm:inline">Vista Previa</span>
-                </button>
+                        <button className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm"
+                            onClick={handlevistapreviaPrivate}>
+                            <Eye size={16} />
+                            <span className="hidden sm:inline">Vista Previa</span>
+                        </button>
 
-                <button
-                    className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
-                    onClick={handleDescargarCV}
-                    disabled={descargandoCV}
-                >
-                    <ExternalLink size={16} />
-                    <span className="hidden sm:inline">{descargandoCV ? 'Generando...' : 'Descargar CV'}</span>
-                </button>
+                        <button
+                            className="flex items-center gap-2 px-3 py-2 text-slate-600 font-medium hover:bg-slate-300 rounded-lg transition-colors border border-gray-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                            onClick={handleDescargarCV}
+                            disabled={descargandoCV}
+                        >
+                            <ExternalLink size={16} />
+                            <span className="hidden sm:inline">{descargandoCV ? 'Generando...' : 'Descargar CV'}</span>
+                        </button>
+                    </>
+                )}
 
                 <div
                     onClick={() => navigate('/Dashboard/cuenta/Cuenta')}
