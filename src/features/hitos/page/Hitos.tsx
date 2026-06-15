@@ -397,7 +397,7 @@ const handleEliminarSeleccionado = async () => {
           setModoAccion(null);
         }}
         onConfirm={handleEliminarSeleccionado} // 🔥 ESTA ES LA QUE REALMENTE BORRA
-        titulo="Eliminar experiencia"
+        titulo="¿Eliminar experiencia?"
         nombre={experienciaEliminar?.cargo ?? ""}
         isLoading={isDeleting}
       />
