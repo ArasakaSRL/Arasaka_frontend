@@ -8,6 +8,7 @@ import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import SocialAuthButtons from '@/features/auth/components/auth/SocialAuthButtons';
 import { registerRequest, getUsuario, firebaseAuthRequest } from '@/features/auth/api/auth';
 import { useAuthStore, resolverPortafolioDesdeArray } from '@/stores/authStore';
+
 import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { passwordSchema, PASSWORD_MAX } from '@/features/auth/utils/passwordRules';
 import { ARASAKA_LOGO_URL } from '@/features/auth/utils/authBranding';
@@ -129,13 +130,7 @@ export default function Register() {
                 nombre, apellido, correo, password, password_confirmation,
             });
 
-            const user = await getUsuario();
-            if (user) {
-                setUser(user);
-                setPortafolio(resolverPortafolioDesdeArray(user.portafolios ?? []));
-            }
-            sessionStorage.removeItem('tour_iniciado');
-            navigate('/auth/VerificaCorreo');
+            navigate('/auth/VerificarCodigo', { state: { correo } });
 
         } catch (err: unknown) {
             const error = err as AxiosError<{ message?: string }>;
