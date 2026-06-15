@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { CardHitos } from "../components/cardHitos";
-import { getExperiencias, crearExperiencia, eliminarMultiplesExperiencias } from "../apis/experienciasApi";
+import { getExperiencias, crearExperiencia, eliminarExperiencia } from "../apis/experienciasApi";
 import { useAuthStore } from "@/stores/authStore";
 
 // Importamos date-fns para las fechas y el idioma español
@@ -12,7 +12,6 @@ import ModalForm from "@/components/Modal";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
-import { BotonEliminar } from "@/features/certificaciones/components/BotonEliminar";
 import EliminarModal from "@/features/certificaciones/components/EliminarModal";
 
 type Experiencia = {
@@ -64,9 +63,8 @@ export default function Hitos() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [hitosEliminar, setHitosEliminar]= useState<string[]>([]);
+  const [experienciaEliminar, setExperienciaEliminar] = useState<Experiencia | null>(null);
   const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
-  const [isEliminarModalOpen, setIsEliminarModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // 2. FUNCIONES DE CARGA Y EFECTOS
@@ -93,48 +91,28 @@ export default function Hitos() {
   }
 }, [openModal]);
 
-const toggleEliminar = (id: string) => {
-    setHitosEliminar((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id]
-    );
+const handleEliminar = () => {
+    // Activamos el modo eliminar; la selección se hace tarjeta por tarjeta
+    toast.warning("Selecciona una experiencia para eliminar");
+    setModoAccion("eliminar");
   };
 
-const handleEliminar = async () => {
-    // 1. Si no estamos en modo eliminar, lo activamos
-    if (modoAccion !== "eliminar") {
-      toast.warning("Selecciona al menos una experiencia para eliminar");
-      setModoAccion("eliminar");
-      return;
-    }
+const handleEliminarSeleccionado = async () => {
+  if (!experienciaEliminar) return;
 
-    // 2. Si ya estamos en modo eliminar, validamos si seleccionó algo
-    if (hitosEliminar.length === 0) {
-      toast.warning("No seleccionaste ningúna experiencia");
-      return;
-    }
-
-    setIsEliminarModalOpen(true);
-  };
-
-const handleEliminarSeleccionados = async () => {
   try {
     setIsDeleting(true);
 
-    await eliminarMultiplesExperiencias(hitosEliminar);
+    await eliminarExperiencia(experienciaEliminar.id);
 
-    toast.success(
-      `${hitosEliminar.length} experiencias eliminadas correctamente`
-    );
+    toast.success("Experiencia eliminada correctamente");
 
-    setHitosEliminar([]);
+    setExperienciaEliminar(null);
     setModoAccion(null);
-    setIsEliminarModalOpen(false);
 
     await cargarExperiencias();
   } catch (error) {
-    toast.error("Ocurrió un error al intentar eliminar las experiencias");
+    toast.error("Ocurrió un error al intentar eliminar la experiencia");
     console.error(error);
   } finally {
     setIsDeleting(false);
@@ -233,7 +211,7 @@ const handleEliminarSeleccionados = async () => {
         onEliminar={handleEliminar}
         onCancelar={() => {
           setModoAccion(null);
-          setHitosEliminar([]);
+          setExperienciaEliminar(null);
         }}
         />
       </div>
@@ -397,12 +375,12 @@ const handleEliminarSeleccionados = async () => {
                 }
 
                 seleccionado={
-                  hitosEliminar.includes(exp.id)
+                  experienciaEliminar?.id === exp.id
                 }
 
                 onSelect={() => {
                   if (modoAccion === "eliminar") {
-                    toggleEliminar(exp.id);
+                    setExperienciaEliminar(exp);
                   }
                 }}
               />
@@ -410,22 +388,17 @@ const handleEliminarSeleccionados = async () => {
           })
         )}
 
-        {/*<BotonEliminar
-          count={hitosEliminar.length}
-          onDeleteAll={handleEliminar}
-          onDeselectAll={() => {
-          setHitosEliminar([]);
-          setModoAccion(null);
-          }}
-          />*/}
       </div>
 
       <EliminarModal
-        isOpen={isEliminarModalOpen}
-        onClose={() => setIsEliminarModalOpen(false)}
-        onConfirm={handleEliminarSeleccionados} // 🔥 ESTA ES LA QUE REALMENTE BORRA
-        titulo="Eliminar experiencias"
-        nombre={`${hitosEliminar.length} experiencia(s) seleccionada(s)`}
+        isOpen={!!experienciaEliminar}
+        onClose={() => {
+          setExperienciaEliminar(null);
+          setModoAccion(null);
+        }}
+        onConfirm={handleEliminarSeleccionado} // 🔥 ESTA ES LA QUE REALMENTE BORRA
+        titulo="Eliminar experiencia"
+        nombre={experienciaEliminar?.cargo ?? ""}
         isLoading={isDeleting}
       />
     </DashboardLayout>
