@@ -4,7 +4,9 @@ import { ArrowRight, LayoutDashboard, Sparkles, Zap } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 
 export default function HeroSection() {
-  const isLoggedIn = !!useAuthStore(s => s.user)
+  const user = useAuthStore(s => s.user)
+  const isLoggedIn = !!user
+  const esAdmin = user?.rol === 'admin'
 
   return (
     <section className="relative flex items-center justify-center overflow-hidden bg-[#0d1535] pt-32 pb-24 px-6">
@@ -54,7 +56,7 @@ export default function HeroSection() {
         >
           {isLoggedIn ? (
             <Link
-              to="/Dashboard/perfil/General"
+              to={esAdmin ? "/Dashboard/admin/Perfiles" : "/Dashboard/perfil/General"}
               className="flex mt-10 items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[#1e2a5e] font-bold text-sm hover:bg-gray-50 transition-all shadow-lg no-underline active:scale-95"
             >
               <LayoutDashboard size={16} />

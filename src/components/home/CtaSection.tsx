@@ -9,7 +9,9 @@ const fadeUp = {
 }
 
 export default function CtaSection() {
-  const isLoggedIn = !!useAuthStore(s => s.user)
+  const user = useAuthStore(s => s.user)
+  const isLoggedIn = !!user
+  const esAdmin = user?.rol === 'admin'
 
   return (
     <section className="py-20 bg-white text-center px-6">
@@ -45,7 +47,7 @@ export default function CtaSection() {
         >
           {isLoggedIn ? (
             <Link
-              to="/Dashboard/perfil/General"
+              to={esAdmin ? "/Dashboard/admin/Perfiles" : "/Dashboard/perfil/General"}
               className="inline-flex items-center mt-5 gap-2 bg-[#1e2a5e] text-white px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-[#151d45] transition-all no-underline shadow-lg shadow-indigo-900/20"
             >
               <LayoutDashboard size={16} />
