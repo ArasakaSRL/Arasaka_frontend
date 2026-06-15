@@ -24,7 +24,7 @@ export default function ListaProyectos({
     return (
       <div className="w-full py-10 text-center">
         <p className="text-gray-500">
-          Cargando Proyectos.
+          Cargando proyectos...
         </p>
       </div>
     );
