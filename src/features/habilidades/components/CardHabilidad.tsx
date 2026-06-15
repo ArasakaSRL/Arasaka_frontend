@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 type Props = {
   nombre: string;
   nivel: string;
@@ -19,16 +21,38 @@ const getWidth = (nivel: string) => {
   return index >= 0 ? `${(index + 1) * 20}%` : "10%";
 };
 
-export default function HabilidadItem({ nombre, nivel, editable, eliminando, onSelect }: Props) {
+export default function HabilidadItem({
+  nombre,
+  nivel,
+  editable,
+  eliminando,
+  onSelect,
+}: Props) {
   return (
-    <div
+    <motion.div
       onClick={onSelect}
+      initial={{
+        opacity: 0,
+        y: 15,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      whileHover={{
+        scale: 1.01,
+      }}
+      whileTap={{
+        scale: 0.98,
+      }}
+      transition={{
+        duration: 0.25,
+      }}
       className={`
         w-full
         rounded-lg
         p-3
         flex items-center justify-between
-        transition-all
         border-2
 
         ${
@@ -54,24 +78,30 @@ export default function HabilidadItem({ nombre, nivel, editable, eliminando, onS
       `}
     >
       <div className="flex-1 space-y-2">
-
         <div className="flex justify-between items-center">
           <span className="font-medium text-sm text-black">
             {nombre}
           </span>
-
           <span className="text-xs text-gray-500">
             {nivel}
           </span>
         </div>
-
-        <div className="w-full bg-gray-200 h-2 rounded">
-          <div
+        {/* Barra */}
+        <div className="w-full bg-gray-200 h-2 rounded overflow-hidden">
+          <motion.div
             className="bg-green-600 h-2 rounded"
-            style={{ width: getWidth(nivel) }}
+            initial={{ width: 0 }}
+            animate={{
+              width: getWidth(nivel),
+            }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+            }}
           />
         </div>
+
       </div>
-    </div>
+    </motion.div>
   );
 }

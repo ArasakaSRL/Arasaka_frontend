@@ -3,7 +3,6 @@ import App from '../App'
 import SuspenseWrapper from '../components/SuspenseWrapper'
 import { Home, About, NotFound, PerfilGeneral, PerfilEditar, PerfilTelefonos, PerfilPortafolio, Login, Register, Proyectos, Habilidades, Certificaiones, MensajesPrincipal, MensajesRecibidos, MensajesEnviados, MensajesDestacados, VisibilidadComponentes, VistaProyecto } from './lazyRoutes'
 import Hitos from '@/features/hitos/page/Hitos'
-import Configuracion from '@/features/configuracion/page/Configuracion'
 import ReportesUsr from '@/features/reportesUsuario/page/ReportesUsr'
 import VisibilidadGeneral from '@/pages/Dashboard/configuraciones/VisibilidadGeneral'
 import CambiarPlantilla from '@/pages/Dashboard/configuraciones/CambiarPlantilla'
@@ -119,11 +118,7 @@ export const router = createBrowserRouter([
 
       {
         path: '/Dashboard/configuracion/Configuracion',
-        element: (
-          <SuspenseWrapper>
-            <Configuracion></Configuracion>
-          </SuspenseWrapper>
-        )
+        element: (<SuspenseWrapper><VisibilidadGeneral /></SuspenseWrapper>)
       },
 
       {
