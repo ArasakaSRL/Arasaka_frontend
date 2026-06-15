@@ -53,6 +53,8 @@ const menuItems: MenuItem[] = [
     { icon: BarChart3, label: 'Estadísticas', path: '/Dashboard/estadisticas/Reportes', tourId: 'tour-estadisticas' 
         ,submenu: [
             { icon: BarChart3, label: 'Reportes Mensuales', path: '/reportes-mensuales' },
+            { icon: Briefcase, label: 'Reportes Portafolio', path: '/Dashboard/estadisticas/Reportes' },
+            { icon: Briefcase, label: 'Reportes Personales', path: '/Dashboard/estadisticas/ReportesPersonales' },
         ]
     },
 

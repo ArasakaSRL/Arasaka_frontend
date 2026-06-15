@@ -36,6 +36,7 @@ import { VisibilidadComponentes, VisibilidadGeneral } from './router/lazyRoutes'
 import FormacionAcademicaPage from  './features/formacion-academica/pages/FormacionAcademicaPage'
 import CambiarPlantilla from './pages/Dashboard/configuraciones/CambiarPlantilla'
 import ReporteMensualPage from '@/features/formacion-academica/pages/ReporteMensualPage'
+import ReportesPersonales from './pages/Dashboard/estadisticas/ReportesPersonales'
 export default function App() {
   return (
     <Routes>
@@ -63,6 +64,7 @@ export default function App() {
         <Route path="/Dashboard/configuracion/General" element={<VisibilidadGeneral/>} />
         <Route path="/Dashboard/configuracion/Plantillas" element={<CambiarPlantilla/>} />
         <Route path="/Dashboard/estadisticas/Reportes" element={<ReportesUsr/>} />
+        <Route path="/Dashboard/estadisticas/ReportesPersonales" element={<ReportesPersonales/>} />
         <Route path="/Dashboard/tecnologias" element={<TegnologiaPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/auth/VerificaCorreo" element={<VerificaCorreo />} />

@@ -7,6 +7,7 @@ import Configuracion from '@/features/configuracion/page/Configuracion'
 import ReportesUsr from '@/features/reportesUsuario/page/ReportesUsr'
 import VisibilidadGeneral from '@/pages/Dashboard/configuraciones/VisibilidadGeneral'
 import CambiarPlantilla from '@/pages/Dashboard/configuraciones/CambiarPlantilla'
+import ReportesPersonales from '@/pages/Dashboard/estadisticas/ReportesPersonales'
 
 
 export const router = createBrowserRouter([
@@ -148,6 +149,16 @@ export const router = createBrowserRouter([
           </SuspenseWrapper>
         )
       },
+
+      {
+        path: '/Dashboard/estadisticas/ReportesPersonales',
+        element: (
+          <SuspenseWrapper>
+            <ReportesPersonales></ReportesPersonales>
+          </SuspenseWrapper>
+        )
+      },
+
       {
         path: '/proyectos/:id',
         element: (

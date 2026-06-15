@@ -53,6 +53,16 @@ export default function Plantilla2() {
       return index;
     });
   };
+  
+  const formatearFecha = (fecha?: string | null) => {
+    if (!fecha) return "";
+
+    return new Date(fecha).toLocaleDateString("es-BO", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   const handleOrbitaChange = useCallback((id: string) => {
     if (isAdvancingRef.current) return;
@@ -95,8 +105,8 @@ export default function Plantilla2() {
           centro: <span>{exp.Nombre_empresa}</span>,
           derecha: (
             <div className="text-xs text-right">
-              <div>{exp.fecha_inicio}</div>
-              <div>{exp.fecha_fin || "Actualidad"}</div>
+              <div>De:{formatearFecha(exp.fecha_inicio)}</div>
+              <div>Hasta:{exp.fecha_fin ? formatearFecha(exp.fecha_fin) : "Actualidad"}</div>
             </div>
           ),
         }));
