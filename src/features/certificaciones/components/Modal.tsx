@@ -1,51 +1,65 @@
-import type { ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-type Props = {
+interface ModalFormProps {
   isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
+  closeModal: () => void;
+  children: React.ReactNode;
+  maxWidth?: string;
+}
+
+const Modal = ({
+  isOpen,
+  closeModal,
+  children,
+  maxWidth = "max-w-md",
+}: ModalFormProps) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="
+            fixed inset-0 z-50
+            flex items-center justify-center
+            bg-black/40
+            p-4
+          "
+          onClick={closeModal}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className={`
+              w-full
+              ${maxWidth}
+              bg-white
+              rounded-2xl
+              shadow-xl
+              max-h-[90vh]
+              overflow-y-auto
+            `}
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, y: 40, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.9, y: 40, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          >
+            <div
+              className="
+                max-h-[90vh]
+                overflow-y-auto
+                modal-scroll
+                custom-scroll
+                p-6
+              "
+            >
+              {children}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
-export function Modal({ isOpen, onClose, children }: Props) {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-
-      {/* Overlay suave */}
-      <div
-        className="fixed inset-0 bg-black/30 backdrop-blur-md"
-        onClick={onClose}
-      />
-
-      {/* Contenido */}
-      <div
-        className="
-          relative z-10
-          w-full sm:w-[90%] max-w-4xl
-          h-auto
-          max-h-[90vh] 
-          overflow-y-auto
-          bg-white rounded-xl shadow-xl
-          p-4 sm:p-6
-        "
-      >
-        {/* Botón cerrar */}
-        <button
-          onClick={onClose}
-          className="
-            absolute top-3 right-3
-            text-gray-500 hover:text-gray-800
-            text-2xl font-bold
-            w-8 h-8 flex items-center justify-center
-            bg-white rounded-full
-          "
-        >
-          ✕
-        </button>
-
-        {children}
-      </div>
-    </div>
-  );
-}
+export default Modal;

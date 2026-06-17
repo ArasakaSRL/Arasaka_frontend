@@ -1,10 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
 import SuspenseWrapper from '../components/SuspenseWrapper'
-import { Home, About, NotFound, PerfilPersonal, Login, Register, Proyectos, Habilidades, Certificaiones, Mensajes } from './lazyRoutes'
+import { Home, About, NotFound, PerfilGeneral, PerfilEditar, PerfilTelefonos, PerfilPortafolio, Login, Register, Proyectos, Habilidades, Certificaiones, MensajesPrincipal, MensajesRecibidos, MensajesEnviados, MensajesDestacados, VisibilidadComponentes, VistaProyecto } from './lazyRoutes'
 import Hitos from '@/features/hitos/page/Hitos'
-import Configuracion from '@/features/configuracion/page/Configuracion'
 import ReportesUsr from '@/features/reportesUsuario/page/ReportesUsr'
+import VisibilidadGeneral from '@/pages/Dashboard/configuraciones/VisibilidadGeneral'
+import CambiarPlantilla from '@/pages/Dashboard/configuraciones/CambiarPlantilla'
+import ReportesPersonales from '@/pages/Dashboard/estadisticas/ReportesPersonales'
 
 
 export const router = createBrowserRouter([
@@ -30,12 +32,20 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'Dashboard/perfilPersonal/PerfilPersonal',
-        element: (
-          <SuspenseWrapper>
-            <PerfilPersonal />
-          </SuspenseWrapper>
-        ),
+        path: 'Dashboard/perfil/General',
+        element: (<SuspenseWrapper><PerfilGeneral /></SuspenseWrapper>),
+      },
+      {
+        path: 'Dashboard/perfil/Editar',
+        element: (<SuspenseWrapper><PerfilEditar /></SuspenseWrapper>),
+      },
+      {
+        path: 'Dashboard/perfil/Telefonos',
+        element: (<SuspenseWrapper><PerfilTelefonos /></SuspenseWrapper>),
+      },
+      {
+        path: 'Dashboard/perfil/Portafolio',
+        element: (<SuspenseWrapper><PerfilPortafolio /></SuspenseWrapper>),
       },
 
       {
@@ -90,21 +100,40 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: '/Dashboard/mensajes/Mensajes',
-        element: (
-          <SuspenseWrapper>
-            <Mensajes />
-          </SuspenseWrapper>
-        )
+        path: 'Dashboard/mensajes/Principal',
+        element: (<SuspenseWrapper><MensajesPrincipal /></SuspenseWrapper>)
+      },
+      {
+        path: 'Dashboard/mensajes/Recibidos',
+        element: (<SuspenseWrapper><MensajesRecibidos /></SuspenseWrapper>)
+      },
+      {
+        path: 'Dashboard/mensajes/Enviados',
+        element: (<SuspenseWrapper><MensajesEnviados /></SuspenseWrapper>)
+      },
+      {
+        path: 'Dashboard/mensajes/Destacados',
+        element: (<SuspenseWrapper><MensajesDestacados /></SuspenseWrapper>)
       },
 
       {
         path: '/Dashboard/configuracion/Configuracion',
-        element: (
-          <SuspenseWrapper>
-            <Configuracion></Configuracion>
-          </SuspenseWrapper>
-        )
+        element: (<SuspenseWrapper><VisibilidadGeneral /></SuspenseWrapper>)
+      },
+
+      {
+        path: '/Dashboard/configuracion/Componentes',
+        element: (<SuspenseWrapper><VisibilidadComponentes /></SuspenseWrapper>)
+      },
+      
+      {
+        path: '/Dashboard/configuracion/General',
+        element: (<SuspenseWrapper><VisibilidadGeneral /></SuspenseWrapper>)
+      },
+
+      {
+        path: '/Dashboard/configuracion/Plantillas',
+        element: (<SuspenseWrapper><CambiarPlantilla /></SuspenseWrapper>)
       },
 
       {
@@ -112,6 +141,24 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <ReportesUsr></ReportesUsr>
+          </SuspenseWrapper>
+        )
+      },
+
+      {
+        path: '/Dashboard/estadisticas/ReportesPersonales',
+        element: (
+          <SuspenseWrapper>
+            <ReportesPersonales></ReportesPersonales>
+          </SuspenseWrapper>
+        )
+      },
+
+      {
+        path: '/proyectos/:id',
+        element: (
+          <SuspenseWrapper>
+            <VistaProyecto />
           </SuspenseWrapper>
         )
       }

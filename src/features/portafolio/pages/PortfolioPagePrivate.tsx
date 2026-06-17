@@ -1,102 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import PortfolioHeader from '../components/PortfolioHeader '; 
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { getPortafolioPrivate } from '../lib/portafolio.service';
-import type { Usuario ,habilidades,experiencias,HabilidadTecnica,HabilidadBlanda,Proyectos ,configuracion,certificaciones} from '../types/portafolioType';
-import HabilidadesTecnicas from '@/features/portafolio/components/HabilidadesTecnicas';
-import ExperienceTimeline from '../components/ExperienceTimeline';
-import HabilidadesBlandas from '../components/HabilidadesBlandas';
-import SeccionProyectos from '../components/SeccionProyectos';
-import { NavbarVertical } from '../components/NavbarVertical';
-import { CertificacionesSection } from '../components/CertificacionesSection';
-import { set } from 'zod';
+import type { configuracion } from '../types/portafolioType';
+import Predeterminada from '@/features/plantillas/pages/Predeterminada';
+import Plantilla1 from '@/features/plantillas/pages/Plantilla1';
+import Plantilla2 from '@/features/plantillas/pages/Plantilla2';
+import Plantilla3 from '@/features/plantillas/pages/Plantilla3';
 
 export default function PortfolioPage() {
     const { slug } = useParams<{ slug: string }>();
-    const [usuario, setUsuario] = useState<Usuario | null>(null);
-    const [habilidades, setHabilidades] = useState<habilidades | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [experiencias, setExperiencias] = useState<experiencias[]>([]);
-    const [habilidadesTecnicas, setHabilidadesTecnicas] = useState<HabilidadTecnica[]>([]);
-    const [habilidadesBlandas, setHabilidadesBlandas] = useState<HabilidadBlanda[]>([]);
-    const [proyectos, setProyectos] = useState<Proyectos[]>([]);
+    const navigate = useNavigate();
     const [configuracion, setConfiguracion] = useState<configuracion | null>(null);
-    const [certificaciones, setCertificaciones] = useState<certificaciones[]>([]);
-
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const fetchPortfolioData = async () => {
             if (!slug) return;
-            
+
             try {
                 setLoading(true);
                 const data = await getPortafolioPrivate(slug);
-                console.log("Datos del portafolio:", data);
-                setUsuario(data.usuario);
-                setHabilidades(data.habilidades);
-                setExperiencias(data.experiencias);
-                setHabilidadesTecnicas(data.habilidades.tecnicas);
-                setHabilidadesBlandas(data.habilidades.blandas);
-                setProyectos(data.proyectos);
                 setConfiguracion(data.configuracion);
-                setCertificaciones(data.certificaciones);               
-            } catch (error) {
-                console.error("Error fetching portfolio:", error);
+            } catch (err) {
+                console.error("Error fetching portfolio:", err);
+                setError(true);
             } finally {
                 setLoading(false);
             }
         };
-       
+
         fetchPortfolioData();
-    }, [slug]); 
+    }, [slug]);
 
     if (loading) {
         return <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white">Cargando...</div>;
     }
 
-    if (!usuario) {
-        return <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white">No se encontró el usuario</div>;
+    if (error) {
+        return <div className="min-h-screen bg-[#0a1120] flex items-center justify-center text-white">No se pudo cargar el portafolio</div>;
     }
 
+    const renderPlantilla = () => {
+        switch (configuracion?.plantilla ?? "predeterminado") {
+            case "minimalista":
+                return <Plantilla1 />;
+            case "profesional":
+                return <Plantilla2 />;
+            case "stiloPastel":
+                return <Plantilla3 />;
+            case "predeterminado":
+            default:
+                return <Predeterminada />;
+        }
+    };
+
     return (
-             
-        <div className="p-3 w-full min-h-screen ">
-                <NavbarVertical /> 
-            <div className="max-w-350 mx-auto flex flex-col gap-6">
-                <section id="inicio">
-                    <PortfolioHeader
-                        usuario={usuario}
-                        proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
-                        tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
-                        blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
-                        experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
-                        certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
-                    />
-                </section>
-            </div>
-            {configuracion?.mostrar_habilidades && (
-                <section id="habilidades">
-                    <HabilidadesTecnicas tecnicas={habilidadesTecnicas} />
-                    <HabilidadesBlandas blandas={habilidadesBlandas} />
-                </section>
-           
-               )}
-                {configuracion?.mostrar_experiencias && (
-                 <section id="experiencia">
-                    <ExperienceTimeline experiencias={experiencias} />
-                 </section>
-                )}
-                    {configuracion?.mostrar_proyectos && (
-                  <section id="proyectos">
-                    <SeccionProyectos proyectos={proyectos} />
-                  </section>
-                )}
-                {configuracion?.mostrar_certificaciones && (
-                    <section id="certificaciones">
-                    <CertificacionesSection certificaciones={certificaciones} />
-                    </section>
-                )}
-               
+        <div className="relative">
+            <button
+                onClick={() => navigate('/Dashboard/perfil/General')}
+                className="fixed top-4 left-4 z-50 flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-black/80"
+            >
+                <ArrowLeft size={16} />
+                Volver al dashboard
+            </button>
+            {renderPlantilla()}
         </div>
     );
 }

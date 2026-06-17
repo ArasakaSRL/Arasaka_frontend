@@ -4,16 +4,18 @@ import { Input } from '@/components/ui/input';
 import type { Profesion, Telefono } from '@/features/auth/types/update-perfilPersonal';
 import { perfilSchema } from '@/features/auth/utils/perfilSchema';
 import { useDirtyStore } from '@/stores/dirtyStore';
-import InfoBasicaFields from './InfoBasicaFields';
+import InfoBasicaFields, { type InfoBasicaFormData } from './InfoBasicaFields';
 import TelefonosSection from './TelefonosSection';
 import ProfesionesSection from './ProfesionesSection';
 
 export interface PerfilFormData {
+    nombre_completo: string;
     nombre: string;
     apellido: string;
-    biografia: string;
+    gmail: string;
     correo: string;
-    pais: string;
+    biografia: string;
+    pais: string; 
 }
 
 type FormErrors = Partial<Record<keyof PerfilFormData, string>>;
@@ -45,16 +47,16 @@ export default function PerfilForm({
     const { setDirty } = useDirtyStore()
 
     const [initialData, setInitialData] = useState({
-        nombre: formData.nombre,
-        apellido: formData.apellido,
+        nombre_completo: formData.nombre_completo,
+        gmail: formData.gmail,
         pais: formData.pais,
         biografia: formData.biografia,
     })
 
     // Verificar si hay cambios en los datos
     const hasChanges =
-        formData.nombre !== initialData.nombre ||
-        formData.apellido !== initialData.apellido ||
+        formData.nombre_completo !== initialData.nombre_completo ||
+        formData.gmail !== initialData.gmail ||
         formData.pais !== initialData.pais ||
         formData.biografia !== initialData.biografia
 
@@ -65,12 +67,10 @@ export default function PerfilForm({
     }
 
     const nombreRef = useRef<HTMLInputElement>(null)
-    const apellidoRef = useRef<HTMLInputElement>(null)
-    const correoRef = useRef<HTMLInputElement>(null)
-    const biografiaRef = useRef<HTMLInputElement>(null)
+    const gmailRef = useRef<HTMLInputElement>(null)
 
     // Función para manejar cambios en los campos del formulario
-    function handleChange(field: keyof PerfilFormData, val: string) {
+    function handleChange(field: keyof InfoBasicaFormData, val: string) {
         setFormData(prev => ({ ...prev, [field]: val }))
         setIsDirty(true)
         setDirty(true)
@@ -89,16 +89,15 @@ export default function PerfilForm({
     function validate(): boolean {
         setFormData(prev => ({
             ...prev,
-            nombre: prev.nombre.trim(),
-            apellido: prev.apellido.trim(),
-            correo: prev.correo.trim(),
+            nombre_completo: prev.nombre_completo.trim(),
+            gmail: prev.gmail.trim(),
             biografia: prev.biografia.trim(),
         }))
         const result = perfilSchema.safeParse({
-            ...formData,
-            nombre: formData.nombre.trim(),
-            apellido: formData.apellido.trim(),
-            correo: formData.correo.trim(),
+            nombre_completo: formData.nombre_completo.trim(),
+            gmail: formData.gmail.trim(),
+            pais: formData.pais,
+            biografia: formData.biografia.trim(),
         })
         if (result.success) { setErrors({}); return true; }
 
@@ -109,11 +108,9 @@ export default function PerfilForm({
             if (!fieldErrors[field]) fieldErrors[field] = e.message
         })
         setErrors(fieldErrors)
-        
-        if (fieldErrors.nombre) nombreRef.current?.focus()
-        else if (fieldErrors.apellido) apellidoRef.current?.focus()
-        else if (fieldErrors.correo) correoRef.current?.focus()
-        else if (fieldErrors.biografia) biografiaRef.current?.focus()
+
+        if (fieldErrors.nombre_completo) nombreRef.current?.focus()
+        else if (fieldErrors.gmail) gmailRef.current?.focus()
         return false
     }
 
@@ -124,8 +121,8 @@ export default function PerfilForm({
             setIsDirty(false)
             setDirty(false)
             setInitialData({
-                nombre: formData.nombre.trim(),
-                apellido: formData.apellido.trim(),
+                nombre_completo: formData.nombre_completo.trim(),
+                gmail: formData.gmail.trim(),
                 pais: formData.pais,
                 biografia: formData.biografia.trim(),
             })
@@ -153,9 +150,7 @@ export default function PerfilForm({
                         errors={errors}
                         onChange={handleChange}
                         nombreRef={nombreRef}
-                        apellidoRef={apellidoRef}
-                        correoRef={correoRef}
-                        biografiaRef={biografiaRef}
+                        gmailRef={gmailRef}
                     />
 
                     <TelefonosSection
@@ -171,7 +166,6 @@ export default function PerfilForm({
                     />
 
                     <Input
-                        ref={biografiaRef}
                         label="Descripción Profesional"
                         icon={Briefcase}
                         type="textarea"

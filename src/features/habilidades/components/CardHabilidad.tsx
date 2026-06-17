@@ -1,11 +1,11 @@
-import { SquarePen,Trash2  } from 'lucide-react';
-import { useState } from 'react';
-import ConfirmDeleteModal from './ConfirmDeleteModal';
+import { motion } from "framer-motion";
+
 type Props = {
   nombre: string;
   nivel: string;
-  onEditar: () => void;
-  onEliminar: () => void;
+  editable?: boolean;
+  eliminando?: boolean;
+  onSelect?: () => void;
 };
 
 const nivelesOrden = [
@@ -21,47 +21,87 @@ const getWidth = (nivel: string) => {
   return index >= 0 ? `${(index + 1) * 20}%` : "10%";
 };
 
-export default function HabilidadItem({ nombre, nivel, onEditar, onEliminar }: Props) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export default function HabilidadItem({
+  nombre,
+  nivel,
+  editable,
+  eliminando,
+  onSelect,
+}: Props) {
   return (
-    <div className="w-full border border-primary-500 rounded-lg p-3 bg-white flex items-center justify-between">
-      
-      {/* CONTENIDO IZQUIERDO */}
+    <motion.div
+      onClick={onSelect}
+      initial={{
+        opacity: 0,
+        y: 15,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      whileHover={{
+        scale: 1.01,
+      }}
+      whileTap={{
+        scale: 0.98,
+      }}
+      transition={{
+        duration: 0.25,
+      }}
+      className={`
+        w-full
+        rounded-lg
+        p-3
+        flex items-center justify-between
+        border-2
+
+        ${
+          editable
+            ? `
+              cursor-pointer
+              border-blue-200
+              hover:border-blue-500
+              hover:bg-blue-50
+            `
+            : eliminando
+            ? `
+              cursor-pointer
+              border-red-200
+              hover:border-red-500
+              hover:bg-red-50
+            `
+            : `
+              border-primary-500
+              bg-white
+            `
+        }
+      `}
+    >
       <div className="flex-1 space-y-2">
         <div className="flex justify-between items-center">
-          <span className="font-medium text-left text-sm text-black">{nombre}</span>
-          <span className="text-xs text-gray-500">{nivel}</span>
+          <span className="font-medium text-sm text-black">
+            {nombre}
+          </span>
+          <span className="text-xs text-gray-500">
+            {nivel}
+          </span>
         </div>
-
-        <div className="w-full bg-gray-200 h-2 rounded">
-          <div
+        {/* Barra */}
+        <div className="w-full bg-gray-200 h-2 rounded overflow-hidden">
+          <motion.div
             className="bg-green-600 h-2 rounded"
-            style={{ width: getWidth(nivel) }}
+            initial={{ width: 0 }}
+            animate={{
+              width: getWidth(nivel),
+            }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+            }}
           />
         </div>
-      </div>
 
-      {/* ICONOS DERECHA */}
-      <div className="flex items-center gap-2 ml-3">
-        <button onClick={onEditar}>
-          <SquarePen size={16} className="text-gray-500 hover:text-black" />
-        </button>
-<>
-  <button onClick={() => setIsModalOpen(true)}>
-    <Trash2 size={16} className="text-gray-500 hover:text-black" />
-  </button>
-
-  <ConfirmDeleteModal
-    isOpen={isModalOpen}
-    nombre={nombre}
-    onClose={() => setIsModalOpen(false)}
-    onConfirm={() => {
-      onEliminar();
-      setIsModalOpen(false);
-    }}
-  />
-</>
       </div>
-    </div>
+    </motion.div>
   );
 }

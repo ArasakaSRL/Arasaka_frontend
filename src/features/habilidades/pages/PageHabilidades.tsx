@@ -3,22 +3,27 @@ import { useEffect, useState } from "react";
 import ModalForm from "../../../components/Modal";
 import FormularioHabilidades from "../components/FormularioHabilidades";
 import DashboardLayout from "@/layout/DashboardLayout";
-import { Banner } from "@/features/hitos/components/BannerHitos";
+import { Banner } from "@/components/Banner";
 import ListaHabilidad from "../components/ListaHabilidad";
 import { obtenerHabilidades, type HabilidadUI ,eliminarHabilidad} from "../lib/HabilidadesApi";
 import { toast } from "../../../components/Alerta";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function PageHabilidades() {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   const [ModalAbierto, setModalAbierto] = useState(false);
-  const closeModal = () => {
-    setModalAbierto(false);
-    setHabilidadesEditar(null);
-  };
-
   const [habilidades, setHabilidades] = useState<HabilidadUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [habilidadesEditar, setHabilidadesEditar] = useState<HabilidadUI | null>(null);
-
+  const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
+  const [habilidadEliminar, setHabilidadEliminar] = useState<HabilidadUI | null>(null);
+  const closeModal = () => {
+    setModalAbierto(false);
+    setHabilidadesEditar(null);
+    setModoAccion(null);
+    setHabilidadEliminar(null);
+  };
   
   const fetchHabilidades = async () => {
     const data = await obtenerHabilidades();
@@ -27,8 +32,9 @@ export default function PageHabilidades() {
   };
 
   useEffect(() => {
+    if (!idPortafolio) return
     fetchHabilidades();
-  }, []);
+  }, [idPortafolio]);
 
   const handleEditar = (habilidad: HabilidadUI) => {
     setHabilidadesEditar(habilidad);
@@ -49,16 +55,46 @@ export default function PageHabilidades() {
     }
   };
 
-
+ 
 return(
       <DashboardLayout>
-        <Banner 
-          titulo="Habilidades" 
-          descripcion="Gestiona tus habilidades y conocimientos" 
-          onOpenModal={() => setModalAbierto(true)} 
-          textoBoton="Añadir Habilidad" /> 
+        <Banner
+          titulo="Habilidades"
+          descripcion= "Gestiona tus habilidades y conocimientos"
+          totalItems={habilidades.length}
+          editando={modoAccion === "editar"}
+          eliminando={modoAccion === "eliminar"}
+          onAgregar={() => {
+            setModoAccion(null);
+            setHabilidadesEditar(null);
+            setModalAbierto(true);
+          }}
+          onEditar={() => {
+            toast.warning("Selecciona una habilidad");
+            setModoAccion("editar");
+          }}
+          onEliminar={() => {
+            toast.warning("Selecciona una habilidad");
+            setModoAccion("eliminar");
+          }}
+          onCancelar={() => {
+            setModoAccion(null);
+            setHabilidadEliminar(null);
+          }}
+        />
         <div className="py-4 w-full">
-          <ListaHabilidad habilidad={habilidades} load={loading} onEditar={handleEditar} onEliminar={handleEliminar}/>
+          <ListaHabilidad 
+            habilidad={habilidades} 
+            load={loading}   
+            onEditar={(hab) => {
+              handleEditar(hab);
+
+              setModoAccion(null);
+            }} 
+            onEliminar={(hab) => {
+              setHabilidadEliminar(hab);
+            }} 
+            modoAccion={modoAccion}/>
               <ModalForm isOpen={ModalAbierto} closeModal={closeModal} maxWidth="max-w-xl">
                 <FormularioHabilidades 
                 closeModal={closeModal}     
@@ -80,6 +116,22 @@ return(
                 habilidadesExistentes={habilidades}
                 />
               </ModalForm>
+              <ConfirmDeleteModal
+                isOpen={!!habilidadEliminar}
+                nombre={habilidadEliminar?.nombre}
+                onClose={() => {
+                  setHabilidadEliminar(null);
+                  setModoAccion(null);
+                }}
+                onConfirm={async () => {
+                  if (!habilidadEliminar) return;
+                  await handleEliminar(
+                    habilidadEliminar.id_habilidad
+                  );
+                  setHabilidadEliminar(null);
+                  setModoAccion(null);
+                }}
+              />
         </div> 
       </DashboardLayout>
     )

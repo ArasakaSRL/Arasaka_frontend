@@ -4,18 +4,43 @@ import {CircleX, Images, Star} from "lucide-react";
 
 interface Props {
     proyecto:Proyecto;
-    onEditar: (proyecto: Proyecto) => void;
+    editable?: boolean;
+    eliminando?: boolean;
+    onSelect?: () => void;
 }
-export default function CardProyectos ({proyecto, onEditar}:Props) {
-  // const cleanText = (proyecto.descripcion || "").replace(/<[^>]+>/g, "");
+export default function CardProyectos ({proyecto, editable, eliminando, onSelect}:Props) {
   const tecnlogiasVisibles = proyecto.tecnologias.slice(0, 3);
   const tecnologiasOcultas = proyecto.tecnologias.length - 3;
 
   const [openGaleria, setOpenGaleria] = useState(false);
 
+  console.log( "proyectos:", proyecto.nombre, proyecto.url_imagen);
+
     return(
     <>
-      <div className="flex text-left border-2 border-primary-500 rounded-xl p-5 flex-col justify-between overflow-hidden"> 
+      <div   
+      onClick={onSelect}
+      className={`flex text-left rounded-xl p-5 flex-col justify-between overflow-hidden transition-all border-2
+        ${
+          editable
+            ? `
+              cursor-pointer
+              border-blue-200
+              hover:border-blue-500
+              hover:bg-blue-50
+            `
+            : eliminando
+            ? `
+              cursor-pointer
+              border-red-200
+              hover:border-red-500
+              hover:bg-red-50
+            `
+            : `
+              border-primary-500
+            `
+        }
+      `}> 
         <div className="flex flex-col justify-between w-full min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
@@ -39,7 +64,7 @@ export default function CardProyectos ({proyecto, onEditar}:Props) {
           </div>
           </div>
 
-          <p className="text-sm text-gray-600 mt-3 line-clamp-3 break-words">
+          <p className="text-sm text-gray-600 mt-3 line-clamp-3 wrap-break-word">
             {proyecto.descripcion}
           </p>
 
@@ -58,15 +83,6 @@ export default function CardProyectos ({proyecto, onEditar}:Props) {
                 +{tecnologiasOcultas}
               </span>
             )}
-          </div>
-
-          <div className="flex flex-wrap justify-end gap-2 mt-4">
-            <button
-              onClick={() => onEditar(proyecto)}
-              className="flex items-center gap-1 px-3 py-1.5 text-sm border border-primary-500 text-primary-500 rounded-md hover:bg-secondary-500 hover:text-white transition"
-            >
-              Editar
-            </button>
           </div>
         </div>
       </div>
@@ -87,7 +103,7 @@ export default function CardProyectos ({proyecto, onEditar}:Props) {
               {proyecto.url_imagen.map((img, i) => (
                 <div key={i} className="relative">
                   <img
-                    src={img.logo}
+                    src={img.url_imagen}
                     className="w-full h-40 object-cover rounded"
                   />
 

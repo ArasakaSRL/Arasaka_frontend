@@ -1,6 +1,6 @@
 import apiClient from '@/api/api'
 import axios from 'axios'
-import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload } from '../types/auth.types'
+import type { RegisterPayload, LoginPayload, LoginResponse, ResetPasswordPayload, CambiarContrasenaPayload, CambiarContrasenaResponse, VerificarCorreoPayload, VerificarCorreoResponse, ConfirmarCorreoPayload, ConfirmarCorreoResponse, CompletarPerfilPayload, CompletarPerfilResponse } from '../types/auth.types'
 import type { AuthUser } from '@/stores/authStore'
 
 interface AuthenticateResponse {
@@ -16,7 +16,7 @@ interface AuthenticateResponse {
 // Sin esto, Laravel rechaza la petición con error 419 (CSRF token mismatch).
 const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 
-// GET /autenticar — obtiene el usuario con todas sus relaciones (roles, profesiones, pais, telefonos, portafolio)
+// GET /autenticar — obtiene el usuario con todas sus relaciones (portafolios y subrelaciones)
 export async function getUsuario(): Promise<AuthUser | null> {
   try {
     const { data } = await apiClient.get<AuthenticateResponse>('/autenticar')
@@ -32,6 +32,18 @@ export async function getUsuario(): Promise<AuthUser | null> {
 // POST /registrar
 export async function registerRequest(payload: RegisterPayload) {
   const { data } = await apiClient.post('/registrar', payload)
+  return data
+}
+
+// POST /registrar/verificar
+export async function verificarCodigoRegistro(correo: string, codigo: string) {
+  const { data } = await apiClient.post('/registrar/verificar', { correo, codigo })
+  return data
+}
+
+// POST /registrar/reenviar
+export async function reenviarCodigoRegistro(correo: string) {
+  const { data } = await apiClient.post('/registrar/reenviar', { correo })
   return data
 }
 
@@ -66,24 +78,26 @@ export async function resetPasswordRequest(payload: ResetPasswordPayload) {
   return data
 }
 
-// correo/notificacion-verificacion (requiere sesión activa)
-export async function resendVerificationEmail() {
-  const { data } = await apiClient.post('/correo/notificacion-verificacion')
+// PATCH /usuario/contrasena — cambia la contraseña del usuario autenticado
+export async function cambiarContrasena(payload: CambiarContrasenaPayload): Promise<CambiarContrasenaResponse> {
+  const { data } = await apiClient.patch<CambiarContrasenaResponse>('/usuario/contrasena', payload)
   return data
 }
 
-/**
- * GET /verificar-correo/{id}/{hash}?expires=...&signature=...
- * Se dispara cuando el usuario hace clic en el enlace de su email.
- * Los query params expires y signature son requeridos por Laravel para validar la firma.
- */
-export async function verifyEmailRequest(id: string, hash: string) {
-  const params = new URLSearchParams(window.location.search)
-  const { data } = await apiClient.get(`/verificar-correo/${id}/${hash}`, {
-    params: {
-      expires: params.get('expires'),
-      signature: params.get('signature'),
-    }
-  })
+// POST /usuario/completar-perfil — agrega username y password para usuarios OAuth
+export async function completarPerfil(payload: CompletarPerfilPayload): Promise<CompletarPerfilResponse> {
+  const { data } = await apiClient.post<CompletarPerfilResponse>('/usuario/completar-perfil', payload)
+  return data
+}
+
+// POST /usuario/correo/verificar — verifica que el nuevo correo no exista y envía código
+export async function verificarCorreo(payload: VerificarCorreoPayload): Promise<VerificarCorreoResponse> {
+  const { data } = await apiClient.post<VerificarCorreoResponse>('/usuario/correo/verificar', payload)
+  return data
+}
+
+// POST /usuario/correo/confirmar — valida el código y actualiza el correo
+export async function confirmarCorreo(payload: ConfirmarCorreoPayload): Promise<ConfirmarCorreoResponse> {
+  const { data } = await apiClient.post<ConfirmarCorreoResponse>('/usuario/correo/confirmar', payload)
   return data
 }

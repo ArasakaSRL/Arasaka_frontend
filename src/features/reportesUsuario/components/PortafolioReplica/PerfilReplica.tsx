@@ -12,7 +12,6 @@ type Clics = { x: number; y: number; intensidad: number }[]
 interface Intensidades {
   perfil: number
   tecnicas: number
-  // más adelante: habilidades, experiencia, proyectos, certificaciones
 }
 
 interface PerfilReplicaProps {
@@ -42,7 +41,7 @@ export function PerfilReplica({
 
   const maxIntensidad = calcMax(clicsPerfil)
 
-  const slug = useAuthStore((state) => state.user?.portafolio?.slug);
+  const slug = useAuthStore((state) => state.portafolioSeleccionado?.slug);
   const { data, loading, noDisponible } = usePortfolioData(slug);
 
   if (!slug)        return <div>No tienes un portafolio asignado.</div>;
@@ -50,18 +49,26 @@ export function PerfilReplica({
   if (noDisponible || !data) return <div>Portafolio no disponible.</div>;
 
   const { usuario, habilidadesTecnicas, habilidadesBlandas, experiencias, proyectos, configuracion, certificaciones } = data;
+  console.log({
+  perfil: clicsPerfil.length,
+  tecnicas: clicsTecnicas.length,
+  blandas: clicsBlandas.length,
+  experiencia: clicsExperiencia.length,
+  proyectos: clicsProyectos.length,
+  certificaciones: clicsCertificaciones.length,
+})
 
   return (
     <>
         <HeatmapSeccion puntos={clicsPerfil} maxIntensidad={maxIntensidad}>
            <PortfolioHeader
-                        usuario={usuario}
-                        proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
-                        tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
-                        blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
-                        experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
-                        certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
-                    />
+                usuario={usuario}
+                proyectos={configuracion?.mostrar_proyectos ? proyectos : []}
+                tecnicas={configuracion?.mostrar_habilidades ? habilidadesTecnicas : []}
+                blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
+                experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
+                certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
+            />
         </HeatmapSeccion>
 
       {configuracion?.mostrar_habilidades && (

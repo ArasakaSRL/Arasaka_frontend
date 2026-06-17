@@ -1,41 +1,55 @@
 import React from 'react';
 import { ExternalLink, Code2, ArrowUpRight ,LayoutPanelLeft} from 'lucide-react';
 import type { Proyectos as Proyecto } from '../types/portafolioType';
-import { ChevronRight } from 'lucide-react';
-const SeccionProyectos = ({ proyectos }: { proyectos: Proyecto[] }) => {
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+const SeccionProyectos = ({ proyectos, mostrarTitulo = true, }: { proyectos: Proyecto[], mostrarTitulo?: boolean, }) => {
+  const { slug } = useParams();
   return (
     <div className="w-full  max-w-5xl mx-auto p-4 md:p-12 font-sans bg-white">
 
-      <div className="flex flex-col mb-16 px-2">
-        <div className="flex items-center gap-2 mb-3 ">
-         <div className="flex items-center gap-4 mb-10">
+     {mostrarTitulo && (
+    <div className="flex flex-col mb-16 px-2">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-4 mb-10">
           <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100 shadow-sm">
-          <LayoutPanelLeft size={28} className="text-blue-600" strokeWidth={2.5} />
-         </div>
-        <div>
-          <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
-            Proyectos
-          </h2>
-          <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1"></div>
+            <LayoutPanelLeft
+              size={28}
+              className="text-blue-600"
+              strokeWidth={2.5}
+            />
+          </div>
+
+          <div>
+            <h2 className="text-3xl font-black tracking-tight text-[#0a1120]">
+              Proyectos
+            </h2>
+
+            <div className="h-1.5 w-10 bg-blue-600/30 rounded-full mt-1" />
+          </div>
         </div>
       </div>
-        </div>
-      </div>
+    </div>
+  )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {proyectos.map((proyecto) => (
-          <CardProyectoVertical key={proyecto.id_proyecto} proyecto={proyecto} />
+          <CardProyectoVertical key={proyecto.id_proyecto} proyecto={proyecto} slug={slug ?? ''} />
         ))}
       </div>
     </div>
   );
 };
 
-const CardProyectoVertical = ({ proyecto }: { proyecto: Proyecto }) => {
+const CardProyectoVertical = ({ proyecto, slug }: { proyecto: Proyecto; slug: string }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const esPrivado = location.pathname.includes('/privado/');
+    const handleNavegarDetalle = () => {
+      const rutaBase = esPrivado ? `/portafolio/privado/${slug}` : `/portafolio/${slug}`;
+      navigate(`${rutaBase}/proyectos/${proyecto.id_proyecto}`);
+    }
   return (
-    <div data-proyecto-action="clic_general" data-proyecto-id={proyecto.id_proyecto} className="group relative aspect-3/4 w-full overflow-hidden rounded-2xl bg-[#0a1120] border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20">
-      
-     
+    <div onClick={handleNavegarDetalle} data-proyecto-action="clic_general" data-proyecto-id={proyecto.id_proyecto} className="group relative aspect-3/4 w-full overflow-hidden rounded-2xl bg-[#0a1120] border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20">
       <div className="absolute inset-0">
         {proyecto.imagenes?.length > 0 ? (
           <img 

@@ -2,29 +2,40 @@ import { useState, useEffect } from 'react';
 import { Briefcase, X, ChevronDown } from 'lucide-react';
 import { getCatalogoProfesiones, getProfesiones, asignarProfesion, desasignarProfesion } from '@/features/auth/api/update-perfilPersonal';
 import type { Profesion } from '@/features/auth/types/update-perfilPersonal';
+import { useAuthStore } from '@/stores/authStore';
 
 interface ProfesionesSectionProps {
     asignadas: Profesion[];
     setAsignadas: React.Dispatch<React.SetStateAction<Profesion[]>>;
+    onAgregar?: (p: Profesion) => void;
+    onQuitar?: (p: Profesion) => void;
+    onChange?: () => void;
 }
 
-export default function ProfesionesSection({ asignadas, setAsignadas }: ProfesionesSectionProps) {
+export default function ProfesionesSection({ asignadas, setAsignadas, onAgregar, onQuitar, onChange }: ProfesionesSectionProps) {
 
+    const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio ?? '')
     const [catalogo, setCatalogo] = useState<Profesion[]>([])
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [loadingId, setLoadingId] = useState<string | null>(null)
 
     useEffect(() => {
         getCatalogoProfesiones().then(setCatalogo).catch(() => {})
-        getProfesiones().then(setAsignadas).catch(() => {})
-    }, [])
+        if (idPortafolio) getProfesiones(idPortafolio).then(setAsignadas).catch(() => {})
+    }, [idPortafolio])
 
     const disponibles = catalogo.filter(p => !asignadas.some(a => a.id_profesion === p.id_profesion))
 
     async function handleAsignar(profesion: Profesion) {
+        if (onAgregar) {
+            onAgregar(profesion)
+            setDropdownOpen(false)
+            onChange?.()
+            return
+        }
         setLoadingId(profesion.id_profesion)
         try {
-            await asignarProfesion({ id_profesion: profesion.id_profesion })
+            await asignarProfesion(idPortafolio, { id_profesion: profesion.id_profesion })
             setAsignadas(prev => [...prev, profesion])
         } finally {
             setLoadingId(null)
@@ -33,9 +44,14 @@ export default function ProfesionesSection({ asignadas, setAsignadas }: Profesio
     }
 
     async function handleDesasignar(profesion: Profesion) {
+        if (onQuitar) {
+            onQuitar(profesion)
+            onChange?.()
+            return
+        }
         setLoadingId(profesion.id_profesion)
         try {
-            await desasignarProfesion(profesion.id_profesion)
+            await desasignarProfesion(idPortafolio, profesion.id_profesion)
             setAsignadas(prev => prev.filter(p => p.id_profesion !== profesion.id_profesion))
         } finally {
             setLoadingId(null)

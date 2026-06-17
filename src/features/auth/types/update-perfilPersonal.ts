@@ -15,6 +15,7 @@ export interface ActualizarInformacionPayload {
     nombre?: string
     apellido?: string
     correo?: string
+    username?: string
     biografia?: string
 }
 
@@ -55,6 +56,28 @@ export interface TelefonoPayload {
 export interface TelefonoResponse {
     message: string
     data: Telefono
+}
+
+// Payload para actualizar informacion_basica del portafolio
+export interface ActualizarInformacionBasicaPayload {
+    nombre_completo?: string
+    gmail?: string
+    pais?: string
+    foto_perfil?: string | null
+    foto_perfil_public_id?: string | null
+    biografia?: string | null
+}
+
+// Respuesta de informacion_basica actualizada
+export interface InformacionBasicaResponse {
+    success: boolean
+    message: string
+    data: {
+        nombre_completo: string
+        gmail: string
+        pais: string
+        foto_perfil: string | null
+    }
 }
 
 // Respuesta genérica del backend con mensaje

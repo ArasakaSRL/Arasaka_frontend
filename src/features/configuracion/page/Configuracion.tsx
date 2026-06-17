@@ -8,6 +8,7 @@ import { toast } from "@/components/Alerta";
 
 import { actualizarConfiguracion, getConfiguracion } from "../apis/configuracionApi";
 import { Boton2 } from "@/components/ui/Boton2";
+import { useAuthStore } from "@/stores/authStore";
 
 import type {
   ActualizarConfiguracionDTO,
@@ -31,11 +32,15 @@ const CONFIG_TOTALMENTE_DESACTIVADA: ConfiguracionPortafolio = {
   mostrar_experiencias: false,
   mostrar_servicios: false,
   mostrar_certificaciones: false,
+  mostrar_redes_profesionales: false,
+  mostrar_cv: false,
+  mostrar_contacto: false,
   paleta_colores: null,
   visibilidad: false,
 };
 
 export default function Configuracion() {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   const [config, setConfig] = useState<ConfiguracionPortafolio | null>(CONFIG_TOTALMENTE_DESACTIVADA);
   const [loading, setLoading] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -59,8 +64,9 @@ export default function Configuracion() {
   };
 
   useEffect(() => {
+    if (!idPortafolio) return
     fetchDatos();
-  }, []);
+  }, [idPortafolio]);
 
   // 🔹 Manejo de switches
   const handleToggle = (

@@ -8,16 +8,16 @@ export interface LinkPortafolio {
     expirado: boolean;
 }
 
-export const obtenerLinkPortafolio = async (): Promise<LinkPortafolio> => {
+export const obtenerLinkPortafolio = async (slug: string): Promise<LinkPortafolio> => {
     const { data } = await apiClient.get<LinkPortafolio>(
-        "/configuracion/portafolio-link"
+        `/configuracion/portafolio-link/${slug}`
     );
     return data;
 };
 
-export const generarLinkPortafolio = async (): Promise<LinkPortafolio> => {
+export const generarLinkPortafolio = async (slug: string): Promise<LinkPortafolio> => {
     const { data } = await apiClient.post<LinkPortafolio>(
-        "/configuracion/portafolio-link"
+        `/configuracion/portafolio-link/${slug}`
     );
     return data;
 };

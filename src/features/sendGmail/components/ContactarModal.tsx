@@ -5,6 +5,7 @@ import { sendGmail } from '@/features/sendGmail/api/sendGmail'
 import OpcionesContacto from './contactar/OpcionesContacto'
 import FormularioCorreo from './contactar/FormularioCorreo'
 import EnvioExitoso from './contactar/EnvioExitoso'
+import { createPortal } from "react-dom";
 
 interface Props {
     open: boolean
@@ -18,7 +19,7 @@ type Modo = 'elegir' | 'gmail'
 
 export default function ContactarModal({ open, onClose, correoDestinatario, nombreDestinatario, whatsappNumber }: Props) {
     const [modo, setModo] = useState<Modo>('elegir')
-    const [form, setForm] = useState({ from: '', subject: '', content: '' })
+    const [form, setForm] = useState({ from: '', subject: '', content: '', nombre_remitente: '' })
     const [files, setFiles] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
     const [enviado, setEnviado] = useState(false)
@@ -28,7 +29,7 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
         onClose()
         setTimeout(() => {
             setModo('elegir')
-            setForm({ from: '', subject: '', content: '' })
+            setForm({ from: '', subject: '', content: '', nombre_remitente: '' })
             setFiles([])
             setEnviado(false)
             setError(null)
@@ -49,10 +50,10 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
         }
     }
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {open && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -64,7 +65,11 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
                             <h2 className="text-white font-bold text-base">
                                 Contactar a {nombreDestinatario}
                             </h2>
-                            <button onClick={handleClose} className="text-white/40 hover:text-white transition-colors">
+
+                            <button
+                                onClick={handleClose}
+                                className="text-white/40 hover:text-white transition-colors"
+                            >
                                 <X size={18} />
                             </button>
                         </div>
@@ -83,7 +88,9 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
                                     files={files}
                                     loading={loading}
                                     error={error}
-                                    onChange={(field, val) => setForm(p => ({ ...p, [field]: val }))}
+                                    onChange={(field, val) =>
+                                        setForm(p => ({ ...p, [field]: val }))
+                                    }
                                     onFilesChange={setFiles}
                                     onSubmit={handleEnviar}
                                     onVolver={() => setModo('elegir')}
@@ -100,6 +107,7 @@ export default function ContactarModal({ open, onClose, correoDestinatario, nomb
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     )
 }

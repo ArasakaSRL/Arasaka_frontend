@@ -20,8 +20,15 @@ export interface Tecnologia {
   nombre: string;
 }
 
+const getIdPortafolio = (): string => {
+  const id = useAuthStore.getState().portafolioSeleccionado?.id_portafolio
+  if (!id) throw new Error('No hay portafolio seleccionado')
+  return id
+}
+
 export const crearHabilidad = async (data: Habilidad) => {
-  const res = await apiClient.post("/portafolios/habilidades", data);
+  const id = getIdPortafolio()
+  const res = await apiClient.post(`/portafolios/${id}/habilidades`, data);
   useAuthStore.getState().refreshPortafolio()
   const raw = Array.isArray(res.data.data)
     ? res.data.data[0]
@@ -36,7 +43,8 @@ export const crearHabilidad = async (data: Habilidad) => {
 };
 
 export const obtenerHabilidades = async (): Promise<HabilidadUI[]> => {
-  const response = await apiClient.get("/portafolios/habilidades");
+  const id = getIdPortafolio()
+  const response = await apiClient.get(`/portafolios/${id}/habilidades`);
 
   return response.data.data.map((item: {
     id_habilidad: string;

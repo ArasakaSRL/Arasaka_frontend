@@ -1,51 +1,54 @@
-// src/features/certificaciones/hooks/useCertificaciones.ts
-import { useState, useEffect } from 'react';
-
-import type { Certificado } from '../components/CertificadoCard';
+import { useState, useEffect, useCallback } from 'react';
 import type { CertificacionAPI } from '../types';
-import { getCertificacionesPorCategoria, getTodasCertificaciones } from '../apis/certificacionesApi';
+import {
+  getCertificacionesPorCategoria,
+  getTodasCertificaciones
+} from '../apis/certificacionesApi';
+import { useAuthStore } from '@/stores/authStore';
 
-export function useCertificaciones( idCategoriaFiltro: string | null) {
-  const [certificados, setCertificados] = useState<Certificado[]>([]);
-  const [isLoadingCerts, setIsLoadingCerts] = useState<boolean>(true);
-  const [isUsingFallbackCerts, setIsUsingFallbackCerts] = useState<boolean>(false);
+export function useCertificaciones(idCategoriaFiltro: string | null) {
+  const idPortafolio = useAuthStore(
+    s => s.portafolioSeleccionado?.id_portafolio
+  );
 
-  useEffect(() => {
-  
+  const [certificados, setCertificados] = useState<CertificacionAPI[]>([]);
+  const [isLoadingCerts, setIsLoadingCerts] = useState(true);
+  const [isUsingFallbackCerts, setIsUsingFallbackCerts] = useState(false);
 
-    const fetchCerts = async () => {
-      try {
-        setIsLoadingCerts(true);
-        let data: CertificacionAPI[];
+  const fetchCerts = useCallback(async () => {
+    try {
+      setIsLoadingCerts(true);
 
-        if (idCategoriaFiltro) {
-          data = await getCertificacionesPorCategoria( idCategoriaFiltro);
-        } else {
-          data = await getTodasCertificaciones();
-        }
+      let data: CertificacionAPI[];
 
-        if (data) {
-          const certificadosMapeados: Certificado[] = data.map(apiCert => ({
-            id: apiCert.id_certificacion,
-            titulo: apiCert.titulo,
-            imagen: apiCert.url_archivo,
-            orientacion: apiCert.orientacion_imagen
-          }));
-          
-          setCertificados(certificadosMapeados);
-          setIsUsingFallbackCerts(false);
-        }
-      } catch (err) {
-        console.error('Error al obtener los certificados', err);
-        setCertificados([]); 
-        setIsUsingFallbackCerts(true);
-      } finally {
-        setIsLoadingCerts(false);
+      if (idCategoriaFiltro) {
+        data = await getCertificacionesPorCategoria(idCategoriaFiltro);
+      } else {
+        data = await getTodasCertificaciones();
       }
-    };
 
-    fetchCerts();
+      setCertificados(data ?? []);
+      setIsUsingFallbackCerts(false);
+
+    } catch (err) {
+      console.error('Error al obtener los certificados', err);
+      setCertificados([]);
+      setIsUsingFallbackCerts(true);
+    } finally {
+      setIsLoadingCerts(false);
+    }
   }, [idCategoriaFiltro]);
 
-  return { certificados, isLoadingCerts, isUsingFallbackCerts };
+  useEffect(() => {
+    if (idPortafolio) {
+      fetchCerts();
+    }
+  }, [fetchCerts, idPortafolio]);
+
+  return {
+    certificados,
+    isLoadingCerts,
+    isUsingFallbackCerts,
+    refetchCertificaciones: fetchCerts
+  };
 }

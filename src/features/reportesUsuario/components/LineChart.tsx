@@ -14,32 +14,30 @@ interface Props {
 export function LineChart({ data, width = 600, height = 300 }: Props) {
   const padding = 40;
 
-  const maxY = Math.max(...data.map(d => d.y));
-  const minY = Math.min(...data.map(d => d.y));
+  const maxY = Math.max(...data.map((d) => d.y));
+  const minY = Math.min(...data.map((d) => d.y));
 
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
 
   const stepX = chartWidth / (data.length - 1);
 
-  // 🔵 convertir puntos a coordenadas SVG
   const points = data.map((d, i) => {
     const x = padding + i * stepX;
 
-    const rango = maxY - minY
-    const y = rango === 0
-      ? height - padding - chartHeight * 0.1  // 10% desde abajo cuando todo es 0
-      : height - padding - ((d.y - minY) / rango) * chartHeight
+    const rango = maxY - minY;
+    const y =
+      rango === 0
+        ? height - padding - chartHeight * 0.1
+        : height - padding - ((d.y - minY) / rango) * chartHeight;
 
     return { x, y, value: d.y, label: d.x };
   });
 
-  // 🔵 path de la línea
   const linePath = points
     .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
     .join(" ");
 
-  // 🔵 área debajo
   const areaPath = `
     ${linePath}
     L ${points[points.length - 1].x} ${height - padding}
@@ -47,14 +45,22 @@ export function LineChart({ data, width = 600, height = 300 }: Props) {
     Z
   `;
 
-  const todosEnCero = data.every(d => d.y === 0)
-  
+  const todosEnCero = data.every((d) => d.y === 0);
+
   return (
     <svg width={width} height={height}>
-      <text x={width / 2} y={height / 2} textAnchor="middle" fontSize="13" fill="#9ca3af">
-        Sin datos aún
-      </text>
-      {/* Gradiente */}
+      {todosEnCero && (
+        <text
+          x={width / 2}
+          y={height / 2}
+          textAnchor="middle"
+          fontSize="13"
+          fill="#9ca3af"
+        >
+          Sin datos aún
+        </text>
+      )}
+
       <defs>
         <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#6366f1" stopOpacity={0.4} />
@@ -62,18 +68,10 @@ export function LineChart({ data, width = 600, height = 300 }: Props) {
         </linearGradient>
       </defs>
 
-      {/* Área */}
       <path d={areaPath} fill="url(#areaGrad)" />
 
-      {/* Línea */}
-      <path
-        d={linePath}
-        fill="none"
-        stroke="#4f46e5"
-        strokeWidth={2}
-      />
+      <path d={linePath} fill="none" stroke="#4f46e5" strokeWidth={2} />
 
-      {/* Puntos */}
       {points.map((p, i) => (
         <circle
           key={i}
@@ -86,7 +84,6 @@ export function LineChart({ data, width = 600, height = 300 }: Props) {
         />
       ))}
 
-      {/* Labels X */}
       {points.map((p, i) => (
         <text
           key={i}

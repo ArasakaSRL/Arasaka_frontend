@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Banner } from "@/components/Banner";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { CardHitos } from "../components/cardHitos";
-import { getExperiencias, crearExperiencia } from "../apis/experienciasApi";
+import { getExperiencias, crearExperiencia, eliminarExperiencia } from "../apis/experienciasApi";
+import { useAuthStore } from "@/stores/authStore";
 
 // Importamos date-fns para las fechas y el idioma español
 import { parseISO, isAfter, format } from 'date-fns';
@@ -11,6 +12,17 @@ import ModalForm from "@/components/Modal";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
+import EliminarModal from "@/features/certificaciones/components/EliminarModal";
+
+type Experiencia = {
+  id: string;
+  cargo: string;
+  nombre_organizacion: string;
+  descripcion: string;
+  fecha_inicio: string;
+  fecha_fin: string | null;
+  vigente: boolean;
+}
 
 
 // Función auxiliar para extraer el día, mes (en español) y año
@@ -31,12 +43,13 @@ const obtenerDatosDeFecha = (fechaString: string) => {
     const anio = format(fecha, 'yyyy');
     
     return { diaAbreviado, mes, diaNumero, anio };
-  } catch (e) {
+  } catch{
     return { diaAbreviado: "---", mes: "---", diaNumero: 0, anio: "----" };
   }
 };
 
 export default function Hitos() {
+  const idPortafolio = useAuthStore(s => s.portafolioSeleccionado?.id_portafolio)
   // 1. TODOS LOS ESTADOS VAN ARRIBA
   const [openModal, setOpenModal] = useState(false);
 
@@ -46,10 +59,13 @@ export default function Hitos() {
   const [fechaInicioForm, setFechaInicioForm] = useState("");
   const [fechaFinForm, setFechaFinForm] = useState("");
   
-  const [experiencias, setExperiencias] = useState<any[]>([]);
+  const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [experienciaEliminar, setExperienciaEliminar] = useState<Experiencia | null>(null);
+  const [modoAccion, setModoAccion] = useState<"editar" | "eliminar" | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 2. FUNCIONES DE CARGA Y EFECTOS
   const cargarExperiencias = async () => {
@@ -65,14 +81,43 @@ export default function Hitos() {
   };
 
   useEffect(() => {
+    if (!idPortafolio) return
     cargarExperiencias();
-  }, []);
+  }, [idPortafolio]);
 
   useEffect(() => {
   if (openModal) {
     setSubmitted(false);
   }
 }, [openModal]);
+
+const handleEliminar = () => {
+    // Activamos el modo eliminar; la selección se hace tarjeta por tarjeta
+    toast.warning("Selecciona una experiencia para eliminar");
+    setModoAccion("eliminar");
+  };
+
+const handleEliminarSeleccionado = async () => {
+  if (!experienciaEliminar) return;
+
+  try {
+    setIsDeleting(true);
+
+    await eliminarExperiencia(experienciaEliminar.id);
+
+    toast.success("Experiencia eliminada correctamente");
+
+    setExperienciaEliminar(null);
+    setModoAccion(null);
+
+    await cargarExperiencias();
+  } catch (error) {
+    toast.error("Ocurrió un error al intentar eliminar la experiencia");
+    console.error(error);
+  } finally {
+    setIsDeleting(false);
+  }
+};
 
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
@@ -153,7 +198,22 @@ export default function Hitos() {
     <DashboardLayout>
       <div className="mb-6 sm:mb-8 md:mb-10">
         {/**onOpenModal={() => setOpenModal(true)} */}
-        <Banner onOpenModal={() => setOpenModal(true)} textoBoton="Añadir Hito" titulo="Experiencias e hitos importantes" descripcion="" />
+        <Banner 
+        titulo="Experiencias " 
+        descripcion="" 
+        totalItems={experiencias.length}
+        eliminando={modoAccion === "eliminar"}
+        onAgregar={() => {
+          resetForm();
+
+          setOpenModal(true);
+        }}
+        onEliminar={handleEliminar}
+        onCancelar={() => {
+          setModoAccion(null);
+          setExperienciaEliminar(null);
+        }}
+        />
       </div>
 
       <ModalForm 
@@ -279,7 +339,18 @@ export default function Hitos() {
       </ModalForm>
 
       {/* RENDERIZADO DE LAS TARJETAS DINÁMICAS */}
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      <div
+        className="
+          flex
+          flex-col
+          items-center
+
+          px-4
+          sm:px-0
+          md:px-10
+          lg:px-40
+        "
+      >
         {isLoading ? (
           <p className="text-center text-gray-500">Cargando experiencias...</p>
         ) : experiencias.length === 0 ? (
@@ -299,11 +370,37 @@ export default function Hitos() {
                 diaAbreviado={datosFecha.diaAbreviado}
                 diaNumero={datosFecha.diaNumero}
                 fechaTexto={`${datosFecha.mes}, ${datosFecha.anio}`} // Ej: "Octubre, 2019"
+                eliminando={
+                  modoAccion === "eliminar"
+                }
+
+                seleccionado={
+                  experienciaEliminar?.id === exp.id
+                }
+
+                onSelect={() => {
+                  if (modoAccion === "eliminar") {
+                    setExperienciaEliminar(exp);
+                  }
+                }}
               />
             );
           })
         )}
+
       </div>
+
+      <EliminarModal
+        isOpen={!!experienciaEliminar}
+        onClose={() => {
+          setExperienciaEliminar(null);
+          setModoAccion(null);
+        }}
+        onConfirm={handleEliminarSeleccionado} // 🔥 ESTA ES LA QUE REALMENTE BORRA
+        titulo="¿Eliminar experiencia?"
+        nombre={experienciaEliminar?.cargo ?? ""}
+        isLoading={isDeleting}
+      />
     </DashboardLayout>
   );
 }
