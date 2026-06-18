@@ -363,21 +363,17 @@ const handleEliminarSeleccionado = async () => {
             return (
               <CardHitos
                 key={exp.id}
-                color={coloresCard[index % coloresCard.length]} 
+                color={coloresCard[index % coloresCard.length]}
                 cargo={exp.cargo}
                 organizacion={exp.nombre_organizacion}
                 descripcion={exp.descripcion}
+                fechaInicio={exp.fecha_inicio}
+                fechaFin={exp.fecha_fin}
                 diaAbreviado={datosFecha.diaAbreviado}
                 diaNumero={datosFecha.diaNumero}
-                fechaTexto={`${datosFecha.mes}, ${datosFecha.anio}`} // Ej: "Octubre, 2019"
-                eliminando={
-                  modoAccion === "eliminar"
-                }
-
-                seleccionado={
-                  experienciaEliminar?.id === exp.id
-                }
-
+                fechaTexto={`${datosFecha.mes}, ${datosFecha.anio}`}
+                eliminando={modoAccion === "eliminar"}
+                seleccionado={experienciaEliminar?.id === exp.id}
                 onSelect={() => {
                   if (modoAccion === "eliminar") {
                     setExperienciaEliminar(exp);

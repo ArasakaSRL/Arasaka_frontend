@@ -1,16 +1,14 @@
 import { FechaHito } from "./fechaHito";
 
 type CardHitosProps = {
-  color?:
-    | "blue"
-    | "green"
-    | "red"
-    | "orange"
-    | "disabled";
+  color?: "blue" | "green" | "red" | "orange" | "disabled";
 
   cargo: string;
   organizacion: string;
   descripcion: string;
+
+  fechaInicio: string;
+  fechaFin: string | null;
 
   diaAbreviado: string;
   diaNumero: number;
@@ -38,6 +36,8 @@ export function CardHitos({
   cargo,
   organizacion,
   descripcion,
+  fechaInicio,
+  fechaFin,
   diaAbreviado,
   diaNumero,
   fechaTexto,
@@ -106,6 +106,9 @@ export function CardHitos({
 
           {/* ───────── FECHA ───────── */}
           <div>
+            <div className="text-left text-gray-500">
+              <span>Fecha de Inicio:</span>
+            </div>
             <FechaHito
               diaAbreviado={diaAbreviado}
               diaNumero={diaNumero}
@@ -116,6 +119,7 @@ export function CardHitos({
                   : color
               }
             />
+            
           </div>
 
           {/* ───────── CONTENIDO ───────── */}
@@ -179,6 +183,15 @@ export function CardHitos({
                 {descripcion}
               </div>
 
+              <div className="font-semibold text-left">
+                Fecha fin:
+              </div>
+
+              <div className="text-left">
+                {fechaFin
+                  ? new Date(fechaFin).toLocaleDateString("es-BO")
+                  : "Actualidad"}
+              </div>
             </div>
           </div>
         </div>
