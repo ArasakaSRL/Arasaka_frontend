@@ -8,11 +8,11 @@ import { useAuthStore } from "@/stores/authStore";
 // Importamos date-fns para las fechas y el idioma español
 import { parseISO, isAfter, format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import ModalForm from "@/components/Modal";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/Alerta";
 import { CircleX } from "lucide-react";
 import EliminarModal from "@/features/certificaciones/components/EliminarModal";
+import Modal from "@/features/certificaciones/components/Modal";
 
 type Experiencia = {
   id: string;
@@ -122,8 +122,9 @@ const handleEliminarSeleccionado = async () => {
   // 3. LA FUNCIÓN PARA GUARDAR (Con validaciones)
   const handleSubmit = async () => {
     setSubmitted(true);
-    // Validar campos vacíos
-    if (!cargoForm || !organizacionForm || !descripcionForm || !fechaInicioForm) {
+    
+    // 1. Agregamos fechaFinForm a la validación de campos vacíos
+    if (!cargoForm || !organizacionForm || !descripcionForm || !fechaInicioForm || !fechaFinForm) {
       toast.error("Por favor completa los campos obligatorios");
       return;
     }
@@ -131,24 +132,21 @@ const handleEliminarSeleccionado = async () => {
     // Validaciones de fecha con date-fns
     const hoy = new Date();
     const fechaInicioDate = parseISO(fechaInicioForm);
+    const fechaFinDate = parseISO(fechaFinForm); // Como ya es obligatoria, la parseamos directo
 
     if (isAfter(fechaInicioDate, hoy)) {
       toast.error("La fecha de inicio no puede ser posterior a la fecha actual.");
       return;
     }
 
-    if (fechaFinForm) {
-      const fechaFinDate = parseISO(fechaFinForm);
+    if (isAfter(fechaFinDate, hoy)) {
+      toast.error("La fecha de fin no puede ser posterior a la fecha actual.");
+      return;
+    }
 
-      if (isAfter(fechaFinDate, hoy)) {
-        toast.error("La fecha de fin no puede ser posterior a la fecha actual.");
-        return;
-      }
-
-      if (isAfter(fechaInicioDate, fechaFinDate)) {
-        toast.error("La fecha de inicio no puede ser mayor a la fecha de finalización.");
-        return;
-      }
+    if (isAfter(fechaInicioDate, fechaFinDate)) {
+      toast.error("La fecha de inicio no puede ser mayor a la fecha de finalización.");
+      return;
     }
 
     // Si pasa todas las validaciones, enviamos a la API
@@ -159,14 +157,13 @@ const handleEliminarSeleccionado = async () => {
         nombre_organizacion: organizacionForm,
         descripcion: descripcionForm,
         fecha_inicio: fechaInicioForm,
-        fecha_fin: fechaFinForm || null,
-        vigente: !fechaFinForm 
+        fecha_fin: fechaFinForm, // Ya no mandamos null
+        vigente: false // Como la fecha fin es obligatoria, la experiencia ya no está "vigente"
       };
 
       await crearExperiencia(payload);
       toast.success("Experiencia guardada exitosamente");
       
-   
       setCargoForm("");
       setOrganizacionForm("");
       setDescripcionForm("");
@@ -216,7 +213,7 @@ const handleEliminarSeleccionado = async () => {
         />
       </div>
 
-      <ModalForm 
+      <Modal 
         isOpen={openModal} 
         closeModal={() => {
           resetForm();
@@ -336,7 +333,7 @@ const handleEliminarSeleccionado = async () => {
           </div>
 
         </div>
-      </ModalForm>
+      </Modal>
 
       {/* RENDERIZADO DE LAS TARJETAS DINÁMICAS */}
       <div
