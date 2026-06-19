@@ -17,7 +17,7 @@ import HabilidadesBlandas from '@/features/portafolio/components/HabilidadesBlan
 import ExperienceTimeline from '@/features/portafolio/components/ExperienceTimeline';
 import { getPortafolioPublic } from '@/features/portafolio/lib/portafolio.service';
 import PortfolioHeader from '@/features/portafolio/components/PortfolioHeader ';
-import type { habilidades, Usuario, experiencias, HabilidadBlanda, HabilidadTecnica, Proyectos, configuracion, certificaciones } from '@/features/portafolio/types/portafolioType';
+import type { habilidades, Usuario, experiencias, HabilidadBlanda, HabilidadTecnica, Proyectos, configuracion, certificaciones, formacion_academica, InformacionBasica } from '@/features/portafolio/types/portafolioType';
 import { HabilidadesTecnicasTracker } from '@/features/reportesUsuario/components/capturarInteracciones/HabilidadesTecnicasTracker';
 
 export default function Predeterminada() {
@@ -34,6 +34,8 @@ export default function Predeterminada() {
     const [proyectos, setProyectos] = useState<Proyectos[]>([]);
     const [configuracion, setConfiguracion] = useState<configuracion | null>(null);
     const [certificaciones, setCertificaciones] = useState<certificaciones[]>([]);
+    const [formacionAcademica, setFormacionAcademica] = useState<formacion_academica[]>([]);
+    const [informacionBasica, setInformacionBasica] = useState<InformacionBasica | null>(null);
     useEffect(() => {
         const fetchPortfolioData = async () => {
             if (!slug) return;
@@ -51,6 +53,8 @@ export default function Predeterminada() {
                 setProyectos(data.proyectos);
                 setConfiguracion(data.configuracion);
                 setCertificaciones(data.certificaciones);
+                setFormacionAcademica(data.formacion_academica ?? []);
+                setInformacionBasica(data.informacion_basica ?? null);
 
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -93,6 +97,8 @@ export default function Predeterminada() {
                         blandas={configuracion?.mostrar_habilidades ? habilidadesBlandas : []}
                         experiencias={configuracion?.mostrar_experiencias ? experiencias : []}
                         certificaciones={configuracion?.mostrar_certificaciones ? certificaciones : []}
+                        formacion_academica={formacionAcademica}
+                        informacion_basica={informacionBasica}
                         mostrarCV={configuracion?.mostrar_cv ?? true}
                         mostrarContacto={configuracion?.mostrar_contacto ?? true}
                         mostrarRedes={configuracion?.mostrar_redes_profesionales ?? true}

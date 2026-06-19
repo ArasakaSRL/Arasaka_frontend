@@ -43,22 +43,16 @@ export default function DashboardHeader({ onMenuClick, sidebarOpen }: DashboardH
     }
 
     const ejecutarGenerarCV = async (portafolio: Portafolio) => {
-        const infoBasica = portafolioSeleccionado?.informacion_basica;
         const config = portafolio.configuracion;
         await generateCV({
-            usuario: {
-                ...portafolio.usuario,
-                nombre: infoBasica?.nombre_completo?.split(' ')[0] ?? portafolio.usuario.nombre,
-                apellido: infoBasica?.nombre_completo?.split(' ').slice(1).join(' ') ?? portafolio.usuario.apellido,
-                correo: infoBasica?.gmail ?? portafolio.usuario.correo,
-                foto_perfil: infoBasica?.foto_perfil ?? portafolio.usuario.foto_perfil,
-                pais: infoBasica?.pais ?? portafolio.usuario.pais,
-            },
+            usuario: portafolio.usuario,
+            informacion_basica: portafolio.informacion_basica,
             proyectos: config.mostrar_proyectos ? portafolio.proyectos : [],
             tecnicas: config.mostrar_habilidades ? portafolio.habilidades.tecnicas : [],
             blandas: config.mostrar_habilidades ? portafolio.habilidades.blandas : [],
             experiencias: config.mostrar_experiencias ? portafolio.experiencias : [],
             certificaciones: config.mostrar_certificaciones ? portafolio.certificaciones : [],
+            formacion_academica: portafolio.formacion_academica,
         });
     };
 

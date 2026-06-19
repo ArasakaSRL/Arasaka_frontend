@@ -63,11 +63,13 @@ export default function Plantilla1() {
     try {
       await generateCV({
         usuario,
+        informacion_basica: data.informacion_basica,
         proyectos: data.proyectos ?? [],
         tecnicas: data.habilidadesTecnicas ?? [],
         blandas: data.habilidadesBlandas ?? [],
         experiencias: data.experiencias ?? [],
         certificaciones: data.certificaciones ?? [],
+        formacion_academica: data.formacion_academica ?? [],
       });
 
       toast.success("PDF generado con éxito");

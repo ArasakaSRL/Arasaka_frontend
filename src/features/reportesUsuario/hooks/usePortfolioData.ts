@@ -5,13 +5,15 @@ import axios from 'axios';
 import type {
   Usuario, habilidades, experiencias,
   HabilidadTecnica, HabilidadBlanda,
-  Proyectos, configuracion, certificaciones
+  Proyectos, configuracion, certificaciones,
+  InformacionBasica, formacion_academica
 } from '@/features/portafolio/types/portafolioType';
 
 import { getPortafolioPublic } from '@/features/portafolio/lib/portafolio.service';
 
 interface PortfolioData {
   usuario: Usuario;
+  informacion_basica: InformacionBasica | null;
   habilidades: habilidades;
   experiencias: experiencias[];
   habilidadesTecnicas: HabilidadTecnica[];
@@ -19,6 +21,7 @@ interface PortfolioData {
   proyectos: Proyectos[];
   configuracion: configuracion;
   certificaciones: certificaciones[];
+  formacion_academica: formacion_academica[];
 }
 
 export function usePortfolioData(slug: string | undefined) {
@@ -37,6 +40,7 @@ export function usePortfolioData(slug: string | undefined) {
 
         setData({
           usuario:             res.usuario,
+          informacion_basica:  res.informacion_basica ?? null,
           habilidades:         res.habilidades,
           experiencias:        res.experiencias,
           habilidadesTecnicas: res.habilidades.tecnicas,   // ← mismo que tenías
@@ -44,6 +48,7 @@ export function usePortfolioData(slug: string | undefined) {
           proyectos:           res.proyectos,
           configuracion:       res.configuracion,
           certificaciones:     res.certificaciones,
+          formacion_academica: res.formacion_academica ?? [],
         });
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {

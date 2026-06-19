@@ -1,21 +1,47 @@
 import { jsPDF } from "jspdf";
 import type {
   Usuario,
+  InformacionBasica,
   Proyectos,
   HabilidadTecnica,
   HabilidadBlanda,
   experiencias as Experiencia,
   certificaciones as Certificacion,
+  formacion_academica as FormacionAcademica,
 } from "../types/portafolioType";
 
 type CVData = {
   usuario: Usuario;
+  informacion_basica?: InformacionBasica | null;
   proyectos: Proyectos[];
   tecnicas: HabilidadTecnica[];
   blandas: HabilidadBlanda[];
   experiencias: Experiencia[];
   certificaciones: Certificacion[];
+  formacion_academica?: FormacionAcademica[];
 };
+
+// Combina la información básica del portafolio sobre los datos del usuario.
+// La información básica es específica del portafolio y tiene prioridad cuando
+// está presente; se cae de vuelta a los datos del usuario cuando viene vacía.
+function resolverUsuario(usuario: Usuario, info?: InformacionBasica | null): Usuario {
+  if (!info) return usuario;
+
+  const nombreCompleto = info.nombre_completo?.trim();
+  const partes = nombreCompleto ? nombreCompleto.split(/\s+/) : [];
+  const nombre = partes.length ? partes[0] : usuario.nombre;
+  const apellido = partes.length > 1 ? partes.slice(1).join(" ") : usuario.apellido;
+
+  return {
+    ...usuario,
+    nombre,
+    apellido,
+    correo: info.gmail || usuario.correo,
+    foto_perfil: info.foto_perfil ?? usuario.foto_perfil,
+    pais: info.pais ?? usuario.pais,
+    biografia: info.biografia ?? usuario.biografia,
+  };
+}
 
 // Colores
 const NAVY: [number, number, number] = [10, 17, 32];
@@ -177,7 +203,9 @@ function formatDate(s: string | null): string {
 }
 
 export async function generateCV(data: CVData): Promise<void> {
-  const { usuario, proyectos, tecnicas, blandas, experiencias, certificaciones } = data;
+  const { proyectos, tecnicas, blandas, experiencias, certificaciones } = data;
+  const formacionAcademica = data.formacion_academica ?? [];
+  const usuario = resolverUsuario(data.usuario, data.informacion_basica);
 
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
@@ -421,6 +449,45 @@ export async function generateCV(data: CVData): Promise<void> {
       if (exp.descripcion) {
         setText(TEXT_DARK, 9.5, "normal");
         const lines = doc.splitTextToSize(exp.descripcion, mainW - 12);
+        for (const line of lines) {
+          ensureMainSpace(LINE_GAP);
+          doc.text(line, mainX + 12, mainY);
+          mainY += LINE_GAP;
+        }
+      }
+      mainY += 8;
+    }
+  }
+
+  // ===== Formación Académica =====
+  if (formacionAcademica.length) {
+    drawSectionHeader("Formación Académica");
+    for (const formacion of formacionAcademica) {
+      ensureMainSpace(LINE_GAP * 3 + 6);
+
+      doc.setFillColor(...ACCENT);
+      doc.circle(mainX + 2, mainY - 3, 2.2, "F");
+
+      setText(NAVY, 11, "bold");
+      doc.text(formacion.titulo, mainX + 12, mainY);
+
+      // periodo a la derecha
+      const periodo = `${formatDate(formacion.fecha_inicio)} — ${formatDate(formacion.fecha_fin)}`;
+      setText(ACCENT, 8.5, "bold");
+      const pw = doc.getTextWidth(periodo);
+      doc.text(periodo, mainX + mainW - pw, mainY);
+      mainY += LINE_GAP;
+
+      const subtitulo = [formacion.institucion, formacion.nivel].filter(Boolean).join("  ·  ");
+      if (subtitulo) {
+        setText(TEXT_MUTED, 9.5, "italic");
+        doc.text(subtitulo, mainX + 12, mainY);
+        mainY += LINE_GAP;
+      }
+
+      if (formacion.descripcion) {
+        setText(TEXT_DARK, 9.5, "normal");
+        const lines = doc.splitTextToSize(formacion.descripcion, mainW - 12);
         for (const line of lines) {
           ensureMainSpace(LINE_GAP);
           doc.text(line, mainX + 12, mainY);

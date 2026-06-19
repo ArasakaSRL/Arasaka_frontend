@@ -48,6 +48,15 @@ export const mapPortafolio = (api: any): Portafolio => {
         servicios: safeArray(data.servicios),
         certificaciones: safeArray(data.certificaciones),
         redes_profesionales: safeArray(data.redes_profesionales),
+        formacion_academica: safeArray(data.formacion_academica).map((f: any) => ({
+            id_formacion_academica: f.id_formacion_academica,
+            institucion: f.institucion,
+            titulo: f.titulo,
+            nivel: f.nivel,
+            fecha_inicio: f.fecha_inicio,
+            fecha_fin: f.fecha_fin ?? null,
+            descripcion: f.descripcion ?? null,
+        })),
 
         configuracion: {
             mostrar_proyectos: data.configuracion?.mostrar_proyectos ?? false,

@@ -8,6 +8,7 @@ import type {
   HabilidadBlanda,
   experiencias as Experiencia,
   certificaciones as Certificacion,
+  formacion_academica as FormacionAcademica,
 } from "../types/portafolioType";
 import ContactarModal from "../../sendGmail/components/ContactarModal";
 import { generateCV } from "../lib/cv.generator";
@@ -21,6 +22,7 @@ type Props = {
   blandas?: HabilidadBlanda[];
   experiencias?: Experiencia[];
   certificaciones?: Certificacion[];
+  formacion_academica?: FormacionAcademica[];
   mostrarCV?: boolean;
   mostrarContacto?: boolean;
   mostrarRedes?: boolean;
@@ -35,6 +37,7 @@ const PortfolioHeader: React.FC<Props> = ({
   blandas = [],
   experiencias = [],
   certificaciones = [],
+  formacion_academica = [],
   mostrarCV = true,
   mostrarContacto = true,
   mostrarRedes = true,
@@ -51,11 +54,13 @@ const PortfolioHeader: React.FC<Props> = ({
     try {
       await generateCV({
         usuario,
+        informacion_basica,
         proyectos,
         tecnicas,
         blandas,
         experiencias,
         certificaciones,
+        formacion_academica,
       });
       toast.success("pdf generado con éxito");
     } catch (err) {

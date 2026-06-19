@@ -96,6 +96,16 @@ export type redes_profesionales = {
     url_Red: string;
 };
 
+export type formacion_academica = {
+    id_formacion_academica: string;
+    institucion: string;
+    titulo: string;
+    nivel: string;
+    fecha_inicio: string;
+    fecha_fin: string | null;
+    descripcion: string | null;
+};
+
 export type configuracion = {
     mostrar_proyectos: boolean;
     mostrar_habilidades: boolean;
@@ -133,6 +143,7 @@ export type Portafolio = {
     servicios: servicios[];
     certificaciones: certificaciones[];
     redes_profesionales: redes_profesionales[];
+    formacion_academica: formacion_academica[];
     configuracion: configuracion;
 };
 

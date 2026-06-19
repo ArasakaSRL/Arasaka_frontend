@@ -30,6 +30,8 @@ export default function Plantilla3() {
         }
         experiencias={ data.configuracion?.mostrar_experiencias ? data.experiencias : [] }
         certificaciones={ data.configuracion?.mostrar_certificaciones ? data.certificaciones : [] }
+        formacion_academica={ data.formacion_academica }
+        informacion_basica={ data.informacion_basica }
         mostrarCV={ data.configuracion?.mostrar_cv ?? true }
         mostrarContacto={ data.configuracion?.mostrar_contacto ?? true }
         mostrarRedes={ data.configuracion?.mostrar_redes_profesionales ?? true }

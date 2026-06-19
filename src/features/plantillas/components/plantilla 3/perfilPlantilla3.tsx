@@ -3,7 +3,7 @@ import { generateCV } from "@/features/portafolio/lib/cv.generator";
 import ContactarModal from "./formContacto";
 import { toast } from "@/components/Alerta";
 import { useState } from "react";
-import type { Usuario, Proyectos, HabilidadTecnica, HabilidadBlanda, experiencias, certificaciones, InformacionBasica } from "@/features/portafolio/types/portafolioType";
+import type { Usuario, Proyectos, HabilidadTecnica, HabilidadBlanda, experiencias, certificaciones, InformacionBasica, formacion_academica } from "@/features/portafolio/types/portafolioType";
 
 type Props = {
   usuario: Usuario;
@@ -12,13 +12,14 @@ type Props = {
   blandas: HabilidadBlanda[];
   experiencias: experiencias[];
   certificaciones: certificaciones[];
+  formacion_academica?: formacion_academica[];
   informacion_basica?: InformacionBasica | null;
   mostrarCV?: boolean;
   mostrarContacto?: boolean;
   mostrarRedes?: boolean;
 };
 
-export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, experiencias, certificaciones, informacion_basica, mostrarCV, mostrarContacto, mostrarRedes }: Props) {
+export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, experiencias, certificaciones, formacion_academica = [], informacion_basica, mostrarCV, mostrarContacto, mostrarRedes }: Props) {
   const [descargandoCV, setDescargandoCV] = useState(false);
   const [contactarOpen, setContactarOpen] = useState(false);
   const profesion = usuario.profesiones?.map((p) => p.nombre).join(" • ") || "Profesional";
@@ -37,11 +38,13 @@ export default function PerfilBubble({ usuario, proyectos, tecnicas, blandas, ex
       try {
         await generateCV({
           usuario,
+          informacion_basica,
           proyectos,
           tecnicas,
           blandas,
           experiencias,
           certificaciones,
+          formacion_academica,
         });
         toast.success("PDF generado con éxito");
       } catch (error) {
