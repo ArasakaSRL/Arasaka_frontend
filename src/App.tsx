@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { MainLayout } from './layout/MainLayout'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Explorar from './pages/Explorar'
 import About from './pages/About'
@@ -38,6 +39,8 @@ import ReporteMensualPage from '@/features/formacion-academica/pages/ReporteMens
 import ReportesPersonales from './pages/Dashboard/estadisticas/ReportesPersonales'
 export default function App() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
@@ -83,5 +86,6 @@ export default function App() {
       <Route path="/portafolio/formacion-academica" element={<FormacionAcademicaPage />} />
       <Route path="/reportes-mensuales" element={<ReporteMensualPage />} />
     </Routes>
+    </>
   )
 }
