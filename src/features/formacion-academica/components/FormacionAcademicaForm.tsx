@@ -1,7 +1,7 @@
 import {
     GraduationCap,
     Building2,
-    Calendar, // Cambiado por un icono con mayor visibilidad en modo oscuro
+    Calendar, 
     FileText,
 } from 'lucide-react'
 
@@ -129,10 +129,10 @@ export default function FormacionAcademicaForm({
                     <option value="">Selecciona un nivel</option>
                     <option value="Tecnico">Técnico</option>
                     <option value="Licenciatura">Licenciatura</option>
+                    <option value="Especialidad">Especialidad</option>
                     <option value="Maestria">Maestría</option>
                     <option value="Doctorado">Doctorado</option>
-                    <option value="Diplomado">Diplomado</option>
-                    <option value="Curso">Curso</option>
+                    <option value="PostDoctorado">Post Doctorado</option>
                 </select>
             </div>
 
