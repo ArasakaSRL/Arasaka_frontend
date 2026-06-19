@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { HabilidadSchema } from "../utils/HabilidadSchema";
 import { useHabilidadesData } from "../hooks/useHabilidades";
 import { useEditarHabilidad } from "../utils/editarHabilidades";
-
+import TecnologiasSelector from "@/features/proyectos/components/MenuTecnologias";
 interface HabilidadesProps {
   closeModal: () => void;
   onCreated: (data:HabilidadUI) => void;
@@ -23,7 +23,7 @@ interface DatosHabilidad {
 }
 
 export default function FormularioHabilidades ({closeModal, onCreated, habilidadEditar, habilidadesExistentes}:HabilidadesProps) {
-  const { tecnologias } = useHabilidadesData();
+  const { tecnologias, agregarTecnologia } = useHabilidadesData();
   const {
     formData,
     setFormData,
@@ -185,17 +185,22 @@ const niveles = [
               Habilidad <span className="text-error-500">*</span>
             </label>
 
-            <Dropdown
+            <TecnologiasSelector
               mode="single"
               value={formData.tecnologia}
               onChange={(val) => {
-                setFormData({ ...formData, tecnologia: val });
-                setErrors((prev) => ({ ...prev, tecnologia: "" }));
+                setFormData({
+                  ...formData,
+                  tecnologia: val as string,
+                });
+
+                setErrors((prev) => ({
+                  ...prev,
+                  tecnologia: "",
+                }));
               }}
               options={tecnologias}
-              searchable
-              isOpen={menuAbierto === "tecnologias"}
-              onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
+              agregarTecnologia={agregarTecnologia}
               disabled={!!habilidadEditar}
             />
             {errors.tecnologia && <p className="text-red-500 text-xs ml-1">{errors.tecnologia}</p>}

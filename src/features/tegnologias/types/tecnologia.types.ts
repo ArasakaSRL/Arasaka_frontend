@@ -20,6 +20,6 @@ export type Pagination = {
 }
 export type CreateTecnologia ={
   nombre: string;
-  descripcion: string;
-  logo: string;
+  descripcion?: string;
+  logo?: string;
 }

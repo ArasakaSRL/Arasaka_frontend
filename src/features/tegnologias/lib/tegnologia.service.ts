@@ -1,4 +1,4 @@
-import  type { Tecnologia, TecnologiaResponse, CreateTecnologia } from "../types/tecnologia.types"; 
+import  type { TecnologiaResponse, CreateTecnologia } from "../types/tecnologia.types"; 
 import apiClient from "@/api/api"
 
 

@@ -23,9 +23,8 @@ export const ProyectoSchema = z
       .min(1, "Campo obligatorio"),
 
     fechaFin: z
-      .string()
-      .min(1, "Campo obligatorio"),
-
+      .string(),
+      
     projectUrl: z
       .string()
       .optional()
@@ -36,12 +35,11 @@ export const ProyectoSchema = z
     githubUrl: z
       .string()
       .optional()
-      .refine((val) => !val || val.startsWith("https://"), {
+      .refine((val) => !val || val.startsWith("https://github.com "), {
         message: "Formato de enlace inválido",
       }),
     imagenes: z
       .array(z.any())
-      .min(1, "Debe subir al menos una imagen")
       .max(5, "No puedes subir más de 5 imágenes")
-      .optional()
+      .default([]),
   });

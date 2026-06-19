@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircleX } from 'lucide-react';
 import { useState } from 'react';
-import Dropdown from '../../../components/MenuDesplegable';
 import { crearProyecto, editarProyecto,type Proyecto } from '../lib/ProyectosApi';
 import { ProyectoSchema } from '../utils/ProyectosSchema';
 import { toast } from '../../../components/Alerta';
@@ -11,6 +10,8 @@ import { useEditarProyecto } from '../hooks/editarProyectos';
 import { uploadMultipleImages } from '../../../firebase/firebaseStorage';
 import { useEffect } from 'react';
 import UploaderImagenes from './SubirImagenes';
+import TecnologiasSelector from './MenuTecnologias';
+import axios from 'axios';
 interface FormularioProps {
     closeModal: () => void;
     onCreated: (nuevoProyecto: Proyecto) => void;
@@ -27,9 +28,9 @@ type Imagen = {
 export default function FormularioProyectos({closeModal, onCreated, proyectoEditar}:FormularioProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
-    const { opciones} = useTecnologias();
-    const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
+    const { opciones, agregarTecnologia} = useTecnologias();
     const [imagenes, setImagenes] = useState<Imagen[]>([]);
+    const [enCurso, setEnCurso] = useState (false);
     const {
       formularioData,
       setFormularioData,
@@ -171,12 +172,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
 
           toast.success( "Proyecto editado exitosamente", 3000 );
         } else {
-          console.log(JSON.stringify(payload, null, 2));
           proyectoGuardado = await crearProyecto(payload);
-          console.log(
-            "Respuesta crear proyecto:",
-            proyectoGuardado
-          );
 
           toast.success( "Proyecto creado exitosamente", 3000);
         }
@@ -184,8 +180,14 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
         onCreated(proyectoGuardado);
         resetForm();
         closeModal();
-      } catch {
-        toast.warning("Error al crear proyecto", 3000);
+      } catch (error) {
+        if (axios.isAxiosError(error)){
+          const mensaje = error.response?.data?.message || "Error al crear proyecto";
+
+          toast.warning(mensaje, 3000);
+        }else{
+          toast.warning("Error al crear proyecto", 3000);
+        }
       } finally {
         setLoading(false);
       }
@@ -274,25 +276,58 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
                     setErrors((prev) => ({ ...prev, fechaFin: "" }));
                   }}
                   error={errors.fechaFin}
-                  required
-                  disabled={!!proyectoEditar}
+                  required = {!enCurso}
+                  disabled={enCurso || !!proyectoEditar}
                 />
+                <div className="col-span-2 flex items-center gap-2 mt-1">
+                  <input
+                    id="enCurso"
+                    type="checkbox"
+                    checked={enCurso}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+
+                      setEnCurso(checked);
+
+                      if (checked) {
+                        setFormularioData((prev) => ({
+                          ...prev,
+                          endDate: "",
+                        }));
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          fechaFin: "",
+                        }));
+                      }
+                    }}
+                  />
+
+                  <label
+                    htmlFor="enCurso"
+                    className="text-sm text-gray-700 cursor-pointer"
+                  >
+                    Proyecto en curso
+                  </label>
+                </div>
             </div>
+
             <div className='space-y-1'>
               <label className="block text-sm text-black font-medium-ui mb-2">
                 Seleccione la(s) Tecnología(s) <span className="text-error-500">*</span>
               </label>
-              <Dropdown
+              <TecnologiasSelector
                 mode="multiple"
                 values={tecnologias}
                 onChange={(vals) => {
                   setTecnologias(vals);
-                  setErrors((prev) => ({ ...prev, tecnologias: "" }));
+                  setErrors((prev) => ({
+                    ...prev,
+                    tecnologias: "",
+                  }));
                 }}
                 options={opciones}
-                searchable
-                isOpen={menuAbierto === "tecnologias"}
-                onToggle={() => setMenuAbierto(menuAbierto === "tecnologias" ? null : "tecnologias")}
+                agregarTecnologia={agregarTecnologia}
                 disabled={!!proyectoEditar}
               />
               {errors.tecnologias && (
