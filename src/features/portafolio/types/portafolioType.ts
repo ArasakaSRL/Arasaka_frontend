@@ -165,7 +165,7 @@ export type CreatePortafolio = {
     nombre_completo?: string;
     gmail?: string;
     pais?: string;
-    redesProfesionales: RedesProfesionales[];
+    redes_profesionales: RedesProfesionales[];
 }
 
 export type RedesProfesionales = {

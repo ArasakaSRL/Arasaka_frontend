@@ -93,13 +93,13 @@ export default function FormacionAcademicaModal({
                             onChange={handleChange}
                             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm bg-white outline-none focus:ring-2 focus:ring-[#1e2a5e]"
                         >
-                            <option value="">Selecciona un nivel</option>
-                            <option value="Tecnico">Técnico</option>
-                            <option value="Licenciatura">Licenciatura</option>
-                            <option value="Maestria">Maestría</option>
-                            <option value="Doctorado">Doctorado</option>
-                            <option value="Diplomado">Diplomado</option>
-                            <option value="Curso">Curso</option>
+                    <option value="">Selecciona un nivel</option>
+                    <option value="Tecnico">Técnico</option>
+                    <option value="Licenciatura">Licenciatura</option>
+                    <option value="Especialidad">Especialidad</option>
+                    <option value="Maestria">Maestría</option>
+                    <option value="Doctorado">Doctorado</option>
+                    <option value="PostDoctorado">Post Doctorado</option>
                         </select>
                     </div>
 

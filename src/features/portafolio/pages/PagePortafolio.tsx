@@ -66,7 +66,7 @@ export default function PagePortafolio() {
         descripcion: newPortfolio.description,
         visibilidad: newPortfolio.visibility === 'public',
 
-        redesProfesionales: [
+        redes_profesionales: [
           ...(newPortfolio.githubUrl
             ? [{ nombre: 'GitHub', url: newPortfolio.githubUrl }]
             : []),
@@ -76,6 +76,7 @@ export default function PagePortafolio() {
             : []),
         ],
       });
+      console.log('Portafolio creado:', newPortfolio);
       toast.success('Portafolio creado exitosamente' );
       await getPortafolios();
 

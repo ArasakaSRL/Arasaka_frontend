@@ -9,6 +9,7 @@ import type {
   experiencias as Experiencia,
   certificaciones as Certificacion,
   formacion_academica as FormacionAcademica,
+  redes_profesionales as RedesProfesionales,
 } from "../types/portafolioType";
 import ContactarModal from "../../sendGmail/components/ContactarModal";
 import { generateCV } from "../lib/cv.generator";
@@ -23,6 +24,7 @@ type Props = {
   experiencias?: Experiencia[];
   certificaciones?: Certificacion[];
   formacion_academica?: FormacionAcademica[];
+  redes_profesionales?: RedesProfesionales[];
   mostrarCV?: boolean;
   mostrarContacto?: boolean;
   mostrarRedes?: boolean;
@@ -38,6 +40,7 @@ const PortfolioHeader: React.FC<Props> = ({
   experiencias = [],
   certificaciones = [],
   formacion_academica = [],
+  redes_profesionales = [], 
   mostrarCV = true,
   mostrarContacto = true,
   mostrarRedes = true,
@@ -47,7 +50,17 @@ const PortfolioHeader: React.FC<Props> = ({
   const whatsappNumber = usuario.telefonos?.[0]?.numero.replace(/\s+/g, "");
   const [contactarOpen, setContactarOpen] = useState(false);
   const [descargandoCV, setDescargandoCV] = useState(false);
- 
+
+  const linkedin = redes_profesionales?.find(r =>
+  r.nombre.toLowerCase().includes("linkedin")
+);
+const github = redes_profesionales?.find(r =>
+  r.nombre.toLowerCase().includes("github")
+);
+const hasLinkedin = !!linkedin?.url_Red;
+const hasGithub = !!github?.url_Red;
+const hasAnySocial = hasLinkedin || hasGithub;
+
   const handleDescargarCV = async () => {
     if (descargandoCV) return;
     setDescargandoCV(true);
@@ -148,28 +161,40 @@ const PortfolioHeader: React.FC<Props> = ({
               </span>
             </div>
 
-            {/* Redes profesionales */}
-            {mostrarRedes && (
+          {mostrarRedes && hasAnySocial && (
               <div className="flex items-center gap-4">
-                <div
-                  data-track="clic_linkedin"
-                  className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
-                  <img
-                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg"
-                    alt="LinkedIn"
-                    className="w-6 h-6"
-                  />
-                </div>
-                <div
-                  data-track="clic_github"
-                  className="cursor-pointer transition-all hover:scale-110 hover:brightness-125">
-                  <img
-                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
-                    alt="GitHub"
-                    className="w-6 h-6 invert brightness-[2]"
-                  />
-                </div>
-              </div>
+
+             {hasLinkedin && (
+                 <a
+               href={linkedin!.url_Red}
+               target="_blank"
+               rel="noopener noreferrer"
+               className="cursor-pointer transition-all hover:scale-110 hover:brightness-125"
+                >
+               <img
+               src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg"
+               alt="LinkedIn"
+               className="w-6 h-6"
+                />
+               </a>
+              )}
+
+              {hasGithub && (
+      <a
+                href={github!.url_Red}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cursor-pointer transition-all hover:scale-110 hover:brightness-125"
+               >
+               <img
+               src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+               alt="GitHub"
+               className="w-6 h-6 invert brightness-[2]"
+              />
+           </a>
+            )}
+
+         </div>
             )}
           </div>
         </div>
