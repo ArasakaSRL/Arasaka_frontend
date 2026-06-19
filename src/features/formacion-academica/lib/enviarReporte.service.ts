@@ -11,13 +11,13 @@ export const enviarReporteGmail = async (data: ReportDataPayload) => {
     }
 };
 
-// NUEVO: Servicio para descargar el PDF directo desde el backend
+
 export const descargarReportePdf = async (data: ReportDataPayload) => {
     try {
         const response = await apiClient.post(`reportes/enviar-pdf`, data, {
-            responseType: 'blob' // CRÍTICAL: Permite recibir el flujo binario del archivo PDF
+            responseType: 'blob' 
         });
-        return response.data; // Esto será un objeto de tipo Blob
+        return response.data; 
     } catch (error) {
         console.error('Error al descargar el PDF directo:', error);
         throw error;
