@@ -8,6 +8,8 @@ import { BoxCantidad } from "@/features/reportesUsuario/components/BoxCantidad";
 import {getEstadisticasPortafolio,} from "@/features/reportesUsuario/apis/reportesApi";
 import type { CertificacionTimeline, ExperienciaTimeline } from "@/features/reportesPersonales/types";
 import SkillsChart, { type SkillItem } from "@/features/reportesUsuario/components/Skillschart";
+import Pastel from "@/features/reportesPersonales/components/Pastel";
+import TablaRanking from "@/features/reportesPersonales/components/TablaRanking";
 
 const COLOR_MAP: Record<string, string> = {
   Principiante: "#D85A30",
@@ -23,7 +25,7 @@ export default function ReportesPersonales() {
   const [loading, setIsLoading] = useState(true);
 
   const [data, setData] = useState<any>(null);
-
+  
   useEffect(() => {
     const cargarDatos = async () => {
       try {
@@ -81,8 +83,6 @@ export default function ReportesPersonales() {
         new Date(a.fecha).getTime()
     );
 
-
-
   const getTotalHabilidades = (
     niveles: Record<string, number> | undefined
   ) => {
@@ -95,7 +95,30 @@ export default function ReportesPersonales() {
   };
 
   const totalTecnicas = getTotalHabilidades(data?.habilidades?.tecnica);
-  const totalBlandas = getTotalHabilidades(data?.habilidades?.Blandas);
+  const totalBlandas = getTotalHabilidades(data?.habilidades?.blanda);
+  const resumenItems = [
+    {
+      titulo: "Experiencias Registradas",
+      cantidad: experiencias.length,
+    },
+    {
+      titulo: "Certificaciones",
+      cantidad: certificaciones.length,
+    },
+    {
+      titulo: "Proyectos",
+      cantidad: data.proyectos ?? 0,
+    },
+    {
+      titulo: "Habilidades Técnicas",
+      cantidad: totalTecnicas,
+    },
+    {
+      titulo: "Habilidades Blandas",
+      cantidad: totalBlandas,
+    },
+  ];
+  console.log(data);
   const skillsChartData: SkillItem[] = Object.entries(data?.habilidades?.tecnica || {})
     .map(([nivel, cantidad]) => ({
       label: nivel,
@@ -126,36 +149,22 @@ export default function ReportesPersonales() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
               {skillsChartData.length > 0 ? (
-                <SkillsChart
+                <Pastel
                   title="Distribución de Habilidades Técnicas"
                   skills={skillsChartData}
-                  strokeWidth={32}
-                  radius={130}
                 />
               ) : (
                 <div className="flex items-center justify-center bg-white rounded-xl border p-6 text-slate-400 text-sm">
                   Sin habilidades técnicas registradas
                 </div>
               )}
+
+              <TablaRanking
+                titulo="Total Registros"
+                items={resumenItems}
+              />
+
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              <BoxCantidad
-                nombre="Habilidades Blandas"
-                total={totalBlandas}
-              />
-
-              <BoxCantidad
-                nombre="Habilidades Técnicas"
-                total={totalTecnicas}
-              />
-
-              <BoxCantidad
-                nombre="Proyectos realizados"
-                total={data.proyectos}
-              />
-            </div>
-
           </>
         )}
 
