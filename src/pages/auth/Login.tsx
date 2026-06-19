@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+
 import { z } from 'zod';
 import { AxiosError } from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { AuthInput } from '@/features/auth/components/auth/AuthInput';
 import { AuthButton } from '@/features/auth/components/auth/AuthButton';
 import SocialAuthButtons from '@/features/auth/components/auth/SocialAuthButtons';
-import { loginRequest, getUsuario, sendPasswordResetEmail, firebaseAuthRequest } from '@/features/auth/api/auth';
+import { loginRequest, getUsuario, firebaseAuthRequest } from '@/features/auth/api/auth';
 import { useAuthStore, resolverPortafolioDesdeArray } from '@/stores/authStore';
 import { signInWithProvider } from '@/firebase/firebaseAuth';
 import { PASSWORD_MAX } from '@/features/auth/utils/passwordRules';
@@ -34,10 +35,6 @@ export default function Login() {
     const correoRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
-
-    //estados para recuperar contraseña
-    const [resetLoading, setResetLoading] = useState(false);
-    const [resetMessage, setResetMessage] = useState<string | null>(null);
 
     const navigate = useNavigate();
     const setUser = useAuthStore(s => s.setUser);
@@ -89,27 +86,6 @@ export default function Login() {
             }
         } finally {
             setSocialLoading(null);
-        }
-    }
-
-    //funcion para recueperar contraseña
-    async function handleForgotPassword() {
-        setApiError(null);
-        if (!correo) {
-            setErrors({ correo: 'Ingresa tu correo para recuperar la contraseña' });
-            correoRef.current?.focus();
-            return;
-        }
-
-        setResetLoading(true);
-        try {
-            const response = await sendPasswordResetEmail(correo);
-            setResetMessage(response.message || '¡Enlace enviado! Revisa tu bandeja de entrada.');
-        } catch (err: unknown) {
-            const error = err as AxiosError<{ message?: string }>;
-            setApiError(error?.response?.data?.message ?? 'No se pudo enviar el correo');
-        } finally {
-            setResetLoading(false);
         }
     }
 
@@ -274,22 +250,13 @@ export default function Login() {
                     />
 
                     <div className="flex justify-end w-full -mt-2 mb-2">
-                        <button
-                            type="button"
-                            onClick={handleForgotPassword}
-                            disabled={resetLoading}
-                            className="text-xs font-bold text-blue-800 hover:text-blue-900 disabled:opacity-50"
+                        <Link
+                            to="/auth/ForgotPassword"
+                            className="text-xs font-bold text-blue-800 hover:text-blue-900"
                         >
-                            {resetLoading ? 'Enviando...' : '¿Olvidaste tu contraseña?'}
-                        </button>
+                            ¿Olvidaste tu contraseña?
+                        </Link>
                     </div>
-
-
-                    {resetMessage && (
-                        <p className="text-green-600! text-xs text-left w-full mb-4 font-medium">
-                            {resetMessage}
-                        </p>
-                    )}
 
                     {apiError && (
                         <p className="text-red-500! text-xs text-left w-full mb-4">{apiError}</p>
@@ -299,7 +266,7 @@ export default function Login() {
                         <AuthButton
                             type="submit"
                             text={loading ? 'Ingresando...' : 'Ingresar'}
-                            disabled={!isFilled || loading || resetLoading}
+                            disabled={!isFilled || loading}
                         />
                     </div>
 
