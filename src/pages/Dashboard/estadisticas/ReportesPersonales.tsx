@@ -10,6 +10,7 @@ import type { CertificacionTimeline, ExperienciaTimeline } from "@/features/repo
 import SkillsChart, { type SkillItem } from "@/features/reportesUsuario/components/Skillschart";
 import Pastel from "@/features/reportesPersonales/components/Pastel";
 import TablaRanking from "@/features/reportesPersonales/components/TablaRanking";
+import PortafolioTimeline from "@/features/reportesPersonales/components/LineaTiempo";
 
 const COLOR_MAP: Record<string, string> = {
   Principiante: "#D85A30",
@@ -107,7 +108,7 @@ export default function ReportesPersonales() {
     },
     {
       titulo: "Proyectos",
-      cantidad: data.proyectos ?? 0,
+      cantidad: data?.proyectos ?? 0,
     },
     {
       titulo: "Habilidades Técnicas",
@@ -169,25 +170,7 @@ export default function ReportesPersonales() {
         )}
 
         <div className="space-y-0">
-          <SeccionScrollHorizontal titulo="Experiencia Profesional" height="100">
-            {timelineExperiencias.length > 0 ? (
-              <Timeline items={timelineExperiencias} />
-            ) : (
-              <div className="bg-white border rounded-xl p-6 text-center text-slate-400">
-                No existen experiencias registradas.
-              </div>
-            )}
-          </SeccionScrollHorizontal>
-
-          <SeccionScrollHorizontal titulo="Certificaciones Obtenidas">
-            {timelineCertificaciones.length > 0 ? (
-              <Timeline items={timelineCertificaciones} />
-            ) : (
-              <div className="bg-white border rounded-xl p-6 text-center text-slate-400">
-                No existen certificaciones registradas.
-              </div>
-            )}
-          </SeccionScrollHorizontal>
+          <PortafolioTimeline />
         </div>
 
       </div>
