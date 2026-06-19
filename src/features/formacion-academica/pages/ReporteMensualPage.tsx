@@ -3,7 +3,7 @@ import { Mail, Calendar, Eye, BarChart3, MessageSquare, Download, AlertCircle, S
 import DashboardLayout from "@/layout/DashboardLayout";
 import PageHeader from "@/components/ui/PageHeader";
 import type { ReportDataPayload } from '../types/ReporteGmail.type';
-import { enviarReporteGmail } from '../lib/enviarReporte.service';
+import { enviarReporteGmail, descargarReportePdf } from '../lib/enviarReporte.service'; 
 import { toast } from "../../../components/Alerta";
 import { useAuthStore } from "@/stores/authStore";
 
@@ -15,6 +15,8 @@ export default function ReporteMensualPage() {
   const [email, setEmail] = useState(user?.correo || '');
   const [esEditable, setEsEditable] = useState(false); 
   const [enviando, setEnviando] = useState(false); 
+  const [descargando, setDescargando] = useState(false); 
+
   const obtenerMesActualFormato = (): string => {
     const hoy = new Date();
     const anio = hoy.getFullYear();
@@ -22,13 +24,10 @@ export default function ReporteMensualPage() {
     return `${anio}-${mes}`;
   };
 
-
   const obtenerMesMinimoFormato = (): string => {
     if (!fechaCreacionPortafolio) return ''; 
     const fecha = new Date(fechaCreacionPortafolio);
-
     if (isNaN(fecha.getTime())) return '';
-    
     const anio = fecha.getFullYear();
     const mes = String(fecha.getMonth() + 1).padStart(2, '0');
     return `${anio}-${mes}`;
@@ -36,7 +35,6 @@ export default function ReporteMensualPage() {
 
   const maxMesPermitido = obtenerMesActualFormato();
   const minMesPermitido = obtenerMesMinimoFormato();
-
   const [mesSeleccionado, setMesSeleccionado] = useState(maxMesPermitido); 
 
   const [incluirVistas, setIncluirVistas] = useState(true);
@@ -58,18 +56,16 @@ export default function ReporteMensualPage() {
     const dia = String(hoy.getDate()).padStart(2, '0');
     const [_, mes] = mesSeleccionado.split('-');
     const anio = hoy.getFullYear();
-
     return `${dia}-${mes}-${anio}`;
   };
 
+ 
   const handleEnviarReportePrueba = async () => {
     if (enviando) return;
-
     if (!email.trim()) {
       toast.error('El correo electrónico no puede estar vacío.');
       return;
     }
-
     if (!esCorreoValido(email)) {
       toast.error('Por favor, ingresa una dirección de correo válida.');
       return;
@@ -99,6 +95,49 @@ export default function ReporteMensualPage() {
       toast.error('Ocurrió un error inesperado al procesar el reporte.');
     } finally {
       setEnviando(false); 
+    }
+  };
+
+ 
+  const handleDescargarReporteDirecto = async () => {
+    if (descargando) return;
+
+    setDescargando(true);
+
+    const payload: ReportDataPayload = {
+      enviar_email: "false", // CRÍTICO: Indica al backend que devuelva el archivo directo
+      email: email,
+      fecha_corte: obtenerFechaCorteActual(),
+      incluir_vistas: incluirVistas,
+      incluir_perfil: incluirPerfil,
+      incluir_proyectos: incluirProyectos,
+      incluir_messages: incluirMensajes,
+      incluir_cv: incluirCv
+    };
+
+    try {
+      const blob = await descargarReportePdf(payload);
+      
+      
+      const urlDescarga = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+      const enlace = document.createElement('a');
+      enlace.href = urlDescarga;
+      
+     
+      enlace.setAttribute('download', `Reporte_Mensual_${mesSeleccionado}.pdf`);
+      document.body.appendChild(enlace);
+      enlace.click();
+      
+ 
+      enlace.parentNode?.removeChild(enlace);
+      window.URL.revokeObjectURL(urlDescarga);
+
+      toast.success('Tu reporte en PDF se ha descargado correctamente.');
+    } catch (error) {
+      console.error(error);
+      toast.error('No se pudo generar la descarga directa del PDF.');
+    } finally {
+      setDescargando(false);
     }
   };
 
@@ -335,23 +374,44 @@ export default function ReporteMensualPage() {
               <div className="flex items-start gap-3 max-w-xl text-left">
                 <AlertCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Esta acción se ejecutará inmediatamente para enviarte un PDF actual de los reportes hasta la fecha mencionada y con la información que deseas ver.
+                  Esta acción procesará tus métricas actuales. Puedes optar por descargarlo en tu equipo de forma inmediata o programar el envío a tu buzón de Gmail.
                 </p>
               </div>
               
-              <button
-                type="button"
-                disabled={enviando || correoInvalido} 
-                onClick={handleEnviarReportePrueba}
-                className={`w-full md:w-auto flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-medium text-sm transition-all shadow-sm ${
-                  enviando || correoInvalido
-                    ? 'bg-slate-300 cursor-not-allowed opacity-80' 
-                    : 'bg-[#0a1931] hover:bg-[#112444] active:scale-[0.98]'
-                }`}
-              >
-                <Send className={`w-4 h-4 transform rotate-45 -translate-y-0.5 ${enviando ? 'animate-pulse' : ''}`} />
-                {enviando ? 'Enviando reporte...' : 'Enviar reporte'}
-              </button>
+              {/* CONTENEDOR DE BOTONES (Enviar y Descargar) */}
+              <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2 shrink-0">
+                
+                {/* NUEVO BOTÓN: Descarga directa */}
+                <button
+                  type="button"
+                  disabled={descargando || enviando} 
+                  onClick={handleDescargarReporteDirecto}
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium text-sm transition-all shadow-sm border border-slate-200 ${
+                    descargando || enviando
+                      ? 'bg-slate-50 text-slate-300 cursor-not-allowed' 
+                      : 'bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98]'
+                  }`}
+                >
+                  <Download className={`w-4 h-4 ${descargando ? 'animate-bounce' : ''}`} />
+                  {descargando ? 'Descargando...' : 'Descargar PDF'}
+                </button>
+
+                {/* BOTÓN ORIGINAL: Envío por Gmail */}
+                <button
+                  type="button"
+                  disabled={enviando || descargando || correoInvalido} 
+                  onClick={handleEnviarReportePrueba}
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-medium text-sm transition-all shadow-sm ${
+                    enviando || descargando || correoInvalido
+                      ? 'bg-slate-300 cursor-not-allowed opacity-80' 
+                      : 'bg-[#0a1931] hover:bg-[#112444] active:scale-[0.98]'
+                  }`}
+                >
+                  <Send className={`w-4 h-4 transform rotate-45 -translate-y-0.5 ${enviando ? 'animate-pulse' : ''}`} />
+                  {enviando ? 'Enviando...' : 'Enviar por correo'}
+                </button>
+
+              </div>
             </div>
 
           </div>
