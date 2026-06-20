@@ -14,7 +14,7 @@ interface AuthenticateResponse {
 // Al llamar este endpoint, Laravel setea una cookie llamada "XSRF-TOKEN" en el navegador,
 // y axios la lee automáticamente y la envía en el header "X-XSRF-TOKEN" en cada POST.
 // Sin esto, Laravel rechaza la petición con error 419 (CSRF token mismatch).
-const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
+export const getCsrfCookie = () => axios.get(`${import.meta.env.VITE_API_BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 
 // GET /autenticar — obtiene el usuario con todas sus relaciones (portafolios y subrelaciones)
 export async function getUsuario(): Promise<AuthUser | null> {

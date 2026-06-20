@@ -13,6 +13,7 @@ import Hitos from './features/hitos/page/Hitos'
 import VerificarCodigo from './pages/auth/VerificarCodigo'
 import Dashboard from './pages/Dashboard/index'
 import ResetPassword from './pages/auth/ResetPassword'
+import ForgotPassword from './pages/auth/ForgotPassword'
 import PortafolioPage from './features/portafolio/pages/PortfolioPage'
 import PortfolioPagePrivate from './features/portafolio/pages/PortfolioPagePrivate'
 import MensajesPrincipal from './pages/Dashboard/mensajes/MensajesPrincipal'
@@ -71,6 +72,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/auth/VerificarCodigo" element={<VerificarCodigo />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
+        <Route path="/auth/ForgotPassword" element={<ForgotPassword />} />
         
         <Route path="/Dashboard/admin/Usuarios" element={<PagePortafolio />} />
 

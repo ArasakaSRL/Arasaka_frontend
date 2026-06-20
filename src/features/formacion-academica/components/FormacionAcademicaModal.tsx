@@ -106,27 +106,12 @@ export default function FormacionAcademicaModal({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label className="flex items-center gap-2 text-sm font-semibold text-[#1e2a5e] mb-1">
-                                <Calendar size={16} /> Fecha Inicio *
-                            </label>
-                            <input
-                                type="date"
-                                name="fecha_inicio"
-                                max={formData.fecha_fin || undefined}
-                                required
-                                value={formData.fecha_inicio}
-                                onChange={handleChange}
-                                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#1e2a5e]"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="flex items-center gap-2 text-sm font-semibold text-[#1e2a5e] mb-1">
-                                <Calendar size={16} /> Fecha Fin *
+                                <Calendar size={16} /> Fecha de Emision
                             </label>
                             <input
                                 type="date"
                                 name="fecha_fin"
-                                min={formData.fecha_inicio || undefined}
+                                max={new Date().toISOString().split("T")[0]}
                                 required
                                 value={formData.fecha_fin}
                                 onChange={handleChange}
