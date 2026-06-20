@@ -70,6 +70,7 @@ export const useFormacionAcademica = () => {
             const payload = {
                 ...formData,
                 id_portafolio: portafolioSeleccionado.id_portafolio,
+                fecha_inicio: "", 
             }
 
             await crearFormacionProfesional(payload)
