@@ -11,6 +11,8 @@ import type { EstadisticasData, HeatmapHabilidadesTecnicas, HeatmapPerfil, Nivel
 import { getClicsBlandas, getClicsCertificaciones, getClicsExperiencia, getClicsPerfil, getClicsProyectos, getClicsTecnicas, getCrecimientoMensual, getEstadisticasPortafolio, getHeatmapHabilidadesTecnicas, getHeatmapPerfil, getVisitantes, getVisitasPorMes } from "../apis/reportesApi";
 import { PerfilReplica } from "../components/PortafolioReplica/PerfilReplica";
 import { ReporteVisitas } from "../components/ReporteVisitas";
+import Dashboard from "@/pages/Dashboard";
+import DashboardReportes from "../components/DashboardReportes";
 
 const COLOR_MAP: Record<string, string> = {
   Principiante: "#D85A30",
@@ -157,7 +159,7 @@ console.log('skillsChartData:', skillsChartData)
 
       <div className="flex flex-col gap-6 mt-6">
      
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/*<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <TotalVisitas nombre="Visitas al Portafolio" total={visitantes} />
            {skillsChartData.length > 0 ? (  // ← agregar condición
                 <SkillsChart
@@ -172,7 +174,17 @@ console.log('skillsChartData:', skillsChartData)
                 </div>
             )}
         </div>
+        */}
         
+
+        {/** 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <BoxCantidad nombre="Habilidades Blandas" total={totalBlandas} />
+          <BoxCantidad nombre="Habilidades Técnicas" total={totalTecnicas} />
+          <BoxCantidad nombre="Proyectos realizados" total={data.proyectos} />
+        </div>
+          */}
+        <DashboardReportes></DashboardReportes>
         <ReporteVisitas
           visitasPorMes={mergearVisitas(
             generarUltimosMeses(6),
@@ -183,15 +195,6 @@ console.log('skillsChartData:', skillsChartData)
             crecimientoMensual
           )}
         />
-
-        {/** 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <BoxCantidad nombre="Habilidades Blandas" total={totalBlandas} />
-          <BoxCantidad nombre="Habilidades Técnicas" total={totalTecnicas} />
-          <BoxCantidad nombre="Proyectos realizados" total={data.proyectos} />
-        </div>
-          */}
-        
       </div>
       <h3 className="w-full text-left mt-12 mb-2 text-base md:text-3xl font-semibold text-black ">
         Mapa de Calor
