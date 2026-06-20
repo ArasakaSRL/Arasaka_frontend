@@ -155,7 +155,7 @@ export default function PagePortafolio() {
                 className="px-4 py-2.5 bg-linear-to-br from-[#0a1a3a] to-[#112e57] text-white text-sm font-semibold rounded-xl transition-opacity hover:opacity-95 shadow-md flex items-center gap-1.5"
               >
                 <Plus size={16} />
-                Nuevo
+                Agregar Portafolio
               </button>
             </div>
           </div>

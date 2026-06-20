@@ -320,7 +320,7 @@ export default function FormularioProyectos({closeModal, onCreated, proyectoEdit
                 mode="multiple"
                 values={tecnologias}
                 onChange={(vals) => {
-                  setTecnologias(vals);
+                  setTecnologias(Array.isArray(vals) ? vals : [vals]);
                   setErrors((prev) => ({
                     ...prev,
                     tecnologias: "",
