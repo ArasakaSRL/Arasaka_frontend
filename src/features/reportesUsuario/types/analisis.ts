@@ -18,6 +18,7 @@ export interface InteraccionCertificacionAPI {
   id_interaccion: string;
   id_visitante: string;
   id_certificacion: string;
+  nombre_certificacion: string;       // ← nuevo
   hover_count: number;
   hover_ms: number;
   clic_abrir_modal: number;
@@ -31,6 +32,7 @@ export interface InteraccionExperienciaAPI {
   id_interaccion: string;
   id_visitante: string;
   id_experiencia: string;
+  nombre_experiencia: string;         // ← nuevo
   fue_visible: boolean;
   hover_count: number;
   hover_ms: number;
@@ -42,6 +44,7 @@ export interface InteraccionHabilidadBlandaAPI {
   id_interaccion: string;
   id_visitante: string;
   id_habilidad: string;
+  nombre_habilidad: string;           // ← nuevo
   hover_count: number;
   hover_ms: number;
   fue_visible: boolean;
@@ -53,6 +56,7 @@ export interface InteraccionHabilidadTecnicaAPI {
   id_interaccion: string;
   id_visitante: string;
   id_habilidad: string;
+  nombre_habilidad: string;           // ← nuevo
   clic_expandir: number;
   clic_cerrar: number;
   clic_general: number;
@@ -80,6 +84,7 @@ export interface InteraccionProyectoAPI {
   id_interaccion: string;
   id_visitante: string;
   id_proyecto: string;
+  nombre_proyecto: string;            // ← nuevo
   hover_count: number;
   hover_ms: number;
   clic_github: number;

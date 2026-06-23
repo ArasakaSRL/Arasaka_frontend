@@ -94,7 +94,12 @@ const CardProyectoVertical = ({ proyecto, slug }: { proyecto: Proyecto; slug: st
           <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
             <div className="flex gap-4">
               {proyecto.url_repositorio && (
-                <a href={proyecto.url_repositorio}  data-proyecto-action="clic_github" target="_blank" className="text-white/70 hover:text-white transition-colors">
+                <a href={proyecto.url_repositorio}
+                  data-proyecto-action="clic_github"
+                  data-proyecto-id={proyecto.id_proyecto}  
+                  target="_blank"
+                  onClick={e => e.stopPropagation()} 
+                  className="text-white/70 hover:text-white transition-colors">
                   <img 
                     src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" 
                     className="w-5 h-5 invert opacity-70 hover:opacity-100" 
@@ -103,12 +108,23 @@ const CardProyectoVertical = ({ proyecto, slug }: { proyecto: Proyecto; slug: st
                 </a>
               )}
               {proyecto.url_demo && (
-                <a href={proyecto.url_demo} data-proyecto-action="clic_demo" target="_blank" className="text-white/70 hover:text-blue-400 transition-colors">
+                <a href={proyecto.url_demo}
+                  data-proyecto-action="clic_demo"
+                  data-proyecto-id={proyecto.id_proyecto}  
+                  target="_blank"
+                  onClick={e => e.stopPropagation()}  
+                  className="text-white/70 hover:text-blue-400 transition-colors">
                   <ExternalLink size={18} />
                 </a>
               )}
             </div>
-            <button data-proyecto-action="clic_detalle" className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-[#0a1120] hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-lg">
+            <button data-proyecto-action="clic_detalle"
+                    data-proyecto-id={proyecto.id_proyecto}
+                    onClick={e => {
+                        e.stopPropagation()   
+                        handleNavegarDetalle()
+                    }}
+                    className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-[#0a1120] hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-lg">
               <ArrowUpRight size={20} />
             </button>
           </div>

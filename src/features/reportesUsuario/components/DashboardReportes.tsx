@@ -395,8 +395,6 @@ function PerfilSection({ data }: { data: InteraccionPerfilAPI[] }) {
   const clics = [
     { label: "Descargar CV", value: totals.clic_cv },
     { label: "Contactar", value: totals.clic_contactar },
-    { label: "LinkedIn", value: totals.clic_linkedin },
-    { label: "GitHub", value: totals.clic_github },
     { label: "Correo", value: totals.clic_correo },
     { label: "Foto de perfil", value: totals.clic_foto },
   ];
@@ -436,12 +434,13 @@ function ProyectosSection({ data }: { data: InteraccionProyectoAPI[] }) {
 
   const byProject = Object.entries(
     data.reduce<Record<string, { github: number; demo: number; detalle: number; hover_ms: number; clics: number }>>((acc, p) => {
-      if (!acc[p.id_proyecto]) acc[p.id_proyecto] = { github: 0, demo: 0, detalle: 0, hover_ms: 0, clics: 0 };
-      acc[p.id_proyecto].github += p.clic_github;
-      acc[p.id_proyecto].demo += p.clic_demo;
-      acc[p.id_proyecto].detalle += p.clic_detalle;
-      acc[p.id_proyecto].hover_ms += p.hover_ms;
-      acc[p.id_proyecto].clics += p.clic_general;
+      const key = p.nombre_proyecto;
+      if (!acc[key]) acc[key] = { github: 0, demo: 0, detalle: 0, hover_ms: 0, clics: 0 };
+      acc[key].github += p.clic_github;
+      acc[key].demo += p.clic_demo;
+      acc[key].detalle += p.clic_detalle;
+      acc[key].hover_ms += p.hover_ms;
+      acc[key].clics += p.clic_general;
       return acc;
     }, {})
   )
@@ -489,50 +488,57 @@ function CertificacionesSection({ data }: { data: InteraccionCertificacionAPI[] 
   if (!data.length) return null;
 
   const byCert = Object.entries(
-    data.reduce<Record<string, { hovers: number; hover_ms: number; modal: number; credencial: number }>>((acc, c) => {
-      if (!acc[c.id_certificacion]) acc[c.id_certificacion] = { hovers: 0, hover_ms: 0, modal: 0, credencial: 0 };
-      acc[c.id_certificacion].hovers += c.hover_count;
-      acc[c.id_certificacion].hover_ms += c.hover_ms;
-      acc[c.id_certificacion].modal += c.clic_abrir_modal;
-      acc[c.id_certificacion].credencial += c.clic_ver_credencial;
+    data.reduce<Record<string, { hovers: number; hover_ms: number; modal: number; cerrar: number; credencial: number }>>((acc, c) => {
+      const key = c.nombre_certificacion;
+      if (!acc[key]) acc[key] = { hovers: 0, hover_ms: 0, modal: 0, cerrar: 0, credencial: 0 };
+      acc[key].hovers    += c.hover_count;
+      acc[key].hover_ms  += c.hover_ms;
+      acc[key].modal     += c.clic_abrir_modal;
+      acc[key].cerrar    += c.clic_cerrar_modal;  
+      acc[key].credencial += c.clic_ver_credencial;
       return acc;
     }, {})
   )
     .map(([id, v]) => ({ id, ...v }))
-    .sort((a, b) => b.credencial - a.credencial);
-
-  const maxCredencial = Math.max(...byCert.map(c => c.credencial), 1);
-
+    .sort((a, b) => b.modal - a.modal);
+    const maxModal = Math.max(...byCert.map(c => c.modal), 1);
   return (
     <Panel>
       <SectionHead title="certificaciones" sub="interés por credencial" color={C.amber} />
       {byCert.map(c => (
-        <div key={c.id} style={{ marginBottom: 12 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4, gap: 8 }}>
-            <span style={{ fontSize: 12, color: "#6B6D78", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <div key={c.id} style={{ marginBottom: 12, background: "#F4F4F1", border: "1px solid #E4E3DD", borderRadius: 8, padding: "12px 14px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, gap: 8 }}>
+            <span style={{ fontSize: 12, color: "#1A1B1F", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {c.id}
             </span>
-            {c.modal > 0 && <Tag label={`modal ×${c.modal}`} color={C.violet} bg={C.violetSoft} />}
+            <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+              {c.modal > 0     && <Tag label={`abrió ×${c.modal}`}    color={C.violet} bg={C.violetSoft} />}
+              {c.cerrar > 0    && <Tag label={`cerró ×${c.cerrar}`}   color={C.amber}  bg={C.amberSoft} />}
+              {c.credencial > 0 && <Tag label={`credencial ×${c.credencial}`} color={C.teal} bg={C.tealSoft} />}
+            </div>
           </div>
-          <MetricRow label="ver credencial" value={c.credencial} max={maxCredencial} color={C.amber} />
+          <MetricRow label="aperturas modal" value={c.modal} max={maxModal} color={C.amber} />
+          <p style={{ fontSize: 11, color: "#9A9CA5", marginTop: 4 }}>
+            hover acumulado: {fmtMs(c.hover_ms)} · {c.hovers} hovers
+          </p>
         </div>
       ))}
     </Panel>
   );
 }
-
 // ─── Sección: Experiencias ────────────────────────────────────────────────────
 function ExperienciasSection({ data }: { data: InteraccionExperienciaAPI[] }) {
   if (!data.length) return null;
 
   const byExp = Object.entries(
     data.reduce<Record<string, { visible: number; total: number; hovers: number; hover_ms: number; clics: number }>>((acc, e) => {
-      if (!acc[e.id_experiencia]) acc[e.id_experiencia] = { visible: 0, total: 0, hovers: 0, hover_ms: 0, clics: 0 };
-      if (e.fue_visible) acc[e.id_experiencia].visible++;
-      acc[e.id_experiencia].total++;
-      acc[e.id_experiencia].hovers += e.hover_count;
-      acc[e.id_experiencia].hover_ms += e.hover_ms;
-      acc[e.id_experiencia].clics += e.clic_general;
+      const key = e.nombre_experiencia;
+      if (!acc[key]) acc[key] = { visible: 0, total: 0, hovers: 0, hover_ms: 0, clics: 0 };
+      if (e.fue_visible) acc[key].visible++;
+      acc[key].total++;
+      acc[key].hovers += e.hover_count;
+      acc[key].hover_ms += e.hover_ms;
+      acc[key].clics += e.clic_general;
       return acc;
     }, {})
   )
@@ -575,11 +581,12 @@ function HabilidadesSection({
 
   const byBlanda = Object.entries(
     blandas.reduce<Record<string, { hovers: number; hover_ms: number; visible: number; total: number }>>((acc, h) => {
-      if (!acc[h.id_habilidad]) acc[h.id_habilidad] = { hovers: 0, hover_ms: 0, visible: 0, total: 0 };
-      acc[h.id_habilidad].hovers += h.hover_count;
-      acc[h.id_habilidad].hover_ms += h.hover_ms;
-      if (h.fue_visible) acc[h.id_habilidad].visible++;
-      acc[h.id_habilidad].total++;
+      const key = h.nombre_habilidad;
+      if (!acc[key]) acc[key] = { hovers: 0, hover_ms: 0, visible: 0, total: 0 };
+      acc[key].hovers += h.hover_count;
+      acc[key].hover_ms += h.hover_ms;
+      if (h.fue_visible) acc[key].visible++;
+      acc[key].total++;
       return acc;
     }, {})
   )
@@ -588,10 +595,11 @@ function HabilidadesSection({
 
   const byTecnica = Object.entries(
     tecnicas.reduce<Record<string, { expandir: number; cerrar: number; clics: number }>>((acc, h) => {
-      if (!acc[h.id_habilidad]) acc[h.id_habilidad] = { expandir: 0, cerrar: 0, clics: 0 };
-      acc[h.id_habilidad].expandir += h.clic_expandir;
-      acc[h.id_habilidad].cerrar += h.clic_cerrar;
-      acc[h.id_habilidad].clics += h.clic_general;
+      const key = h.nombre_habilidad;
+      if (!acc[key]) acc[key] = { expandir: 0, cerrar: 0, clics: 0 };
+      acc[key].expandir += h.clic_expandir;
+      acc[key].cerrar += h.clic_cerrar;
+      acc[key].clics += h.clic_general;
       return acc;
     }, {})
   )

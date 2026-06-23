@@ -55,18 +55,24 @@ export function ProyectosTracker({ children, portfolioSlug }: Props) {
         function onClic(e: MouseEvent) {
             const el = wrapperRef.current
             if (!el) return
-            const coords = getHeatmapCoords(e, el)
+
             const target = (e.target as HTMLElement).closest('[data-proyecto-action]')
             if (!target) return
-            
 
-            const accion    = (target as HTMLElement).dataset.proyectoAction!
-            const idTarget  = (target as HTMLElement).closest('[data-proyecto-id]')
+            const accion = (target as HTMLElement).dataset.proyectoAction!
+
+            // Buscar data-proyecto-id en el target mismo O subiendo al ancestro
+            const idTarget =
+                (target as HTMLElement).dataset.proyectoId
+                    ? target
+                    : (target as HTMLElement).closest('[data-proyecto-id]')
+
             if (!idTarget) return
             const id = (idTarget as HTMLElement).dataset.proyectoId!
 
+            const coords = getHeatmapCoords(e, el)
             enviar(id, accion, 1)
-            enviarCoordenadas(id, accion, coords.x, coords.y) 
+            enviarCoordenadas(id, accion, coords.x, coords.y)
         }
 
         el.addEventListener('click', onClic)
