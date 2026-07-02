@@ -35,7 +35,7 @@ export const ProyectoSchema = z
     githubUrl: z
       .string()
       .optional()
-      .refine((val) => !val || val.startsWith("https://github.com "), {
+      .refine((val) => !val || val.startsWith("https://github.com"), {
         message: "Formato de enlace inválido",
       }),
     imagenes: z
